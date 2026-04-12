@@ -1,0 +1,26 @@
+# Tolerance Matrix — AcademIA Error Taxonomy
+# Phase 1: 15 Tier 1 categories × 3 CEFR bands
+# Tiers: ignored (0.0) | noted (0.3) | penalized (0.8)
+# Updated: 2026-04-12
+
+# Grammar
+V:TENSE:      { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+V:SVA:        { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+V:FORM:       { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+N:NUM:        { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+ART:          { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+PREP:         { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+WO:           { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+
+# Surface
+ORTH:CASE:    { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+ORTH:SPACE:   { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+SPELL:        { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+PUNCT:APOST:  { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+
+# Lexical (LEX:CALQUE merged into LEX:CHOICE — Phase 1b)
+LEX:CHOICE:   { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+
+# L1 Transfer (French-specific)
+PREP:CALQUE:  { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+SPELL:COGNATE:{ a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
