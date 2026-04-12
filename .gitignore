@@ -1,0 +1,12 @@
+node_modules/
+__pycache__/
+*.pyc
+dist/
+.next/
+.svelte-kit/
+.env
+*.log
+*.bak
+.dify_admin_key
+venv/
+.venv/

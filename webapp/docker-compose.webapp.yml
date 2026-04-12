@@ -1,0 +1,55 @@
+services:
+  academie-frontend:
+    build: ./frontend
+    container_name: academie-frontend
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    networks:
+      - academie-net-bridge
+    depends_on:
+      academie-api:
+        condition: service_healthy
+    environment:
+      - ORIGIN=https://academie.petit-pont.com
+      - PROTOCOL_HEADER=x-forwarded-proto
+      - HOST_HEADER=x-forwarded-host
+      - ADDRESS_HEADER=x-forwarded-for
+      - XFF_DEPTH=1
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://0.0.0.0:3000/').then(r=>{process.exit(r.ok?0:1)}).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.5"
+
+  academie-api:
+    build: ./backend
+    container_name: academie-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    networks:
+      - academie-net-bridge
+    environment:
+      - DATABASE_URL=postgresql://sinse:REDACTED_PG_PASSWORD@postgres-academie:5432/academie_db
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+
+networks:
+  academie-net-bridge:
+    external: true
