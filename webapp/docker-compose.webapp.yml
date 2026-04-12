@@ -1,6 +1,6 @@
 services:
   academie-frontend:
-    build: ./frontend
+    build: ${WEBAPP_SRC:-.}/frontend
     container_name: academie-frontend
     restart: unless-stopped
     ports:
@@ -29,7 +29,7 @@ services:
           cpus: "0.5"
 
   academie-api:
-    build: ./backend
+    build: ${WEBAPP_SRC:-.}/backend
     container_name: academie-api
     restart: unless-stopped
     ports:
