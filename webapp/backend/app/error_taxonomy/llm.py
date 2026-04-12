@@ -17,7 +17,7 @@ logger = logging.getLogger("academie-api.error-taxonomy")
 LITELLM_URL = "http://litellm-proxy:4000/v1/chat/completions"
 # gpt-4o-mini for dev/tuning (1.5M tokens/day free, no rate limit issues)
 # Switch to groq-standard for production once tuned
-ANALYSIS_MODEL = "gpt-4o-mini"
+ANALYSIS_MODEL = "ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v2:DTurinhs"
 
 SYSTEM_PROMPT = """You analyze French speakers learning English. Identify EVERY error made by the USER. Do NOT analyze TEACHER messages.
 
