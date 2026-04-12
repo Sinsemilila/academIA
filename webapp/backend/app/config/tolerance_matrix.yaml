@@ -1,0 +1,100 @@
+# Tolerance Matrix — AcademIA Error Taxonomy (63 categories)
+# Tiers: ignored (0.0) | noted (0.3) | penalized (0.8)
+# Updated: 2026-04-12 — Full 63-category expansion
+
+# ── Verb (12) ──
+V:TENSE:      { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+V:SVA:        { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+V:FORM:       { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+V:MODAL:      { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+V:COND:       { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+V:ASPECT:     { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+V:AUX:        { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+V:INFL:       { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+V:PASS:       { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+V:EXIST:      { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+V:CHOICE:     { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+V:PHRASAL:    { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+
+# ── Noun (5) ──
+N:NUM:        { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+N:POSS:       { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+N:INFL:       { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+N:CHOICE:     { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+N:COUNT:      { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+
+# ── Article/Determiner (3) ──
+ART:          { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+ART:GENERIC:  { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+DET:          { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+
+# ── Pronoun (3) ──
+PRON:FORM:    { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+PRON:CHOICE:  { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+PRON:REF:     { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+
+# ── Preposition (2) ──
+PREP:         { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+PREP:CALQUE:  { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+
+# ── Adjective (3) ──
+ADJ:CHOICE:   { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+ADJ:FORM:     { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+ADJ:ORDER:    { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+
+# ── Adverb (2) ──
+ADV:CHOICE:   { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+ADV:ORDER:    { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+
+# ── Conjunction (1) ──
+CONJ:         { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+
+# ── Word Order (2) ──
+WO:           { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+WO:QUEST:     { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+
+# ── Lexical (7) ──
+LEX:CHOICE:   { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+LEX:COLLOC:   { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+LEX:FALSE:    { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+LEX:CALQUE:   { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+LEX:IDIOM:    { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+LEX:ARGSTRUCT:{ a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+LEX:REGISTER: { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+
+# ── Morphology (2) ──
+MORPH:DERIV:  { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+MORPH:WORDCLASS:{ a1_a2: ignored, b1_b2: noted,     c1_c2: penalized }
+
+# ── Sentence structure (6) ──
+SENT:RUNON:   { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+SENT:FRAG:    { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+SENT:NEG:     { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+SENT:MOD:     { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+SENT:PARALLEL:{ a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+SENT:SUBORD:  { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+
+# ── Discourse (4) ──
+DISC:TRANS:   { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+DISC:COHER:   { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+DISC:COHES:   { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+DISC:CONNOVER:{ a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+
+# ── Register/Pragmatic (2) ──
+REG:LEVEL:    { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+REG:PRAGMA:   { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+
+# ── Surface — Spelling (4) ──
+SPELL:        { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+SPELL:COGNATE:{ a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+ORTH:CASE:    { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+ORTH:SPACE:   { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+
+# ── Surface — Punctuation (3) ──
+PUNCT:        { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+PUNCT:COMMA:  { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+PUNCT:APOST:  { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+
+# ── Other (2) ──
+CONTR:        { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+REDUND:       { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
