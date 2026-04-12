@@ -1,4 +1,4 @@
-# Project History — Academie-IA
+# Project History — AcademIA
 
 > The engineering journey from bare metal to a multi-AI learning platform.
 > This project was built over 8 intensive days (2026-04-04 to 2026-04-12) by a solo developer working with AI coding agents.

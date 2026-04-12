@@ -1,6 +1,6 @@
 <div align="center">
 
-# Academie-IA
+# AcademIA
 
 **Plateforme d'apprentissage des langues augmentee par IA**
 

@@ -1,4 +1,4 @@
-# API Overview — Academie-IA
+# API Overview — AcademIA
 
 > FastAPI backend at :8000. Auto-generated docs available at `/docs` (Swagger) and `/redoc`.
 

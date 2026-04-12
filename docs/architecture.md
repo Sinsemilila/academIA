@@ -1,4 +1,4 @@
-# Architecture — Academie-IA
+# Architecture — AcademIA
 
 ## Request flow (learner perspective)
 

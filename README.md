@@ -1,6 +1,6 @@
 <div align="center">
 
-# Academie-IA
+# AcademIA
 
 **AI-powered language learning platform with adaptive pedagogy**
 
@@ -17,7 +17,7 @@
 
 ---
 
-## What is Academie-IA?
+## What is AcademIA?
 
 A self-hosted language learning platform that uses multiple AI models to deliver personalized, adaptive lessons. Built for a small group of friends learning English, with an architecture designed to scale to any language or technical domain.
 

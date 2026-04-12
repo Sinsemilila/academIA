@@ -1,4 +1,4 @@
-# Key Design Decisions — Academie-IA
+# Key Design Decisions — AcademIA
 
 > Architecture Decision Records (simplified). Why we chose X over Y.
 > Decisions are listed chronologically by when they were actually made during development.
