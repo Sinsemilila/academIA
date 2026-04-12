@@ -20,6 +20,12 @@ ART:          { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
 PREP:         { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
 WO:           { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
 
+# Sentence structure
+SENT:RUNON:   { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+SENT:FRAG:    { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+SENT:NEG:     { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+CONJ:         { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+
 # Surface
 ORTH:CASE:    { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
 ORTH:SPACE:   { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }

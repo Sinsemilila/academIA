@@ -12,6 +12,8 @@ TIER1_CATEGORIES = {
     "ADJ:ORDER", "ADV:ORDER",
     # Pronoun
     "PRON:FORM", "PRON:CHOICE",
+    # Sentence structure
+    "SENT:RUNON", "SENT:FRAG", "SENT:NEG", "CONJ",
     # Surface
     "ORTH:CASE", "ORTH:SPACE", "SPELL", "PUNCT:APOST",
     # Lexical
@@ -23,6 +25,7 @@ TIER1_CATEGORIES = {
 TIER1_DOMAINS = {
     "grammar_verb": ["V:TENSE", "V:SVA", "V:FORM", "V:MODAL", "V:COND", "V:ASPECT", "V:AUX"],
     "grammar_other": ["N:NUM", "ART", "PREP", "WO", "ADJ:ORDER", "ADV:ORDER", "PRON:FORM", "PRON:CHOICE"],
+    "sentence": ["SENT:RUNON", "SENT:FRAG", "SENT:NEG", "CONJ"],
     "surface": ["ORTH:CASE", "ORTH:SPACE", "SPELL", "PUNCT:APOST"],
     "lexical": ["LEX:CHOICE"],
     "l1_transfer": ["PREP:CALQUE", "SPELL:COGNATE"],
