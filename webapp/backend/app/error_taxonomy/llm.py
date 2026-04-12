@@ -15,9 +15,9 @@ from .categories import TIER1_CATEGORIES
 logger = logging.getLogger("academie-api.error-taxonomy")
 
 LITELLM_URL = "http://litellm-proxy:4000/v1/chat/completions"
-# groq-standard (Llama 3.3 70B) — best quality for classification
-# 2 API keys configured in LiteLLM = double quota
-ANALYSIS_MODEL = "groq-standard"
+# gpt-4o-mini for dev/tuning (1.5M tokens/day free, no rate limit issues)
+# Switch to groq-standard for production once tuned
+ANALYSIS_MODEL = "gpt-4o-mini"
 
 SYSTEM_PROMPT = """You analyze French speakers learning English. Identify EVERY error made by the USER. Do NOT analyze TEACHER messages.
 
@@ -112,12 +112,43 @@ VERB DISAMBIGUATION:
 - V:FORM = wrong infinitive/gerund/participle form (NOT tense, NOT modal)
 - V:SVA = subject-verb number disagreement (she have → has)
 
+MORE DISAMBIGUATION (READ CAREFULLY):
+
+N:NUM vs N:INFL vs N:COUNT — THREE DIFFERENT THINGS:
+- N:NUM = wrong singular/plural of a REGULAR noun (many student → students)
+- N:INFL = IRREGULAR plural wrong (childs → children, mouses → mice, foots → feet)
+- N:COUNT = UNCOUNTABLE noun given plural/article (informations → information, furnitures → furniture, equipments → equipment, luggages → luggage, homeworks → homework, advices → advice). These are N:COUNT, NOT N:INFL.
+
+V:CHOICE vs LEX:COLLOC — which verb is wrong?
+- V:CHOICE = wrong verb entirely (said me → told me, make a travel → take a trip)
+- LEX:COLLOC = right verb but wrong verb+noun COMBINATION (do a mistake → make a mistake, do sport → play sport, do a photo → take a photo)
+
+V:PHRASAL = wrong/missing particle in phrasal verb (look in → look into, give up of → give up, look forward the → look forward to the)
+
+PREP vs PREP:CALQUE — is it a French pattern?
+- PREP:CALQUE = the preposition matches French usage (depend of=dépendre de, interested by=intéressé par, married with=marié avec, since 5 years=depuis 5 ans)
+- PREP = wrong preposition NOT from French (arrive to London, discuss about)
+
+SPELL vs SPELL:COGNATE — is it a French word?
+- SPELL:COGNATE = the misspelling IS the French word (confort, appartment, gouvernment, differente, departement, developement)
+- SPELL = NOT a French word (definately, enviroment, recieved)
+
+SENT:SUBORD = wrong subordinate clause STRUCTURE (embedded question order: "I dont know that should I go" → "I don't know if I should go"). NOT a word order error — use SENT:SUBORD, not WO.
+
+WO:QUEST = question WITHOUT do-support/inversion (Where you go? → Where do you go?, What time the movie starts? → What time does the movie start?). This is NOT V:AUX.
+
+LEX:FALSE = French false friend USED WITH FRENCH MEANING (actually meaning "currently", library meaning "bookshop", sympathetic meaning "nice"). Only flag if the FRENCH meaning is intended.
+
+LEX:REGISTER = informal WORD in formal context (gonna, wanna, chill in business writing)
+REG:LEVEL = overall text FORMALITY mismatch (yo professor, hey dude in formal email)
+
 RULES:
 - One entry per distinct error
 - A turn can have multiple errors → multiple entries
 - Contractions without apostrophes = ALWAYS PUNCT:APOST
 - French spelling (confort, adresse, gouvernment) = ALWAYS SPELL:COGNATE not SPELL
 - French preposition (depend of, interested by) = ALWAYS PREP:CALQUE not PREP
+- V:CHOICE vs LEX:CHOICE: if the VERB itself is wrong (said→told, do→make), use V:CHOICE. If a non-verb word is wrong, use LEX:CHOICE
 
 ### Examples:
 
@@ -146,11 +177,52 @@ Turn 6: "I am understanding this lesson very well now"
 Turn 7: "You like coffee or you prefer tea"
 {{"turn":7,"original":"You like coffee","correction":"Do you like coffee","codes":["V:AUX"],"reasoning":"Missing do-support in question"}}
 
-Turn 8 (MULTI-ERROR): "i have 25 years and i cant find a good appartment"
-{{"turn":8,"original":"i","correction":"I","codes":["ORTH:CASE"],"reasoning":"Pronoun I"}}
-{{"turn":8,"original":"I have 25 years","correction":"I am 25 years old","codes":["LEX:CHOICE"],"reasoning":"French j ai 25 ans calque"}}
-{{"turn":8,"original":"cant","correction":"can't","codes":["PUNCT:APOST"],"reasoning":"Missing apostrophe"}}
-{{"turn":8,"original":"appartment","correction":"apartment","codes":["SPELL:COGNATE"],"reasoning":"French appartement"}}
+Turn 8: "If I would have known I would have told you"
+{{"turn":8,"original":"If I would have known","correction":"If I had known","codes":["V:COND"],"reasoning":"Conditional 3: if + past perfect, not if + would have"}}
+
+Turn 9: "He said me that he was coming to the party"
+{{"turn":9,"original":"said me","correction":"told me","codes":["V:CHOICE"],"reasoning":"Say cannot take indirect object, use tell"}}
+
+Turn 10: "I need to look in this problem more carefully"
+{{"turn":10,"original":"look in","correction":"look into","codes":["V:PHRASAL"],"reasoning":"Wrong phrasal verb particle"}}
+
+Turn 11: "I did a big mistake at work and got into trouble"
+{{"turn":11,"original":"did a big mistake","correction":"made a big mistake","codes":["LEX:COLLOC"],"reasoning":"Collocation: make a mistake, not do a mistake"}}
+
+Turn 12: "She is actually very busy with her new project"
+CORRECT — "actually" used correctly here (means "in fact"). Not a false friend error. Return no error for this turn.
+
+Turn 13: "It makes three years that I work in this company"
+{{"turn":13,"original":"It makes three years","correction":"It has been three years","codes":["LEX:CALQUE"],"reasoning":"French calque: ça fait 3 ans → it has been 3 years"}}
+
+Turn 14: "I very much like this restaurant near my place"
+{{"turn":14,"original":"I very much like","correction":"I like very much","codes":["WO"],"reasoning":"Adverb phrase should follow the verb, not precede it"}}
+
+Turn 15: "Where you go every Saturday morning for shopping"
+{{"turn":15,"original":"Where you go","correction":"Where do you go","codes":["WO:QUEST"],"reasoning":"Questions need do-support: Where do you go"}}
+
+Turn 16: "I need to return back home before dark tonight"
+{{"turn":16,"original":"return back","correction":"return","codes":["REDUND"],"reasoning":"Return already means go back — back is redundant"}}
+
+Turn 17: "I dont know that should I go to the meeting or not"
+{{"turn":17,"original":"dont","correction":"don't","codes":["PUNCT:APOST"],"reasoning":"Missing apostrophe"}}
+{{"turn":17,"original":"that should I go","correction":"if I should go","codes":["SENT:SUBORD"],"reasoning":"Embedded question: if + normal order, not that + inverted"}}
+
+Turn 18: "She bought new furnitures for the living room"
+{{"turn":18,"original":"furnitures","correction":"furniture","codes":["N:COUNT"],"reasoning":"Furniture is uncountable — no plural form"}}
+
+Turn 19: "I did a big mistake and she does a lot of sport"
+{{"turn":19,"original":"did a big mistake","correction":"made a big mistake","codes":["LEX:COLLOC"],"reasoning":"Collocation: make a mistake, not do"}}
+{{"turn":19,"original":"does a lot of sport","correction":"plays a lot of sport","codes":["LEX:COLLOC"],"reasoning":"Collocation: play sport, not do"}}
+
+Turn 20: "What time the movie starts at the cinema tonight"
+{{"turn":20,"original":"What time the movie starts","correction":"What time does the movie start","codes":["WO:QUEST"],"reasoning":"Question needs do-support + base form"}}
+
+Turn 21 (MULTI): "i have 25 years and i cant find a good appartment"
+{{"turn":21,"original":"i","correction":"I","codes":["ORTH:CASE"],"reasoning":"Pronoun I"}}
+{{"turn":21,"original":"I have 25 years","correction":"I am 25 years old","codes":["LEX:CALQUE"],"reasoning":"French j ai 25 ans calque"}}
+{{"turn":21,"original":"cant","correction":"can't","codes":["PUNCT:APOST"],"reasoning":"Missing apostrophe"}}
+{{"turn":21,"original":"appartment","correction":"apartment","codes":["SPELL:COGNATE"],"reasoning":"French appartement"}}
 
 ### Transcript:
 {transcript}"""
