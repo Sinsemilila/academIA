@@ -27,7 +27,7 @@ For EACH user message, perform a 3-PASS SCAN:
 
 PASS 1 — SURFACE: Is 'i' lowercase? Proper nouns lowercase? Missing apostrophes (dont→don't, cant→can't, its→it's, theyre→they're, shes→she's, whos→who's)? Joined words (aswell, alot)? Misspellings? French spelling (confort→comfort)?
 
-PASS 2 — GRAMMAR: Subject-verb agreement (she have→has)? Wrong tense (present perfect + yesterday/ago/last = use past simple)? Wrong verb form (enjoy to swim→swimming)? Singular/plural (informations→information)? Articles? Prepositions? French preposition calque (depend of→on)? Word order?
+PASS 2 — GRAMMAR: Subject-verb agreement (she have→has)? Wrong tense (present perfect + yesterday/ago/last = use past simple)? Wrong verb form (enjoy to swim→swimming)? Modal error (must to go→must go)? Conditional error (if I would→if I)? Progressive/aspect misuse (I am understanding→I understand)? Auxiliary/do-support missing (I not understand→I don't)? Singular/plural (informations→information)? Articles? Prepositions? French preposition calque (depend of→on)? Word order?
 
 PASS 3 — LEXICAL: Wrong word? French calque expression (I have 25 years→I am 25)?
 
@@ -35,11 +35,15 @@ CRITICAL: A message often has 3-5+ errors. Report ALL. Do not stop after the obv
 
 Output ONLY valid JSON. No other text."""
 
-USER_PROMPT_TEMPLATE = """Classify errors using ONLY these 14 codes:
+USER_PROMPT_TEMPLATE = """Classify errors using ONLY these 18 codes:
 
 V:TENSE — wrong tense (have been + last summer → went)
 V:SVA — subject-verb agreement (she have → has)
 V:FORM — gerund/infinitive/participle (enjoy to swim → swimming)
+V:MODAL — modal verb error (should goes → should go, must to go → must go)
+V:COND — conditional structure error (if I would know → if I knew)
+V:ASPECT — progressive/continuous misuse (I am understanding → I understand)
+V:AUX — auxiliary error, do-support (I not understand → I don't understand)
 N:NUM — singular/plural/countability (informations → information)
 ART — article error (the life → life)
 PREP — wrong preposition, NOT French (arrive to → in)
@@ -55,6 +59,15 @@ LEX:CHOICE — wrong word or French calque (I have 25 years → I am 25, say me 
 {{"errors": [{{"turn": N, "original": "quote", "correction": "fix", "codes": ["CODE"], "reasoning": "why"}}]}}
 
 If no errors: {{"errors": []}}
+
+VERB DISAMBIGUATION:
+- V:MODAL = error with can/could/should/would/must/may/might + verb (must to go, should goes)
+- V:COND = error in if-clause conditional structure (if I would know → if I knew, if I would have → if I had)
+- V:ASPECT = using progressive -ing with stative verb OR missing progressive (I am understanding → I understand, She reads right now → She is reading)
+- V:AUX = missing/wrong auxiliary, especially do-support (I not understand → I don't understand, You like? → Do you like?)
+- V:TENSE = wrong tense choice based on time context (NOT modal/conditional/aspect/auxiliary)
+- V:FORM = wrong infinitive/gerund/participle form (NOT tense, NOT modal)
+- V:SVA = subject-verb number disagreement (she have → has)
 
 RULES:
 - One entry per distinct error
@@ -78,11 +91,23 @@ Turn 2: "She dont depend of her parents"
 Turn 3: "She speaks very well English"
 {{"turn":3,"original":"speaks very well English","correction":"speaks English very well","codes":["WO"],"reasoning":"Adverb follows object"}}
 
-Turn 4 (MULTI-ERROR): "i have 25 years and i cant find a good appartment"
-{{"turn":4,"original":"i","correction":"I","codes":["ORTH:CASE"],"reasoning":"Pronoun I"}}
-{{"turn":4,"original":"I have 25 years","correction":"I am 25 years old","codes":["LEX:CHOICE"],"reasoning":"French j ai 25 ans calque"}}
-{{"turn":4,"original":"cant","correction":"can't","codes":["PUNCT:APOST"],"reasoning":"Missing apostrophe"}}
-{{"turn":4,"original":"appartment","correction":"apartment","codes":["SPELL:COGNATE"],"reasoning":"French appartement"}}
+Turn 4: "He must to go to the hospital right now"
+{{"turn":4,"original":"must to go","correction":"must go","codes":["V:MODAL"],"reasoning":"No 'to' after modal verbs"}}
+
+Turn 5: "If I would know the answer I would tell you"
+{{"turn":5,"original":"If I would know","correction":"If I knew","codes":["V:COND"],"reasoning":"Conditional 2: if + past simple, not if + would"}}
+
+Turn 6: "I am understanding this lesson very well now"
+{{"turn":6,"original":"am understanding","correction":"understand","codes":["V:ASPECT"],"reasoning":"Understand is a stative verb, no progressive"}}
+
+Turn 7: "You like coffee or you prefer tea"
+{{"turn":7,"original":"You like coffee","correction":"Do you like coffee","codes":["V:AUX"],"reasoning":"Missing do-support in question"}}
+
+Turn 8 (MULTI-ERROR): "i have 25 years and i cant find a good appartment"
+{{"turn":8,"original":"i","correction":"I","codes":["ORTH:CASE"],"reasoning":"Pronoun I"}}
+{{"turn":8,"original":"I have 25 years","correction":"I am 25 years old","codes":["LEX:CHOICE"],"reasoning":"French j ai 25 ans calque"}}
+{{"turn":8,"original":"cant","correction":"can't","codes":["PUNCT:APOST"],"reasoning":"Missing apostrophe"}}
+{{"turn":8,"original":"appartment","correction":"apartment","codes":["SPELL:COGNATE"],"reasoning":"French appartement"}}
 
 ### Transcript:
 {transcript}"""

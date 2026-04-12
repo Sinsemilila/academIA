@@ -4,18 +4,21 @@ AcademIA Error Taxonomy — Tier 1 categories (Phase 1)
 """
 
 TIER1_CATEGORIES = {
-    # Grammar
-    "V:TENSE", "V:SVA", "V:FORM", "N:NUM", "ART", "PREP", "WO",
+    # Grammar — Verb
+    "V:TENSE", "V:SVA", "V:FORM", "V:MODAL", "V:COND", "V:ASPECT", "V:AUX",
+    # Grammar — Other
+    "N:NUM", "ART", "PREP", "WO",
     # Surface
     "ORTH:CASE", "ORTH:SPACE", "SPELL", "PUNCT:APOST",
-    # Lexical (LEX:CALQUE merged into LEX:CHOICE — 2026-04-12 Phase 1b)
+    # Lexical
     "LEX:CHOICE",
     # L1 Transfer (French-specific)
     "PREP:CALQUE", "SPELL:COGNATE",
 }
 
 TIER1_DOMAINS = {
-    "grammar": ["V:TENSE", "V:SVA", "V:FORM", "N:NUM", "ART", "PREP", "WO"],
+    "grammar_verb": ["V:TENSE", "V:SVA", "V:FORM", "V:MODAL", "V:COND", "V:ASPECT", "V:AUX"],
+    "grammar_other": ["N:NUM", "ART", "PREP", "WO"],
     "surface": ["ORTH:CASE", "ORTH:SPACE", "SPELL", "PUNCT:APOST"],
     "lexical": ["LEX:CHOICE"],
     "l1_transfer": ["PREP:CALQUE", "SPELL:COGNATE"],

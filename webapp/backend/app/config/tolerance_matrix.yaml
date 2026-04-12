@@ -3,10 +3,14 @@
 # Tiers: ignored (0.0) | noted (0.3) | penalized (0.8)
 # Updated: 2026-04-12
 
-# Grammar
+# Grammar — Verb
 V:TENSE:      { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
 V:SVA:        { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
 V:FORM:       { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+V:MODAL:      { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+V:COND:       { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+V:ASPECT:     { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+V:AUX:        { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
 N:NUM:        { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
 ART:          { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
 PREP:         { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
