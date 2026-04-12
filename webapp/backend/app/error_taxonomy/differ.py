@@ -122,11 +122,12 @@ def _tokenize(text: str) -> list[str]:
 
 
 def _deduplicate(edits: list[EditSpan]) -> list[EditSpan]:
-    """Remove duplicate edits (same original→corrected)."""
+    """Remove duplicate edits (exact same original→corrected, case-sensitive)."""
     seen = set()
     result = []
     for e in edits:
-        key = (e.original.lower(), e.corrected.lower())
+        # Case-sensitive key — "paris"→"Paris" is a valid ORTH:CASE edit
+        key = (e.original, e.corrected)
         if key not in seen:
             seen.add(key)
             result.append(e)

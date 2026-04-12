@@ -38,6 +38,12 @@ async def analyze_errors(req: AnalyzeRequest):
     """
     Rules (surface) + LLM monolithic (grammar/lexical).
     """
+    # Input validation
+    if not req.transcript or not req.transcript.strip():
+        return AnalyzeResponse(status="empty_transcript", errors_detected=0, rule_errors=0, llm_errors=0, turns_analyzed=0)
+    if not req.session_id or not req.session_id.strip():
+        raise HTTPException(status_code=400, detail="session_id is required")
+
     eleve_id = await db.pool.fetchval(
         "SELECT id FROM eleves WHERE username = $1", req.username
     )
@@ -46,7 +52,7 @@ async def analyze_errors(req: AnalyzeRequest):
 
     user_turns = _extract_user_turns(req.transcript)
     if not user_turns:
-        return AnalyzeResponse(status="ok", errors_detected=0, rule_errors=0, llm_errors=0, turns_analyzed=0)
+        return AnalyzeResponse(status="no_user_turns", errors_detected=0, rule_errors=0, llm_errors=0, turns_analyzed=0)
 
     all_errors: list[dict] = []
 
@@ -69,6 +75,7 @@ async def analyze_errors(req: AnalyzeRequest):
 
     # ── Layer 2: LLM monolithic (grammar/lexical) ──
     llm_count = 0
+    llm_failed = False
     try:
         result = await analyze_transcript(req.transcript)
         for error in result.errors:
@@ -93,6 +100,7 @@ async def analyze_errors(req: AnalyzeRequest):
                     llm_count += 1
     except Exception:
         logger.exception("LLM analysis failed for session %s — rules-only results saved", req.session_id)
+        llm_failed = True
 
     # ── Store ──
     if all_errors:
@@ -117,8 +125,9 @@ async def analyze_errors(req: AnalyzeRequest):
         req.session_id, req.username, total, rule_count, llm_count, len(user_turns),
     )
 
+    status = "rules_only" if llm_failed else "ok"
     return AnalyzeResponse(
-        status="ok", errors_detected=total,
+        status=status, errors_detected=total,
         rule_errors=rule_count, llm_errors=llm_count,
         turns_analyzed=len(user_turns),
     )

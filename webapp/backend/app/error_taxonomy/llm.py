@@ -259,8 +259,23 @@ async def analyze_transcript(transcript: str) -> LLMAnalysisResult:
         resp.raise_for_status()
 
     content = resp.json()["choices"][0]["message"]["content"]
-    parsed = json.loads(content)
-    result = LLMAnalysisResult(**parsed)
+
+    try:
+        parsed = json.loads(content)
+    except json.JSONDecodeError:
+        # Try to extract JSON from markdown code blocks
+        match = re.search(r"\{[\s\S]*\}", content)
+        if match:
+            parsed = json.loads(match.group(0))
+        else:
+            logger.warning("LLM returned non-JSON: %s", content[:200])
+            return LLMAnalysisResult(errors=[])
+
+    try:
+        result = LLMAnalysisResult(**parsed)
+    except Exception:
+        logger.warning("LLM returned invalid structure: %s", str(parsed)[:200])
+        return LLMAnalysisResult(errors=[])
 
     # Filter invalid codes
     valid_errors = []
