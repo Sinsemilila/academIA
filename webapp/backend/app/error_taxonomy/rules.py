@@ -10,13 +10,45 @@ from .differ import EditSpan
 from .categories import TIER1_CATEGORIES
 
 
+# ── Constants for detect_errors (monolithic pipeline) ──
+SPACING_ERRORS = {
+    "aswell", "alot", "infact", "eventhough", "nevermind",
+    "atleast", "abit", "infront", "eachother", "noone",
+}
+
+SPACING_FIX = {
+    "aswell": "as well", "alot": "a lot", "infact": "in fact",
+    "eventhough": "even though", "nevermind": "never mind",
+    "atleast": "at least", "abit": "a bit", "infront": "in front",
+    "eachother": "each other", "noone": "no one",
+}
+
+PROPER_NOUNS = {
+    "english", "french", "spanish", "japanese", "german", "italian",
+    "europe", "france", "paris", "lyon", "london", "japan", "china",
+    "america", "africa", "asia",
+    "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
+    "january", "february", "march", "april", "may", "june",
+    "july", "august", "september", "october", "november", "december",
+}
+
+
+@dataclass
+class RuleDetection:
+    """A single rule-detected error (for monolithic pipeline)."""
+    error_code: str
+    original_text: str
+    suggested_correction: str
+    reasoning: str
+
+
 @dataclass
 class ClassifiedError:
     error_code: str
     original_text: str
     suggested_correction: str
     reasoning: str
-    source: str = "rules"  # "rules" or "llm-fallback"
+    source: str = "rules"
 
 
 # ── French cognate spelling map (French → English) ──
@@ -52,6 +84,26 @@ PREP_CALQUES = {
     ("good", "in"): ("good", "at"),
     ("congratulated", "for"): ("congratulated", "on"),
 }
+
+def detect_errors(text: str) -> list[RuleDetection]:
+    """Run deterministic rules on raw user text. For monolithic pipeline."""
+    results = []
+    # Lowercase 'i' as pronoun
+    if re.search(r"(?<![a-zA-Z])i(?=[\s''])", text):
+        results.append(RuleDetection("ORTH:CASE", "i", "I", "Pronoun 'I' must be capitalized."))
+    # Spacing errors
+    text_lower = text.lower()
+    for wrong in SPACING_ERRORS:
+        if re.search(rf"\b{re.escape(wrong)}\b", text_lower):
+            fix = SPACING_FIX.get(wrong, wrong)
+            results.append(RuleDetection("ORTH:SPACE", wrong, fix, f"'{wrong}' should be written as '{fix}'."))
+    # Proper nouns
+    for word in re.findall(r"\b[a-z]+\b", text):
+        if word in PROPER_NOUNS and text.find(word) > 0:
+            results.append(RuleDetection("ORTH:CASE", word, word.capitalize(), f"'{word.capitalize()}' is a proper noun."))
+            break
+    return results
+
 
 # ── Time markers that signal V:TENSE with present perfect ──
 FINISHED_TIME_MARKERS = [

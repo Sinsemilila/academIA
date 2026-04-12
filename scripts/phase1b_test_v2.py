@@ -119,9 +119,17 @@ def run_test(cases, suffix):
     transcript = build_transcript(cases)
     payload = {"username": "sinse", "session_id": f"phase1b-v2-{suffix}", "transcript": transcript}
     try:
-        r = requests.post(ENDPOINT, json=payload, timeout=180)
+        start = time.time()
+        r = requests.post(ENDPOINT, json=payload, timeout=45)
+        elapsed = time.time() - start
         r.raise_for_status()
-        return r.json()
+        result = r.json()
+        if elapsed > 20:
+            print(f"  ⚠️  SLOW ({elapsed:.0f}s) — Groq likely throttled", end="")
+        return result
+    except requests.exceptions.Timeout:
+        print(f"  ❌ TIMEOUT (>45s) — Groq rate-limited, aborting remaining batches")
+        return "ABORT"
     except Exception as e:
         print(f"  [ERR] {e}")
         return None
@@ -217,12 +225,27 @@ if __name__ == "__main__":
     batches = [TEST_CASES[i:i+BATCH_SIZE] for i in range(0, len(TEST_CASES), BATCH_SIZE)]
     print(f"Running {len(TEST_CASES)} NEW test cases in {len(batches)} batches...\n")
 
+    completed_batches = 0
     for bi, batch in enumerate(batches):
         print(f"  Batch {bi+1}/{len(batches)} ({len(batch)} cases)...", end=" ", flush=True)
+        start = time.time()
         result = run_test(batch, f"batch{bi}")
-        if result:
-            print(f"→ {result['errors_detected']} errors (rules={result['rule_errors']}, llm={result['llm_errors']})")
-        time.sleep(15)  # Groq free tier via LiteLLM: needs spacing to avoid cooldown cascade
+        elapsed = time.time() - start
+        if result == "ABORT":
+            print(f"\n  🛑 Stopping — ran {completed_batches}/{len(batches)} batches before rate limit.")
+            print(f"     Wait ~2 min and rerun. Partial results below.\n")
+            break
+        elif result:
+            print(f"→ {result['errors_detected']} errors (r={result['rule_errors']}, l={result['llm_errors']}) [{elapsed:.0f}s]")
+            completed_batches += 1
+        else:
+            print(f"→ failed [{elapsed:.0f}s]")
+
+        if bi < len(batches) - 1:
+            # Adaptive sleep: if last batch was slow, wait longer
+            wait = 20 if elapsed > 10 else 12
+            print(f"    (waiting {wait}s for Groq rate limit...)", flush=True)
+            time.sleep(wait)
 
     all_pc = defaultdict(lambda: {"tp": 0, "fn": 0, "fp": 0})
     all_tp = all_fn = all_fp = 0

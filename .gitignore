@@ -10,3 +10,4 @@ dist/
 .dify_admin_key
 venv/
 .venv/
+litellm/

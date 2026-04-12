@@ -1,45 +1,116 @@
 """
-AcademIA Error Taxonomy — LLM layers
-Step 1: Correction-only (Groq Llama 3.3 70B)
-Step 4: Fallback classification for ambiguous spans
+AcademIA Error Taxonomy — LLM layer
+Monolithic prompt approach: LLM finds AND classifies errors in one pass.
+Best F1 on Groq Llama 3.3 70B.
 """
 
 import json
 import logging
+import re
 import httpx
 from tenacity import retry, stop_after_attempt, wait_exponential
+from pydantic import BaseModel
+from .categories import TIER1_CATEGORIES
 
 logger = logging.getLogger("academie-api.error-taxonomy")
 
 LITELLM_URL = "http://litellm-proxy:4000/v1/chat/completions"
+# groq-standard (Llama 3.3 70B) — best quality for classification
+# 2 API keys configured in LiteLLM = double quota
 ANALYSIS_MODEL = "groq-standard"
 
-# ═══════════════════════════════════════════════════════════
-# STEP 1 — Correction-only prompt
-# The LLM does what it's good at: correcting English.
-# No classification, no JSON structure, no taxonomy.
-# ═══════════════════════════════════════════════════════════
+SYSTEM_PROMPT = """You analyze French speakers learning English. Identify EVERY error made by the USER. Do NOT analyze TEACHER messages.
 
-CORRECTION_SYSTEM = """You correct a French speaker's English. Fix ALL errors: grammar, spelling, capitalization, punctuation, word choice, word order. Minimal changes only. Output: TURN N: corrected text. One line per message. No explanations.
-Key French errors: have 25 years→am 25, since 5 years→for 5 years, depend of→on, confort→comfort, have been+last summer→went, dont→don't, i→I, aswell→as well."""
+═══ ANALYSIS METHOD ═══
 
-CORRECTION_USER_TEMPLATE = """Correct each USER message:
+For EACH user message, perform a 3-PASS SCAN:
 
+PASS 1 — SURFACE: Is 'i' lowercase? Proper nouns lowercase? Missing apostrophes (dont→don't, cant→can't, its→it's, theyre→they're, shes→she's, whos→who's)? Joined words (aswell, alot)? Misspellings? French spelling (confort→comfort)?
+
+PASS 2 — GRAMMAR: Subject-verb agreement (she have→has)? Wrong tense (present perfect + yesterday/ago/last = use past simple)? Wrong verb form (enjoy to swim→swimming)? Singular/plural (informations→information)? Articles? Prepositions? French preposition calque (depend of→on)? Word order?
+
+PASS 3 — LEXICAL: Wrong word? French calque expression (I have 25 years→I am 25)?
+
+CRITICAL: A message often has 3-5+ errors. Report ALL. Do not stop after the obvious ones.
+
+Output ONLY valid JSON. No other text."""
+
+USER_PROMPT_TEMPLATE = """Classify errors using ONLY these 14 codes:
+
+V:TENSE — wrong tense (have been + last summer → went)
+V:SVA — subject-verb agreement (she have → has)
+V:FORM — gerund/infinitive/participle (enjoy to swim → swimming)
+N:NUM — singular/plural/countability (informations → information)
+ART — article error (the life → life)
+PREP — wrong preposition, NOT French (arrive to → in)
+PREP:CALQUE — French preposition calque (depend of → on, interested by → in, since 5 years → for)
+WO — word order (speaks well English → English well)
+ORTH:CASE — capitalization (i → I, paris → Paris)
+ORTH:SPACE — spacing (aswell → as well)
+SPELL — misspelling, NOT French (definately → definitely)
+SPELL:COGNATE — French spelling (confort → comfort, appartment → apartment, gouvernment → government)
+PUNCT:APOST — missing apostrophe (dont → don't, cant → can't, its=it is → it's)
+LEX:CHOICE — wrong word or French calque (I have 25 years → I am 25, say me → tell me)
+
+{{"errors": [{{"turn": N, "original": "quote", "correction": "fix", "codes": ["CODE"], "reasoning": "why"}}]}}
+
+If no errors: {{"errors": []}}
+
+RULES:
+- One entry per distinct error
+- A turn can have multiple errors → multiple entries
+- Contractions without apostrophes = ALWAYS PUNCT:APOST
+- French spelling (confort, adresse, gouvernment) = ALWAYS SPELL:COGNATE not SPELL
+- French preposition (depend of, interested by) = ALWAYS PREP:CALQUE not PREP
+
+### Examples:
+
+Turn 1: "i lived in paris since 5 years"
+{{"turn":1,"original":"i","correction":"I","codes":["ORTH:CASE"],"reasoning":"Pronoun I must be capitalized"}}
+{{"turn":1,"original":"lived","correction":"have lived","codes":["V:TENSE"],"reasoning":"Present perfect needed with since for ongoing duration"}}
+{{"turn":1,"original":"paris","correction":"Paris","codes":["ORTH:CASE"],"reasoning":"Proper noun"}}
+{{"turn":1,"original":"since 5 years","correction":"for 5 years","codes":["PREP:CALQUE"],"reasoning":"French depuis calque"}}
+
+Turn 2: "She dont depend of her parents"
+{{"turn":2,"original":"dont","correction":"doesn't","codes":["PUNCT:APOST"],"reasoning":"Missing apostrophe + 3rd person"}}
+{{"turn":2,"original":"depend of","correction":"depend on","codes":["PREP:CALQUE"],"reasoning":"French dépendre de"}}
+
+Turn 3: "She speaks very well English"
+{{"turn":3,"original":"speaks very well English","correction":"speaks English very well","codes":["WO"],"reasoning":"Adverb follows object"}}
+
+Turn 4 (MULTI-ERROR): "i have 25 years and i cant find a good appartment"
+{{"turn":4,"original":"i","correction":"I","codes":["ORTH:CASE"],"reasoning":"Pronoun I"}}
+{{"turn":4,"original":"I have 25 years","correction":"I am 25 years old","codes":["LEX:CHOICE"],"reasoning":"French j ai 25 ans calque"}}
+{{"turn":4,"original":"cant","correction":"can't","codes":["PUNCT:APOST"],"reasoning":"Missing apostrophe"}}
+{{"turn":4,"original":"appartment","correction":"apartment","codes":["SPELL:COGNATE"],"reasoning":"French appartement"}}
+
+### Transcript:
 {transcript}"""
 
 
+class LLMError(BaseModel):
+    turn: int | None = None
+    original: str
+    correction: str | None = None
+    codes: list[str]
+    reasoning: str | None = None
+
+
+class LLMAnalysisResult(BaseModel):
+    errors: list[LLMError]
+
+
 @retry(stop=stop_after_attempt(2), wait=wait_exponential(multiplier=1, min=2, max=10))
-async def get_corrections(transcript: str) -> dict[int, str]:
-    """
-    Step 1: Ask LLM to correct the text. Returns {turn_number: corrected_text}.
-    """
+async def analyze_transcript(transcript: str) -> LLMAnalysisResult:
+    """Monolithic: LLM finds AND classifies errors in one pass."""
     payload = {
         "model": ANALYSIS_MODEL,
         "messages": [
-            {"role": "system", "content": CORRECTION_SYSTEM},
-            {"role": "user", "content": CORRECTION_USER_TEMPLATE.format(transcript=transcript)},
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": USER_PROMPT_TEMPLATE.format(transcript=transcript)},
         ],
-        "temperature": 0.1,
+        "response_format": {"type": "json_object"},
+        "temperature": 0.2,
         "max_tokens": 4000,
     }
 
@@ -48,151 +119,15 @@ async def get_corrections(transcript: str) -> dict[int, str]:
         resp.raise_for_status()
 
     content = resp.json()["choices"][0]["message"]["content"]
-    return _parse_corrections(content)
+    parsed = json.loads(content)
+    result = LLMAnalysisResult(**parsed)
 
+    # Filter invalid codes
+    valid_errors = []
+    for error in result.errors:
+        valid_codes = [c for c in error.codes if c in TIER1_CATEGORIES]
+        if valid_codes:
+            error.codes = valid_codes
+            valid_errors.append(error)
 
-def _parse_corrections(text: str) -> dict[int, str]:
-    """Parse 'TURN N: corrected text' lines into a dict."""
-    corrections = {}
-    for line in text.strip().split("\n"):
-        line = line.strip()
-        if line.upper().startswith("TURN "):
-            try:
-                rest = line[5:]  # after "TURN "
-                colon_idx = rest.index(":")
-                turn_num = int(rest[:colon_idx].strip())
-                corrected = rest[colon_idx + 1:].strip()
-                if corrected:
-                    corrections[turn_num] = corrected
-            except (ValueError, IndexError):
-                continue
-    return corrections
-
-
-# ═══════════════════════════════════════════════════════════
-# STEP 4 — Fallback classification for ambiguous spans
-# Called ONLY for edit spans that rules couldn't classify.
-# Simple, focused prompt — one span at a time.
-# ═══════════════════════════════════════════════════════════
-
-CLASSIFY_SYSTEM = """You classify English learner errors into categories.
-The learner's native language is French.
-You receive: the wrong text, the correct text, and the sentence context.
-Reply with ONLY the error code from this list:
-
-V:TENSE — wrong verb tense (e.g. present perfect instead of past simple)
-V:SVA — subject-verb agreement (e.g. "she have")
-V:FORM — wrong verb form: gerund/infinitive/participle (e.g. "enjoy to swim")
-N:NUM — singular/plural or countability (e.g. "informations")
-ART — article error: a/the/zero (e.g. "the life is beautiful")
-PREP — wrong preposition, NOT French transfer (e.g. "arrive at home")
-PREP:CALQUE — preposition calqued from French (e.g. "depend of" from "dépendre de")
-WO — word order (e.g. "speaks very well English")
-LEX:CHOICE — wrong word or French calque expression (e.g. "I have 25 years")
-OTHER — does not fit any category above
-
-Reply with ONLY the code. Nothing else."""
-
-CLASSIFY_USER_TEMPLATE = """Wrong: "{original}"
-Correct: "{corrected}"
-Context: "{context}"
-
-Error code:"""
-
-
-@retry(stop=stop_after_attempt(2), wait=wait_exponential(multiplier=1, min=1, max=5))
-async def classify_span(original: str, corrected: str, context: str) -> str | None:
-    """
-    Step 4 (single): Classify one ambiguous edit span. Returns error code or None.
-    """
-    payload = {
-        "model": ANALYSIS_MODEL,
-        "messages": [
-            {"role": "system", "content": CLASSIFY_SYSTEM},
-            {"role": "user", "content": CLASSIFY_USER_TEMPLATE.format(
-                original=original, corrected=corrected, context=context
-            )},
-        ],
-        "temperature": 0.0,
-        "max_tokens": 20,
-    }
-
-    async with httpx.AsyncClient(timeout=15) as client:
-        resp = await client.post(LITELLM_URL, json=payload)
-        resp.raise_for_status()
-
-    code = resp.json()["choices"][0]["message"]["content"].strip()
-    code = code.split("\n")[0].split(" ")[0].strip()
-    return code if code != "OTHER" else None
-
-
-BATCH_CLASSIFY_SYSTEM = """You classify English learner errors into categories.
-The learner's native language is French.
-For each numbered edit, reply with ONLY the error code.
-
-Codes:
-V:TENSE — wrong verb tense
-V:SVA — subject-verb agreement (she have→has)
-V:FORM — gerund/infinitive/participle (enjoy to swim→swimming)
-N:NUM — singular/plural or countability (informations→information)
-ART — article error (the life→life, I bought car→a car)
-PREP — wrong preposition (NOT French transfer)
-PREP:CALQUE — French preposition calque (depend of→on, interested by→in)
-WO — word order (speaks well English→English well)
-LEX:CHOICE — wrong word or French calque (I have 25 years→I am 25)
-SPELL — misspelling
-OTHER — none of the above
-
-Reply with one line per edit: just the number and code.
-Example output:
-1. V:TENSE
-2. LEX:CHOICE
-3. OTHER"""
-
-
-@retry(stop=stop_after_attempt(2), wait=wait_exponential(multiplier=1, min=1, max=5))
-async def classify_spans_batch(spans: list[tuple[str, str, str]]) -> list[str | None]:
-    """
-    Step 4 (batch): Classify multiple spans in one LLM call.
-    Input: list of (original, corrected, context) tuples.
-    Returns: list of error codes (or None for unclassifiable).
-    """
-    if not spans:
-        return []
-
-    lines = []
-    for i, (orig, corr, ctx) in enumerate(spans, 1):
-        lines.append(f'{i}. Wrong: "{orig}" → Correct: "{corr}" (in: "{ctx[:80]}")')
-
-    payload = {
-        "model": ANALYSIS_MODEL,
-        "messages": [
-            {"role": "system", "content": BATCH_CLASSIFY_SYSTEM},
-            {"role": "user", "content": "\n".join(lines)},
-        ],
-        "temperature": 0.0,
-        "max_tokens": 200,
-    }
-
-    async with httpx.AsyncClient(timeout=20) as client:
-        resp = await client.post(LITELLM_URL, json=payload)
-        resp.raise_for_status()
-
-    content = resp.json()["choices"][0]["message"]["content"].strip()
-
-    # Parse "1. V:TENSE\n2. LEX:CHOICE\n..." into a list
-    results: list[str | None] = [None] * len(spans)
-    for line in content.split("\n"):
-        line = line.strip()
-        if not line:
-            continue
-        # Match "1. CODE" or "1: CODE" or just "1 CODE"
-        import re
-        m = re.match(r"(\d+)[.\s:]+(\S+)", line)
-        if m:
-            idx = int(m.group(1)) - 1
-            code = m.group(2).strip().rstrip(".")
-            if 0 <= idx < len(spans):
-                results[idx] = code if code != "OTHER" else None
-
-    return results
+    return LLMAnalysisResult(errors=valid_errors)
