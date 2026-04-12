@@ -35,7 +35,7 @@ CRITICAL: A message often has 3-5+ errors. Report ALL. Do not stop after the obv
 
 Output ONLY valid JSON. No other text."""
 
-USER_PROMPT_TEMPLATE = """Classify errors using ONLY these 26 codes:
+USER_PROMPT_TEMPLATE = """Classify errors using ONLY these 31 codes:
 
 V:TENSE — wrong tense (have been + last summer → went)
 V:SVA — subject-verb agreement (she have → has)
@@ -44,7 +44,12 @@ V:MODAL — modal verb error (should goes → should go, must to go → must go)
 V:COND — conditional structure error (if I would know → if I knew)
 V:ASPECT — progressive/continuous misuse (I am understanding → I understand)
 V:AUX — auxiliary error, do-support (I not understand → I don't understand)
+V:INFL — non-standard verb inflection (goed → went, runned → ran)
+V:PASS — passive voice error (The book wrote by → was written by)
+V:EXIST — existential construction error, French calque (It has many people → There are)
 N:NUM — singular/plural/countability (informations → information)
+N:POSS — possessive marking (student book → student's book)
+N:INFL — non-standard noun inflection (childs → children, mouses → mice)
 ART — article error (the life → life)
 PREP — wrong preposition, NOT French (arrive to → in)
 PREP:CALQUE — French preposition calque (depend of → on, interested by → in, since 5 years → for)

@@ -6,8 +6,9 @@ AcademIA Error Taxonomy — Tier 1 categories (Phase 1)
 TIER1_CATEGORIES = {
     # Grammar — Verb
     "V:TENSE", "V:SVA", "V:FORM", "V:MODAL", "V:COND", "V:ASPECT", "V:AUX",
+    "V:INFL", "V:PASS", "V:EXIST",
     # Grammar — Other
-    "N:NUM", "ART", "PREP", "WO",
+    "N:NUM", "N:POSS", "N:INFL", "ART", "PREP", "WO",
     # Adjective/Adverb
     "ADJ:ORDER", "ADV:ORDER",
     # Pronoun
@@ -23,8 +24,8 @@ TIER1_CATEGORIES = {
 }
 
 TIER1_DOMAINS = {
-    "grammar_verb": ["V:TENSE", "V:SVA", "V:FORM", "V:MODAL", "V:COND", "V:ASPECT", "V:AUX"],
-    "grammar_other": ["N:NUM", "ART", "PREP", "WO", "ADJ:ORDER", "ADV:ORDER", "PRON:FORM", "PRON:CHOICE"],
+    "grammar_verb": ["V:TENSE", "V:SVA", "V:FORM", "V:MODAL", "V:COND", "V:ASPECT", "V:AUX", "V:INFL", "V:PASS", "V:EXIST"],
+    "grammar_other": ["N:NUM", "N:POSS", "N:INFL", "ART", "PREP", "WO", "ADJ:ORDER", "ADV:ORDER", "PRON:FORM", "PRON:CHOICE"],
     "sentence": ["SENT:RUNON", "SENT:FRAG", "SENT:NEG", "CONJ"],
     "surface": ["ORTH:CASE", "ORTH:SPACE", "SPELL", "PUNCT:APOST"],
     "lexical": ["LEX:CHOICE"],
