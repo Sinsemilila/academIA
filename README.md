@@ -187,6 +187,10 @@ smoke-test --all
 
 > **Note**: This project is self-hosted and configured for a specific infrastructure. The getting started guide is simplified — full deployment requires Dify, n8n, LiteLLM, and Cloudflare configuration.
 
+## Project History
+
+This project was built over 8 intensive days by a solo developer working with AI coding agents. The Teacher chatflow alone went through 17 major versions. For the full engineering journey — from bare metal Proxmox to production multi-AI platform — see **[HISTORY.md](HISTORY.md)**.
+
 ## License
 
 MIT License. See [LICENSE](LICENSE) for details.
