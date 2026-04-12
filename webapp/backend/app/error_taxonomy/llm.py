@@ -35,7 +35,7 @@ CRITICAL: A message often has 3-5+ errors. Report ALL. Do not stop after the obv
 
 Output ONLY valid JSON. No other text."""
 
-USER_PROMPT_TEMPLATE = """Classify errors using ONLY these 18 codes:
+USER_PROMPT_TEMPLATE = """Classify errors using ONLY these 22 codes:
 
 V:TENSE — wrong tense (have been + last summer → went)
 V:SVA — subject-verb agreement (she have → has)
@@ -49,6 +49,10 @@ ART — article error (the life → life)
 PREP — wrong preposition, NOT French (arrive to → in)
 PREP:CALQUE — French preposition calque (depend of → on, interested by → in, since 5 years → for)
 WO — word order (speaks well English → English well)
+ADJ:ORDER — adjective placement, French post-nominal (a car red → a red car)
+ADV:ORDER — adverb misplaced (He drives always → He always drives)
+PRON:FORM — pronoun case error (Him went → He went, for I → for me)
+PRON:CHOICE — wrong pronoun (the man which → who, which → that for people)
 ORTH:CASE — capitalization (i → I, paris → Paris)
 ORTH:SPACE — spacing (aswell → as well)
 SPELL — misspelling, NOT French (definately → definitely)

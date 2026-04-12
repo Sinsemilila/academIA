@@ -12,6 +12,10 @@ V:COND:       { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
 V:ASPECT:     { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
 V:AUX:        { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
 N:NUM:        { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+ADJ:ORDER:    { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+ADV:ORDER:    { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+PRON:FORM:    { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+PRON:CHOICE:  { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
 ART:          { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
 PREP:         { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
 WO:           { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
