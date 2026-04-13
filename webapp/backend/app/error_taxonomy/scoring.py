@@ -70,9 +70,11 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str, concept_ke
     max_error_rate = prog.get("max_error_rate", 1.0)
     min_sessions = prog.get("min_sessions", 5)
 
-    # ── Aggregate errors by family ──
+    # ── Aggregate errors by family + concept ──
     family_errors = defaultdict(lambda: defaultdict(int))   # family → {code: count}
     family_sessions = defaultdict(set)                       # family → set of session_ids
+    concept_errors_direct = defaultdict(int)                 # concept_key → error count (turn-capped)
+    concept_sessions_direct = defaultdict(set)               # concept_key → set of session_ids
     all_sessions = set()
     turn_cap = defaultdict(int)
 
@@ -91,6 +93,13 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str, concept_ke
         if family_key:
             family_errors[family_key][code] += 1
             family_sessions[family_key].add(session_id)
+
+        # session_id format: "Q3/10:concept_key:MODE" — extract concept
+        parts = session_id.split(":")
+        if len(parts) >= 3:
+            concept_key = parts[1]
+            concept_errors_direct[concept_key] += 1
+            concept_sessions_direct[concept_key].add(session_id)
 
     total_sessions = len(all_sessions)
 
@@ -167,26 +176,17 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str, concept_ke
         and total_sessions >= min_sessions
     )
 
-    # Progress bar: average concept score (derived from family status)
-    # This reflects real improvement from session 1 — not blocked by thresholds
+    # Progress bar: average concept score — per-concept when available, family fallback otherwise
     concept_scores = []
+    concept_scores_map = {}  # concept_key → score (exposed in return for _derive_concept_scores)
     if concept_keys:
         for ck in concept_keys:
-            fam_key = get_concept_family(ck)
-            if fam_key and fam_key in families_result:
-                fam = families_result[fam_key]
-                if fam.get("is_clean") and fam.get("sessions_appeared", 0) >= min_sessions:
-                    concept_scores.append(85)
-                elif fam.get("count", 0) > 0 and fam.get("error_rate", 0) <= 1.5:
-                    concept_scores.append(60)
-                elif fam.get("count", 0) > 0:
-                    concept_scores.append(30)
-                elif fam.get("sessions_appeared", 0) > 0:
-                    concept_scores.append(70)
-                else:
-                    concept_scores.append(0)
-            else:
-                concept_scores.append(0)
+            score = _score_concept(
+                ck, concept_errors_direct, concept_sessions_direct,
+                families_result, max_error_rate, min_sessions,
+            )
+            concept_scores.append(score)
+            concept_scores_map[ck] = score
 
     total_concepts = len(concept_scores) or 1
     progress_pct = round(sum(concept_scores) / total_concepts)
@@ -223,6 +223,7 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str, concept_ke
         "niveau": niveau_global,
         "families": families_result,
         "concepts_by_family": dict(concepts_by_family),
+        "concept_scores": concept_scores_map,
         "progression": {
             "progress_pct": progress_pct,
             "penalized_total": len(penalized_families),
@@ -242,6 +243,42 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str, concept_ke
             "normal": normal,
         },
     }
+
+
+def _score_concept(
+    concept_key: str,
+    concept_errors_direct: dict,
+    concept_sessions_direct: dict,
+    families_result: dict,
+    max_error_rate: float,
+    min_sessions: int,
+) -> int:
+    """Score a single concept: per-concept data first, family fallback."""
+    sessions = concept_sessions_direct.get(concept_key, set())
+    if sessions:
+        n_sessions = len(sessions)
+        n_errors = concept_errors_direct.get(concept_key, 0)
+        error_rate = n_errors / n_sessions
+        is_clean = error_rate <= max_error_rate and n_sessions >= min_sessions
+        if is_clean:
+            return 85
+        elif error_rate <= 1.5:
+            return 60
+        else:
+            return 30
+    # Fallback: family-level
+    fam_key = get_concept_family(concept_key)
+    if fam_key and fam_key in families_result:
+        fam = families_result[fam_key]
+        if fam.get("is_clean") and fam.get("sessions_appeared", 0) >= min_sessions:
+            return 85
+        elif fam.get("count", 0) > 0 and fam.get("error_rate", 0) <= 1.5:
+            return 60
+        elif fam.get("count", 0) > 0:
+            return 30
+        elif fam.get("sessions_appeared", 0) > 0:
+            return 70
+    return 0
 
 
 def _compute_recommendation(

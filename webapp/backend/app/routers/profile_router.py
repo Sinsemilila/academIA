@@ -110,30 +110,10 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
 
 
 async def _derive_concept_scores(eleve_id: int, domain: str, niveau: str) -> dict:
-    """Derive per-concept scores from the error profile (family-level)."""
+    """Derive per-concept scores: direct concept-level data where available, family fallback."""
     from .error_analysis_router import _build_error_profile
     profile = await _build_error_profile(eleve_id, domain)
-    families = profile.get("families", {})
-    concepts_by_family = profile.get("concepts_by_family", {})
-
-    scores = {}
-    for family_key, concepts in concepts_by_family.items():
-        fam = families.get(family_key, {})
-        # Derive a score from the family status
-        if fam.get("is_clean") and fam.get("sessions_appeared", 0) >= 5:
-            score = 85  # mastered
-        elif fam.get("count", 0) > 0 and fam.get("error_rate", 0) <= 1.5:
-            score = 60  # medium — some errors but manageable
-        elif fam.get("count", 0) > 0:
-            score = 30  # weak — too many errors
-        elif fam.get("sessions_appeared", 0) > 0:
-            score = 70  # seen but no errors — likely decent
-        else:
-            score = 0   # untested
-        for concept in concepts:
-            scores[concept["key"]] = score
-
-    return scores
+    return profile.get("concept_scores", {})
 
 
 @router.get("/api/streak")
