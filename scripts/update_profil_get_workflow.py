@@ -137,8 +137,8 @@ if (d.scores_confiance) {
   scoresObj = typeof d.scores_confiance === "string" ? JSON.parse(d.scores_confiance) : d.scores_confiance;
   if (Object.keys(scoresObj).length > 0) {
     const scoresLines = Object.entries(scoresObj)
-      .sort((a,b) => a[1] - b[1])
-      .map(([k,v]) => `  ${k}: ${v}/100`);
+      .sort((a,b) => (typeof a[1] === 'object' ? a[1].score : a[1]) - (typeof b[1] === 'object' ? b[1].score : b[1]))
+      .map(([k,v]) => `  ${k}: ${typeof v === 'object' ? v.score : v}/100`);
     lignes.push("Scores confiance :");
     lignes.push(...scoresLines);
   }

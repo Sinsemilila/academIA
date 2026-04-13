@@ -5,7 +5,8 @@ Called by n8n dify-snapshot workflow.
 """
 
 import logging
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from ..auth import get_current_user
 from pydantic import BaseModel
 from .. import database as db
 from ..error_taxonomy.rules import detect_errors, RuleDetection
@@ -135,39 +136,55 @@ async def analyze_errors(req: AnalyzeRequest):
 
 @router.get("/api/student/{username}/error-profile")
 async def get_error_profile(username: str, domain: str = "anglais"):
-    """
-    Returns the student's error profile: families, scores, feedback labels.
-    Aggregates error_log data and applies tolerance matrix.
-    """
+    """Returns the student's error profile (by username, no auth). Internal/testing."""
+    return await _build_error_profile_by_username(username, domain)
+
+
+@router.get("/api/error-profile/{domain}")
+async def get_my_error_profile(domain: str = "anglais", user: dict = Depends(get_current_user)):
+    """Returns the authenticated user's error profile. Used by the frontend."""
+    eleve_id = user.get("eleve_id")
+    if not eleve_id:
+        return {"band": "intermediate", "niveau": "B1", "families": {}, "concepts_by_family": {},
+                "progression": {"progress_pct": 0, "penalized_total": 0, "penalized_clean": 0,
+                                "eligible_for_exam": False, "sessions_total": 0, "sessions_required": 5},
+                "recommendation": {"type": "start", "message": "Commence une session !", "action": "/chat/teacher", "label": "Commencer"},
+                "summary": {"total_errors": 0, "active_errors": 0, "shadow_errors": 0, "sessions_analyzed": 0,
+                            "high_priority": [], "work_on": [], "normal": []}}
+    return await _build_error_profile(eleve_id, domain)
+
+
+async def _build_error_profile(eleve_id: int, domain: str):
+    """Build error profile for a student. Shared by both endpoints."""
+    import json as _json
     from ..error_taxonomy.scoring import compute_error_profile
 
     async with db.pool.acquire() as conn:
-        eleve = await conn.fetchrow(
-            "SELECT id FROM eleves WHERE username = $1", username
-        )
-        if not eleve:
-            raise HTTPException(status_code=404, detail=f"Student '{username}' not found")
-        eleve_id = eleve["id"]
-
         profil = await conn.fetchrow(
             "SELECT niveau_global FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2",
-            eleve_id, domain,
-        )
+            eleve_id, domain)
         niveau = profil["niveau_global"] if profil and profil["niveau_global"] else "B1"
 
         rows = await conn.fetch(
-            """SELECT error_code, turn_number, session_id
-               FROM error_log
-               WHERE eleve_id = $1
-                 AND session_id NOT LIKE 'full-battery%%'
-                 AND session_id NOT LIKE 'phase1b-%%'
-               ORDER BY created_at""",
-            eleve_id,
-        )
+            """SELECT error_code, turn_number, session_id FROM error_log
+               WHERE eleve_id = $1 AND session_id NOT LIKE 'full-battery%%'
+               AND session_id NOT LIKE 'phase1b-%%' ORDER BY created_at""", eleve_id)
 
-    error_rows = [dict(r) for r in rows]
-    profile = compute_error_profile(error_rows, niveau)
-    return profile
+        ck_row = await conn.fetchval(
+            "SELECT concept_keys FROM curriculums WHERE domaine = $1 AND niveau = $2",
+            domain, niveau)
+        concept_keys = ck_row if isinstance(ck_row, list) else _json.loads(ck_row or "[]")
+
+    return compute_error_profile([dict(r) for r in rows], niveau, concept_keys)
+
+
+async def _build_error_profile_by_username(username: str, domain: str):
+    """Resolve username → eleve_id then build profile."""
+    async with db.pool.acquire() as conn:
+        eleve = await conn.fetchrow("SELECT id FROM eleves WHERE username = $1", username)
+        if not eleve:
+            raise HTTPException(status_code=404, detail=f"Student '{username}' not found")
+    return await _build_error_profile(eleve["id"], domain)
 
 
 def _extract_user_turns(transcript: str) -> list[tuple[int, str]]:

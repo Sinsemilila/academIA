@@ -1,13 +1,9 @@
-# Tolerance Matrix v2 — AcademIA Error Taxonomy
-# 12 families (57 detection codes grouped), 4 CEFR bands, 3 tiers
-# Updated: 2026-04-13 — Design v3 post research + challenge
-#
-# Tiers: ignored (0.0) | noted (0.3) | penalized (0.8)
-# Bands: beginner (A1-A2) | intermediate (B1) | upper (B2) | advanced (C1-C2)
-# Shadow: detected by LLM but not displayed to student (F1 < 65%)
+# Tolerance Matrix v3 — AcademIA Unified Progression System
+# 12 families (57 detection codes), 4 CEFR bands, concept mapping, human labels
+# Updated: 2026-04-13 — Unified progression (concepts + errors merged)
 
 # ══════════════════════════════════════════════════════════
-# FAMILY DEFINITIONS — code → family mapping
+# FAMILY DEFINITIONS — code → family + human labels
 # ══════════════════════════════════════════════════════════
 families:
   verb_tense:
@@ -83,6 +79,294 @@ families:
     mode: shadow
 
 # ══════════════════════════════════════════════════════════
+# HUMAN LABELS — error code → what the student sees
+# ══════════════════════════════════════════════════════════
+code_labels:
+  # Verb tense & conjugation
+  "V:TENSE": "Choix du temps (passé/présent/futur)"
+  "V:SVA": "Accord sujet-verbe"
+  "V:FORM": "Forme du verbe (infinitif/gérondif)"
+  "V:COND": "Structures conditionnelles (if...)"
+  "V:ASPECT": "Aspect (progressif / continu)"
+  "V:AUX": "Auxiliaires (do/have/be)"
+  "V:INFL": "Conjugaison irrégulière"
+  # Verb usage
+  "V:MODAL": "Verbes modaux (can/must/should)"
+  "V:PASS": "Voix passive"
+  "V:EXIST": "Il y a (there is/are)"
+  "V:CHOICE": "Choix du verbe"
+  "V:PHRASAL": "Verbes à particule (phrasal verbs)"
+  # Nouns & determiners
+  "N:COUNT": "Noms indénombrables"
+  "N:INFL": "Pluriels irréguliers"
+  "N:POSS": "Possessifs (student's book)"
+  "N:CHOICE": "Choix du nom"
+  "ART": "Articles (a/the)"
+  "ART:GENERIC": "Article zéro (life, music)"
+  "DET": "Déterminants (this/these, much/many)"
+  # Pronouns
+  "PRON:FORM": "Forme du pronom (he/him)"
+  "PRON:CHOICE": "Choix du pronom (who/which)"
+  "PRON:REF": "Référence du pronom (ambiguïté)"
+  # Word order
+  "WO": "Ordre des mots"
+  "WO:QUEST": "Ordre dans les questions"
+  # Sentence structure
+  "SENT:RUNON": "Phrases trop longues (run-on)"
+  "SENT:FRAG": "Phrases incomplètes"
+  "SENT:NEG": "Négation (double négation)"
+  "SENT:MOD": "Modificateurs mal placés"
+  "SENT:PARALLEL": "Parallélisme"
+  "SENT:SUBORD": "Subordonnées"
+  # Morphology
+  "MORPH:DERIV": "Dérivation (hapiness → happiness)"
+  "MORPH:WORDCLASS": "Catégorie de mot (happy → happiness)"
+  "ADJ:CHOICE": "Choix de l'adjectif"
+  "ADJ:FORM": "Comparatif/superlatif"
+  "ADJ:ORDER": "Place de l'adjectif"
+  "ADV:CHOICE": "Choix de l'adverbe"
+  # Surface
+  "SPELL": "Orthographe"
+  "SPELL:COGNATE": "Orthographe (réflexe français)"
+  "ORTH:CASE": "Majuscules"
+  "ORTH:SPACE": "Espacement"
+  "PUNCT": "Ponctuation"
+  "PUNCT:COMMA": "Virgules"
+  "PUNCT:APOST": "Apostrophes (don't, it's)"
+  "CONTR": "Contractions"
+  "REDUND": "Redondance (return back → return)"
+  # Shadow families
+  "PREP": "Prépositions"
+  "LEX:CHOICE": "Choix du mot"
+  "LEX:COLLOC": "Collocations (make/do a mistake)"
+  "LEX:FALSE": "Faux amis (actually ≠ actuellement)"
+  "LEX:IDIOM": "Expressions idiomatiques"
+  "LEX:ARGSTRUCT": "Construction verbale (explain to me)"
+  "LEX:CALQUE": "Calque français (I have 25 years)"
+  "PREP:CALQUE": "Préposition calque (depend of → on)"
+  "DISC:TRANS": "Transitions / connecteurs"
+  "DISC:COHER": "Cohérence du discours"
+  "REG:LEVEL": "Registre de langue"
+  "REG:PRAGMA": "Politesse / pragmatique"
+
+# ══════════════════════════════════════════════════════════
+# CONCEPT → FAMILY MAPPING — curriculum concepts to families
+# ══════════════════════════════════════════════════════════
+concept_families:
+  # ── A1 (18 concepts) ──
+  to_be_forms: verb_tense
+  to_have_got: verb_tense
+  present_simple: verb_tense
+  subject_pronouns: pronoun
+  object_pronouns: pronoun
+  possessive_adjectives: noun_det
+  articles_a_an_the: noun_det
+  plural_nouns: noun_det
+  adjective_position: morphology
+  demonstratives: noun_det
+  wh_questions: word_order
+  short_answers: verb_tense
+  prepositions_place: preposition
+  prepositions_time: preposition
+  there_is_there_are: verb_usage
+  imperative: verb_tense
+  cardinal_numbers: surface
+  ordinal_numbers: surface
+
+  # ── A2 (18 concepts) ──
+  present_simple_full: verb_tense
+  present_continuous: verb_tense
+  past_simple_regular: verb_tense
+  past_simple_irregular: verb_tense
+  past_continuous: verb_tense
+  future_going_to: verb_tense
+  future_will: verb_tense
+  comparatives: morphology
+  superlatives: morphology
+  modals_can_must_should: verb_usage
+  modals_permission: verb_usage
+  some_any_no: noun_det
+  much_many_countable: noun_det
+  adverbs_frequency: morphology
+  relative_clauses_simple: pronoun
+  prepositions_movement: preposition
+  conjunctions_basic: sentence
+  question_tags: word_order
+
+  # ── B1 (20 concepts) ──
+  present_perfect_simple: verb_tense
+  present_perfect_vs_past_simple: verb_tense
+  present_perfect_continuous: verb_tense
+  past_perfect: verb_tense
+  passive_voice: verb_usage
+  conditional_1: verb_tense
+  conditional_2: verb_tense
+  modal_deduction: verb_usage
+  reported_speech: sentence
+  indirect_questions: word_order
+  phrasal_verbs: verb_usage
+  gerund_vs_infinitive: verb_tense
+  relative_clauses: pronoun
+  connectors: sentence
+  used_to: verb_tense
+  would_habitual: verb_usage
+  adj_prepositions: preposition
+  adverbs_degree: morphology
+  so_such_that: sentence
+  both_either_neither: noun_det
+
+  # ── B2 (18 concepts) ──
+  conditional_3: verb_tense
+  mixed_conditionals: verb_tense
+  modal_deduction_past: verb_usage
+  modal_reproach_regret: verb_usage
+  reported_speech_full: sentence
+  passive_advanced: verb_usage
+  inversion_negative: word_order
+  cleft_sentences: sentence
+  wish_past_perfect: verb_tense
+  wish_would: verb_tense
+  participle_clauses: sentence
+  causative_structures: verb_usage
+  compound_adjectives: morphology
+  prefixes_suffixes: morphology
+  articles_advanced: noun_det
+  reduced_relative_clauses: pronoun
+  connectors_sophisticated: sentence
+  parallel_structures: sentence
+
+  # ── C1 (14 concepts) ──
+  nominalization: morphology
+  inversion_stylistic: word_order
+  subjunctive_formal: verb_tense
+  ellipsis_substitution: sentence
+  cohesion_deixis: discourse
+  topicalization: word_order
+  modals_stylistic: verb_usage
+  conditionals_implicit: verb_tense
+  reported_speech_nuanced: sentence
+  hedging_academic: discourse
+  gerund_subjects_complex: verb_tense
+  absolute_constructions: sentence
+  aspect_mastery: verb_tense
+  gradation_stylistic: morphology
+
+  # ── C2 (10 concepts) ──
+  tense_aspect_flexibility: verb_tense
+  rhetorical_manipulation: discourse
+  stylistic_norm_breaking: discourse
+  literary_forms: sentence
+  creative_punctuation: surface
+  code_switching_register: discourse
+  free_indirect_discourse: sentence
+  complex_coordination: sentence
+  meta_grammatical_awareness: morphology
+  pragmatics_implicature: discourse
+
+# ══════════════════════════════════════════════════════════
+# CONCEPT HUMAN LABELS
+# ══════════════════════════════════════════════════════════
+concept_labels:
+  to_be_forms: "Verbe être (am/is/are)"
+  to_have_got: "Verbe avoir (have got)"
+  present_simple: "Présent simple"
+  subject_pronouns: "Pronoms sujets (I/you/he)"
+  object_pronouns: "Pronoms compléments (me/you/him)"
+  possessive_adjectives: "Adjectifs possessifs (my/your)"
+  articles_a_an_the: "Articles (a/an/the)"
+  plural_nouns: "Pluriels des noms"
+  adjective_position: "Place de l'adjectif"
+  demonstratives: "Démonstratifs (this/that/these)"
+  wh_questions: "Questions en WH"
+  short_answers: "Réponses courtes (Yes I do)"
+  prepositions_place: "Prépositions de lieu (in/on/at)"
+  prepositions_time: "Prépositions de temps (in/on/at)"
+  there_is_there_are: "Il y a (there is/are)"
+  imperative: "Impératif"
+  cardinal_numbers: "Nombres cardinaux"
+  ordinal_numbers: "Nombres ordinaux"
+  present_simple_full: "Présent simple (complet)"
+  present_continuous: "Présent continu (be + -ing)"
+  past_simple_regular: "Passé simple régulier (-ed)"
+  past_simple_irregular: "Passé simple irrégulier"
+  past_continuous: "Passé continu"
+  future_going_to: "Futur (going to)"
+  future_will: "Futur (will)"
+  comparatives: "Comparatifs (bigger, more beautiful)"
+  superlatives: "Superlatifs (biggest, most beautiful)"
+  modals_can_must_should: "Modaux (can/must/should)"
+  modals_permission: "Permission (can/may/could)"
+  some_any_no: "Some / any / no"
+  much_many_countable: "Much / many / dénombrables"
+  adverbs_frequency: "Adverbes de fréquence"
+  relative_clauses_simple: "Relatives simples (who/which)"
+  prepositions_movement: "Prépositions de mouvement"
+  conjunctions_basic: "Conjonctions de base (and/but/or)"
+  question_tags: "Question tags (isn't it?)"
+  present_perfect_simple: "Present perfect simple"
+  present_perfect_vs_past_simple: "Present perfect vs passé simple"
+  present_perfect_continuous: "Present perfect continu"
+  past_perfect: "Plus-que-parfait (had + pp)"
+  passive_voice: "Voix passive"
+  conditional_1: "Conditionnel 1 (if + present)"
+  conditional_2: "Conditionnel 2 (if + past)"
+  modal_deduction: "Déduction modale (must be, can't be)"
+  reported_speech: "Discours rapporté"
+  indirect_questions: "Questions indirectes"
+  phrasal_verbs: "Verbes à particule"
+  gerund_vs_infinitive: "Gérondif vs infinitif"
+  relative_clauses: "Propositions relatives"
+  connectors: "Connecteurs logiques"
+  used_to: "Used to (habitudes passées)"
+  would_habitual: "Would (habitudes passées)"
+  adj_prepositions: "Adjectifs + prépositions"
+  adverbs_degree: "Adverbes de degré"
+  so_such_that: "So / such / that"
+  both_either_neither: "Both / either / neither"
+  conditional_3: "Conditionnel 3 (if + had pp)"
+  mixed_conditionals: "Conditionnels mixtes"
+  modal_deduction_past: "Déduction modale passée"
+  modal_reproach_regret: "Reproche / regret (should have)"
+  reported_speech_full: "Discours rapporté avancé"
+  passive_advanced: "Passif avancé"
+  inversion_negative: "Inversion négative (never have I)"
+  cleft_sentences: "Phrases clivées (it is X that)"
+  wish_past_perfect: "Wish + past perfect"
+  wish_would: "Wish + would"
+  participle_clauses: "Propositions participiales"
+  causative_structures: "Causatif (have/get sth done)"
+  compound_adjectives: "Adjectifs composés"
+  prefixes_suffixes: "Préfixes / suffixes"
+  articles_advanced: "Articles avancés"
+  reduced_relative_clauses: "Relatives réduites"
+  connectors_sophisticated: "Connecteurs avancés"
+  parallel_structures: "Structures parallèles"
+  nominalization: "Nominalisation"
+  inversion_stylistic: "Inversion stylistique"
+  subjunctive_formal: "Subjonctif formel"
+  ellipsis_substitution: "Ellipse et substitution"
+  cohesion_deixis: "Cohésion et deixis"
+  topicalization: "Topicalisation"
+  modals_stylistic: "Modaux stylistiques"
+  conditionals_implicit: "Conditionnels implicites"
+  reported_speech_nuanced: "Discours rapporté nuancé"
+  hedging_academic: "Hedging académique"
+  gerund_subjects_complex: "Gérondif sujet (complexe)"
+  absolute_constructions: "Constructions absolues"
+  aspect_mastery: "Maîtrise de l'aspect"
+  gradation_stylistic: "Gradation stylistique"
+  tense_aspect_flexibility: "Flexibilité temps/aspect"
+  rhetorical_manipulation: "Manipulation rhétorique"
+  stylistic_norm_breaking: "Transgression stylistique"
+  literary_forms: "Formes littéraires"
+  creative_punctuation: "Ponctuation créative"
+  code_switching_register: "Alternance de registre"
+  free_indirect_discourse: "Discours indirect libre"
+  complex_coordination: "Coordination complexe"
+  meta_grammatical_awareness: "Conscience méta-grammaticale"
+  pragmatics_implicature: "Pragmatique / implicature"
+
+# ══════════════════════════════════════════════════════════
 # TOLERANCE MATRIX — family × band → tier
 # ══════════════════════════════════════════════════════════
 matrix:
@@ -94,14 +378,13 @@ matrix:
   sentence:     { beginner: ignored,  intermediate: ignored,   upper: noted,     advanced: penalized }
   morphology:   { beginner: ignored,  intermediate: ignored,   upper: noted,     advanced: penalized }
   surface:      { beginner: ignored,  intermediate: ignored,   upper: noted,     advanced: penalized }
-  # Shadow families — detected but not displayed
   preposition:  { beginner: shadow,   intermediate: shadow,    upper: shadow,    advanced: shadow    }
   vocabulary:   { beginner: shadow,   intermediate: shadow,    upper: shadow,    advanced: shadow    }
   calque:       { beginner: shadow,   intermediate: shadow,    upper: shadow,    advanced: shadow    }
   discourse:    { beginner: shadow,   intermediate: shadow,    upper: shadow,    advanced: shadow    }
 
 # ══════════════════════════════════════════════════════════
-# TIER WEIGHTS — for scoring
+# TIER WEIGHTS + FEEDBACK LABELS
 # ══════════════════════════════════════════════════════════
 weights:
   ignored: 0.0
@@ -109,20 +392,6 @@ weights:
   penalized: 0.8
   shadow: 0.0
 
-# ══════════════════════════════════════════════════════════
-# CEFR → BAND MAPPING
-# ══════════════════════════════════════════════════════════
-cefr_bands:
-  A1: beginner
-  A2: beginner
-  B1: intermediate
-  B2: upper
-  C1: advanced
-  C2: advanced
-
-# ══════════════════════════════════════════════════════════
-# USER-FACING LABELS
-# ══════════════════════════════════════════════════════════
 feedback_labels:
   penalized:
     fr: "Priorité haute"
@@ -137,5 +406,21 @@ feedback_labels:
     en: "Normal for your level"
     color: "gray"
 
-# Max errors counted per sentence (cap to avoid discouraging)
-max_errors_per_turn: 3
+# ══════════════════════════════════════════════════════════
+# CEFR → BAND MAPPING
+# ══════════════════════════════════════════════════════════
+cefr_bands:
+  A1: beginner
+  A2: beginner
+  B1: intermediate
+  B2: upper
+  C1: advanced
+  C2: advanced
+
+# ══════════════════════════════════════════════════════════
+# PROGRESSION THRESHOLDS
+# ══════════════════════════════════════════════════════════
+progression:
+  max_error_rate: 1.0        # ≤1 error/session in family to be "clean"
+  min_sessions: 5            # family must appear in ≥5 sessions
+  max_errors_per_turn: 3     # cap per sentence (avoid discouraging)

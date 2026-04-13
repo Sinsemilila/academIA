@@ -156,7 +156,7 @@
                     <div class="flex items-center justify-between mb-1">
                       <span class="text-sm truncate">{formatConceptName(key)}</span>
                       <span class="text-xs font-mono text-text-secondary ml-2 shrink-0">
-                        {score > 0 ? score : '—'}
+                        {score > 0 ? score + '%' : '—'}
                       </span>
                     </div>
                     <div class="w-full h-1.5 bg-elevated rounded-full overflow-hidden">

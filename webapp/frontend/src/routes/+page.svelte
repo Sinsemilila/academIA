@@ -203,7 +203,7 @@
                       <div class="w-16 h-1.5 bg-elevated rounded-full overflow-hidden">
                         <div class="h-full rounded-full {barColor(score)}" style="width: {score}%"></div>
                       </div>
-                      <span class="text-xs font-mono text-text-secondary w-7 text-right">{score}</span>
+                      <span class="text-xs font-mono text-text-secondary w-8 text-right">{score}%</span>
                     </div>
                   </div>
                 {/each}
