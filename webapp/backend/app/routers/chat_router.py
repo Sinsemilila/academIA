@@ -36,8 +36,9 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
     # Use existing Dify UUID if set, otherwise generate a stable ID
     dify_user = user.get("dify_user_id") or f"user_{user['id']}"
 
-    # Calculate minutes since last message for absence detection
+    # Calculate timing signals
     minutes_since_last = 0
+    turn_response_secs = 0
     if req.conversation_id:
         async with db.pool.acquire() as conn:
             last_msg = await conn.fetchval(
@@ -48,9 +49,13 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             if last_msg:
                 delta = datetime.now() - last_msg
                 minutes_since_last = int(delta.total_seconds() / 60)
+                turn_response_secs = int(delta.total_seconds())
 
     # Build Dify inputs
-    dify_inputs = {"minutes_since_last": str(minutes_since_last)}
+    dify_inputs = {
+        "minutes_since_last": str(minutes_since_last),
+        "turn_response_secs": str(turn_response_secs),
+    }
     if req.mock_exam:
         dify_inputs["mock_exam"] = req.mock_exam
     if req.mode_override:
@@ -61,6 +66,20 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
     if detections:
         lines = [f"- \"{d.original_text}\" → \"{d.suggested_correction}\" ({d.reasoning})" for d in detections]
         dify_inputs["error_feedback"] = "\n".join(lines)
+
+        # Check for repeated errors (same codes seen in last 7 days)
+        current_codes = list({d.error_code for d in detections})
+        async with db.pool.acquire() as conn:
+            eleve_id = user.get("eleve_id")
+            if eleve_id:
+                recent = await conn.fetch(
+                    """SELECT DISTINCT error_code FROM error_log
+                       WHERE eleve_id = $1 AND created_at > NOW() - INTERVAL '7 days'
+                       AND error_code = ANY($2::text[])""",
+                    eleve_id, current_codes)
+                repeated = [r["error_code"] for r in recent]
+                if repeated:
+                    dify_inputs["repeated_errors"] = ", ".join(repeated)
     else:
         dify_inputs["error_feedback"] = ""
 

@@ -1194,7 +1194,42 @@ PROMPT_SESSION = (
     "=== FIN STYLE DE CORRECTION ===\n\n"
     "VARIETE DE CONTEXTES :\n"
     "Alterne : sport, technologie, voyage, famille, travail, culture, environnement, cuisine, cinema.\n"
-    "Ne repete jamais le meme domaine deux questions de suite."
+    "Ne repete jamais le meme domaine deux questions de suite.\n\n"
+    "=== DETECTION COMPORTEMENTALE (adapte-toi en temps reel) ===\n\n"
+    "SIGNAUX BACKEND :\n"
+    "- Temps de reponse ce tour : {{#1775343637677.turn_response_secs#}}s "
+    "(< 5s = reponse reflexe, > 120s = possible difficulte ou distraction)\n"
+    "- Erreurs recidivantes (vues cette semaine) : {{#1775343637677.repeated_errors#}}\n"
+    "(Si non vide : ces erreurs persistent, utilise le protocole d'escalade)\n\n"
+    "OBSERVE ces signaux dans les messages de l'eleve :\n\n"
+    "CONFUSION (l'eleve est perdu) :\n"
+    "- Signes : reponse lente (>120s), questions, erreurs multiples sur un seul message\n"
+    "- Action : decompose la tache. Reformule plus simplement. Donne un indice progressif.\n"
+    "- La confusion est PRODUCTIVE si resolue en 1-2 tours. Ne simplifie pas trop vite.\n\n"
+    "FRUSTRATION (l'eleve decroche) :\n"
+    "- Signes : reponses de plus en plus courtes, switch au francais, negations (I can't, I don't know), "
+    "meme erreur qui revient 3+ fois\n"
+    "- Action : reconnais la difficulte (\"C'est un point difficile, on va le travailler autrement\"). "
+    "Reviens sur quelque chose de maitrise pour rebuilder la confiance. Puis re-approche differemment.\n"
+    "- JAMAIS : \"C'est facile\" ou \"Tu devrais savoir ca\"\n\n"
+    "ENNUI (l'eleve s'ennuie) :\n"
+    "- Signes : reponses correctes mais minimales (1-3 mots), pas d'effort visible\n"
+    "- Action : augmente la difficulte. Change de contexte. Pose un defi ouvert.\n"
+    "- L'ennui est PIRE que la frustration pour l'apprentissage. Reagis vite.\n\n"
+    "FLOW (l'eleve est engage) :\n"
+    "- Signes : reponses elaborees, auto-corrections, questions spontanees\n"
+    "- Action : NE CHANGE RIEN. Maintiens le rythme et la difficulte. Tu es dans la zone.\n\n"
+    "GAMING (l'eleve triche/zappe) :\n"
+    "- Signes : reponses ultra-rapides (<5s), monosyllabes, copy-paste evident\n"
+    "- Action : passe a des questions de PRODUCTION ouvertes. Force la reflexion.\n\n"
+    "PROTOCOLE D'ESCALADE CORRECTIVE (par erreur) :\n"
+    "Quand l'eleve fait une erreur, escalade progressivement :\n"
+    "1. Reformulation naturelle (recast) sans insister\n"
+    "2. Si meme erreur : indice metalinguistique (\"Reflechis au temps ici\")\n"
+    "3. Si encore : explication de la regle\n"
+    "4. Si encore : forme correcte explicite + contraste L1\n"
+    "Retiens a quel niveau l'eleve a reussi — commence la PROCHAINE correction a ce niveau.\n\n"
+    "=== FIN DETECTION COMPORTEMENTALE ==="
 )
 
 PROMPT_ONBOARDING = (
@@ -1361,9 +1396,25 @@ def patch_graph(graph):
                     "required": False,
                     "max_length": 1000,
                     "default": ""
+                },
+                {
+                    "type": "text-input",
+                    "variable": "turn_response_secs",
+                    "label": "turn_response_secs",
+                    "required": False,
+                    "max_length": 10,
+                    "default": "0"
+                },
+                {
+                    "type": "text-input",
+                    "variable": "repeated_errors",
+                    "label": "repeated_errors",
+                    "required": False,
+                    "max_length": 500,
+                    "default": ""
                 }
             ]
-            print("  Patched: start node (4 inputs: minutes_since_last, mock_exam, mode_override, error_feedback)")
+            print("  Patched: start node (6 inputs: minutes_since_last, mock_exam, mode_override, error_feedback, turn_response_secs, repeated_errors)")
 
         # --- Code nodes ---
         if nid == "code_profil_check":
