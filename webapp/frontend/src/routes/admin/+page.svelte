@@ -156,7 +156,12 @@
           {#each users as user (user.id)}
             <tr class="border-b border-border-subtle/50 hover:bg-base/50 transition">
               <td class="px-4 py-3">
-                <div class="font-medium text-text-primary">{user.display_name || user.username}</div>
+                <div class="flex items-center gap-1.5">
+                  {#if user.online}
+                    <span class="w-2 h-2 rounded-full bg-green-400 shrink-0" title="En ligne"></span>
+                  {/if}
+                  <span class="font-medium text-text-primary">{user.display_name || user.username}</span>
+                </div>
                 <div class="text-xs text-text-muted">{user.username}{user.is_admin ? ' (admin)' : ''}</div>
               </td>
               <td class="px-4 py-3 hidden sm:table-cell">
@@ -210,7 +215,7 @@
     </div>
 
     <div class="text-xs text-text-muted text-center">
-      {users.length} utilisateur{users.length > 1 ? 's' : ''} — {users.filter(u => u.total_sessions > 0).length} actif{users.filter(u => u.total_sessions > 0).length > 1 ? 's' : ''}
+      {users.filter(u => u.online).length} en ligne — {users.length} inscrits
     </div>
   {/if}
 </div>
