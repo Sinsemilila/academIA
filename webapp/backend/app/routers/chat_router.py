@@ -1,4 +1,5 @@
 import json
+import os
 import httpx
 from datetime import date, datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -11,12 +12,10 @@ from .. import database as db
 router = APIRouter(tags=["chat"])
 
 # Dify API config — internal Docker network
-DIFY_API_URL = "http://dify-api:5001/v1"
+DIFY_API_URL = os.environ.get("DIFY_API_URL", "http://dify-api:5001/v1")
 DIFY_APP_KEYS = {
-    "teacher": "REDACTED_DIFY_TEACHER_KEY",
-    # Future agents:
-    # "maestro": "app-xxx",
-    # "sensei": "app-xxx",
+    "teacher": os.environ.get("DIFY_KEY_TEACHER", ""),
+    # Future agents via env vars: DIFY_KEY_MAESTRO, DIFY_KEY_SENSEI, etc.
 }
 
 

@@ -58,25 +58,25 @@ families:
     label: "Prépositions"
     label_en: "Prepositions"
     codes: ["PREP"]
-    mode: shadow
+    mode: active
 
   vocabulary:
     label: "Vocabulaire"
     label_en: "Vocabulary"
     codes: ["LEX:CHOICE", "LEX:COLLOC", "LEX:FALSE", "LEX:IDIOM", "LEX:ARGSTRUCT"]
-    mode: shadow
+    mode: active
 
   calque:
     label: "Calques français"
     label_en: "French transfer"
     codes: ["LEX:CALQUE", "PREP:CALQUE"]
-    mode: shadow
+    mode: active
 
   discourse:
     label: "Discours & registre"
     label_en: "Discourse & register"
     codes: ["DISC:TRANS", "DISC:COHER", "REG:LEVEL", "REG:PRAGMA"]
-    mode: shadow
+    mode: active
 
 # ══════════════════════════════════════════════════════════
 # HUMAN LABELS — error code → what the student sees
@@ -378,10 +378,11 @@ matrix:
   sentence:     { beginner: ignored,  intermediate: ignored,   upper: noted,     advanced: penalized }
   morphology:   { beginner: ignored,  intermediate: ignored,   upper: noted,     advanced: penalized }
   surface:      { beginner: ignored,  intermediate: ignored,   upper: noted,     advanced: penalized }
-  preposition:  { beginner: shadow,   intermediate: shadow,    upper: shadow,    advanced: shadow    }
-  vocabulary:   { beginner: shadow,   intermediate: shadow,    upper: shadow,    advanced: shadow    }
-  calque:       { beginner: shadow,   intermediate: shadow,    upper: shadow,    advanced: shadow    }
-  discourse:    { beginner: shadow,   intermediate: shadow,    upper: shadow,    advanced: shadow    }
+  # Previously full shadow — now progressively activated
+  preposition:  { beginner: shadow,   intermediate: noted,     upper: penalized, advanced: penalized }
+  vocabulary:   { beginner: shadow,   intermediate: noted,     upper: noted,     advanced: penalized }
+  calque:       { beginner: noted,    intermediate: penalized, upper: penalized, advanced: penalized }
+  discourse:    { beginner: shadow,   intermediate: shadow,    upper: noted,     advanced: penalized }
 
 # ══════════════════════════════════════════════════════════
 # TIER WEIGHTS + FEEDBACK LABELS

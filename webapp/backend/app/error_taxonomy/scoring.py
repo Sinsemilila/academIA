@@ -129,7 +129,10 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str, concept_ke
         feedback = feedback_info.get("fr", "")
         color = feedback_info.get("color", "gray")
 
-        if mode == "shadow":
+        # Shadow = either mode is shadow OR tier is shadow at this band
+        is_shadow = (mode == "shadow") or (tier == "shadow")
+
+        if is_shadow:
             shadow_errors += count
             feedback = ""
             color = "hidden"
@@ -152,20 +155,45 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str, concept_ke
             "is_clean": is_clean,
             "feedback": feedback,
             "color": color,
-            "mode": mode,
+            "mode": "shadow" if is_shadow else "active",
             "top_codes": top_codes,
         }
 
     # ── Progression ──
-    progress_pct = 0
-    if penalized_families:
-        progress_pct = round(len(penalized_clean) / len(penalized_families) * 100)
-
+    # Exam eligibility: all tracked families clean + enough sessions
     eligible_for_exam = (
         len(penalized_families) > 0
         and len(penalized_clean) == len(penalized_families)
         and total_sessions >= min_sessions
     )
+
+    # Progress bar: average concept score (derived from family status)
+    # This reflects real improvement from session 1 — not blocked by thresholds
+    concept_scores = []
+    if concept_keys:
+        for ck in concept_keys:
+            fam_key = get_concept_family(ck)
+            if fam_key and fam_key in families_result:
+                fam = families_result[fam_key]
+                if fam.get("is_clean") and fam.get("sessions_appeared", 0) >= min_sessions:
+                    concept_scores.append(85)
+                elif fam.get("count", 0) > 0 and fam.get("error_rate", 0) <= 1.5:
+                    concept_scores.append(60)
+                elif fam.get("count", 0) > 0:
+                    concept_scores.append(30)
+                elif fam.get("sessions_appeared", 0) > 0:
+                    concept_scores.append(70)
+                else:
+                    concept_scores.append(0)
+            else:
+                concept_scores.append(0)
+
+    total_concepts = len(concept_scores) or 1
+    progress_pct = round(sum(concept_scores) / total_concepts)
+
+    # For beginner band (A1-A2): if no tracked families, base eligibility on sessions
+    if band == "beginner" and not penalized_families:
+        eligible_for_exam = total_sessions >= min_sessions
 
     # ── Concepts for current level ──
     concepts_by_family = defaultdict(list)

@@ -2,10 +2,9 @@ import os
 import asyncpg
 from contextlib import asynccontextmanager
 
-DATABASE_URL = os.environ.get(
-    "DATABASE_URL",
-    "postgresql://sinse:REDACTED_PG_PASSWORD@postgres-academie:5432/academie_db",
-)
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL environment variable is required")
 
 pool: asyncpg.Pool | None = None
 

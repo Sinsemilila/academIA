@@ -38,6 +38,7 @@ services:
       - academie-net-bridge
     environment:
       - DATABASE_URL=postgresql://sinse:REDACTED_PG_PASSWORD@postgres-academie:5432/academie_db
+      - DIFY_KEY_TEACHER=REDACTED_DIFY_TEACHER_KEY
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
       interval: 30s
