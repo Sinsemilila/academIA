@@ -19,7 +19,7 @@ def _read_secret(name, fallback=""):
     p = Path(f"/opt/academie-shared/secrets/{name}")
     return p.read_text().strip() if p.exists() else fallback
 
-DIFY_ADMIN_KEY = os.environ.get("DIFY_ADMIN_KEY", _read_secret("dify-admin-key"))
+DIFY_ADMIN_KEY = os.environ.get("DIFY_ADMIN_KEY") or _read_secret("dify-admin-key")
 WORKSPACE_ID = "4c3e17be-144c-4e7a-968e-478d6c48fb2f"
 TEACHER_APP_ID = "39565197-c9d1-4d5b-b66f-18925de236d9"
 
@@ -90,10 +90,32 @@ return [{
     },
     {
         "id": str(uuid.uuid4()),
+        "name": "Fetch Error Profile",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.5,
+        "position": [375, 0],
+        "parameters": {
+            "operation": "executeQuery",
+            "query": """SELECT error_code, COUNT(*) as cnt
+FROM error_log
+WHERE eleve_id = (SELECT id FROM eleves WHERE username = '{{ $json.username }}')
+AND session_id NOT LIKE 'full-battery%' AND session_id NOT LIKE 'phase1b-%'
+GROUP BY error_code ORDER BY cnt DESC LIMIT 10""",
+            "options": {}
+        },
+        "credentials": {
+            "postgres": {
+                "id": POSTGRES_CRED_ID,
+                "name": "Postgres account"
+            }
+        }
+    },
+    {
+        "id": str(uuid.uuid4()),
         "name": "Fetch Exam Messages",
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
-        "position": [500, 0],
+        "position": [625, 0],
         "parameters": {
             "method": "GET",
             "url": f"={{{{ 'http://dify-api:5001/console/api/apps/{TEACHER_APP_ID}/chat-messages?conversation_id=' + $json.conversation_id + '&limit=50' }}}}",
@@ -112,11 +134,23 @@ return [{
         "name": "Build Scoring Prompt",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
-        "position": [750, 0],
+        "position": [875, 0],
         "parameters": {
             "jsCode": r"""const parsed = $('Parse Body').first().json;
 const difyResp = $input.first().json;
 const messages = difyResp.data || [];
+
+// Error profile from SQL node
+let errorContext = "";
+try {
+  const errorRows = $('Fetch Error Profile').all().map(r => r.json);
+  if (errorRows && errorRows.length > 0 && errorRows[0].error_code) {
+    const lines = errorRows.map(r => `  - ${r.error_code}: ${r.cnt} occurrences`);
+    errorContext = "\n\n--- PROFIL ERREURS ETUDIANT ---\nErreurs precedentes les plus frequentes :\n" + lines.join("\n") + "\nCONSIGNE : accorde une attention particuliere aux concepts lies a ces erreurs. Sois plus strict sur ces points.\n--- FIN PROFIL ERREURS ---";
+  }
+} catch (e) {
+  errorContext = "";
+}
 
 // Build transcript with exam questions and student answers
 // Messages are returned by Dify in CHRONOLOGICAL order (oldest first) — do NOT reverse
@@ -157,6 +191,7 @@ const llmBody = {
 Niveau examine : ${parsed.niveau}
 Module : ${moduleName}
 Concepts et poids du module : ${moduleConcepts}
+${errorContext}
 
 Analyse le transcript d'examen ci-dessous. Pour chaque question posee par l'examinateur :
 1. Identifie le concept teste (utilise la cle EXACTE du concept, ex: present_perfect_simple)
