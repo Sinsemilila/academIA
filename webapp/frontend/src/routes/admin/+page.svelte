@@ -18,6 +18,8 @@
     longest_streak: number;
     total_sessions: number;
     total_xp: number;
+    online: boolean;
+    last_seen: string | null;
   };
 
   let users = $state<AdminUser[]>([]);
@@ -85,9 +87,9 @@
     const now = new Date();
     const diff = Math.floor((now.getTime() - d.getTime()) / 1000);
     if (diff < 60) return 'maintenant';
-    if (diff < 3600) return `${Math.floor(diff / 60)}min`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
-    return `${Math.floor(diff / 86400)}j`;
+    if (diff < 3600) return `il y a ${Math.floor(diff / 60)}min`;
+    if (diff < 86400) return `il y a ${Math.floor(diff / 3600)}h`;
+    return `il y a ${Math.floor(diff / 86400)}j`;
   }
 
   onMount(loadUsers);
@@ -148,7 +150,7 @@
             <th class="px-4 py-3 font-medium hidden md:table-cell">Sessions</th>
             <th class="px-4 py-3 font-medium hidden md:table-cell">Streak</th>
             <th class="px-4 py-3 font-medium hidden lg:table-cell">XP</th>
-            <th class="px-4 py-3 font-medium">Activite</th>
+            <th class="px-4 py-3 font-medium">Derniere connexion</th>
             <th class="px-4 py-3 font-medium text-right">Actions</th>
           </tr>
         </thead>
@@ -173,7 +175,13 @@
               <td class="px-4 py-3 hidden md:table-cell text-text-secondary">{user.total_sessions}</td>
               <td class="px-4 py-3 hidden md:table-cell text-text-secondary">{user.current_streak}j</td>
               <td class="px-4 py-3 hidden lg:table-cell text-text-secondary">{user.total_xp}</td>
-              <td class="px-4 py-3 text-text-muted text-xs">{timeAgo(user.derniere_session)}</td>
+              <td class="px-4 py-3 text-text-muted text-xs">
+                {#if user.online}
+                  <span class="text-green-400">en ligne</span>
+                {:else}
+                  {timeAgo(user.last_seen)}
+                {/if}
+              </td>
               <td class="px-4 py-3 text-right space-x-1">
                 {#if confirmReset === user.username}
                   <button onclick={() => resetProfile(user.username)}

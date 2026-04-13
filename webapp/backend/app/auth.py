@@ -86,6 +86,8 @@ async def get_current_user(
         row = await conn.fetchrow("SELECT * FROM users WHERE id = $1", user_id)
         if not row:
             raise HTTPException(status_code=401, detail="Utilisateur introuvable")
+        # Track last seen (fire-and-forget, no await needed for perf)
+        await conn.execute("UPDATE users SET last_seen_at = NOW() WHERE id = $1", user_id)
         return dict(row)
 
 

@@ -73,14 +73,13 @@ async def list_users(admin: dict = Depends(require_admin)):
                 p.niveau_global, p.derniere_session, p.mode_apprentissage,
                 s.current_streak, s.longest_streak, s.total_sessions,
                 COALESCE(xp.total_xp, 0) as total_xp,
-                last_act.last_active
+                u.last_seen_at
             FROM users u
             LEFT JOIN eleves e ON u.eleve_id = e.id
             LEFT JOIN profils_eleves p ON e.id = p.eleve_id AND p.domaine = 'anglais'
             LEFT JOIN streaks s ON u.id = s.user_id
             LEFT JOIN (SELECT user_id, SUM(amount) as total_xp FROM xp_log GROUP BY user_id) xp ON u.id = xp.user_id
-            LEFT JOIN (SELECT user_id, MAX(last_message_at) as last_active FROM user_sessions GROUP BY user_id) last_act ON u.id = last_act.user_id
-            ORDER BY last_act.last_active DESC NULLS LAST
+            ORDER BY u.last_seen_at DESC NULLS LAST
         """)
 
     return [
@@ -98,8 +97,8 @@ async def list_users(admin: dict = Depends(require_admin)):
             "longest_streak": r["longest_streak"] or 0,
             "total_sessions": r["total_sessions"] or 0,
             "total_xp": r["total_xp"],
-            "online": r["last_active"] is not None and (datetime.now() - r["last_active"]).total_seconds() < 900,
-            "last_active": str(r["last_active"]) if r["last_active"] else None,
+            "online": r["last_seen_at"] is not None and (datetime.now() - r["last_seen_at"]).total_seconds() < 900,
+            "last_seen": str(r["last_seen_at"]) if r["last_seen_at"] else None,
         }
         for r in rows
     ]
