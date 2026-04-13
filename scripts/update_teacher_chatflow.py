@@ -254,7 +254,8 @@ def main(dialogue_count: int, profil_text: str, concept_keys_json: str, scores_j
          review_mode: str, derniere_session: str,
          minutes_since_last: int,
          mock_exam: str, mode_override: str,
-         error_feedback: str, error_exam_eligible: bool) -> dict:
+         error_feedback: str, turn_response_secs: str, repeated_errors: str,
+         error_exam_eligible: bool) -> dict:
     n = int(dialogue_count or 0)
     mode = str(mode_apprentissage or 'libre')
     # Mode override from frontend toggle (immediate effect)
@@ -785,7 +786,9 @@ def main(dialogue_count: int, profil_text: str, concept_keys_json: str, scores_j
         'exam_modules_json': exam_modules_json,
         'exam_resume_needed': exam_resume_needed,
         'scoring_recovery': scoring_recovery,
-        'error_feedback': '' if exam_active or mock_exam_instruction else str(error_feedback or '')
+        'error_feedback': '' if exam_active or mock_exam_instruction else str(error_feedback or ''),
+        'turn_response_secs': str(turn_response_secs or '0'),
+        'repeated_errors': str(repeated_errors or '')
     }
 """
 
@@ -1197,9 +1200,9 @@ PROMPT_SESSION = (
     "Ne repete jamais le meme domaine deux questions de suite.\n\n"
     "=== DETECTION COMPORTEMENTALE (adapte-toi en temps reel) ===\n\n"
     "SIGNAUX BACKEND :\n"
-    "- Temps de reponse ce tour : {{#1775343637677.turn_response_secs#}}s "
+    "- Temps de reponse ce tour : {{#code_turn_check.turn_response_secs#}}s "
     "(< 5s = reponse reflexe, > 120s = possible difficulte ou distraction)\n"
-    "- Erreurs recidivantes (vues cette semaine) : {{#1775343637677.repeated_errors#}}\n"
+    "- Erreurs recidivantes (vues cette semaine) : {{#code_turn_check.repeated_errors#}}\n"
     "(Si non vide : ces erreurs persistent, utilise le protocole d'escalade)\n\n"
     "OBSERVE ces signaux dans les messages de l'eleve :\n\n"
     "CONFUSION (l'eleve est perdu) :\n"
@@ -1472,6 +1475,8 @@ def patch_graph(graph):
                 {"variable": "mock_exam", "value_selector": ["1775343637677", "mock_exam"]},
                 {"variable": "mode_override", "value_selector": ["1775343637677", "mode_override"]},
                 {"variable": "error_feedback", "value_selector": ["1775343637677", "error_feedback"]},
+                {"variable": "turn_response_secs", "value_selector": ["1775343637677", "turn_response_secs"]},
+                {"variable": "repeated_errors", "value_selector": ["1775343637677", "repeated_errors"]},
                 {"variable": "error_exam_eligible", "value_selector": ["code_profil_check", "error_exam_eligible"]}
             ]
             data["outputs"] = {
@@ -1492,7 +1497,9 @@ def patch_graph(graph):
                 "exam_modules_json": {"type": "string", "children": None},
                 "exam_resume_needed": {"type": "boolean", "children": None},
                 "scoring_recovery": {"type": "boolean", "children": None},
-                "error_feedback": {"type": "string", "children": None}
+                "error_feedback": {"type": "string", "children": None},
+                "turn_response_secs": {"type": "string", "children": None},
+                "repeated_errors": {"type": "string", "children": None}
             }
             print("  Patched: code_turn_check")
 

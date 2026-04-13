@@ -50,7 +50,8 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
     eleve_id = user.get("eleve_id")
     if not eleve_id:
         return {"niveau": None, "scores": {}, "points_forts": None,
-                "lacunes": None, "mode_apprentissage": None}
+                "lacunes": None, "mode_apprentissage": None,
+                "next_level": None, "next_level_scores": {}}
 
     async with db.pool.acquire() as conn:
         row = await conn.fetchrow(
@@ -62,7 +63,8 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
         )
     if not row:
         return {"niveau": None, "scores": {}, "points_forts": None,
-                "lacunes": None, "mode_apprentissage": None}
+                "lacunes": None, "mode_apprentissage": None,
+                "next_level": None, "next_level_scores": {}}
 
     niveau = row["niveau_global"]
 
@@ -73,7 +75,7 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
     next_niveau_map = {"A1":"A2","A2":"B1","B1":"B2","B2":"C1","C1":"C2"}
     next_niv = next_niveau_map.get(niveau)
     async with db.pool.acquire() as conn:
-        ck_row = await db.pool.fetchval(
+        ck_row = await conn.fetchval(
             "SELECT concept_keys FROM curriculums WHERE domaine = $1 AND niveau = $2",
             domain, niveau)
         all_keys = ck_row if isinstance(ck_row, list) else json.loads(ck_row or "[]")

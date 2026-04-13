@@ -68,13 +68,20 @@ return [{
         "position": [416, 0],
         "parameters": {
             "operation": "executeQuery",
-            "query": """SELECT
+            "query": """WITH niveau_map AS (
+  SELECT unnest(ARRAY['A1','A2','B1','B2','C1','C2']) as niveau,
+         unnest(ARRAY['A2','B1','B2','C1','C2','C2']) as next_niveau
+)
+SELECT
   p.niveau_global,
   p.scores_confiance,
-  c.concept_keys
+  c.concept_keys,
+  cnext.concept_keys as next_concept_keys
 FROM eleves e
 LEFT JOIN profils_eleves p ON p.eleve_id = e.id AND p.domaine = '{{ $json.domaine }}'
 LEFT JOIN curriculums c ON c.domaine = p.domaine AND c.niveau = p.niveau_global
+LEFT JOIN niveau_map nm ON nm.niveau = p.niveau_global
+LEFT JOIN curriculums cnext ON cnext.domaine = p.domaine AND cnext.niveau = nm.next_niveau
 WHERE e.username = '{{ $json.username }}'""",
             "options": {}
         },
