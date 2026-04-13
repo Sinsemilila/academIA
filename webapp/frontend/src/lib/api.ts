@@ -127,6 +127,13 @@ class ApiClient {
     return await res.json();
   }
 
+  // ── Error Profile ─────────────────────────
+  async getErrorProfile(domain: string = 'anglais') {
+    const res = await this.fetch(`/error-profile/${domain}`);
+    if (!res.ok) return null;
+    return await res.json();
+  }
+
   // ── Streak ────────────────────────────────
   async getStreak() {
     const res = await this.fetch('/streak');

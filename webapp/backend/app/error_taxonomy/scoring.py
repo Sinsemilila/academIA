@@ -1,6 +1,6 @@
 """
-AcademIA Error Taxonomy — Scoring engine (Phase 2)
-Aggregates error_log by family, applies tolerance matrix, produces error profiles.
+AcademIA — Unified Progression Scoring Engine
+Aggregates error_log by family, applies tolerance matrix, computes progression + recommendations.
 """
 
 import yaml
@@ -10,7 +10,6 @@ from collections import defaultdict
 
 logger = logging.getLogger("academie-api.scoring")
 
-# Load tolerance matrix at module level
 _MATRIX_PATH = Path(__file__).parent.parent / "config" / "tolerance_matrix.yaml"
 _matrix = None
 
@@ -24,7 +23,6 @@ def _load_matrix():
 
 
 def get_family_for_code(error_code: str) -> str | None:
-    """Map a detection code to its family key. Returns None if unknown."""
     m = _load_matrix()
     for family_key, family_def in m["families"].items():
         if error_code in family_def["codes"]:
@@ -33,100 +31,100 @@ def get_family_for_code(error_code: str) -> str | None:
 
 
 def get_band_for_level(niveau_global: str) -> str:
-    """Map CEFR level string to band. Defaults to intermediate."""
     m = _load_matrix()
-    bands = m["cefr_bands"]
-    # Handle variations: "B1", "b1", "B1+", etc.
     level = niveau_global.strip().upper().rstrip("+")
-    return bands.get(level, "intermediate")
+    return m["cefr_bands"].get(level, "intermediate")
 
 
-def compute_error_profile(error_rows: list[dict], niveau_global: str) -> dict:
+def get_code_label(code: str) -> str:
+    m = _load_matrix()
+    return m.get("code_labels", {}).get(code, code)
+
+
+def get_concept_label(concept: str) -> str:
+    m = _load_matrix()
+    return m.get("concept_labels", {}).get(concept, concept.replace("_", " ").title())
+
+
+def get_concept_family(concept: str) -> str | None:
+    m = _load_matrix()
+    return m.get("concept_families", {}).get(concept)
+
+
+def compute_error_profile(error_rows: list[dict], niveau_global: str, concept_keys: list[str] | None = None) -> dict:
     """
-    Compute error profile from raw error_log rows.
+    Compute unified error profile with progression.
 
     Args:
         error_rows: list of dicts with keys: error_code, turn_number, session_id
         niveau_global: CEFR level string (e.g. "B1")
+        concept_keys: list of concept keys for the current level (from curriculums table)
 
-    Returns:
-        {
-            "band": "intermediate",
-            "niveau": "B1",
-            "families": {
-                "verb_tense": {
-                    "label": "Temps & conjugaison",
-                    "count": 12,
-                    "tier": "noted",
-                    "weight": 0.3,
-                    "score": 3.6,
-                    "feedback": "À travailler",
-                    "color": "orange",
-                    "mode": "active",
-                    "top_codes": [("V:TENSE", 8), ("V:SVA", 3), ("V:FORM", 1)]
-                },
-                ...
-            },
-            "summary": {
-                "total_errors": 45,
-                "active_errors": 38,
-                "shadow_errors": 7,
-                "sessions_analyzed": 5,
-                "high_priority": ["verb_tense", "word_order"],
-                "work_on": ["noun_det", "pronoun"],
-                "normal": ["sentence", "morphology", "surface"]
-            }
-        }
+    Returns complete profile with families, progression, and recommendation.
     """
     m = _load_matrix()
     band = get_band_for_level(niveau_global)
     weights = m["weights"]
-    max_per_turn = m.get("max_errors_per_turn", 3)
+    prog = m.get("progression", {})
+    max_per_turn = prog.get("max_errors_per_turn", 3)
+    max_error_rate = prog.get("max_error_rate", 1.0)
+    min_sessions = prog.get("min_sessions", 5)
 
-    # Aggregate errors by family
-    family_counts = defaultdict(lambda: defaultdict(int))
-    sessions = set()
-    turn_error_count = defaultdict(int)  # (session_id, turn) → count
+    # ── Aggregate errors by family ──
+    family_errors = defaultdict(lambda: defaultdict(int))   # family → {code: count}
+    family_sessions = defaultdict(set)                       # family → set of session_ids
+    all_sessions = set()
+    turn_cap = defaultdict(int)
 
     for row in error_rows:
         code = row["error_code"]
         session_id = row.get("session_id", "")
         turn = row.get("turn_number", 0)
-        sessions.add(session_id)
+        all_sessions.add(session_id)
 
-        # Apply max errors per turn cap
         turn_key = (session_id, turn)
-        if turn_error_count[turn_key] >= max_per_turn:
+        if turn_cap[turn_key] >= max_per_turn:
             continue
-        turn_error_count[turn_key] += 1
+        turn_cap[turn_key] += 1
 
         family_key = get_family_for_code(code)
         if family_key:
-            family_counts[family_key][code] += 1
+            family_errors[family_key][code] += 1
+            family_sessions[family_key].add(session_id)
 
-    # Build profile per family
+    total_sessions = len(all_sessions)
+
+    # ── Build family profiles ──
     families_result = {}
-    high_priority = []
-    work_on = []
-    normal = []
     total_errors = 0
     active_errors = 0
     shadow_errors = 0
+    penalized_families = []
+    penalized_clean = []
 
     for family_key, family_def in m["families"].items():
-        counts = family_counts.get(family_key, {})
-        count = sum(counts.values())
+        codes_counts = family_errors.get(family_key, {})
+        count = sum(codes_counts.values())
         total_errors += count
 
         mode = family_def["mode"]
         tier = m["matrix"][family_key][band]
         weight = weights.get(tier, 0.0)
-        score = round(count * weight, 1)
 
-        # Top codes sorted by frequency
-        top_codes = sorted(counts.items(), key=lambda x: -x[1])[:5]
+        sessions_appeared = len(family_sessions.get(family_key, set()))
+        error_rate = count / sessions_appeared if sessions_appeared > 0 else 0.0
+        is_clean = error_rate <= max_error_rate and sessions_appeared >= min_sessions
 
-        # Feedback label
+        # Top codes with human labels
+        top_codes = []
+        for code, cnt in sorted(codes_counts.items(), key=lambda x: -x[1])[:5]:
+            top_codes.append({
+                "code": code,
+                "label": get_code_label(code),
+                "count": cnt,
+            })
+
+        # Feedback
         feedback_info = m["feedback_labels"].get(tier, {})
         feedback = feedback_info.get("fr", "")
         color = feedback_info.get("color", "gray")
@@ -137,12 +135,11 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str) -> dict:
             color = "hidden"
         else:
             active_errors += count
-            if tier == "penalized" and count > 0:
-                high_priority.append(family_key)
-            elif tier == "noted" and count > 0:
-                work_on.append(family_key)
-            elif count > 0:
-                normal.append(family_key)
+            # Track families that matter for progression (noted or penalized)
+            if tier in ("penalized", "noted"):
+                penalized_families.append(family_key)
+                if is_clean:
+                    penalized_clean.append(family_key)
 
         families_result[family_key] = {
             "label": family_def["label"],
@@ -150,24 +147,135 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str) -> dict:
             "count": count,
             "tier": tier,
             "weight": weight,
-            "score": score,
+            "error_rate": round(error_rate, 2),
+            "sessions_appeared": sessions_appeared,
+            "is_clean": is_clean,
             "feedback": feedback,
             "color": color,
             "mode": mode,
             "top_codes": top_codes,
         }
 
+    # ── Progression ──
+    progress_pct = 0
+    if penalized_families:
+        progress_pct = round(len(penalized_clean) / len(penalized_families) * 100)
+
+    eligible_for_exam = (
+        len(penalized_families) > 0
+        and len(penalized_clean) == len(penalized_families)
+        and total_sessions >= min_sessions
+    )
+
+    # ── Concepts for current level ──
+    concepts_by_family = defaultdict(list)
+    if concept_keys:
+        for ck in concept_keys:
+            fam = get_concept_family(ck)
+            if fam:
+                concepts_by_family[fam].append({
+                    "key": ck,
+                    "label": get_concept_label(ck),
+                    "family": fam,
+                })
+
+    # ── Recommendation ──
+    recommendation = _compute_recommendation(
+        families_result, penalized_families, penalized_clean,
+        total_sessions, min_sessions, eligible_for_exam, niveau_global
+    )
+
+    # ── Build summary lists ──
+    high_priority = [fk for fk in penalized_families if not families_result[fk]["is_clean"] and families_result[fk]["count"] > 0]
+    work_on = [fk for fk, fd in families_result.items() if fd["mode"] == "active" and fd["tier"] == "noted" and fd["count"] > 0]
+    normal = [fk for fk, fd in families_result.items() if fd["mode"] == "active" and fd["tier"] == "ignored" and fd["count"] > 0]
+
     return {
         "band": band,
         "niveau": niveau_global,
         "families": families_result,
+        "concepts_by_family": dict(concepts_by_family),
+        "progression": {
+            "progress_pct": progress_pct,
+            "penalized_total": len(penalized_families),
+            "penalized_clean": len(penalized_clean),
+            "eligible_for_exam": eligible_for_exam,
+            "sessions_total": total_sessions,
+            "sessions_required": min_sessions,
+        },
+        "recommendation": recommendation,
         "summary": {
             "total_errors": total_errors,
             "active_errors": active_errors,
             "shadow_errors": shadow_errors,
-            "sessions_analyzed": len(sessions),
+            "sessions_analyzed": total_sessions,
             "high_priority": high_priority,
             "work_on": work_on,
             "normal": normal,
         },
+    }
+
+
+def _compute_recommendation(
+    families: dict, penalized: list, penalized_clean: list,
+    total_sessions: int, min_sessions: int,
+    eligible: bool, niveau: str,
+) -> dict:
+    """Priority-based recommendation for the student."""
+    level_order = ["A1", "A2", "B1", "B2", "C1", "C2"]
+    niveau_upper = niveau.strip().upper().rstrip("+")
+    next_level = None
+    if niveau_upper in level_order:
+        idx = level_order.index(niveau_upper)
+        if idx < len(level_order) - 1:
+            next_level = level_order[idx + 1]
+
+    # 1. Exam eligible
+    if eligible and next_level:
+        return {
+            "type": "exam",
+            "message": f"Tous les modules prioritaires sont maîtrisés. Prêt pour l'examen {next_level} ?",
+            "action": "/chat/teacher",
+            "label": "Passer l'examen",
+        }
+
+    # 2. High priority — penalized family with high error rate
+    not_clean = [fk for fk in penalized if fk not in penalized_clean]
+    for fk in not_clean:
+        fam = families[fk]
+        if fam["count"] > 0:
+            return {
+                "type": "weakness",
+                "message": f"Focus recommandé : {fam['label']} ({fam['count']} erreurs, {fam['error_rate']}/session)",
+                "action": "/chat/teacher",
+                "label": "Travailler ce module",
+            }
+
+    # 3. Explore — penalized family not seen enough (anti-avoidance)
+    for fk in penalized:
+        fam = families[fk]
+        if fam["sessions_appeared"] < min_sessions:
+            return {
+                "type": "explore",
+                "message": f"Pratique davantage : {fam['label']} (vu dans {fam['sessions_appeared']}/{min_sessions} sessions)",
+                "action": "/chat/teacher",
+                "label": "Pratiquer",
+            }
+
+    # 4. Work on — noted families with errors
+    for fk, fam in families.items():
+        if fam["tier"] == "noted" and fam["count"] > 0 and fam["mode"] == "active":
+            return {
+                "type": "improve",
+                "message": f"Continue à travailler : {fam['label']}",
+                "action": "/chat/teacher",
+                "label": "Continuer",
+            }
+
+    # 5. Default
+    return {
+        "type": "continue",
+        "message": "Tu progresses bien, continue !",
+        "action": "/chat/teacher",
+        "label": "Continuer",
     }

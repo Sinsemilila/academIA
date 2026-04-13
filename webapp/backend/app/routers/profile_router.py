@@ -54,7 +54,7 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
 
     async with db.pool.acquire() as conn:
         row = await conn.fetchrow(
-            """SELECT niveau_global, scores_confiance, points_forts, lacunes,
+            """SELECT niveau_global, points_forts, lacunes,
                       mode_apprentissage, derniere_session, examen_en_cours,
                       dernier_examen, nb_examens_niveau
                FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2""",
@@ -64,39 +64,31 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
         return {"niveau": None, "scores": {}, "points_forts": None,
                 "lacunes": None, "mode_apprentissage": None}
 
-    # Parse scores_confiance
-    scores_raw = row["scores_confiance"] or {}
-    if isinstance(scores_raw, str):
-        scores_raw = json.loads(scores_raw)
-
-    # Normalize: {concept: int} or {concept: {score, last_seen}}
-    scores = {}
-    for k, v in scores_raw.items():
-        if isinstance(v, dict):
-            scores[k] = v.get("score", 0)
-        else:
-            scores[k] = v
-
-    # Count mastered / total
-    total_concepts = len(scores)
-    mastered = sum(1 for s in scores.values() if s >= 80)
-
-    # Get concept_keys for the level to know total expected
     niveau = row["niveau_global"]
-    concept_keys = []
-    if niveau:
+
+    # Derive concept scores from error profile
+    scores = await _derive_concept_scores(eleve_id, domain, niveau)
+
+    # Get full concept list for this level (including untested at 0)
+    async with db.pool.acquire() as conn:
         ck_row = await db.pool.fetchval(
-            """SELECT concept_keys FROM curriculums
-               WHERE domaine = $1 AND niveau = $2""",
-            domain, niveau,
-        )
-        if ck_row:
-            concept_keys = ck_row if isinstance(ck_row, list) else json.loads(ck_row)
+            "SELECT concept_keys FROM curriculums WHERE domaine = $1 AND niveau = $2",
+            domain, niveau)
+        all_keys = ck_row if isinstance(ck_row, list) else json.loads(ck_row or "[]")
 
-    total_expected = len(concept_keys) if concept_keys else total_concepts or 1
-    progress_pct = round(mastered / total_expected * 100) if total_expected > 0 else 0
+    # Ensure all concepts are in scores (untested = 0)
+    for k in all_keys:
+        if k not in scores:
+            scores[k] = 0
 
-    # Parse exam info
+    concept_keys = all_keys
+    mastered = sum(1 for s in scores.values() if s >= 80)
+    total_expected = len(concept_keys) or 1
+
+    # Progress = average score across ALL concepts (tested + untested)
+    avg_score = sum(scores.values()) / total_expected if total_expected > 0 else 0
+    progress_pct = round(avg_score)
+
     dernier_examen = row["dernier_examen"]
     if isinstance(dernier_examen, str):
         dernier_examen = json.loads(dernier_examen)
@@ -115,6 +107,33 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
         "dernier_examen": dernier_examen,
         "nb_examens_niveau": row["nb_examens_niveau"] or 0,
     }
+
+
+async def _derive_concept_scores(eleve_id: int, domain: str, niveau: str) -> dict:
+    """Derive per-concept scores from the error profile (family-level)."""
+    from .error_analysis_router import _build_error_profile
+    profile = await _build_error_profile(eleve_id, domain)
+    families = profile.get("families", {})
+    concepts_by_family = profile.get("concepts_by_family", {})
+
+    scores = {}
+    for family_key, concepts in concepts_by_family.items():
+        fam = families.get(family_key, {})
+        # Derive a score from the family status
+        if fam.get("is_clean") and fam.get("sessions_appeared", 0) >= 5:
+            score = 85  # mastered
+        elif fam.get("count", 0) > 0 and fam.get("error_rate", 0) <= 1.5:
+            score = 60  # medium — some errors but manageable
+        elif fam.get("count", 0) > 0:
+            score = 30  # weak — too many errors
+        elif fam.get("sessions_appeared", 0) > 0:
+            score = 70  # seen but no errors — likely decent
+        else:
+            score = 0   # untested
+        for concept in concepts:
+            scores[concept["key"]] = score
+
+    return scores
 
 
 @router.get("/api/streak")
@@ -180,7 +199,7 @@ async def get_concepts(domain: str = "anglais", user: dict = Depends(get_current
     async with db.pool.acquire() as conn:
         # Profile data
         row = await conn.fetchrow(
-            """SELECT niveau_global, scores_confiance
+            """SELECT niveau_global
                FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2""",
             eleve_id, domain,
         )
@@ -189,16 +208,11 @@ async def get_concepts(domain: str = "anglais", user: dict = Depends(get_current
 
         niveau = row["niveau_global"]
 
-        # Parse scores
-        scores_raw = row["scores_confiance"] or {}
-        if isinstance(scores_raw, str):
-            scores_raw = json.loads(scores_raw)
+        # Derive scores from error profile
+        derived = await _derive_concept_scores(eleve_id, domain, niveau)
         scores = {}
-        for k, v in scores_raw.items():
-            if isinstance(v, dict):
-                scores[k] = {"score": v.get("score", 0), "last_seen": v.get("last_seen")}
-            else:
-                scores[k] = {"score": v, "last_seen": None}
+        for k, v in derived.items():
+            scores[k] = {"score": v, "last_seen": None}
 
         # Curriculum data (groups + weights)
         cur = await conn.fetchrow(
@@ -218,15 +232,12 @@ async def get_concepts(domain: str = "anglais", user: dict = Depends(get_current
 
     # Compute module insights
     full_scores = {}
-    for k, v in scores_raw.items():
-        if isinstance(v, dict):
-            full_scores[k] = {
-                "score": v.get("score", 0),
-                "last_seen": v.get("last_seen"),
-                "days_seen": v.get("days_seen", 0),
-            }
-        else:
-            full_scores[k] = {"score": v, "last_seen": None, "days_seen": 0}
+    for k, v in scores.items():
+        full_scores[k] = {
+            "score": v.get("score", 0) if isinstance(v, dict) else v,
+            "last_seen": v.get("last_seen") if isinstance(v, dict) else None,
+            "days_seen": 0,
+        }
 
     insights = {}
     for group_name, group_concepts in concept_groups.items():

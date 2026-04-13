@@ -139,78 +139,30 @@ async def revoke_all_sessions(user: dict = Depends(get_current_user)):
     return {"ok": True}
 
 
-# ── Recommendation engine ────────────────────────────
+# ── Recommendation engine (unified — error-based) ─────
 @router.get("/api/me/recommendation")
 async def get_recommendation(domain: str = "anglais", user: dict = Depends(get_current_user)):
-    """Return a single contextual recommendation for the dashboard."""
+    """Return a single contextual recommendation based on error profile."""
     eleve_id = user.get("eleve_id")
     if not eleve_id:
         return {"type": "start", "message": "Commence ta premiere session pour debloquer ton profil !",
                 "action": "/chat/teacher", "label": "Commencer"}
 
     async with db.pool.acquire() as conn:
-        # Profile data
         row = await conn.fetchrow(
-            """SELECT niveau_global, scores_confiance, derniere_session,
-                      mode_apprentissage, dernier_examen
-               FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2""",
-            eleve_id, domain,
-        )
+            "SELECT niveau_global, derniere_session FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2",
+            eleve_id, domain)
         if not row or not row["niveau_global"]:
             return {"type": "start", "message": "Commence ta premiere session pour debloquer ton profil !",
                     "action": "/chat/teacher", "label": "Commencer"}
-
-        niveau = row["niveau_global"]
         derniere = row["derniere_session"]
-        scores_raw = row["scores_confiance"] or {}
-        if isinstance(scores_raw, str):
-            scores_raw = json.loads(scores_raw)
 
-        # Parse scores
-        scores = {}
-        for k, v in scores_raw.items():
-            scores[k] = v.get("score", 0) if isinstance(v, dict) else v
-
-        # Get concept_keys for this level
-        ck_row = await conn.fetchval(
-            "SELECT concept_keys FROM curriculums WHERE domaine = $1 AND niveau = $2",
-            domain, niveau,
-        )
-        concept_keys = ck_row if isinstance(ck_row, list) else json.loads(ck_row or "[]")
-
-        # Streak data
-        streak_row = await conn.fetchrow(
-            "SELECT current_streak, freeze_count FROM streaks WHERE user_id = $1",
-            user["id"],
-        )
-
-    # Decision logic
+    # Days since last session — still useful as top priority
     today = date.today()
-
-    # 1. Days since last session
     days_absent = 0
     if derniere:
         days_absent = (today - derniere.date()).days if isinstance(derniere, datetime) else 0
 
-    # 2. Weakest concept
-    weakest_concept = None
-    weakest_score = 100
-    for k in concept_keys:
-        s = scores.get(k, 0)
-        if 0 < s < weakest_score:
-            weakest_score = s
-            weakest_concept = k
-
-    # 3. Untested count
-    untested = [k for k in concept_keys if scores.get(k, 0) == 0]
-    tested = [k for k in concept_keys if scores.get(k, 0) > 0]
-    mastered = [k for k in concept_keys if scores.get(k, 0) >= 80]
-
-    # 4. Exam eligibility
-    all_tested = len(untested) == 0 and len(concept_keys) > 0
-    pct_mastered = len(mastered) / len(concept_keys) * 100 if concept_keys else 0
-
-    # Priority-based recommendation
     if days_absent >= 3:
         return {
             "type": "comeback",
@@ -219,37 +171,15 @@ async def get_recommendation(domain: str = "anglais", user: dict = Depends(get_c
             "label": "Reprendre",
         }
 
-    if all_tested and pct_mastered >= 80:
-        return {
-            "type": "exam",
-            "message": f"Tu maitrises {len(mastered)}/{len(concept_keys)} concepts. Pret pour l'examen ?",
-            "action": "/chat/teacher",
-            "label": "Passer l'examen",
-        }
-
-    if weakest_concept and weakest_score < 50:
-        pretty = weakest_concept.replace("_", " ").title()
-        return {
-            "type": "weakness",
-            "message": f"Focus recommande : {pretty} (score {weakest_score}%)",
-            "action": "/chat/teacher",
-            "label": "Travailler ce concept",
-        }
-
-    if len(untested) > 0:
-        return {
-            "type": "explore",
-            "message": f"Il reste {len(untested)} concept{'s' if len(untested) > 1 else ''} a decouvrir en {niveau}",
-            "action": "/chat/teacher",
-            "label": "Explorer",
-        }
-
-    return {
+    # Delegate to error profile recommendation
+    from .error_analysis_router import _build_error_profile
+    profile = await _build_error_profile(eleve_id, domain)
+    return profile.get("recommendation", {
         "type": "continue",
         "message": "Continue ta progression, tu avances bien !",
         "action": "/chat/teacher",
         "label": "Continuer",
-    }
+    })
 
 
 # ── Daily progress (for goal tracking) ───────────────
