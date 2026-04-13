@@ -1,14 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(docker exec postgres-academie psql -U sinse -d academie_db -c ':*)",
-      "Bash(python3:*)",
-      "Bash(docker cp:*)",
-      "Bash(docker exec:*)",
-      "Bash(docker restart:*)",
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Glob(*)",
+      "Grep(*)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:raw.githubusercontent.com)",
-      "Read(//root/sinse-workspace/**)"
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }
