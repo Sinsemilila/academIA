@@ -107,32 +107,32 @@ async def list_users(admin: dict = Depends(require_admin)):
 
 @router.post("/api/admin/reset-profile/{username}")
 async def reset_profile(username: str, admin: dict = Depends(require_admin)):
-    """Reset a student's profile to A1 fresh state."""
+    """Reset a student — full wipe. Works even if no eleve record exists."""
     async with db.pool.acquire() as conn:
-        eleve = await conn.fetchrow("SELECT id FROM eleves WHERE username = $1", username)
-        if not eleve:
-            raise HTTPException(status_code=404, detail=f"Student '{username}' not found")
+        user_row = await conn.fetchrow("SELECT id FROM users WHERE username = $1", username)
+        if not user_row:
+            raise HTTPException(status_code=404, detail=f"User '{username}' not found")
 
-        # Wipe profile entirely — user goes through onboarding again
-        await conn.execute("DELETE FROM profils_eleves WHERE eleve_id = $1", eleve["id"])
-        await conn.execute("DELETE FROM error_log WHERE eleve_id = $1", eleve["id"])
-        await conn.execute("DELETE FROM snapshots_session WHERE eleve_id = $1", eleve["id"])
+        # Wipe eleve data if exists
+        eleve = await conn.fetchrow("SELECT id FROM eleves WHERE username = $1", username)
+        if eleve:
+            await conn.execute("DELETE FROM profils_eleves WHERE eleve_id = $1", eleve["id"])
+            await conn.execute("DELETE FROM error_log WHERE eleve_id = $1", eleve["id"])
+            await conn.execute("DELETE FROM snapshots_session WHERE eleve_id = $1", eleve["id"])
 
         # Clear XP, streaks, sessions
-        user_row = await conn.fetchrow("SELECT id FROM users WHERE username = $1", username)
-        if user_row:
-            await conn.execute("DELETE FROM xp_log WHERE user_id = $1", user_row["id"])
-            await conn.execute("DELETE FROM streaks WHERE user_id = $1", user_row["id"])
-            await conn.execute("DELETE FROM user_sessions WHERE user_id = $1", user_row["id"])
+        await conn.execute("DELETE FROM xp_log WHERE user_id = $1", user_row["id"])
+        await conn.execute("DELETE FROM streaks WHERE user_id = $1", user_row["id"])
+        await conn.execute("DELETE FROM user_sessions WHERE user_id = $1", user_row["id"])
 
-        # Reset Dify user ID → forces fresh conversations (old ones become orphaned)
+        # Reset Dify user ID → forces fresh conversations
         new_dify_id = str(uuid.uuid4())
         await conn.execute(
             "UPDATE users SET dify_user_id = $1 WHERE username = $2",
             new_dify_id, username)
 
     logger.info("Profile reset for %s by admin %s (new dify_id=%s)", username, admin["username"], new_dify_id)
-    return {"ok": True, "message": f"Profile reset to A1 for {username}"}
+    return {"ok": True, "message": f"Profile reset for {username}"}
 
 
 @router.delete("/api/admin/users/{user_id}")
