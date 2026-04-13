@@ -94,13 +94,10 @@ return [{
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.5,
         "position": [375, 0],
+        "settings": {"alwaysOutputData": True},
         "parameters": {
             "operation": "executeQuery",
-            "query": """SELECT error_code, COUNT(*) as cnt
-FROM error_log
-WHERE eleve_id = (SELECT id FROM eleves WHERE username = '{{ $json.username }}')
-AND session_id NOT LIKE 'full-battery%' AND session_id NOT LIKE 'phase1b-%'
-GROUP BY error_code ORDER BY cnt DESC LIMIT 10""",
+            "query": """SELECT error_code, cnt FROM (SELECT error_code, COUNT(*) as cnt FROM error_log WHERE eleve_id = (SELECT id FROM eleves WHERE username = '{{ $json.username }}') AND session_id NOT LIKE 'full-battery%' AND session_id NOT LIKE 'phase1b-%' GROUP BY error_code UNION ALL SELECT '__none__', 0) sub ORDER BY cnt DESC LIMIT 10""",
             "options": {}
         },
         "credentials": {
@@ -118,7 +115,7 @@ GROUP BY error_code ORDER BY cnt DESC LIMIT 10""",
         "position": [625, 0],
         "parameters": {
             "method": "GET",
-            "url": f"={{{{ 'http://dify-api:5001/console/api/apps/{TEACHER_APP_ID}/chat-messages?conversation_id=' + $json.conversation_id + '&limit=50' }}}}",
+            "url": f"={{{{ 'http://dify-api:5001/console/api/apps/{TEACHER_APP_ID}/chat-messages?conversation_id=' + $('Parse Body').first().json.conversation_id + '&limit=50' }}}}",
             "sendHeaders": True,
             "headerParameters": {
                 "parameters": [
@@ -438,15 +435,7 @@ return [{ json: { sql, passed: r.passed, totalScore: r.total_score, niveau: r.ni
         "position": [2000, 0],
         "parameters": {
             "respondWith": "json",
-            "responseBody": """={{ JSON.stringify({
-  status: "ok",
-  passed: $('Build SQL').first().json.passed,
-  total_score: $('Build SQL').first().json.totalScore,
-  niveau: $('Build SQL').first().json.niveau,
-  commentaire: $('Build SQL').first().json.commentaire,
-  concept_scores: $('Build SQL').first().json.concept_scores,
-  shouldPromote: $('Build SQL').first().json.shouldPromote
-}) }}"""
+            "responseBody": "={{ JSON.stringify({ status: 'ok', passed: $('Build SQL').first().json.passed, total_score: $('Build SQL').first().json.totalScore, niveau: $('Build SQL').first().json.niveau, commentaire: $('Build SQL').first().json.commentaire, concept_scores: $('Build SQL').first().json.concept_scores, shouldPromote: $('Build SQL').first().json.shouldPromote }) }}"
         }
     }
 ]
