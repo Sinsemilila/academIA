@@ -19,4 +19,5 @@
 | 12 | Apr 7 | **Cloudflare Zero Trust (WARP)** | WireGuard VPN, Tailscale, email OTP | Zero client config, geolocation filtering (France only), free tier. Policy evolved: started with email OTP, switched to WARP+geoloc for frictionless access. |
 | 13 | Apr 12 | **Multi-AI worktrees (Claude+Gemini)** | Single AI, shared directory | Isolated git worktrees per AI agent. Prevents file conflicts, enables parallel work. Arbiter cross-review for quality. |
 | 14 | Apr 12 | **4-level backup strategy** | Git only | Proxmox vzdump (VM-level) + PG dump hourly + Restic encrypted to Google Drive + Git. Defense in depth — no single point of failure for data. |
-| 15 | Apr 12 | **AGENTS.md over CLAUDE.md** | Monolithic per-AI config files | Single canonical file for all AI agents. Pointer pattern in worktrees. Telegraphic English for token efficiency. Inspired by Peter Steinberger's agent-scripts. |
+| 15 | Apr 12 | **AGENTS.md over CLAUDE.md** | Monolithic per-AI config files | Single canonical file for all AI agents. Telegraphic English for token efficiency. Inspired by Peter Steinberger's agent-scripts. |
+| 16 | Apr 13 | **Single-agent on main** | Multi-AI worktrees (decision #13) | Gemini CLI coordination overhead > value for solo dev. Removed worktrees, arbiter, merge tools. Claude works directly on main. Simpler, faster, less tooling to maintain. |

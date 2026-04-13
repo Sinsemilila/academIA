@@ -139,11 +139,19 @@
 
 ---
 
+## Phase 7 — Feature Sprint + Workflow Simplification (April 13, 2026)
+
+**Features built**: Honest per-concept scoring, real-time error feedback, exam redesign (advisor not gatekeeper), behavior detection (5 emotional states), N+1 level tracking, admin page, XP triggers, weekly recap.
+
+**Workflow simplified**: Multi-AI (Claude+Gemini) with worktrees → single-agent (Claude) on main branch. Removed: worktrees, arbiter cross-review, merge-to-main/approve/reject tools, Gemini integration. Reason: Gemini CLI wasn't pulling its weight, and the coordination overhead wasn't justified for a solo developer.
+
+**Code audit**: 11 security fixes (CRITICAL+HIGH), E2E validation suite.
+
+---
+
 ## What's Next
 
-- Admin dashboard for sinse (user management, global stats)
-- XP triggers (exam pass +200, promotion +500)
 - Flashcard / spaced repetition mode
-- Weekly progress reports via n8n
+- Weekly progress reports via n8n (email/notifications)
 - Multi-domain expansion (Spanish, Japanese, German, Italian, Python, Cybersec)
 - LLM pool expansion (friends bring their own API keys)
