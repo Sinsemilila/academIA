@@ -158,53 +158,52 @@ async def _update_streak(user_id: int):
     """Update streak: if last_active was yesterday → increment, else reset to 1."""
     today = date.today()
     async with db.pool.acquire() as conn:
-        row = await conn.fetchrow(
-            "SELECT last_active_date, current_streak, longest_streak, freeze_count FROM streaks WHERE user_id = $1",
-            user_id,
-        )
-        if not row:
-            await conn.execute(
-                """INSERT INTO streaks (user_id, current_streak, longest_streak, last_active_date, total_sessions)
-                   VALUES ($1, 1, 1, $2, 1)""",
-                user_id, today,
-            )
-            return
-
-        last = row["last_active_date"]
-        current = row["current_streak"]
-        longest = row["longest_streak"]
-
-        if last == today:
-            return  # Already counted today
-
-        freeze_count = row.get("freeze_count", 0) if "freeze_count" in row.keys() else 0
-
-        if last and (today - last).days == 1:
-            new_streak = current + 1
-        elif last and (today - last).days == 2 and freeze_count > 0:
-            # Streak freeze: missed 1 day but have a freeze available
-            new_streak = current + 1
-            await conn.execute(
-                "UPDATE streaks SET freeze_count = freeze_count - 1, freeze_used_date = $1 WHERE user_id = $2",
-                last + timedelta(days=1), user_id,
-            )
-        else:
-            new_streak = 1
-
-        # Award freeze every 7 days of streak (max 2)
-        if new_streak > 0 and new_streak % 7 == 0 and freeze_count < 2:
-            await conn.execute(
-                "UPDATE streaks SET freeze_count = LEAST(freeze_count + 1, 2) WHERE user_id = $1",
+        async with conn.transaction():
+            row = await conn.fetchrow(
+                "SELECT last_active_date, current_streak, longest_streak, freeze_count FROM streaks WHERE user_id = $1 FOR UPDATE",
                 user_id,
             )
+            if not row:
+                await conn.execute(
+                    """INSERT INTO streaks (user_id, current_streak, longest_streak, last_active_date, total_sessions)
+                       VALUES ($1, 1, 1, $2, 1) ON CONFLICT (user_id) DO NOTHING""",
+                    user_id, today,
+                )
+                return
 
-        new_longest = max(longest, new_streak)
-        await conn.execute(
-            """UPDATE streaks SET current_streak = $1, longest_streak = $2,
-               last_active_date = $3, total_sessions = total_sessions + 1
-               WHERE user_id = $4""",
-            new_streak, new_longest, today, user_id,
-        )
+            last = row["last_active_date"]
+            current = row["current_streak"]
+            longest = row["longest_streak"]
+
+            if last == today:
+                return  # Already counted today
+
+            freeze_count = row.get("freeze_count", 0) if "freeze_count" in row.keys() else 0
+
+            if last and (today - last).days == 1:
+                new_streak = current + 1
+            elif last and (today - last).days == 2 and freeze_count > 0:
+                new_streak = current + 1
+                await conn.execute(
+                    "UPDATE streaks SET freeze_count = freeze_count - 1, freeze_used_date = $1 WHERE user_id = $2",
+                    last + timedelta(days=1), user_id,
+                )
+            else:
+                new_streak = 1
+
+            if new_streak > 0 and new_streak % 7 == 0 and freeze_count < 2:
+                await conn.execute(
+                    "UPDATE streaks SET freeze_count = LEAST(freeze_count + 1, 2) WHERE user_id = $1",
+                    user_id,
+                )
+
+            new_longest = max(longest, new_streak)
+            await conn.execute(
+                """UPDATE streaks SET current_streak = $1, longest_streak = $2,
+                   last_active_date = $3, total_sessions = total_sessions + 1
+                   WHERE user_id = $4""",
+                new_streak, new_longest, today, user_id,
+            )
 
 
 async def _update_session(user_id: int, agent: str, conversation_id: str) -> int:

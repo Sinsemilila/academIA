@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta, timezone
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -6,8 +7,8 @@ from passlib.context import CryptContext
 from . import database as db
 
 # ── Config ──────────────────────────────────────────────
-SECRET_KEY = "REDACTED_JWT_SECRET"
-REFRESH_SECRET = "REDACTED_JWT_REFRESH_SECRET"
+SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "dev-only-not-for-prod")
+REFRESH_SECRET = os.environ.get("JWT_REFRESH_SECRET", "dev-only-not-for-prod")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_DAYS = 7

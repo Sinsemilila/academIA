@@ -11,6 +11,7 @@ Run via crontab every hour:
 When no stale sessions exist, does nothing (idle).
 """
 
+import os
 import asyncio
 import asyncpg
 import httpx
@@ -24,7 +25,7 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-DB_DSN = "postgresql://sinse:REDACTED_PG_PASSWORD@127.0.0.1:5432/academie_db"
+DB_DSN = os.environ.get("DATABASE_URL", "postgresql://sinse@127.0.0.1:5432/academie_db")
 N8N_SNAPSHOT_URL = "http://127.0.0.1:5678/webhook/dify-snapshot"
 STALE_HOURS = 2
 

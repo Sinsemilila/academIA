@@ -4,7 +4,7 @@ services:
     container_name: academie-frontend
     restart: unless-stopped
     ports:
-      - "3001:3000"
+      - "127.0.0.1:3001:3000"
     networks:
       - academie-net-bridge
     depends_on:
@@ -33,12 +33,11 @@ services:
     container_name: academie-api
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     networks:
       - academie-net-bridge
-    environment:
-      - DATABASE_URL=postgresql://sinse:REDACTED_PG_PASSWORD@postgres-academie:5432/academie_db
-      - DIFY_KEY_TEACHER=REDACTED_DIFY_TEACHER_KEY
+    env_file:
+      - .env
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
       interval: 30s

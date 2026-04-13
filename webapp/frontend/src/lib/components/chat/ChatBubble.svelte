@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { marked } from 'marked';
+  import DOMPurify from 'dompurify';
   import { addToast } from '$lib/stores/toasts';
   import { userAppearance } from '$lib/stores/user';
 
@@ -28,7 +29,7 @@
   marked.setOptions({ breaks: true, gfm: true });
 
   let htmlContent = $derived(
-    role === 'assistant' ? marked.parse(content || '') as string : ''
+    role === 'assistant' ? DOMPurify.sanitize(marked.parse(content || '') as string) : ''
   );
 
   async function copyMessage() {

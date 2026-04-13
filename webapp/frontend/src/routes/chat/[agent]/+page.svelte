@@ -211,7 +211,7 @@
                 messages[streamingIdx].content = 'Erreur de connexion. Réessaie.';
               }
             }
-          } catch { /* skip */ }
+          } catch (e) { console.warn('SSE parse error:', e); }
         }
       }
 

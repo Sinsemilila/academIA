@@ -9,6 +9,7 @@ Vérification : niveau_global = B2 en DB après dernier module
 Usage : python3 e2e_promo_test.py [--clean]
 """
 
+import os
 import sys
 import json
 import time
@@ -16,14 +17,19 @@ import requests
 import psycopg2
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
-DB_HOST = "127.0.0.1"
-DB_PORT = 5432
-DB_NAME = "academie_db"
-DB_USER = "sinse"
-DB_PASS = "REDACTED_PG_PASSWORD"
+def _read_secret(name, fallback=""):
+    from pathlib import Path
+    p = Path(f"/opt/academie-shared/secrets/{name}")
+    return p.read_text().strip() if p.exists() else fallback
+
+DB_HOST = os.environ.get("DB_HOST", "127.0.0.1")
+DB_PORT = int(os.environ.get("DB_PORT", "5432"))
+DB_NAME = os.environ.get("DB_NAME", "academie_db")
+DB_USER = os.environ.get("DB_USER", "sinse")
+DB_PASS = os.environ.get("DB_PASSWORD", _read_secret("pg-password"))
 
 DIFY_URL = "http://localhost:5001/v1/chat-messages"
-DIFY_KEY = "REDACTED_DIFY_TEACHER_KEY"
+DIFY_KEY = os.environ.get("DIFY_KEY_TEACHER", _read_secret("dify-teacher-key"))
 TEST_USER = "test-e2e-promo"  # username = sys.user_id dans Teacher
 
 LITELLM_URL = "http://localhost:4000/chat/completions"

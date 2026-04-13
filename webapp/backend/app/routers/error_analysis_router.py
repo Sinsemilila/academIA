@@ -4,11 +4,14 @@ Rules layer (surface errors) + LLM monolithic (grammar/lexical).
 Called by n8n dify-snapshot workflow.
 """
 
+import os
 import logging
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Header
 from ..auth import get_current_user
 from pydantic import BaseModel
 from .. import database as db
+
+INTERNAL_TOKEN = os.environ.get("INTERNAL_API_TOKEN", "REDACTED_INTERNAL_API_TOKEN")
 from ..error_taxonomy.rules import detect_errors, RuleDetection
 from ..error_taxonomy.llm import analyze_transcript, ANALYSIS_MODEL
 from ..error_taxonomy.categories import is_valid_code
@@ -35,10 +38,13 @@ class AnalyzeResponse(BaseModel):
 
 
 @router.post("/internal/analyze-errors", response_model=AnalyzeResponse)
-async def analyze_errors(req: AnalyzeRequest):
+async def analyze_errors(req: AnalyzeRequest, x_internal_token: str = Header(None)):
     """
     Rules (surface) + LLM monolithic (grammar/lexical).
+    Protected by internal token header (called by n8n on Docker network).
     """
+    if x_internal_token != INTERNAL_TOKEN:
+        raise HTTPException(status_code=403, detail="Forbidden")
     # Input validation
     if not req.transcript or not req.transcript.strip():
         return AnalyzeResponse(status="empty_transcript", errors_detected=0, rule_errors=0, llm_errors=0, turns_analyzed=0)
@@ -135,8 +141,10 @@ async def analyze_errors(req: AnalyzeRequest):
 
 
 @router.get("/api/student/{username}/error-profile")
-async def get_error_profile(username: str, domain: str = "anglais"):
-    """Returns the student's error profile (by username, no auth). Internal/testing."""
+async def get_error_profile(username: str, domain: str = "anglais", user: dict = Depends(get_current_user)):
+    """Returns a student's error profile. Requires auth (admin only)."""
+    if not user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Admin only")
     return await _build_error_profile_by_username(username, domain)
 
 

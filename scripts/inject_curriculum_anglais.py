@@ -4,15 +4,21 @@ Injection du curriculum Anglais A1→C2 — version complète et affinée
 Généré par Claude Code / Claude Sonnet — 2026-04-05
 """
 
+import os
 import json
 import psycopg2
+from pathlib import Path
+
+def _read_secret(name, fallback=""):
+    p = Path(f"/opt/academie-shared/secrets/{name}")
+    return p.read_text().strip() if p.exists() else fallback
 
 DB_CONFIG = {
-    "host": "172.16.0.19",
-    "port": 5432,
-    "dbname": "academie_db",
-    "user": "sinse",
-    "password": "REDACTED_PG_PASSWORD",
+    "host": os.environ.get("DB_HOST", "172.16.0.19"),
+    "port": int(os.environ.get("DB_PORT", "5432")),
+    "dbname": os.environ.get("DB_NAME", "academie_db"),
+    "user": os.environ.get("DB_USER", "sinse"),
+    "password": os.environ.get("DB_PASSWORD", _read_secret("pg-password")),
 }
 
 CURRICULUM = [

@@ -7,8 +7,16 @@ Met a jour le workflow n8n dify-snapshot pour:
 4. Ecrire scores_confiance dans profils_eleves
 """
 
+import os
 import json
 import subprocess
+from pathlib import Path
+
+def _read_secret(name, fallback=""):
+    p = Path(f"/opt/academie-shared/secrets/{name}")
+    return p.read_text().strip() if p.exists() else fallback
+
+_DIFY_ADMIN_KEY = os.environ.get("DIFY_ADMIN_KEY", _read_secret("dify-admin-key"))
 
 WORKFLOW_ID = "tVfLg92ijYUvBc94"
 VERSION_ID = "fb0f3b42-e2f8-4607-929f-d0ef008e5437"
@@ -91,7 +99,7 @@ WHERE e.username = '{{ $json.username }}'""",
             "sendHeaders": True,
             "headerParameters": {
                 "parameters": [
-                    {"name": "Authorization", "value": "Bearer REDACTED_DIFY_ADMIN_KEY"},
+                    {"name": "Authorization", "value": f"Bearer {_DIFY_ADMIN_KEY}"},
                     {"name": "X-WORKSPACE-ID", "value": "4c3e17be-144c-4e7a-968e-478d6c48fb2f"}
                 ]
             },

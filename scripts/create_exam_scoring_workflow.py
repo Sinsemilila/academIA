@@ -7,13 +7,19 @@ Flow:
 Uses same credential patterns as dify-diagnostic (no credential store, headers inline).
 """
 
+import os
 import json
 import subprocess
 import uuid
 from datetime import datetime
 
 POSTGRES_CRED_ID = "NpF5tjOzvAWkHR2n"
-DIFY_ADMIN_KEY = "REDACTED_DIFY_ADMIN_KEY"
+def _read_secret(name, fallback=""):
+    from pathlib import Path
+    p = Path(f"/opt/academie-shared/secrets/{name}")
+    return p.read_text().strip() if p.exists() else fallback
+
+DIFY_ADMIN_KEY = os.environ.get("DIFY_ADMIN_KEY", _read_secret("dify-admin-key"))
 WORKSPACE_ID = "4c3e17be-144c-4e7a-968e-478d6c48fb2f"
 TEACHER_APP_ID = "39565197-c9d1-4d5b-b66f-18925de236d9"
 
