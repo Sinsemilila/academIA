@@ -17,7 +17,7 @@ logger = logging.getLogger("academie-api.error-taxonomy")
 LITELLM_URL = "http://litellm-proxy:4000/v1/chat/completions"
 # gpt-4o-mini for dev/tuning (1.5M tokens/day free, no rate limit issues)
 # Switch to groq-standard for production once tuned
-ANALYSIS_MODEL = "ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v2:DTurinhs"
+ANALYSIS_MODEL = "ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v3:DU6GUv6v"
 
 SYSTEM_PROMPT = """You analyze French speakers learning English. Identify EVERY error made by the USER. Do NOT analyze TEACHER messages.
 
@@ -277,12 +277,27 @@ async def analyze_transcript(transcript: str) -> LLMAnalysisResult:
         logger.warning("LLM returned invalid structure: %s", str(parsed)[:200])
         return LLMAnalysisResult(errors=[])
 
-    # Filter invalid codes
+    # Post-mapping: fuse weak categories into stronger ones
+    # The model outputs 63 codes, we merge confused pairs at application level
+    CATEGORY_FUSIONS = {
+        "ADV:ORDER": "WO",           # adverb order IS word order
+        "N:NUM": "N:COUNT",           # plural of uncountable = countability
+        "LEX:REGISTER": "REG:LEVEL",  # lexical register = register level
+        "DISC:COHES": "DISC:COHER",   # cohesion → coherence (too fine-grained)
+        "DISC:CONNOVER": "DISC:COHER",# connector overuse → coherence
+        "CONJ": "SENT:RUNON",         # missing conjunction = run-on
+    }
+
+    # Filter invalid codes + apply fusions
     valid_errors = []
     for error in result.errors:
-        valid_codes = [c for c in error.codes if c in TIER1_CATEGORIES]
-        if valid_codes:
-            error.codes = valid_codes
+        mapped_codes = []
+        for c in error.codes:
+            c = CATEGORY_FUSIONS.get(c, c)  # apply fusion
+            if c in TIER1_CATEGORIES:
+                mapped_codes.append(c)
+        if mapped_codes:
+            error.codes = list(dict.fromkeys(mapped_codes))  # dedupe preserving order
             valid_errors.append(error)
 
     return LLMAnalysisResult(errors=valid_errors)

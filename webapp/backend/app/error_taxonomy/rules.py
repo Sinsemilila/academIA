@@ -67,6 +67,27 @@ FRENCH_COGNATES = {
     "independance": "independence",
     "existance": "existence",
     "correspondance": "correspondence",
+    "environnement": "environment", "environement": "environment",
+    "langage": "language",
+    "exemple": "example",
+    "examen": "exam",
+    "definitly": "definitely", "definately": "definitely",
+    "necesary": "necessary", "necessaire": "necessary",
+    "occasion": "occasion",
+    "personnality": "personality", "personnalité": "personality",
+    "carreer": "career", "carrière": "career",
+    "prefere": "prefer", "préférer": "prefer",
+    "recommand": "recommend", "recommander": "recommend",
+    "ressource": "resource",
+    "occurence": "occurrence",
+    "accomodation": "accommodation",
+    "agressive": "aggressive",
+    "concience": "conscience",
+    "milion": "million",
+    "profesional": "professional",
+    "recieve": "receive",
+    "seperate": "separate",
+    "succesful": "successful",
 }
 
 # ── Spacing errors ──
@@ -83,25 +104,129 @@ PREP_CALQUES = {
     ("responsible", "of"): ("responsible", "for"),
     ("good", "in"): ("good", "at"),
     ("congratulated", "for"): ("congratulated", "on"),
+    ("listen", "the"): ("listen", "to the"),
+    ("explain", "me"): ("explain", "to me"),
+    ("arrive", "to"): ("arrive", "in/at"),
+    ("discuss", "about"): ("discuss", ""),
+    ("enter", "in"): ("enter", ""),
+    ("assist", "to"): ("attend", ""),
+}
+
+# ── Contraction map (no apostrophe → correct) ──
+CONTRACTION_MAP = {
+    "dont": "don't", "doesnt": "doesn't", "didnt": "didn't",
+    "cant": "can't", "couldnt": "couldn't", "wouldnt": "wouldn't",
+    "shouldnt": "shouldn't", "isnt": "isn't", "arent": "aren't",
+    "wasnt": "wasn't", "werent": "weren't", "hasnt": "hasn't",
+    "havent": "haven't", "hadnt": "hadn't", "wont": "won't",
+    "thats": "that's", "whos": "who's", "whats": "what's",
+    "hes": "he's", "shes": "she's", "theyre": "they're",
+    "youre": "you're", "youve": "you've", "weve": "we've",
+    "theyve": "they've", "ive": "I've", "im": "I'm",
+    "lets": "let's",
+}
+
+# ── French lexical calque patterns (regex, fix, reasoning) ──
+LEX_CALQUE_PATTERNS = [
+    (r"\bi have (\d+) years?\b", "I am \\1 years old", "French calque: 'j'ai X ans' → 'I am X years old'."),
+    (r"\bit makes (\d+) (years?|months?|weeks?)\b", "it has been \\1 \\2", "French calque: 'ça fait X ans' → 'it has been X years'."),
+    (r"\bi am agree\b", "I agree", "French calque: 'je suis d'accord' → 'I agree'."),
+    (r"\b(?:do|does|did|doing) a (walk|trip|travel|journey)\b", "take a \\1", "French calque: 'faire une promenade' → 'take a walk'."),
+    (r"\b(?:do|does|did|doing) a mistake\b", "make a mistake", "French calque: 'faire une erreur' → 'make a mistake'."),
+    (r"\b(?:do|does|did|doing) (?:a |the )?photo\b", "take a photo", "French calque: 'faire une photo' → 'take a photo'."),
+    (r"\b(?:do|does|did|doing) (?:a lot of |some )?sport\b", "play sport", "French calque: 'faire du sport' → 'play/do sport'."),
+    (r"\bpass(?:ed|es|ing)? (?:an |the |my |his |her )?exam\b", "take an exam", "French calque: 'passer un examen' → 'take an exam' (pass = réussir)."),
+    (r"\bmade? a (?:long |big )?travel\b", "took a trip", "French calque: 'faire un voyage' → 'take a trip'."),
+    (r"\bopen(?:s|ed|ing)? the light\b", "turn on the light", "French calque: 'ouvrir la lumière' → 'turn on the light'."),
+    (r"\bclose[ds]? the light\b", "turn off the light", "French calque: 'fermer la lumière' → 'turn off the light'."),
+    (r"\bprofit of\b", "take advantage of", "French calque: 'profiter de' → 'take advantage of'."),
+    (r"\bsupport (him|her|them|it|this|that)\b", "stand \\1", "Possible false friend: 'supporter' (FR) = 'to stand/bear', not 'to support'."),
+]
+
+# ── Uncountable nouns (plural → singular) ──
+# ── Common preposition errors (non-French) ──
+PREP_ERRORS = [
+    (r"\barrive to\b", "arrive to", "arrive in/at", "Wrong preposition: 'arrive to' → 'arrive in/at'."),
+    (r"\bdiscuss about\b", "discuss about", "discuss", "No preposition needed: 'discuss about' → 'discuss'."),
+    (r"\benter in\b", "enter in", "enter", "No preposition needed: 'enter in' → 'enter'."),
+    (r"\blisten (?!to\b)[a-z]", "listen", "listen to", "Missing preposition: 'listen' → 'listen to'."),
+]
+
+UNCOUNTABLE_NOUNS = {
+    "informations": "information", "advices": "advice",
+    "furnitures": "furniture", "luggages": "luggage",
+    "homeworks": "homework", "equipments": "equipment",
+    "knowledges": "knowledge", "researches": "research",
+    "feedbacks": "feedback", "evidences": "evidence",
+    "musics": "music", "moneys": "money",
+    "behaviours": "behaviour", "behaviors": "behavior",
 }
 
 def detect_errors(text: str) -> list[RuleDetection]:
     """Run deterministic rules on raw user text. For monolithic pipeline."""
     results = []
-    # Lowercase 'i' as pronoun
+    text_lower = text.lower()
+
+    # ── ORTH:CASE — Lowercase 'i' as pronoun ──
     if re.search(r"(?<![a-zA-Z])i(?=[\s''])", text):
         results.append(RuleDetection("ORTH:CASE", "i", "I", "Pronoun 'I' must be capitalized."))
-    # Spacing errors
-    text_lower = text.lower()
-    for wrong in SPACING_ERRORS:
-        if re.search(rf"\b{re.escape(wrong)}\b", text_lower):
-            fix = SPACING_FIX.get(wrong, wrong)
-            results.append(RuleDetection("ORTH:SPACE", wrong, fix, f"'{wrong}' should be written as '{fix}'."))
-    # Proper nouns
+
+    # ── ORTH:CASE — Proper nouns ──
     for word in re.findall(r"\b[a-z]+\b", text):
         if word in PROPER_NOUNS and text.find(word) > 0:
             results.append(RuleDetection("ORTH:CASE", word, word.capitalize(), f"'{word.capitalize()}' is a proper noun."))
             break
+
+    # ── ORTH:SPACE — Joined words ──
+    for wrong in SPACING_ERRORS:
+        if re.search(rf"\b{re.escape(wrong)}\b", text_lower):
+            fix = SPACING_FIX.get(wrong, wrong)
+            results.append(RuleDetection("ORTH:SPACE", wrong, fix, f"'{wrong}' should be written as '{fix}'."))
+
+    # ── PUNCT:APOST — Missing apostrophes in contractions ──
+    for wrong, fix in CONTRACTION_MAP.items():
+        if re.search(rf"\b{re.escape(wrong)}\b", text_lower):
+            results.append(RuleDetection("PUNCT:APOST", wrong, fix, f"Missing apostrophe: '{wrong}' → '{fix}'."))
+
+    # ── SPELL:COGNATE — French cognate spelling ──
+    for french, english in FRENCH_COGNATES.items():
+        if re.search(rf"\b{re.escape(french)}\b", text_lower):
+            results.append(RuleDetection("SPELL:COGNATE", french, english, f"French spelling '{french}' → English '{english}'."))
+
+    # ── PREP:CALQUE — French preposition calques ──
+    for (word, fr_prep), (_, en_prep) in PREP_CALQUES.items():
+        if re.search(rf"\b{re.escape(word)}\s+{re.escape(fr_prep)}\b", text_lower):
+            results.append(RuleDetection("PREP:CALQUE", f"{word} {fr_prep}", f"{word} {en_prep}",
+                f"French calque: '{word} {fr_prep}' → '{word} {en_prep}'."))
+    # "since X years/months" → "for X years/months"
+    m = re.search(r"\bsince\s+(\d+)\s+(years?|months?|weeks?|days?|hours?)", text_lower)
+    if m:
+        results.append(RuleDetection("PREP:CALQUE", f"since {m.group(0).split('since ')[1]}", f"for {m.group(0).split('since ')[1]}",
+            "French calque: 'depuis X ans' → use 'for' for duration, not 'since'."))
+
+    # ── LEX:CALQUE — French expression calques ──
+    for pattern, fix, reasoning in LEX_CALQUE_PATTERNS:
+        if re.search(pattern, text_lower):
+            m = re.search(pattern, text_lower)
+            results.append(RuleDetection("LEX:CALQUE", m.group(0), fix, reasoning))
+
+    # ── N:COUNT — Uncountable nouns with plural ──
+    for wrong, fix in UNCOUNTABLE_NOUNS.items():
+        if re.search(rf"\b{re.escape(wrong)}\b", text_lower):
+            results.append(RuleDetection("N:COUNT", wrong, fix, f"'{fix}' is uncountable — no plural form."))
+
+    # ── V:MODAL — modal + to (French "devoir de" pattern) ──
+    for modal in ["must", "can", "could", "should", "would", "may", "might", "will", "shall"]:
+        if re.search(rf"\b{modal}\s+to\s+[a-z]", text_lower):
+            results.append(RuleDetection("V:MODAL", f"{modal} to", modal,
+                f"No 'to' after modal verb: '{modal} to' → '{modal}'."))
+            break
+
+    # ── PREP — common non-French preposition errors ──
+    for pattern, orig, fix, reason in PREP_ERRORS:
+        if re.search(pattern, text_lower):
+            results.append(RuleDetection("PREP", orig, fix, reason))
+
     return results
 
 
