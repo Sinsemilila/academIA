@@ -8,6 +8,7 @@ from ..models import ChatRequest
 from ..auth import get_current_user
 from ..rate_limit import limiter
 from .. import database as db
+from ..error_taxonomy.rules import detect_errors
 
 router = APIRouter(tags=["chat"])
 
@@ -54,6 +55,14 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         dify_inputs["mock_exam"] = req.mock_exam
     if req.mode_override:
         dify_inputs["mode_override"] = req.mode_override
+
+    # Real-time error feedback (rules layer only, zero LLM cost)
+    detections = detect_errors(req.message)
+    if detections:
+        lines = [f"- \"{d.original_text}\" → \"{d.suggested_correction}\" ({d.reasoning})" for d in detections]
+        dify_inputs["error_feedback"] = "\n".join(lines)
+    else:
+        dify_inputs["error_feedback"] = ""
 
     payload = {
         "inputs": dify_inputs,

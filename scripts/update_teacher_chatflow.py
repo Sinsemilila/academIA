@@ -250,7 +250,8 @@ def main(dialogue_count: int, profil_text: str, concept_keys_json: str, scores_j
          examen_en_cours_json: str, exam_scoring_recovered: bool,
          review_mode: str, derniere_session: str,
          minutes_since_last: int,
-         mock_exam: str, mode_override: str) -> dict:
+         mock_exam: str, mode_override: str,
+         error_feedback: str) -> dict:
     n = int(dialogue_count or 0)
     mode = str(mode_apprentissage or 'libre')
     # Mode override from frontend toggle (immediate effect)
@@ -758,7 +759,8 @@ def main(dialogue_count: int, profil_text: str, concept_keys_json: str, scores_j
         'exam_active': exam_active,
         'exam_modules_json': exam_modules_json,
         'exam_resume_needed': exam_resume_needed,
-        'scoring_recovery': scoring_recovery
+        'scoring_recovery': scoring_recovery,
+        'error_feedback': '' if exam_active or mock_exam_instruction else str(error_feedback or '')
     }
 """
 
@@ -1104,7 +1106,12 @@ PROMPT_SESSION = (
     "- Tu ne donnes JAMAIS la reponse a ta propre question\n"
     "- Ton naturel : pas de titres ##, pas de tableaux, pas de listes a puces sauf si indispensable\n"
     "- Tu tutoies\n\n"
-    "PROFIL :\n{{#code_profil_check.profil_text#}}\n{{#conversation.session_snapshot#}}\n"
+    "PROFIL :\n{{#code_profil_check.profil_text#}}\n{{#conversation.session_snapshot#}}\n\n"
+    "ERREURS DETECTEES dans le dernier message de l'eleve :\n"
+    "{{#code_turn_check.error_feedback#}}\n"
+    "Si des erreurs sont listees ci-dessus : mentionne-les naturellement dans ta reponse "
+    "(pas de liste mecanique, integre la correction dans le flux de la conversation). "
+    "Si vide : ignore cette section.\n\n"
     "Tour de conversation : {{#code_turn_check.tour#}}\n\n"
     "CONCEPTS DE CETTE SESSION (choisis par le systeme) :\n"
     "{{#code_turn_check.selected_concepts#}}\n\n"
@@ -1310,9 +1317,17 @@ def patch_graph(graph):
                     "required": False,
                     "max_length": 20,
                     "default": ""
+                },
+                {
+                    "type": "text-input",
+                    "variable": "error_feedback",
+                    "label": "error_feedback",
+                    "required": False,
+                    "max_length": 1000,
+                    "default": ""
                 }
             ]
-            print("  Patched: start node (3 inputs: minutes_since_last, mock_exam, mode_override)")
+            print("  Patched: start node (4 inputs: minutes_since_last, mock_exam, mode_override, error_feedback)")
 
         # --- Code nodes ---
         if nid == "code_profil_check":
@@ -1367,7 +1382,8 @@ def patch_graph(graph):
                 {"variable": "derniere_session", "value_selector": ["code_profil_check", "derniere_session"]},
                 {"variable": "minutes_since_last", "value_selector": ["1775343637677", "minutes_since_last"]},
                 {"variable": "mock_exam", "value_selector": ["1775343637677", "mock_exam"]},
-                {"variable": "mode_override", "value_selector": ["1775343637677", "mode_override"]}
+                {"variable": "mode_override", "value_selector": ["1775343637677", "mode_override"]},
+                {"variable": "error_feedback", "value_selector": ["1775343637677", "error_feedback"]}
             ]
             data["outputs"] = {
                 "is_first_turn": {"type": "boolean", "children": None},
@@ -1386,7 +1402,8 @@ def patch_graph(graph):
                 "exam_active": {"type": "boolean", "children": None},
                 "exam_modules_json": {"type": "string", "children": None},
                 "exam_resume_needed": {"type": "boolean", "children": None},
-                "scoring_recovery": {"type": "boolean", "children": None}
+                "scoring_recovery": {"type": "boolean", "children": None},
+                "error_feedback": {"type": "string", "children": None}
             }
             print("  Patched: code_turn_check")
 
