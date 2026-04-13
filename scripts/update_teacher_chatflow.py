@@ -340,18 +340,26 @@ def main(dialogue_count: int, profil_text: str, concept_keys_json: str, scores_j
     all_tested = len(untested) == 0
     high_mastery = nb_total > 0 and len(mastered) >= nb_total * 0.8
 
-    if all_tested and high_mastery and bool(error_exam_eligible):
-        if mode == 'structure':
+    # Exam recommendation (advisor, not gatekeeper)
+    # error_exam_eligible NOT used as gate — errors shape exam content, not access
+    exam_recommendation = "not_ready"
+    if mode == 'structure':
+        if all_tested and high_mastery:
+            exam_recommendation = "recommended"
             promotion_ready = True
-        else:
+        elif high_mastery or pct_mastered >= 60:
+            exam_recommendation = "approaching"
+    else:
+        if all_tested and high_mastery:
             exploring_next = True
-    elif not all_tested and high_mastery:
+
+    if not all_tested and high_mastery:
         approaching_promo = True
 
     # --- COOLDOWN EXAMEN ---
     cooldown_met = True
     cooldown_reason = ""
-    if promotion_ready and dernier_examen:
+    if dernier_examen:
         exam_date_str = dernier_examen.get("date", "")
         days_since = 999
         if exam_date_str:
@@ -362,17 +370,29 @@ def main(dialogue_count: int, profil_text: str, concept_keys_json: str, scores_j
             except:
                 days_since = 999
 
-        need_days = days_since < 7
-        need_sessions = sessions_since < 5
+        # Progressive cooldown: escalates with exam attempts
+        exam_attempts = int(nb_examens or 0)
+        if exam_attempts <= 1:
+            cd_days, cd_sess = 3, 3
+        elif exam_attempts == 2:
+            cd_days, cd_sess = 7, 5
+        else:
+            cd_days, cd_sess = 14, 8
+
+        need_days = days_since < cd_days
+        need_sessions = sessions_since < cd_sess
 
         if need_days or need_sessions:
             cooldown_met = False
             parts = []
             if need_days:
-                parts.append(str(7 - days_since) + "j avant prochaine proposition")
+                parts.append(str(cd_days - days_since) + "j avant prochaine proposition")
             if need_sessions:
-                parts.append(str(5 - sessions_since) + " sessions restantes")
+                parts.append(str(cd_sess - sessions_since) + " sessions restantes")
             cooldown_reason = " + ".join(parts)
+
+    if not cooldown_met and exam_recommendation in ("recommended", "approaching"):
+        exam_recommendation = "cooldown"
 
     selected = []
 
@@ -518,9 +538,9 @@ def main(dialogue_count: int, profil_text: str, concept_keys_json: str, scores_j
             ">>> FIN INSTRUCTION PRIORITAIRE <<<"
         )
 
-    if promotion_ready and cooldown_met:
-        nxt = next_niveau or "niveau suivant"
-        promotion_msg = "PROMOTION DISPONIBLE"
+    nxt = next_niveau or "niveau suivant"
+    if exam_recommendation == "recommended":
+        promotion_msg = "PROMOTION RECOMMANDEE — " + str(int(pct_mastered)) + "% maitrise. Je te conseille de passer l'examen " + nxt + " !"
         plan_prefix = (
             ">>> INSTRUCTION PRIORITAIRE — A SUIVRE AVANT TOUT <<<\n"
             "L'eleve maitrise " + str(int(pct_mastered)) + "% du " + niveau + ".\n"
@@ -531,8 +551,10 @@ def main(dialogue_count: int, profil_text: str, concept_keys_json: str, scores_j
             "Puis affiche le plan normalement.\n"
             ">>> FIN INSTRUCTION PRIORITAIRE <<<"
         )
-    elif promotion_ready and not cooldown_met:
-        promotion_msg = "COOLDOWN ACTIF (" + cooldown_reason + ") — ne pas proposer l'examen mais l'eleve peut toujours le demander"
+    elif exam_recommendation == "cooldown":
+        promotion_msg = "COOLDOWN ACTIF (" + cooldown_reason + ") — ne pas proposer l'examen mais l'eleve peut le demander"
+    elif exam_recommendation == "approaching":
+        promotion_msg = "EXAMEN ACCESSIBLE — " + str(int(pct_mastered)) + "% maitrise. L'eleve peut demander l'examen s'il se sent pret."
     elif approaching_promo:
         promotion_msg = "QUASI-PRET : " + str(int(pct_mastered)) + "% maitrise mais " + str(len(untested)) + " concept(s) jamais travaille(s). On les couvre d'abord."
     elif mastered_but_fresh and not promotion_ready:
@@ -1086,14 +1108,16 @@ PROMPT_SESSION = (
     "STATUT EXAMEN : {{#code_turn_check.promotion_msg#}}\n\n"
     "=== DETECTION EXAMEN (PRIORITAIRE) ===\n"
     'Si l\'eleve demande explicitement l\'examen (ex: "examen", "je veux l\'examen", "exam", "je suis pret") :\n'
-    "  → Si STATUT EXAMEN contient 'PROMOTION DISPONIBLE' :\n"
-    '    Reponds UNIQUEMENT : "Parfait, on passe en mode examen !"\n'
-    "    Ajoute [EXAM_START] sur une ligne separee EN DESSOUS. Rien d'autre.\n"
-    "  → Si STATUT EXAMEN ne contient PAS 'PROMOTION DISPONIBLE' :\n"
-    "    REFUSE l'examen. Explique en 1-2 phrases qu'il faut d'abord couvrir davantage de concepts du niveau.\n"
-    "    Redirige vers les concepts selectionnes. N'ajoute JAMAIS [EXAM_START].\n"
+    "  → Si STATUT EXAMEN contient 'COOLDOWN' :\n"
+    "    Explique le delai restant en 1 phrase. N'ajoute PAS [EXAM_START].\n"
+    "  → Si STATUT EXAMEN contient 'RECOMMANDEE' :\n"
+    '    Reponds : "Parfait, on passe en mode examen !"\n'
+    "    Ajoute [EXAM_START] sur une ligne separee EN DESSOUS.\n"
+    "  → SINON (y compris si ACCESSIBLE ou CONTINUE) :\n"
+    '    Previens en 1 phrase : "Tu n\'as couvert que X% du niveau, ca va etre un vrai defi !"\n'
+    '    Puis : "Mais on y va si tu es motive !"\n'
+    "    Ajoute [EXAM_START] sur une ligne separee EN DESSOUS.\n"
     "Ne mets JAMAIS [EXAM_START] si l'eleve n'a PAS demande explicitement l'examen.\n"
-    "Ne mets JAMAIS [EXAM_START] si STATUT EXAMEN ne contient pas 'PROMOTION DISPONIBLE'.\n"
     "=== FIN DETECTION EXAMEN ===\n\n"
     "=== DETECTION REVISION LACUNES ===\n"
     'Si l\'eleve demande explicitement a revoir ses lacunes / retravailler ses points faibles / '
@@ -1159,6 +1183,15 @@ PROMPT_SESSION = (
     "Drill rapide de revision. Defi direct, contexte varie.\n"
     "Feedback court (1 ligne).\n\n"
     "=== FIN APPROCHE TTT ===\n\n"
+    "=== STYLE DE CORRECTION SELON LE TYPE D'ERREUR ===\n"
+    "Adapte ta correction au type d'erreur detecte :\n"
+    "- Erreurs de GRAMMAIRE (temps verbaux, accord, structure de phrase) :\n"
+    "  → Metalinguistique : 'Reflechis au temps que tu utilises ici' (pousse l'auto-correction)\n"
+    "- Erreurs de TRANSFERT L1 (calque francais, preposition, faux-ami) :\n"
+    "  → Correction explicite avec contraste : 'En francais on dit X, mais en anglais c'est Y parce que...'\n"
+    "- Erreurs de SURFACE (orthographe, registre, vocabulaire) :\n"
+    "  → Reformulation naturelle : repete la phrase correctement sans insister sur l'erreur\n"
+    "=== FIN STYLE DE CORRECTION ===\n\n"
     "VARIETE DE CONTEXTES :\n"
     "Alterne : sport, technologie, voyage, famille, travail, culture, environnement, cuisine, cinema.\n"
     "Ne repete jamais le meme domaine deux questions de suite."
