@@ -25,14 +25,11 @@ Mismatch → ABORT + alert Sinse immediately.
 Read `projects/<project>/HANDOFF-<agent>.md`.
 Missing → first session, skip.
 
-## 5b. Resume from checkpoint (if present)
-Check `.session-progress` file in current dir or $HOME.
-Present → restart from STEP indicated.
-
 ## 6. Git sync
 - `git status -sb`
 - `git log --oneline -5`
-- `git fetch origin && git merge origin/main`
+- If remote exists (`git remote | grep -q origin`): `git fetch origin && git merge origin/main`
+- Else (local-only repo): `git merge main 2>/dev/null || true` — no remote, multi-agent is local
 - Conflict → STOP + ask Sinse.
 
 ## 7. Check pending merge requests

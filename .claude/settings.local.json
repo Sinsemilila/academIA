@@ -1,19 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(curl -s -X POST http://127.0.0.1:5678/webhook/dify-profil-update -H 'Content-Type: application/json' -d '{\"username\":\"01225ee1-6943-4b2e-b45f-d4b86f06fee7\",\"domaine\":\"anglais\",\"niveau_global\":\"B1\",\"lacunes\":\"Test lacunes\"}')",
       "Bash(docker exec postgres-academie psql -U sinse -d academie_db -c ':*)",
       "Bash(python3:*)",
       "Bash(docker cp:*)",
       "Bash(docker exec:*)",
       "Bash(docker restart:*)",
-      "Bash(curl -s -X POST http://127.0.0.1:5678/webhook/dify-snapshot -H 'Content-Type: application/json' -d '{\"username\":\"01225ee1-6943-4b2e-b45f-d4b86f06fee7\",\"domaine\":\"anglais\",\"conversation_id\":\"05a75f10-9f23-48e1-869c-9fcd4cccd3ca\"}')",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:steipete.me)",
-      "Read(//root/sinse-workspace/**)",
-      "Bash(wc -l /root/sinse-workspace/context/*.md)"
+      "Read(//root/sinse-workspace/**)"
     ]
   }
 }
-// test

@@ -70,8 +70,14 @@ Option E applies (D27-D32). Three possible outcomes:
 "✅ Handoff complete + arbiter-approved merge to main (tag: deploy-YYYY-MM-DD-HHMM)"
 
 **Outcome C — MERGE-REQUEST created (HUMAN_REQUIRED or ARBITER_NO_GO):**
-"✅ Handoff complete. <N> commits pushed. ⚠️ MERGE-REQUEST created — review: projects/<project>/merge-requests/<file>"
+Output exactly:
+```
+✅ Handoff complete. <N> commits pushed.
+⚠️ Merge en attente — décision requise :
+   → Pour merger  : dis-moi "merge-approve"
+   → Pour rejeter : dis-moi "merge-reject"
+```
+→ STOP. Do NOT call merge-approve. Do NOT call merge-reject. Wait for Sinse.
 
 ## 7. Cleanup
-- Remove `.session-progress` file (checkpoint) if present
 - One-line confirmation only. No extended report.
