@@ -737,8 +737,8 @@ def main(dialogue_count: int, profil_text: str, concept_keys_json: str, scores_j
                 "Pose UNE question (traduction FR→EN, ou phrase a completer, ou correction d'erreur).\n"
                 "Maximum 2 lignes.\n\n"
                 "Si l'eleve a deja repondu a la question precedente :\n"
-                "- Correct : ✅ + pourquoi en 1 ligne\n"
-                "- Incorrect : ❌ sa reponse → ✅ la bonne + explication en 2 lignes max\n"
+                "- NE CORRIGE PAS. NE donne PAS la bonne reponse. NE dis PAS si c'est correct ou non.\n"
+                "- Dis juste 'Suivante !' et pose IMMEDIATEMENT la question sur le concept ci-dessus.\n"
                 ">>> FIN QUIZ <<<"
             )
 
