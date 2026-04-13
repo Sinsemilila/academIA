@@ -1,83 +1,36 @@
 ---
-description: Session end — update state, commit, push, merge
+description: Session end — save state, commit, push
 ---
 
-Session end. Execute in order. No extended report.
+Session end. Execute in order.
 
-## 1. Pre-checks
+## 1. Pre-check
 - `smoke-test --deep`
-- Fail → STOP + fix before continuing. Do NOT proceed.
-- `git status -sb`
+- Fail → STOP + fix before continuing.
 
-## 2. Update project state
-- `STATE.md`: current state snapshot (if significant global change)
-- `TODO.md`: CLAIMED → DONE where completed, keep CLAIMED for unfinished
-- `CHANGELOG.md`: append via `log <type> "<message>"` tool (D19)
-- `DECISIONS.md`: append only if important decision made
+## 2. Update state
+- `TODO.md`: mark completed tasks as DONE.
+- `CHANGELOG.md`: append via `log <type> "<message>"` tool.
 
-## 3. Write HANDOFF-<agent>.md
-Overwrite `projects/<project>/HANDOFF-<agent>.md` with 7-section template (D18):
-
+## 3. Write SESSION.md
+Overwrite `projects/academie-ia/SESSION.md`:
 ```
-# HANDOFF — <agent> — <YYYY-MM-DD HH:MM>
+# Session — YYYY-MM-DD
 
-## 1. Scope/Status
-- <bullets>
+## Done
+- bullet list of what was accomplished
 
-## 2. Working tree
-- Branch: <name>
-- Modified: <count>
-- Unpushed: <count>
-- Clean: yes/no
+## Next
+- bullet list of suggested next steps
 
-## 3. Branch/PR/CI
-- Ahead of main: <N> commits
-- PR: <link or none>
-- CI: <status or none>
-
-## 4. Tests/checks
-- smoke-test --deep: <result>
-- Manual: <what>
-
-## 5. Next steps
-1. ...
-2. ...
-
-## 6. Risks/gotchas
-- ...
-
-## 7. Open questions
-- Waiting for Sinse on: ...
+## Gotchas
+- bullet list of risks/issues (if any, omit section if none)
 ```
 
-## 4. Stage + commit
-Use `committer` — NEVER `git add .` or `git commit` direct.
-`committer "[<type>] <message>" <file1> <file2> ...`
-Pre-commit hook runs gitleaks → blocks if secret detected.
+## 4. Commit + push
+- `committer "[<type>] <message>" <files...>` for project code (in /opt/academie/)
+- `committer "[docs] Session handoff" <files...>` for workspace state (in ~/sinse-workspace/)
+- `git push origin main` (both repos if changed)
 
-## 5. Push
-`git push origin <branch>`
-Pre-push hook runs `smoke-test --deep` → blocks if fail.
-
-## 6. Attempt merge (MANDATORY in /handoff)
-Run `merge-to-main`.
-Option E applies (D27-D32). Three possible outcomes:
-
-**Outcome A — AUTO_MERGE:**
-"✅ Handoff complete + auto-merged to main (tag: deploy-YYYY-MM-DD-HHMM)"
-
-**Outcome B — ARBITER approved (after cross-review):**
-"✅ Handoff complete + arbiter-approved merge to main (tag: deploy-YYYY-MM-DD-HHMM)"
-
-**Outcome C — MERGE-REQUEST created (HUMAN_REQUIRED or ARBITER_NO_GO):**
-Output exactly:
-```
-✅ Handoff complete. <N> commits pushed.
-⚠️ Merge en attente — décision requise :
-   → Pour merger  : dis-moi "merge-approve"
-   → Pour rejeter : dis-moi "merge-reject"
-```
-→ STOP. Do NOT call merge-approve. Do NOT call merge-reject. Wait for Sinse.
-
-## 7. Cleanup
-- One-line confirmation only. No extended report.
+## 5. Confirmation
+One-line confirmation only.
