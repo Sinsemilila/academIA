@@ -23,6 +23,17 @@ async def login(req: LoginRequest, request: Request):
     if not row or not verify_password(req.password, row["password_hash"]):
         raise HTTPException(status_code=401, detail="Identifiants incorrects")
 
+    # Ensure eleve_id points to the correct eleve (fix UUID drift from Dify)
+    async with db.pool.acquire() as conn:
+        eleve = await conn.fetchrow(
+            "SELECT id FROM eleves WHERE username = $1", req.username
+        )
+        if eleve:
+            await conn.execute(
+                "UPDATE users SET eleve_id = $1 WHERE id = $2 AND (eleve_id IS NULL OR eleve_id != $1)",
+                eleve["id"], row["id"],
+            )
+
     access = create_access_token(row["id"], row["username"])
     refresh = create_refresh_token(row["id"], row["username"])
     return TokenResponse(access_token=access, refresh_token=refresh)
