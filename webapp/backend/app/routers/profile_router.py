@@ -110,10 +110,30 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
 
 
 async def _derive_concept_scores(eleve_id: int, domain: str, niveau: str) -> dict:
-    """Derive per-concept scores: direct concept-level data where available, family fallback."""
+    """Per-concept scores: scores_confiance (n8n LLM) primary, error-profile family fallback."""
+    import json as _json
+
+    # Primary: scores_confiance maintained by n8n snapshot workflow (per-concept LLM eval)
+    async with db.pool.acquire() as conn:
+        sc_raw = await conn.fetchval(
+            "SELECT scores_confiance FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2",
+            eleve_id, domain)
+
+    scores = {}
+    if sc_raw:
+        sc = sc_raw if isinstance(sc_raw, dict) else _json.loads(sc_raw or "{}")
+        for key, data in sc.items():
+            if isinstance(data, dict) and "score" in data:
+                scores[key] = data["score"]
+
+    # Fallback: error-profile family-level for concepts not yet in scores_confiance
     from .error_analysis_router import _build_error_profile
     profile = await _build_error_profile(eleve_id, domain)
-    return profile.get("concept_scores", {})
+    for key, score in profile.get("concept_scores", {}).items():
+        if key not in scores:
+            scores[key] = score
+
+    return scores
 
 
 @router.get("/api/streak")

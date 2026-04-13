@@ -161,9 +161,11 @@ async def _build_error_profile(eleve_id: int, domain: str):
 
     async with db.pool.acquire() as conn:
         profil = await conn.fetchrow(
-            "SELECT niveau_global FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2",
+            "SELECT niveau_global, scores_confiance FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2",
             eleve_id, domain)
         niveau = profil["niveau_global"] if profil and profil["niveau_global"] else "B1"
+        sc_raw = profil["scores_confiance"] if profil else None
+        scores_confiance = sc_raw if isinstance(sc_raw, dict) else _json.loads(sc_raw or "{}") if sc_raw else {}
 
         rows = await conn.fetch(
             """SELECT error_code, turn_number, session_id FROM error_log
@@ -175,7 +177,7 @@ async def _build_error_profile(eleve_id: int, domain: str):
             domain, niveau)
         concept_keys = ck_row if isinstance(ck_row, list) else _json.loads(ck_row or "[]")
 
-    return compute_error_profile([dict(r) for r in rows], niveau, concept_keys)
+    return compute_error_profile([dict(r) for r in rows], niveau, concept_keys, scores_confiance)
 
 
 async def _build_error_profile_by_username(username: str, domain: str):

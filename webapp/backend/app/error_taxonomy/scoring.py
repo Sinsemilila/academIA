@@ -51,7 +51,9 @@ def get_concept_family(concept: str) -> str | None:
     return m.get("concept_families", {}).get(concept)
 
 
-def compute_error_profile(error_rows: list[dict], niveau_global: str, concept_keys: list[str] | None = None) -> dict:
+def compute_error_profile(error_rows: list[dict], niveau_global: str,
+                          concept_keys: list[str] | None = None,
+                          scores_confiance: dict | None = None) -> dict:
     """
     Compute unified error profile with progression.
 
@@ -59,6 +61,7 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str, concept_ke
         error_rows: list of dicts with keys: error_code, turn_number, session_id
         niveau_global: CEFR level string (e.g. "B1")
         concept_keys: list of concept keys for the current level (from curriculums table)
+        scores_confiance: optional per-concept scores from profils_eleves (n8n LLM eval)
 
     Returns complete profile with families, progression, and recommendation.
     """
@@ -176,15 +179,22 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str, concept_ke
         and total_sessions >= min_sessions
     )
 
-    # Progress bar: average concept score — per-concept when available, family fallback otherwise
+    # Progress bar: scores_confiance (n8n LLM) primary, error-profile fallback
     concept_scores = []
-    concept_scores_map = {}  # concept_key → score (exposed in return for _derive_concept_scores)
+    concept_scores_map = {}  # concept_key → score (exposed in return)
+    sc = scores_confiance or {}
     if concept_keys:
         for ck in concept_keys:
-            score = _score_concept(
-                ck, concept_errors_direct, concept_sessions_direct,
-                families_result, max_error_rate, min_sessions,
-            )
+            # Primary: scores_confiance from n8n LLM evaluation
+            sc_entry = sc.get(ck)
+            if isinstance(sc_entry, dict) and "score" in sc_entry:
+                score = sc_entry["score"]
+            else:
+                # Fallback: error-based scoring (session_id concept data or family)
+                score = _score_concept(
+                    ck, concept_errors_direct, concept_sessions_direct,
+                    families_result, max_error_rate, min_sessions,
+                )
             concept_scores.append(score)
             concept_scores_map[ck] = score
 
