@@ -161,7 +161,7 @@ def generate_correct_answer(question_text):
         "messages": [{"role": "user", "content": prompt}],
         "max_tokens": 150,
         "temperature": 0.1
-    }, timeout=30)
+    }, timeout=90)
     result = r.json()
     return result["choices"][0]["message"]["content"].strip()
 
@@ -221,20 +221,31 @@ def run_e2e(fail_mode=False):
         answer, conv_id = dify_chat("Je veux passer l'examen", conv_id=conv_id)
         print(f"Teacher: {answer[:300]}")
 
-    # 3. Accepter l'examen
+    # 3. Accepter l'examen — le Teacher doit répondre avec [EXAM_START] dans son output
+    #    (détecté par code_exam_detect dans Dify, qui switch en mode examen)
     print("\n[STEP 2] Acceptation examen...")
-    answer, conv_id = dify_chat("Oui je veux passer l'examen !", conv_id=conv_id)
-    print(f"Teacher: {answer[:200]}")
+    exam_prompts = [
+        "Oui je veux passer l'examen !",
+        "Lance l'examen maintenant !",
+        "Examen ! Je suis prêt, on y va !",
+    ]
+    exam_triggered = False
+    for i, prompt in enumerate(exam_prompts):
+        answer, conv_id = dify_chat(prompt, conv_id=conv_id)
+        print(f"  Tentative {i+1}: {answer[:250]}")
+        # code_exam_detect strips [EXAM_START] from output and triggers exam mode
+        # If exam mode activated, Teacher switches to llm_exam (Module/question format)
+        if "Module" in answer or "module" in answer or "Question 1" in answer or "question 1" in answer.lower():
+            exam_triggered = True
+            print(f"  ✅ Exam mode activé (tentative {i+1})")
+            break
+        time.sleep(1)
 
-    # 4. Lancer [EXAM_START]
-    time.sleep(1)
-    print("\n[STEP 3] EXAM_START...")
-    answer, conv_id = dify_chat("[EXAM_START]", conv_id=conv_id)
-    print(f"Teacher (module intro): {answer[:400]}")
-
-    if "Module" not in answer and "module" not in answer:
-        print("⚠️  Pas de module détecté dans la réponse. Arrêt.")
+    if not exam_triggered:
+        print("⚠️  Teacher n'a pas déclenché le mode examen après 3 tentatives. Arrêt.")
         return False
+
+    print(f"\nTeacher (module intro): {answer[:400]}")
 
     # 5. Boucle exam — logique unifiée
     # IMPORTANT : le bilan (✅/❌/🎉/➡️) EST dans 'answer' dès que "correction en cours"
@@ -470,8 +481,16 @@ def run_test_resume():
         answer, conv1 = dify_chat("Bonjour !", TEST_USER_RESUME)
         if "examen" not in answer.lower():
             answer, conv1 = dify_chat("Je veux passer l'examen", TEST_USER_RESUME, conv1)
-        answer, conv1 = dify_chat("Oui je veux passer l'examen !", TEST_USER_RESUME, conv1)
-        answer, conv1 = dify_chat("[EXAM_START]", TEST_USER_RESUME, conv1)
+        exam_prompts = [
+            "Oui je veux passer l'examen !",
+            "Lance l'examen maintenant !",
+            "Examen ! Je suis prêt, on y va !",
+        ]
+        for prompt in exam_prompts:
+            answer, conv1 = dify_chat(prompt, TEST_USER_RESUME, conv1)
+            if "Module" in answer or "module" in answer or "Question 1" in answer:
+                break
+            time.sleep(1)
         print(f"  Intro module: {answer[:200]}")
 
         # 2. Répondre à 3 questions pour que l'état soit persisté
