@@ -71,7 +71,8 @@ nodes = [
     c.concept_groups,
     cnext.concept_keys as next_concept_keys,
     nm.next_niveau,
-    COALESCE(ss.sessions_count, 0) as sessions_depuis_examen
+    COALESCE(ss.sessions_count, 0) as sessions_depuis_examen,
+    COALESCE(p.error_exam_eligible, false) as error_exam_eligible
   FROM eleves e
   LEFT JOIN profils_eleves p ON p.eleve_id = e.id AND p.domaine = '{{ $json.query.domaine }}'
   LEFT JOIN LATERAL (
@@ -210,7 +211,8 @@ return [{ json: {
   sessions_depuis_examen: parseInt(d.sessions_depuis_examen) || 0,
   concept_weights: conceptWeights,
   concept_groups: conceptGroups,
-  derniere_session: d.derniere_session || null
+  derniere_session: d.derniere_session || null,
+  error_exam_eligible: !!d.error_exam_eligible
 } }];"""
         },
         "typeVersion": 2

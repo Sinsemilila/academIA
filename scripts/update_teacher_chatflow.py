@@ -91,6 +91,7 @@ def main(body: str) -> dict:
     concept_weights = {}
     concept_groups = {}
     derniere_session = ""
+    error_exam_eligible = False
 
     raw = str(body).strip()
 
@@ -112,6 +113,7 @@ def main(body: str) -> dict:
             concept_weights = parsed.get("concept_weights", {})
             concept_groups = parsed.get("concept_groups", {})
             derniere_session = parsed.get("derniere_session", "") or ""
+            error_exam_eligible = parsed.get("error_exam_eligible", False)
     except (json.JSONDecodeError, TypeError):
         if raw.startswith('[PROFIL ELEVE]'):
             text = raw
@@ -173,7 +175,8 @@ def main(body: str) -> dict:
         "exam_resume_total_questions": exam_resume_total_questions,
         "exam_resume_modules_json": exam_resume_modules_json,
         "exam_scoring_recovered": exam_scoring_recovered,
-        "derniere_session": str(derniere_session or "")
+        "derniere_session": str(derniere_session or ""),
+        "error_exam_eligible": bool(error_exam_eligible)
     }
 """
 
@@ -251,7 +254,7 @@ def main(dialogue_count: int, profil_text: str, concept_keys_json: str, scores_j
          review_mode: str, derniere_session: str,
          minutes_since_last: int,
          mock_exam: str, mode_override: str,
-         error_feedback: str) -> dict:
+         error_feedback: str, error_exam_eligible: bool) -> dict:
     n = int(dialogue_count or 0)
     mode = str(mode_apprentissage or 'libre')
     # Mode override from frontend toggle (immediate effect)
@@ -337,7 +340,7 @@ def main(dialogue_count: int, profil_text: str, concept_keys_json: str, scores_j
     all_tested = len(untested) == 0
     high_mastery = nb_total > 0 and len(mastered) >= nb_total * 0.8
 
-    if all_tested and high_mastery:
+    if all_tested and high_mastery and bool(error_exam_eligible):
         if mode == 'structure':
             promotion_ready = True
         else:
@@ -1357,7 +1360,8 @@ def patch_graph(graph):
                 "exam_resume_total_questions": {"type": "number", "children": None},
                 "exam_resume_modules_json": {"type": "string", "children": None},
                 "exam_scoring_recovered": {"type": "boolean", "children": None},
-                "derniere_session": {"type": "string", "children": None}
+                "derniere_session": {"type": "string", "children": None},
+                "error_exam_eligible": {"type": "boolean", "children": None}
             }
             print("  Patched: code_profil_check")
 
@@ -1383,7 +1387,8 @@ def patch_graph(graph):
                 {"variable": "minutes_since_last", "value_selector": ["1775343637677", "minutes_since_last"]},
                 {"variable": "mock_exam", "value_selector": ["1775343637677", "mock_exam"]},
                 {"variable": "mode_override", "value_selector": ["1775343637677", "mode_override"]},
-                {"variable": "error_feedback", "value_selector": ["1775343637677", "error_feedback"]}
+                {"variable": "error_feedback", "value_selector": ["1775343637677", "error_feedback"]},
+                {"variable": "error_exam_eligible", "value_selector": ["code_profil_check", "error_exam_eligible"]}
             ]
             data["outputs"] = {
                 "is_first_turn": {"type": "boolean", "children": None},

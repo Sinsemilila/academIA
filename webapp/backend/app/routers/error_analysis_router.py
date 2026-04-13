@@ -132,6 +132,17 @@ async def analyze_errors(req: AnalyzeRequest, x_internal_token: str = Header(Non
         req.session_id, req.username, total, rule_count, llm_count, len(user_turns),
     )
 
+    # Update error-based exam eligibility flag in profils_eleves
+    try:
+        profile = await _build_error_profile(eleve_id, req.domaine)
+        eligible = profile.get("progression", {}).get("eligible_for_exam", False)
+        async with db.pool.acquire() as conn:
+            await conn.execute(
+                "UPDATE profils_eleves SET error_exam_eligible = $1 WHERE eleve_id = $2 AND domaine = $3",
+                eligible, eleve_id, req.domaine)
+    except Exception:
+        logger.warning("Could not update error_exam_eligible for %s", req.username)
+
     status = "rules_only" if llm_failed else "ok"
     return AnalyzeResponse(
         status=status, errors_detected=total,

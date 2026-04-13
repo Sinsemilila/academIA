@@ -483,7 +483,8 @@
               <span class="font-medium text-sm">Structuré</span>
               {#if currentMode === 'structure'}<span class="text-[10px] text-blue-400 ml-auto">actuel</span>{/if}
             </div>
-            <p class="text-xs text-text-muted leading-relaxed">Examen de passage quand tu maîtrises 80% du niveau. Progression par paliers validés.</p>
+            <p class="text-xs text-text-muted leading-relaxed">Examen de passage quand tu maitrises 80% du niveau. Progression par paliers valides.</p>
+            {#if currentMode === 'libre'}<p class="text-[10px] text-blue-400 mt-1">Un examen te sera propose des que tu seras pret.</p>{/if}
           </div>
 
           <div class="p-3 rounded-lg {currentMode === 'libre' ? 'bg-emerald-500/10 border border-emerald-500/30' : 'bg-surface-hover'}">
@@ -492,7 +493,8 @@
               <span class="font-medium text-sm">Libre</span>
               {#if currentMode === 'libre'}<span class="text-[10px] text-emerald-400 ml-auto">actuel</span>{/if}
             </div>
-            <p class="text-xs text-text-muted leading-relaxed">Pas d'examen imposé. Concepts du niveau suivant introduits naturellement. Progression fluide.</p>
+            <p class="text-xs text-text-muted leading-relaxed">Pas d'examen impose. Concepts du niveau suivant introduits naturellement. Progression fluide.</p>
+            {#if currentMode === 'structure'}<p class="text-[10px] text-emerald-400 mt-1">Tu ne passeras plus d'examens de niveau. Tes scores continuent de progresser.</p>{/if}
           </div>
         </div>
 
