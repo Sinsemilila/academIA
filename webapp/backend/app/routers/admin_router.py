@@ -113,23 +113,20 @@ async def reset_profile(username: str, admin: dict = Depends(require_admin)):
         if not user_row:
             raise HTTPException(status_code=404, detail=f"User '{username}' not found")
 
-        # Wipe eleve data if exists
-        eleve = await conn.fetchrow("SELECT id FROM eleves WHERE username = $1", username)
-        if eleve:
-            await conn.execute("DELETE FROM profils_eleves WHERE eleve_id = $1", eleve["id"])
-            await conn.execute("DELETE FROM error_log WHERE eleve_id = $1", eleve["id"])
-            await conn.execute("DELETE FROM snapshots_session WHERE eleve_id = $1", eleve["id"])
-
-        # Clear XP, streaks, sessions
-        await conn.execute("DELETE FROM xp_log WHERE user_id = $1", user_row["id"])
-        await conn.execute("DELETE FROM streaks WHERE user_id = $1", user_row["id"])
-        await conn.execute("DELETE FROM user_sessions WHERE user_id = $1", user_row["id"])
-
-        # Reset Dify user ID → forces fresh conversations
         new_dify_id = str(uuid.uuid4())
-        await conn.execute(
-            "UPDATE users SET dify_user_id = $1 WHERE username = $2",
-            new_dify_id, username)
+        async with conn.transaction():
+            eleve = await conn.fetchrow("SELECT id FROM eleves WHERE username = $1", username)
+            if eleve:
+                await conn.execute("DELETE FROM profils_eleves WHERE eleve_id = $1", eleve["id"])
+                await conn.execute("DELETE FROM error_log WHERE eleve_id = $1", eleve["id"])
+                await conn.execute("DELETE FROM snapshots_session WHERE eleve_id = $1", eleve["id"])
+
+            await conn.execute("DELETE FROM xp_log WHERE user_id = $1", user_row["id"])
+            await conn.execute("DELETE FROM streaks WHERE user_id = $1", user_row["id"])
+            await conn.execute("DELETE FROM user_sessions WHERE user_id = $1", user_row["id"])
+            await conn.execute(
+                "UPDATE users SET dify_user_id = $1 WHERE username = $2",
+                new_dify_id, username)
 
     logger.info("Profile reset for %s by admin %s (new dify_id=%s)", username, admin["username"], new_dify_id)
     return {"ok": True, "message": f"Profile reset for {username}"}
@@ -146,19 +143,20 @@ async def delete_user(user_id: int, admin: dict = Depends(require_admin)):
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
 
-        eleve_id = user["eleve_id"]
-        if eleve_id:
-            await conn.execute("DELETE FROM error_log WHERE eleve_id = $1", eleve_id)
-            await conn.execute("DELETE FROM snapshots_session WHERE eleve_id = $1", eleve_id)
-            await conn.execute("DELETE FROM profils_eleves WHERE eleve_id = $1", eleve_id)
+        async with conn.transaction():
+            eleve_id = user["eleve_id"]
+            if eleve_id:
+                await conn.execute("DELETE FROM error_log WHERE eleve_id = $1", eleve_id)
+                await conn.execute("DELETE FROM snapshots_session WHERE eleve_id = $1", eleve_id)
+                await conn.execute("DELETE FROM profils_eleves WHERE eleve_id = $1", eleve_id)
 
-        await conn.execute("DELETE FROM streaks WHERE user_id = $1", user_id)
-        await conn.execute("DELETE FROM xp_log WHERE user_id = $1", user_id)
-        await conn.execute("DELETE FROM user_sessions WHERE user_id = $1", user_id)
-        await conn.execute("DELETE FROM users WHERE id = $1", user_id)
+            await conn.execute("DELETE FROM streaks WHERE user_id = $1", user_id)
+            await conn.execute("DELETE FROM xp_log WHERE user_id = $1", user_id)
+            await conn.execute("DELETE FROM user_sessions WHERE user_id = $1", user_id)
+            await conn.execute("DELETE FROM users WHERE id = $1", user_id)
 
-        if eleve_id:
-            await conn.execute("DELETE FROM eleves WHERE id = $1", eleve_id)
+            if eleve_id:
+                await conn.execute("DELETE FROM eleves WHERE id = $1", eleve_id)
 
     logger.info("User %s (id=%d) deleted by admin %s", user["username"], user_id, admin["username"])
     return {"ok": True, "message": f"User {user['username']} deleted"}

@@ -67,19 +67,22 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         lines = [f"- \"{d.original_text}\" → \"{d.suggested_correction}\" ({d.reasoning})" for d in detections]
         dify_inputs["error_feedback"] = "\n".join(lines)
 
-        # Check for repeated errors (same codes seen in last 7 days)
-        current_codes = list({d.error_code for d in detections})
-        async with db.pool.acquire() as conn:
+        # Check for repeated errors (same codes seen in last 7 days) — non-critical
+        try:
+            current_codes = list({d.error_code for d in detections})
             eleve_id = user.get("eleve_id")
-            if eleve_id:
-                recent = await conn.fetch(
-                    """SELECT DISTINCT error_code FROM error_log
-                       WHERE eleve_id = $1 AND created_at > NOW() - INTERVAL '7 days'
-                       AND error_code = ANY($2::text[])""",
-                    eleve_id, current_codes)
-                repeated = [r["error_code"] for r in recent]
-                if repeated:
-                    dify_inputs["repeated_errors"] = ", ".join(repeated)
+            if eleve_id and current_codes:
+                async with db.pool.acquire() as conn:
+                    recent = await conn.fetch(
+                        """SELECT DISTINCT error_code FROM error_log
+                           WHERE eleve_id = $1 AND created_at > NOW() - INTERVAL '7 days'
+                           AND error_code = ANY($2::text[])""",
+                        eleve_id, current_codes)
+                    repeated = [r["error_code"] for r in recent]
+                    if repeated:
+                        dify_inputs["repeated_errors"] = ", ".join(repeated)
+        except Exception:
+            pass  # Informational signal, chat must not fail on this
     else:
         dify_inputs["error_feedback"] = ""
 
