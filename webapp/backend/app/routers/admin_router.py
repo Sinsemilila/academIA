@@ -113,33 +113,23 @@ async def reset_profile(username: str, admin: dict = Depends(require_admin)):
         if not eleve:
             raise HTTPException(status_code=404, detail=f"Student '{username}' not found")
 
-        await conn.execute("""
-            UPDATE profils_eleves SET
-                niveau_global = 'A1',
-                scores_confiance = '{}',
-                examen_en_cours = NULL,
-                dernier_examen = NULL,
-                nb_examens_niveau = 0,
-                points_forts = NULL,
-                lacunes = NULL,
-                plan_sessions = NULL
-            WHERE eleve_id = $1
-        """, eleve["id"])
-
-        # Clear error history + snapshots
+        # Wipe profile entirely — user goes through onboarding again
+        await conn.execute("DELETE FROM profils_eleves WHERE eleve_id = $1", eleve["id"])
         await conn.execute("DELETE FROM error_log WHERE eleve_id = $1", eleve["id"])
         await conn.execute("DELETE FROM snapshots_session WHERE eleve_id = $1", eleve["id"])
+
+        # Clear XP, streaks, sessions
+        user_row = await conn.fetchrow("SELECT id FROM users WHERE username = $1", username)
+        if user_row:
+            await conn.execute("DELETE FROM xp_log WHERE user_id = $1", user_row["id"])
+            await conn.execute("DELETE FROM streaks WHERE user_id = $1", user_row["id"])
+            await conn.execute("DELETE FROM user_sessions WHERE user_id = $1", user_row["id"])
 
         # Reset Dify user ID → forces fresh conversations (old ones become orphaned)
         new_dify_id = str(uuid.uuid4())
         await conn.execute(
             "UPDATE users SET dify_user_id = $1 WHERE username = $2",
             new_dify_id, username)
-
-        # Clear user sessions (conversation references)
-        user_row = await conn.fetchrow("SELECT id FROM users WHERE username = $1", username)
-        if user_row:
-            await conn.execute("DELETE FROM user_sessions WHERE user_id = $1", user_row["id"])
 
     logger.info("Profile reset for %s by admin %s (new dify_id=%s)", username, admin["username"], new_dify_id)
     return {"ok": True, "message": f"Profile reset to A1 for {username}"}
