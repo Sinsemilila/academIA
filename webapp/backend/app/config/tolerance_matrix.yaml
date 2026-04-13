@@ -1,100 +1,141 @@
-# Tolerance Matrix — AcademIA Error Taxonomy (63 categories)
+# Tolerance Matrix v2 — AcademIA Error Taxonomy
+# 12 families (57 detection codes grouped), 4 CEFR bands, 3 tiers
+# Updated: 2026-04-13 — Design v3 post research + challenge
+#
 # Tiers: ignored (0.0) | noted (0.3) | penalized (0.8)
-# Updated: 2026-04-12 — Full 63-category expansion
+# Bands: beginner (A1-A2) | intermediate (B1) | upper (B2) | advanced (C1-C2)
+# Shadow: detected by LLM but not displayed to student (F1 < 65%)
 
-# ── Verb (12) ──
-V:TENSE:      { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
-V:SVA:        { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
-V:FORM:       { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-V:MODAL:      { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-V:COND:       { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-V:ASPECT:     { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-V:AUX:        { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
-V:INFL:       { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
-V:PASS:       { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-V:EXIST:      { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
-V:CHOICE:     { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-V:PHRASAL:    { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+# ══════════════════════════════════════════════════════════
+# FAMILY DEFINITIONS — code → family mapping
+# ══════════════════════════════════════════════════════════
+families:
+  verb_tense:
+    label: "Temps & conjugaison"
+    label_en: "Tense & conjugation"
+    codes: ["V:TENSE", "V:SVA", "V:FORM", "V:COND", "V:ASPECT", "V:AUX", "V:INFL"]
+    mode: active
 
-# ── Noun (5) ──
-N:NUM:        { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-N:POSS:       { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-N:INFL:       { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
-N:CHOICE:     { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-N:COUNT:      { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+  verb_usage:
+    label: "Verbes (usage)"
+    label_en: "Verb usage"
+    codes: ["V:MODAL", "V:PASS", "V:EXIST", "V:CHOICE", "V:PHRASAL"]
+    mode: active
 
-# ── Article/Determiner (3) ──
-ART:          { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-ART:GENERIC:  { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-DET:          { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+  noun_det:
+    label: "Noms & déterminants"
+    label_en: "Nouns & determiners"
+    codes: ["N:COUNT", "N:INFL", "N:POSS", "N:CHOICE", "ART", "ART:GENERIC", "DET"]
+    mode: active
 
-# ── Pronoun (3) ──
-PRON:FORM:    { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
-PRON:CHOICE:  { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-PRON:REF:     { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+  pronoun:
+    label: "Pronoms"
+    label_en: "Pronouns"
+    codes: ["PRON:FORM", "PRON:CHOICE", "PRON:REF"]
+    mode: active
 
-# ── Preposition (2) ──
-PREP:         { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-PREP:CALQUE:  { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+  word_order:
+    label: "Ordre des mots"
+    label_en: "Word order"
+    codes: ["WO", "WO:QUEST"]
+    mode: active
 
-# ── Adjective (3) ──
-ADJ:CHOICE:   { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-ADJ:FORM:     { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-ADJ:ORDER:    { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+  sentence:
+    label: "Structure de phrase"
+    label_en: "Sentence structure"
+    codes: ["SENT:RUNON", "SENT:FRAG", "SENT:NEG", "SENT:MOD", "SENT:PARALLEL", "SENT:SUBORD"]
+    mode: active
 
-# ── Adverb (2) ──
-ADV:CHOICE:   { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
-ADV:ORDER:    { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+  morphology:
+    label: "Morphologie"
+    label_en: "Morphology"
+    codes: ["MORPH:DERIV", "MORPH:WORDCLASS", "ADJ:CHOICE", "ADJ:FORM", "ADJ:ORDER", "ADV:CHOICE"]
+    mode: active
 
-# ── Conjunction (1) ──
-CONJ:         { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+  surface:
+    label: "Surface"
+    label_en: "Surface errors"
+    codes: ["SPELL", "SPELL:COGNATE", "ORTH:CASE", "ORTH:SPACE", "PUNCT", "PUNCT:COMMA", "PUNCT:APOST", "CONTR", "REDUND"]
+    mode: active
 
-# ── Word Order (2) ──
-WO:           { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-WO:QUEST:     { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
+  preposition:
+    label: "Prépositions"
+    label_en: "Prepositions"
+    codes: ["PREP"]
+    mode: shadow
 
-# ── Lexical (7) ──
-LEX:CHOICE:   { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-LEX:COLLOC:   { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-LEX:FALSE:    { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
-LEX:CALQUE:   { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
-LEX:IDIOM:    { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
-LEX:ARGSTRUCT:{ a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-LEX:REGISTER: { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+  vocabulary:
+    label: "Vocabulaire"
+    label_en: "Vocabulary"
+    codes: ["LEX:CHOICE", "LEX:COLLOC", "LEX:FALSE", "LEX:IDIOM", "LEX:ARGSTRUCT"]
+    mode: shadow
 
-# ── Morphology (2) ──
-MORPH:DERIV:  { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-MORPH:WORDCLASS:{ a1_a2: ignored, b1_b2: noted,     c1_c2: penalized }
+  calque:
+    label: "Calques français"
+    label_en: "French transfer"
+    codes: ["LEX:CALQUE", "PREP:CALQUE"]
+    mode: shadow
 
-# ── Sentence structure (6) ──
-SENT:RUNON:   { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-SENT:FRAG:    { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-SENT:NEG:     { a1_a2: noted,     b1_b2: penalized, c1_c2: penalized }
-SENT:MOD:     { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
-SENT:PARALLEL:{ a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
-SENT:SUBORD:  { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+  discourse:
+    label: "Discours & registre"
+    label_en: "Discourse & register"
+    codes: ["DISC:TRANS", "DISC:COHER", "REG:LEVEL", "REG:PRAGMA"]
+    mode: shadow
 
-# ── Discourse (4) ──
-DISC:TRANS:   { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-DISC:COHER:   { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
-DISC:COHES:   { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
-DISC:CONNOVER:{ a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+# ══════════════════════════════════════════════════════════
+# TOLERANCE MATRIX — family × band → tier
+# ══════════════════════════════════════════════════════════
+matrix:
+  verb_tense:   { beginner: ignored,  intermediate: noted,     upper: penalized, advanced: penalized }
+  verb_usage:   { beginner: ignored,  intermediate: noted,     upper: noted,     advanced: penalized }
+  noun_det:     { beginner: ignored,  intermediate: noted,     upper: noted,     advanced: penalized }
+  pronoun:      { beginner: ignored,  intermediate: noted,     upper: noted,     advanced: penalized }
+  word_order:   { beginner: ignored,  intermediate: noted,     upper: penalized, advanced: penalized }
+  sentence:     { beginner: ignored,  intermediate: ignored,   upper: noted,     advanced: penalized }
+  morphology:   { beginner: ignored,  intermediate: ignored,   upper: noted,     advanced: penalized }
+  surface:      { beginner: ignored,  intermediate: ignored,   upper: noted,     advanced: penalized }
+  # Shadow families — detected but not displayed
+  preposition:  { beginner: shadow,   intermediate: shadow,    upper: shadow,    advanced: shadow    }
+  vocabulary:   { beginner: shadow,   intermediate: shadow,    upper: shadow,    advanced: shadow    }
+  calque:       { beginner: shadow,   intermediate: shadow,    upper: shadow,    advanced: shadow    }
+  discourse:    { beginner: shadow,   intermediate: shadow,    upper: shadow,    advanced: shadow    }
 
-# ── Register/Pragmatic (2) ──
-REG:LEVEL:    { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
-REG:PRAGMA:   { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+# ══════════════════════════════════════════════════════════
+# TIER WEIGHTS — for scoring
+# ══════════════════════════════════════════════════════════
+weights:
+  ignored: 0.0
+  noted: 0.3
+  penalized: 0.8
+  shadow: 0.0
 
-# ── Surface — Spelling (4) ──
-SPELL:        { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-SPELL:COGNATE:{ a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
-ORTH:CASE:    { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
-ORTH:SPACE:   { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
+# ══════════════════════════════════════════════════════════
+# CEFR → BAND MAPPING
+# ══════════════════════════════════════════════════════════
+cefr_bands:
+  A1: beginner
+  A2: beginner
+  B1: intermediate
+  B2: upper
+  C1: advanced
+  C2: advanced
 
-# ── Surface — Punctuation (3) ──
-PUNCT:        { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
-PUNCT:COMMA:  { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
-PUNCT:APOST:  { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+# ══════════════════════════════════════════════════════════
+# USER-FACING LABELS
+# ══════════════════════════════════════════════════════════
+feedback_labels:
+  penalized:
+    fr: "Priorité haute"
+    en: "High priority"
+    color: "red"
+  noted:
+    fr: "À travailler"
+    en: "Work on this"
+    color: "orange"
+  ignored:
+    fr: "Normal pour ton niveau"
+    en: "Normal for your level"
+    color: "gray"
 
-# ── Other (2) ──
-CONTR:        { a1_a2: ignored,   b1_b2: ignored,   c1_c2: noted     }
-REDUND:       { a1_a2: ignored,   b1_b2: noted,     c1_c2: penalized }
+# Max errors counted per sentence (cap to avoid discouraging)
+max_errors_per_turn: 3

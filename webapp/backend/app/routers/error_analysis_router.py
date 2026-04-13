@@ -133,6 +133,43 @@ async def analyze_errors(req: AnalyzeRequest):
     )
 
 
+@router.get("/api/student/{username}/error-profile")
+async def get_error_profile(username: str, domain: str = "anglais"):
+    """
+    Returns the student's error profile: families, scores, feedback labels.
+    Aggregates error_log data and applies tolerance matrix.
+    """
+    from ..error_taxonomy.scoring import compute_error_profile
+
+    async with db.pool.acquire() as conn:
+        eleve = await conn.fetchrow(
+            "SELECT id FROM eleves WHERE username = $1", username
+        )
+        if not eleve:
+            raise HTTPException(status_code=404, detail=f"Student '{username}' not found")
+        eleve_id = eleve["id"]
+
+        profil = await conn.fetchrow(
+            "SELECT niveau_global FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2",
+            eleve_id, domain,
+        )
+        niveau = profil["niveau_global"] if profil and profil["niveau_global"] else "B1"
+
+        rows = await conn.fetch(
+            """SELECT error_code, turn_number, session_id
+               FROM error_log
+               WHERE eleve_id = $1
+                 AND session_id NOT LIKE 'full-battery%%'
+                 AND session_id NOT LIKE 'phase1b-%%'
+               ORDER BY created_at""",
+            eleve_id,
+        )
+
+    error_rows = [dict(r) for r in rows]
+    profile = compute_error_profile(error_rows, niveau)
+    return profile
+
+
 def _extract_user_turns(transcript: str) -> list[tuple[int, str]]:
     turns = []
     current_turn = 0
