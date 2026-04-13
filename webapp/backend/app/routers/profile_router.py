@@ -70,23 +70,34 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
     scores = await _derive_concept_scores(eleve_id, domain, niveau)
 
     # Get full concept list for this level (including untested at 0)
+    next_niveau_map = {"A1":"A2","A2":"B1","B1":"B2","B2":"C1","C1":"C2"}
+    next_niv = next_niveau_map.get(niveau)
     async with db.pool.acquire() as conn:
         ck_row = await db.pool.fetchval(
             "SELECT concept_keys FROM curriculums WHERE domaine = $1 AND niveau = $2",
             domain, niveau)
         all_keys = ck_row if isinstance(ck_row, list) else json.loads(ck_row or "[]")
+        next_keys = []
+        if next_niv:
+            nk_row = await conn.fetchval(
+                "SELECT concept_keys FROM curriculums WHERE domaine = $1 AND niveau = $2",
+                domain, next_niv)
+            next_keys = nk_row if isinstance(nk_row, list) else json.loads(nk_row or "[]")
 
     # Ensure all concepts are in scores (untested = 0)
     for k in all_keys:
         if k not in scores:
             scores[k] = 0
 
+    # N+1 scores (only those with actual progress, for mode libre tracking)
+    next_level_scores = {k: scores[k] for k in next_keys if scores.get(k, 0) > 0}
+
     concept_keys = all_keys
     mastered = sum(1 for s in scores.values() if s >= 80)
     total_expected = len(concept_keys) or 1
 
-    # Progress = average score across ALL concepts (tested + untested)
-    avg_score = sum(scores.values()) / total_expected if total_expected > 0 else 0
+    # Progress = average score across current level concepts only
+    avg_score = sum(scores.get(k, 0) for k in all_keys) / total_expected if total_expected > 0 else 0
     progress_pct = round(avg_score)
 
     dernier_examen = row["dernier_examen"]
@@ -106,6 +117,8 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
         "progress_pct": progress_pct,
         "dernier_examen": dernier_examen,
         "nb_examens_niveau": row["nb_examens_niveau"] or 0,
+        "next_level": next_niv,
+        "next_level_scores": next_level_scores,
     }
 
 

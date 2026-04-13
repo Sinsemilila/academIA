@@ -378,10 +378,19 @@ if (shouldPromote) {
   const nextLevel = {
     'A1': 'A2', 'A2': 'B1', 'B1': 'B2', 'B2': 'C1', 'C1': 'C2'
   }[r.niveau] || r.niveau;
+  // Preserve scores for concepts that belong to the new level (N+1 tracking from libre mode)
   levelUpClause = `niveau_global = '${nextLevel}',
-  scores_confiance = '{}'::jsonb,
+  scores_confiance = COALESCE(
+    (SELECT jsonb_object_agg(key, value)
+     FROM jsonb_each(scores_confiance)
+     WHERE key = ANY(
+       SELECT unnest(concept_keys) FROM curriculums
+       WHERE domaine = '${esc(r.domaine)}' AND niveau = '${nextLevel}'
+     )
+    ), '{}'::jsonb
+  ),
   nb_examens_niveau = 0,`;
-  mergeClause = ''; // Reset scores on promotion
+  mergeClause = ''; // Don't merge old-level exam scores
 } else {
   // Not promoting: keep niveau anchored at current level (no regression possible)
   levelUpClause = safeNiveauClause;

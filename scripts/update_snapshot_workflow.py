@@ -16,7 +16,7 @@ def _read_secret(name, fallback=""):
     p = Path(f"/opt/academie-shared/secrets/{name}")
     return p.read_text().strip() if p.exists() else fallback
 
-_DIFY_ADMIN_KEY = os.environ.get("DIFY_ADMIN_KEY", _read_secret("dify-admin-key"))
+_DIFY_ADMIN_KEY = os.environ.get("DIFY_ADMIN_KEY") or _read_secret("dify-admin-key")
 
 WORKFLOW_ID = "tVfLg92ijYUvBc94"
 VERSION_ID = "fb0f3b42-e2f8-4607-929f-d0ef008e5437"
@@ -138,6 +138,14 @@ try {
 } catch(e) { conceptKeys = []; }
 const conceptKeysStr = conceptKeys.length > 0 ? conceptKeys.join(', ') : 'aucun';
 
+// Concept keys du niveau suivant (pour mode libre N+1 tracking)
+let nextConceptKeys = [];
+try {
+  const nck = studentData.next_concept_keys;
+  nextConceptKeys = typeof nck === 'string' ? JSON.parse(nck) : (nck || []);
+} catch(e) { nextConceptKeys = []; }
+const nextKeysStr = nextConceptKeys.length > 0 ? nextConceptKeys.join(', ') : '';
+
 // Scores existants pour le merge ulterieur
 let existingScores = {};
 try {
@@ -160,8 +168,10 @@ Pour chaque concept pratique :
 - Compte le nombre d'exercices ou l'eleve a tente une reponse (attempts)
 - Compte le nombre de reponses correctes (correct)
 - Calcule score = round(correct / attempts * 100)
-Cles autorisees : ${conceptKeysStr}
-Si le concept travaille ne correspond a aucune cle (ex: conditional_3 absent de la liste) → ignore-le.
+Cles autorisees (niveau actuel) : ${conceptKeysStr}
+${nextKeysStr ? 'Cles niveau suivant (si pratiquees dans la session) : ' + nextKeysStr : ''}
+Si un concept du niveau suivant a ete pratique, inclus-le dans scores_confiance.
+Si le concept ne correspond a aucune cle autorisee → ignore-le.
 
 TACHE 3 — Profil : estime niveau_global, points_forts, lacunes, plan_sessions.
 
