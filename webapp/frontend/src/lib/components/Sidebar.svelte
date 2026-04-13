@@ -6,7 +6,7 @@
   import { userAppearance } from '$lib/stores/user';
   import AgentFlag from '$lib/components/AgentFlag.svelte';
 
-  let { collapsed = $bindable(false) } = $props();
+  let { collapsed = $bindable(false), isAdmin = false } = $props<{ collapsed?: boolean; isAdmin?: boolean }>();
   let accentColor = $state('#3b82f6');
 
   onMount(() => {
@@ -79,6 +79,25 @@
       </a>
     {/each}
   </nav>
+
+  <!-- Admin -->
+  {#if isAdmin}
+    {@const active = page.url.pathname.startsWith('/admin')}
+    <div class="px-2">
+      <a
+        href="/admin"
+        class="flex items-center gap-3 py-2 rounded-lg text-sm transition-colors
+               {collapsed ? 'justify-center px-2' : 'px-3'}
+               {active ? 'bg-elevated text-text-primary' : 'text-text-secondary hover:text-text-primary hover:bg-elevated/50'}"
+        title={collapsed ? 'Admin' : ''}
+      >
+        <span class="text-base">&#x2699;</span>
+        {#if !collapsed}
+          <span>Admin</span>
+        {/if}
+      </a>
+    </div>
+  {/if}
 
   <!-- Agents -->
   <div class="px-2 pb-4">

@@ -281,6 +281,37 @@ class ApiClient {
     return await res.json();
   }
 
+  // ── Admin ──────────────────────────────
+  async adminGetUsers() {
+    const res = await this.fetch('/admin/users');
+    if (!res.ok) throw new Error('Admin access denied');
+    return await res.json();
+  }
+
+  async adminResetProfile(username: string) {
+    const res = await this.fetch(`/admin/reset-profile/${username}`, { method: 'POST' });
+    if (!res.ok) throw new Error('Reset failed');
+    return await res.json();
+  }
+
+  async adminDeleteUser(userId: number) {
+    const res = await this.fetch(`/admin/users/${userId}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Delete failed');
+    return await res.json();
+  }
+
+  async adminCreateUser(username: string, password: string) {
+    const res = await this.fetch('/auth/users', {
+      method: 'POST',
+      body: JSON.stringify({ username, password }),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.detail || 'Creation failed');
+    }
+    return await res.json();
+  }
+
   logout() {
     this.setToken(null);
     this.setRefreshToken(null);

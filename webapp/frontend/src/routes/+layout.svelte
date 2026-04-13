@@ -178,7 +178,7 @@
   {@render children()}
 {:else if ready && user}
   <div class="min-h-dvh bg-base flex">
-    <Sidebar bind:collapsed={sidebarCollapsed} />
+    <Sidebar bind:collapsed={sidebarCollapsed} isAdmin={user.is_admin} />
     <div class="flex-1 flex flex-col transition-[margin] duration-200
                 {sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-44'}">
       <Header
