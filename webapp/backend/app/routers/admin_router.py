@@ -4,6 +4,7 @@ Admin dashboard + XP triggers for exam/promotion.
 """
 
 import os
+import uuid
 import logging
 from datetime import datetime
 from fastapi import APIRouter, HTTPException, Depends, Header
@@ -125,10 +126,22 @@ async def reset_profile(username: str, admin: dict = Depends(require_admin)):
             WHERE eleve_id = $1
         """, eleve["id"])
 
-        # Clear error history
+        # Clear error history + snapshots
         await conn.execute("DELETE FROM error_log WHERE eleve_id = $1", eleve["id"])
+        await conn.execute("DELETE FROM snapshots_session WHERE eleve_id = $1", eleve["id"])
 
-    logger.info("Profile reset for %s by admin %s", username, admin["username"])
+        # Reset Dify user ID → forces fresh conversations (old ones become orphaned)
+        new_dify_id = str(uuid.uuid4())
+        await conn.execute(
+            "UPDATE users SET dify_user_id = $1 WHERE username = $2",
+            new_dify_id, username)
+
+        # Clear user sessions (conversation references)
+        user_row = await conn.fetchrow("SELECT id FROM users WHERE username = $1", username)
+        if user_row:
+            await conn.execute("DELETE FROM user_sessions WHERE user_id = $1", user_row["id"])
+
+    logger.info("Profile reset for %s by admin %s (new dify_id=%s)", username, admin["username"], new_dify_id)
     return {"ok": True, "message": f"Profile reset to A1 for {username}"}
 
 
