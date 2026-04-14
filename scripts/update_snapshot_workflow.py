@@ -404,7 +404,7 @@ INSERT INTO profils_eleves (
     NOW(), NOW()
   FROM eleves e WHERE e.username = (SELECT resolved_username FROM resolve_user)
   ON CONFLICT (eleve_id, domaine) DO UPDATE SET
-    niveau_global    = COALESCE(NULLIF(EXCLUDED.niveau_global,''),    profils_eleves.niveau_global),
+    -- niveau_global is NEVER overwritten by snapshot — only diagnostic and exams change it
     points_forts     = COALESCE(NULLIF(EXCLUDED.points_forts,''),     profils_eleves.points_forts),
     lacunes          = COALESCE(NULLIF(EXCLUDED.lacunes,''),          profils_eleves.lacunes),
     plan_sessions    = COALESCE(NULLIF(EXCLUDED.plan_sessions,''),    profils_eleves.plan_sessions),
