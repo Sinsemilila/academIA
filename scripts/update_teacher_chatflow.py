@@ -1646,7 +1646,7 @@ def patch_graph(graph):
         # Modèle commun pour les 3 nœuds non-exam (groq-standard = Llama 3.3 70B gratuit)
         GROQ_STANDARD_MODEL = {
             "provider": "langgenius/openai_api_compatible/openai_api_compatible",
-            "name": "groq-standard",
+            "name": "gpt-4o-mini",
             "mode": "chat",
             "completion_params": {"temperature": 0.7, "max_tokens": 400}
         }
