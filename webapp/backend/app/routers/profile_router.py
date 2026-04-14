@@ -57,7 +57,8 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
         row = await conn.fetchrow(
             """SELECT niveau_global, points_forts, lacunes,
                       mode_apprentissage, derniere_session, examen_en_cours,
-                      dernier_examen, nb_examens_niveau
+                      dernier_examen, nb_examens_niveau, plan_sessions,
+                      details_par_competence, onboarding_completed_at
                FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2""",
             eleve_id, domain,
         )
@@ -106,6 +107,10 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
     if isinstance(dernier_examen, str):
         dernier_examen = json.loads(dernier_examen)
 
+    details = row["details_par_competence"]
+    if isinstance(details, str):
+        details = json.loads(details)
+
     return {
         "niveau": niveau,
         "scores": scores,
@@ -121,6 +126,9 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
         "nb_examens_niveau": row["nb_examens_niveau"] or 0,
         "next_level": next_niv,
         "next_level_scores": next_level_scores,
+        "plan_sessions": row["plan_sessions"],
+        "details_par_competence": details,
+        "onboarding_completed_at": row["onboarding_completed_at"].isoformat() if row["onboarding_completed_at"] else None,
     }
 
 
