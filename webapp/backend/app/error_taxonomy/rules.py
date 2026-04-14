@@ -132,7 +132,7 @@ LEX_CALQUE_PATTERNS = [
     (r"\bit makes (\d+) (years?|months?|weeks?)\b", "it has been \\1 \\2", "French calque: 'ça fait X ans' → 'it has been X years'."),
     (r"\bi am agree\b", "I agree", "French calque: 'je suis d'accord' → 'I agree'."),
     (r"\b(?:do|does|did|doing) a (walk|trip|travel|journey)\b", "take a \\1", "French calque: 'faire une promenade' → 'take a walk'."),
-    (r"\b(?:do|does|did|doing) a mistake\b", "make a mistake", "French calque: 'faire une erreur' → 'make a mistake'."),
+    (r"\b(?:do|does|did|doing)\s+a\s+(?:\w+\s+)?mistake\b", "make a mistake", "French calque: 'faire une erreur' → 'make a mistake'."),
     (r"\b(?:do|does|did|doing) (?:a |the )?photo\b", "take a photo", "French calque: 'faire une photo' → 'take a photo'."),
     (r"\b(?:do|does|did|doing) (?:a lot of |some )?sport\b", "play sport", "French calque: 'faire du sport' → 'play/do sport'."),
     (r"\bpass(?:ed|es|ing)? (?:an |the |my |his |her )?exam\b", "take an exam", "French calque: 'passer un examen' → 'take an exam' (pass = réussir)."),
