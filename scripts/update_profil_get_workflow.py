@@ -72,7 +72,9 @@ nodes = [
     cnext.concept_keys as next_concept_keys,
     nm.next_niveau,
     COALESCE(ss.sessions_count, 0) as sessions_depuis_examen,
-    COALESCE(p.error_exam_eligible, false) as error_exam_eligible
+    COALESCE(p.error_exam_eligible, false) as error_exam_eligible,
+    p.details_par_competence,
+    p.onboarding_completed_at
   FROM eleves e
   LEFT JOIN profils_eleves p ON p.eleve_id = e.id AND p.domaine = '{{ $json.query.domaine }}'
   LEFT JOIN LATERAL (
@@ -114,7 +116,8 @@ if (!d.niveau_global) {
     mode_apprentissage: "libre", next_concept_keys: [], next_niveau: "",
     examen_en_cours: null, dernier_examen: null, nb_examens_niveau: 0,
     sessions_depuis_examen: 0,
-    concept_weights: {}, concept_groups: {}
+    concept_weights: {}, concept_groups: {},
+    details_par_competence: null, onboarding_completed_at: null
   } }];
 }
 
@@ -148,6 +151,19 @@ if (d.scores_confiance) {
 if (d.points_forts) lignes.push("Points forts : " + d.points_forts);
 if (d.lacunes) lignes.push("Lacunes : " + d.lacunes);
 if (d.plan_sessions) lignes.push("Plan en cours : " + d.plan_sessions);
+
+// Diagnostic initial sub-scores
+let detailsParCompetence = null;
+if (d.details_par_competence) {
+  detailsParCompetence = typeof d.details_par_competence === "string" ? JSON.parse(d.details_par_competence) : d.details_par_competence;
+  if (Object.keys(detailsParCompetence).length > 0) {
+    const parts = Object.entries(detailsParCompetence).map(([k,v]) => k + ": " + v);
+    lignes.push("[DIAGNOSTIC INITIAL] " + parts.join(" | "));
+  }
+}
+
+const onboardingCompletedAt = d.onboarding_completed_at || null;
+
 if (d.derniere_session) lignes.push("Derniere session : " + d.derniere_session);
 if (d.dernier_snapshot) lignes.push("Dernier snapshot : " + d.dernier_snapshot);
 
@@ -212,7 +228,9 @@ return [{ json: {
   concept_weights: conceptWeights,
   concept_groups: conceptGroups,
   derniere_session: d.derniere_session || null,
-  error_exam_eligible: !!d.error_exam_eligible
+  error_exam_eligible: !!d.error_exam_eligible,
+  details_par_competence: detailsParCompetence,
+  onboarding_completed_at: onboardingCompletedAt
 } }];"""
         },
         "typeVersion": 2
