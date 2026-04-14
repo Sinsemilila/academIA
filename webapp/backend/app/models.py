@@ -71,6 +71,8 @@ class UpdateProfileRequest(BaseModel):
     avatar_color: str | None = Field(None, pattern=r"^#[0-9a-fA-F]{6}$")
     theme: str | None = Field(None, pattern=r"^(dark|light)$")
     daily_goal_minutes: int | None = Field(None, ge=5, le=120)
+    centres_interet: str | None = Field(None, max_length=200)
+    style_correction: str | None = Field(None, pattern=r"^(direct|encourageant|humour)?$")
 
 
 class ChangePasswordRequest(BaseModel):

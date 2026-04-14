@@ -15,7 +15,7 @@ router = APIRouter(tags=["settings"])
 # ── Profile update ────────────────────────────────────
 @router.patch("/api/me/profile")
 async def update_profile(req: UpdateProfileRequest, user: dict = Depends(get_current_user)):
-    """Update display name, avatar color, theme, daily goal."""
+    """Update display name, avatar color, theme, daily goal, and personality prefs."""
     updates = []
     values = []
     idx = 1
@@ -27,14 +27,27 @@ async def update_profile(req: UpdateProfileRequest, user: dict = Depends(get_cur
             values.append(val)
             idx += 1
 
-    if not updates:
-        return {"ok": True}
-
-    values.append(user["id"])
-    sql = f"UPDATE users SET {', '.join(updates)} WHERE id = ${idx}"
-
     async with db.pool.acquire() as conn:
-        await conn.execute(sql, *values)
+        if updates:
+            values.append(user["id"])
+            sql = f"UPDATE users SET {', '.join(updates)} WHERE id = ${idx}"
+            await conn.execute(sql, *values)
+
+        # Personality fields → profils_eleves.personnalite (JSONB)
+        eleve_id = user.get("eleve_id")
+        if eleve_id:
+            perso_updates = {}
+            if req.centres_interet is not None:
+                perso_updates["centres_interet"] = req.centres_interet
+            if req.style_correction is not None:
+                perso_updates["style_correction"] = req.style_correction
+            for key, val in perso_updates.items():
+                await conn.execute(
+                    "UPDATE profils_eleves SET personnalite = jsonb_set("
+                    "COALESCE(personnalite, '{}'::jsonb), $1, $2::jsonb"
+                    ") WHERE eleve_id = $3 AND domaine = 'anglais'",
+                    [key], json.dumps(val), eleve_id,
+                )
 
     return {"ok": True}
 
@@ -82,6 +95,21 @@ async def change_password(
 # ── Full user settings (for profile page load) ───────
 @router.get("/api/me/settings")
 async def get_settings(user: dict = Depends(get_current_user)):
+    # Read personality from profils_eleves
+    centres_interet = ""
+    style_correction = ""
+    eleve_id = user.get("eleve_id")
+    if eleve_id:
+        async with db.pool.acquire() as conn:
+            row = await conn.fetchrow(
+                "SELECT personnalite FROM profils_eleves WHERE eleve_id = $1 AND domaine = 'anglais'",
+                eleve_id,
+            )
+            if row and row["personnalite"]:
+                perso = row["personnalite"] if isinstance(row["personnalite"], dict) else json.loads(row["personnalite"])
+                centres_interet = perso.get("centres_interet", "")
+                style_correction = perso.get("style_correction", "")
+
     return {
         "id": user["id"],
         "username": user["username"],
@@ -92,6 +120,8 @@ async def get_settings(user: dict = Depends(get_current_user)):
         "daily_goal_minutes": user.get("daily_goal_minutes", 15),
         "is_admin": user.get("is_admin", False),
         "created_at": str(user.get("created_at", "")),
+        "centres_interet": centres_interet,
+        "style_correction": style_correction,
     }
 
 

@@ -21,6 +21,15 @@
   let theme = $state<'dark' | 'light'>('dark');
   let dailyGoal = $state(15);
   let savingProfile = $state(false);
+  let centresInteret = $state('');
+  let styleCorrection = $state('');
+
+  const STYLE_OPTIONS = [
+    { value: '', label: 'Par d\u00E9faut' },
+    { value: 'direct', label: 'Direct' },
+    { value: 'encourageant', label: 'Encourageant' },
+    { value: 'humour', label: 'Avec humour' },
+  ];
 
   // Password states
   let currentPw = $state('');
@@ -41,6 +50,8 @@
       avatarColor = s.avatar_color || '#3b82f6';
       theme = s.theme || 'dark';
       dailyGoal = s.daily_goal_minutes || 15;
+      centresInteret = s.centres_interet || '';
+      styleCorrection = s.style_correction || '';
     }
     loading = false;
   });
@@ -52,6 +63,8 @@
       avatar_color: avatarColor,
       theme,
       daily_goal_minutes: dailyGoal,
+      centres_interet: centresInteret || undefined,
+      style_correction: styleCorrection || undefined,
     });
     setTheme(theme);
     window.dispatchEvent(new CustomEvent('profile-updated', {
@@ -183,6 +196,33 @@
           </button>
         {/each}
       </div>
+    </div>
+
+    <!-- Centres d'interet -->
+    <div>
+      <label for="centres_interet" class="block text-sm text-text-secondary mb-1">Centres d'int&#233;r&#234;t</label>
+      <input id="centres_interet" type="text" bind:value={centresInteret}
+        class="w-full px-3 py-2 bg-elevated border border-border-subtle rounded-lg text-text-primary text-sm
+               focus:outline-none focus:border-teacher transition-colors"
+        placeholder="musique, cuisine, tech, cin&#233;ma..." />
+      <p class="text-xs text-text-muted mt-1">Teacher utilisera tes centres d'int&#233;r&#234;t pour contextualiser les exercices.</p>
+    </div>
+
+    <!-- Style de correction -->
+    <div>
+      <label class="block text-sm text-text-secondary mb-2">Style de correction</label>
+      <div class="flex flex-wrap gap-2">
+        {#each STYLE_OPTIONS as opt}
+          <button
+            class="px-3 py-1.5 rounded-lg border text-sm transition-all
+                   {styleCorrection === opt.value ? 'border-teacher bg-teacher/10 text-teacher' : 'border-border-subtle text-text-secondary hover:border-text-muted'}"
+            onclick={() => styleCorrection = opt.value}
+          >
+            {opt.label}
+          </button>
+        {/each}
+      </div>
+      <p class="text-xs text-text-muted mt-1">Teacher adaptera son ton et sa fa&#231;on de te corriger.</p>
     </div>
 
     <button
