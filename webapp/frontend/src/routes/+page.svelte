@@ -154,7 +154,7 @@
         </div>
         <div class="flex justify-between mt-2">
           <p class="text-xs text-text-muted">{profile.progress_pct}% vers le niveau suivant</p>
-          <p class="text-xs text-text-muted">{profile.mastered}/{profile.total_expected} concepts</p>
+          <p class="text-xs text-text-muted">{profile.mastered}/{profile.total_expected} concepts ma&#238;tris&#233;s</p>
         </div>
       </div>
 

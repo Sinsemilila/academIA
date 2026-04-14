@@ -79,7 +79,7 @@
         <div class="flex-1">
           <h2 class="font-semibold text-lg">Anglais — {levelLabels[niveau] || niveau}</h2>
           <p class="text-sm text-text-secondary">
-            {mastered} concept{mastered > 1 ? 's' : ''} ma&#238;tris&#233;{mastered > 1 ? 's' : ''} / {totalExpected}
+            {mastered}/{totalExpected} concepts ma&#238;tris&#233;s
           </p>
         </div>
         <div class="flex items-center gap-3">
