@@ -18,7 +18,7 @@ _tm_path = Path(__file__).parent.parent / "config" / "tolerance_matrix.yaml"
 if _tm_path.exists():
     with open(_tm_path) as f:
         _tm = yaml.safe_load(f)
-        _TOLERANCE_MATRIX = _tm.get("family_band_matrix", {})
+        _TOLERANCE_MATRIX = _tm.get("matrix", {})
 
 _NIVEAU_TO_BAND = {"A1": "beginner", "A2": "beginner", "B1": "intermediate",
                     "B2": "upper", "C1": "advanced", "C2": "advanced"}

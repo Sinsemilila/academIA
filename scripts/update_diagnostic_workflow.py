@@ -186,7 +186,7 @@ NEW_SQL_QUERY = """WITH resolve_user AS (
     scores_confiance, personnalite, mode_apprentissage,
     details_par_competence, diagnostic_justification, onboarding_completed_at,
     auto_eval_level, diagnostic_exchange_count,
-    derniere_session, updated_at
+    updated_at
   )
   SELECT e.id, '{{ $json.domaine }}',
     '{{ $json.niveau_global }}',
@@ -201,7 +201,7 @@ NEW_SQL_QUERY = """WITH resolve_user AS (
     NOW(),
     NULLIF('{{ $json.auto_eval_level }}', ''),
     {{ $json.exchange_count }},
-    NOW(), NOW()
+    NOW()
   FROM eleves e WHERE e.username = (SELECT resolved_username FROM resolve_user)
   ON CONFLICT (eleve_id, domaine) DO UPDATE SET
     niveau_global              = EXCLUDED.niveau_global,
@@ -216,7 +216,7 @@ NEW_SQL_QUERY = """WITH resolve_user AS (
     onboarding_completed_at    = COALESCE(profils_eleves.onboarding_completed_at, NOW()),
     auto_eval_level            = EXCLUDED.auto_eval_level,
     diagnostic_exchange_count  = EXCLUDED.diagnostic_exchange_count,
-    derniere_session           = NOW(), updated_at = NOW()"""
+    updated_at = NOW()"""
 
 
 # ============================================================

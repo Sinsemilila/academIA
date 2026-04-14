@@ -212,7 +212,7 @@ Si pas de nouvelle info personnalite, mets personnalite_update a null.`
     },
     { role: "user", content: contenu }
   ],
-  max_tokens: 800,
+  max_tokens: 1500,
   temperature: 0.2
 };
 
@@ -260,7 +260,18 @@ try {
   const match = raw.match(/\{[\s\S]*\}/);
   parsed = JSON.parse(match ? match[0] : raw);
 } catch(e) {
-  parsed = { resume: raw, parse_error: e.message };
+  // Try to repair truncated JSON (LLM hit max_tokens)
+  try {
+    let repaired = (raw.match(/\{[\s\S]*/) || [raw])[0];
+    const opens = (repaired.match(/\{/g) || []).length;
+    const closes = (repaired.match(/\}/g) || []).length;
+    for (let i = 0; i < opens - closes; i++) repaired += '}';
+    const brackets = (repaired.match(/\[/g) || []).length - (repaired.match(/\]/g) || []).length;
+    for (let i = 0; i < brackets; i++) repaired += ']';
+    parsed = JSON.parse(repaired);
+  } catch(e2) {
+    parsed = { resume: raw, parse_error: e2.message };
+  }
 }
 
 const resume = parsed.resume || raw;

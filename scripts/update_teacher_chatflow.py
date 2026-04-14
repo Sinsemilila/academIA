@@ -769,7 +769,7 @@ def main(dialogue_count: int, profil_text: str, concept_keys_json: str, scores_j
             )
 
     return {
-        'is_first_turn': n == 1,
+        'is_first_turn': n == 0,
         'tour': n,
         'niveau': niveau,
         'selected_concepts': concepts_display,
@@ -1326,8 +1326,9 @@ PROMPT_ONBOARDING = (
     "- Si l'eleve divague ou pose des questions → recadre poliment et repose ta question\n"
     "- Objectif : identifier le PLANCHER (niveau confortable) et le PLAFOND (niveau ou ca decroche)\n\n"
     "QUAND TU AS ASSEZ DE DONNEES (5 a 7 questions posees + plafond identifie) :\n"
-    'Dis : "Merci pour tes reponses ! Envoie-moi \'ok\' pour decouvrir ton bilan de niveau."\n'
-    "Et ajoute le marqueur [EVAL_READY] A LA FIN de ton message (sur une ligne separee).\n\n"
+    "Dans ce MEME message (pas un message separe), ecris le texte de conclusion PUIS le marqueur [EVAL_READY] sur la derniere ligne.\n"
+    "Exemple exact :\n"
+    '"Merci pour tes reponses ! Envoie-moi ok pour decouvrir ton bilan de niveau.\n[EVAL_READY]"\n\n'
     "COMPTEUR OBLIGATOIRE : compte tes questions en anglais. Tu DOIS en avoir pose AU MOINS 5 avant d'ecrire [EVAL_READY].\n"
     "Si tu n'en as pose que 4 ou moins, pose une question supplementaire au lieu d'ecrire [EVAL_READY].\n"
     "NE JAMAIS mettre [EVAL_READY] avant 5 questions en anglais. C'est une regle absolue."
