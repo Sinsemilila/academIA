@@ -7,13 +7,13 @@
 | 1 | Onboarding (3 FR + 5-7 EN + diagnostic) | Nouveau user sans profil | Dify → n8n diagnostic → DB | PASS* |
 | 2 | Onboarding tour 3 : intérêts + style correction | 3e tour FR | Prompt → diagnostic LLM → personnalite JSONB | PASS |
 | 3 | Bilan post-diagnostic (chat) | Premier message post-diagnostic | profil-get → PROMPT_SESSION | PASS |
-| 4 | Bilan post-diagnostic (dashboard card) | onboarding_completed_at + pas de session | Profile API → carte provisoire | FAIL |
+| 4 | Bilan post-diagnostic (dashboard card) | onboarding_completed_at + pas de session | Profile API → carte provisoire | PASS |
 
 ## SESSION NORMALE
 
 | # | Feature | Trigger | Pipeline | Statut |
 |---|---|---|---|---|
-| 5 | Session plan (choix 2 concepts, spaced repetition) | Tour 1 d'une conversation | code_turn_check → PROMPT_PLAN | FAIL |
+| 5 | Session plan (choix 2 concepts, spaced repetition) | Tour 1 d'une conversation | code_turn_check → PROMPT_PLAN | PASS |
 | 6 | TTT cycle (Test → Teach → Test) | Tours 2-9 | PROMPT_SESSION + focus_concept + focus_mode | PASS |
 | 7 | Modes concept (DECOUVERTE/RENFORCEMENT/PRATIQUE/MAINTIEN) | Score du concept | code_turn_check → instructions TTT adaptées | PASS |
 | 8 | Accueil adapté à l'absence (1h / 1-6j / 7j+) | minutes_since_last >= 60 | code_turn_check → plan_prefix | PASS |
@@ -32,13 +32,13 @@
 | # | Feature | Trigger | Pipeline | Statut |
 |---|---|---|---|---|
 | 13 | Error detection rules temps réel (17 codes A1-C1) | Chaque message user | chat_router → detect_errors() | PASS |
-| 14 | Filtrage tolerance_matrix (shadow/noted/penalized) | Chaque détection | chat_router → matrice YAML × niveau | FAIL |
+| 14 | Filtrage tolerance_matrix (shadow/noted/penalized) | Chaque détection | chat_router → matrice YAML × niveau | PASS |
 | 15 | Error feedback en conversation | Erreur détectée (non shadow) | error_feedback + tags → Dify → Teacher corrige | PASS |
 | 16 | Style correction par type d'erreur (grammar/transfert/surface) | Type d'erreur | PROMPT_SESSION section STYLE DE CORRECTION | PASS |
-| 17 | Repeated errors escalation | Même code dans error_log 7j | chat_router → repeated_errors → prompt | FAIL |
+| 17 | Repeated errors escalation | Même code dans error_log 7j | chat_router → repeated_errors → prompt | PASS |
 | 18 | Protocole d'escalade corrective (4 niveaux) | Erreur répétée en session | PROMPT_SESSION → recast → métalinguistique → règle → explicite | PASS |
-| 19 | Snapshot (scores + mémoire) | Tous les 10 tours | dify-snapshot → scores_confiance + personnalite | PARTIAL |
-| 20 | Error analysis LLM (persistence) | Après snapshot | /internal/analyze-errors → error_log | FAIL |
+| 19 | Snapshot (scores + mémoire) | Tous les 10 tours | dify-snapshot → scores_confiance + personnalite | PASS |
+| 20 | Error analysis LLM (persistence) | Après snapshot | /internal/analyze-errors → error_log | PASS |
 
 ## EXAMEN
 
