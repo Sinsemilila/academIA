@@ -175,7 +175,13 @@ return [{
 }];"""
 
 
-NEW_SQL_QUERY = """INSERT INTO profils_eleves (
+NEW_SQL_QUERY = """WITH resolve_user AS (
+    SELECT COALESCE(
+      (SELECT el.username FROM users u JOIN eleves el ON u.eleve_id = el.id WHERE u.dify_user_id = '{{ $json.username }}' LIMIT 1),
+      '{{ $json.username }}'
+    ) AS resolved_username
+  )
+  INSERT INTO profils_eleves (
     eleve_id, domaine, niveau_global, points_forts, lacunes, plan_sessions,
     scores_confiance, personnalite, mode_apprentissage,
     details_par_competence, diagnostic_justification, onboarding_completed_at,
@@ -196,7 +202,7 @@ NEW_SQL_QUERY = """INSERT INTO profils_eleves (
     NULLIF('{{ $json.auto_eval_level }}', ''),
     {{ $json.exchange_count }},
     NOW(), NOW()
-  FROM eleves e WHERE e.username = '{{ $json.username }}'
+  FROM eleves e WHERE e.username = (SELECT resolved_username FROM resolve_user)
   ON CONFLICT (eleve_id, domaine) DO UPDATE SET
     niveau_global              = EXCLUDED.niveau_global,
     points_forts               = COALESCE(NULLIF(EXCLUDED.points_forts,''), profils_eleves.points_forts),

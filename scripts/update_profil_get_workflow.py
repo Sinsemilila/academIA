@@ -41,9 +41,17 @@ nodes = [
         "position": [208, 0],
         "parameters": {
             "operation": "executeQuery",
-            "query": """ WITH new_eleve AS (
+            "query": """ WITH resolve_user AS (
+    -- Resolve Dify UUID to real username via users table
+    -- Falls back to raw input if no match (direct API calls, tests)
+    SELECT COALESCE(
+      (SELECT e.username FROM users u JOIN eleves e ON u.eleve_id = e.id WHERE u.dify_user_id = '{{ $json.query.username }}' LIMIT 1),
+      '{{ $json.query.username }}'
+    ) AS resolved_username
+  ),
+  new_eleve AS (
     INSERT INTO eleves (username)
-    VALUES ('{{ $json.query.username }}')
+    SELECT resolved_username FROM resolve_user
     ON CONFLICT (username) DO NOTHING
   ),
   niveau_map AS (
@@ -90,7 +98,7 @@ nodes = [
     WHERE eleve_id = e.id AND domaine = '{{ $json.query.domaine }}'
     AND created_at > COALESCE((p.dernier_examen->>'date')::timestamptz, '1970-01-01'::timestamptz)
   ) ss ON true
-  WHERE e.username = '{{ $json.query.username }}'""",
+  WHERE e.username = (SELECT resolved_username FROM resolve_user)""",
             "options": {}
         },
         "credentials": {
