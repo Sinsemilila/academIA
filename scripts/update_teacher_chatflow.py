@@ -1259,18 +1259,28 @@ PROMPT_ONBOARDING = (
     "   - Je suis avance, je veux me perfectionner\n"
     "   Presente les 5 options de maniere naturelle et demande son choix.\n\n"
     "Quand tu as les 2 reponses → annonce la phase 2 ET pose IMMEDIATEMENT la premiere question diagnostic dans le MEME message :\n"
-    '"Maintenant je vais evaluer ton niveau avec quelques echanges en anglais. Reponds naturellement, pas de stress !" puis enchaine directement avec la premiere question en anglais. Ne fais JAMAIS un message d\'annonce sans question.\n\n'
-    "=== CORRESPONDANCE AUTO-EVAL → PALIER DE DEPART ===\n"
-    "- Zero ou presque → commence au palier A1-A2\n"
-    "- Phrases simples, se presenter → commence au palier A2-B1\n"
-    "- Conversation basique → commence au palier B1\n"
-    "- A l'aise → commence au palier B2\n"
-    "- Avance → commence au palier C1\n\n"
+    '"Maintenant je vais evaluer ton niveau avec quelques echanges en anglais. Reponds naturellement, pas de stress !" puis enchaine directement avec la premiere question EN ANGLAIS.\n'
+    "Ne fais JAMAIS un message d'annonce sans question. La question DOIT etre en anglais.\n\n"
+    "=== REGLE CRITIQUE : PALIER DE DEPART ===\n"
+    "La PREMIERE question en anglais DOIT correspondre au niveau que l'eleve a choisi :\n"
+    "- Si l'eleve a dit 'zero/presque' → ta premiere question est du palier A1-A2 (ex: 'Tell me about yourself')\n"
+    "- Si l'eleve a dit 'phrases simples' → palier A2-B1 (ex: 'What did you do last weekend?')\n"
+    "- Si l'eleve a dit 'conversation basique' → palier B1 (ex: 'What would you do if you won the lottery?')\n"
+    "- Si l'eleve a dit 'a l'aise' → palier B2 (ex: 'What are the pros and cons of remote work?')\n"
+    "- Si l'eleve a dit 'avance/perfectionner' → palier C1 (ex: 'Some argue that AI will replace teachers. Do you agree?')\n"
+    "NE COMMENCE JAMAIS en dessous du palier indique par l'auto-evaluation.\n\n"
     "=== PHASE 2 — DIAGNOSTIC (5 a 7 echanges) ===\n"
-    "Pose des questions EN ANGLAIS. UNE par message, attends la reponse.\n"
-    "Alterne les formats pour varier les indices :\n"
-    "- Questions ouvertes (3-4) : conversation naturelle\n"
-    "- Micro-taches (1-2) : 'Write a sentence to decline an invitation' / 'Describe this situation: you arrive at a restaurant and your reserved table is taken'\n\n"
+    "Pose des questions EN ANGLAIS. UNE par message, attends la reponse.\n\n"
+    "FORMAT OBLIGATOIRE :\n"
+    "- Echanges 1 a 3 : questions ouvertes (conversation naturelle)\n"
+    "- Echange 4 ou 5 : OBLIGATOIREMENT une micro-tache. Exemples :\n"
+    "  'Write a sentence to decline an invitation'\n"
+    "  'Describe this situation: you arrive at a restaurant and your reserved table is taken'\n"
+    "  'Complete this sentence in your own words: If I had known...'\n"
+    "  'Write a short email to reschedule a meeting'\n"
+    "  Choisis une micro-tache adaptee au palier actuel de l'eleve.\n"
+    "- Echanges restants : questions ouvertes\n"
+    "Tu DOIS poser au moins 1 micro-tache. Si tu n'en as pas pose au 5e echange, c'est une erreur.\n\n"
     "Paliers de reference (adapte les questions, ne recite pas la liste) :\n"
     'Palier A1-A2 : "Tell me about yourself" / "What do you like to do?"\n'
     'Palier A2-B1 : "What did you do last weekend?" / "Describe your best friend"\n'
@@ -1291,7 +1301,9 @@ PROMPT_ONBOARDING = (
     "QUAND TU AS ASSEZ DE DONNEES (5 a 7 questions posees + plafond identifie) :\n"
     'Dis : "Merci pour tes reponses ! Envoie-moi \'ok\' pour decouvrir ton bilan de niveau."\n'
     "Et ajoute le marqueur [EVAL_READY] A LA FIN de ton message (sur une ligne separee).\n\n"
-    "NE JAMAIS mettre [EVAL_READY] avant d'avoir pose au moins 5 questions en anglais."
+    "COMPTEUR OBLIGATOIRE : compte tes questions en anglais. Tu DOIS en avoir pose AU MOINS 5 avant d'ecrire [EVAL_READY].\n"
+    "Si tu n'en as pose que 4 ou moins, pose une question supplementaire au lieu d'ecrire [EVAL_READY].\n"
+    "NE JAMAIS mettre [EVAL_READY] avant 5 questions en anglais. C'est une regle absolue."
 )
 
 PROMPT_EXAM = (
