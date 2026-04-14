@@ -293,10 +293,10 @@
         <p class="text-[10px] sm:text-xs text-text-secondary mt-1">sessions</p>
       </div>
     </Tooltip>
-    <Tooltip text="Concepts ma&#238;tris&#233;s (score &ge; 80%)">
+    <Tooltip text="Concepts vus cette semaine (score &gt; 0)">
       <div class="bg-surface border border-border-subtle rounded-xl p-3 sm:p-4 text-center w-full">
-        <p class="text-xl sm:text-2xl font-mono font-semibold">{profile?.mastered ?? 0}<span class="text-sm text-text-muted font-normal">/{profile?.total_expected ?? 0}</span></p>
-        <p class="text-[10px] sm:text-xs text-text-secondary mt-1">concepts ma&#238;tris&#233;s</p>
+        <p class="text-xl sm:text-2xl font-mono font-semibold">{stats.concepts}<span class="text-sm text-text-muted font-normal">/{profile?.total_expected ?? 0}</span></p>
+        <p class="text-[10px] sm:text-xs text-text-secondary mt-1">concepts vus</p>
       </div>
     </Tooltip>
     <Tooltip text="Temps estim&#233; de pratique">
