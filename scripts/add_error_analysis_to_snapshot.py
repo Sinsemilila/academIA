@@ -85,7 +85,8 @@ call_error_analysis_node = {
         "sendHeaders": True,
         "headerParameters": {
             "parameters": [
-                {"name": "Content-Type", "value": "application/json"}
+                {"name": "Content-Type", "value": "application/json"},
+                {"name": "X-Internal-Token", "value": "REDACTED_INTERNAL_API_TOKEN"}
             ]
         },
         "options": {
