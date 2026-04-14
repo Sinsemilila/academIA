@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
 Met a jour le workflow n8n dify-diagnostic (v2) :
-- Prompt LLM enrichi : extrait personnalite + mode_apprentissage en plus du CECRL
-- Parse and Prepare : extrait personnalite + mode
-- SQL Write Profile : ecrit personnalite + mode_apprentissage
+- Prompt LLM enrichi : personnalite, CECRL, auto_eval_level, exchange_count
+- Parse and Prepare : extrait tous les champs + instrumentation
+- SQL Write Profile : ecrit tous les champs, preserve scores_confiance existants
 """
 
 import json
@@ -99,8 +99,16 @@ Reponds UNIQUEMENT avec un objet JSON valide :
     "grammaire": "A1|A2|B1|B2|C1|C2",
     "vocabulaire": "A1|A2|B1|B2|C1|C2",
     "production": "A1|A2|B1|B2|C1|C2"
-  }
-}`
+  },
+  "auto_eval_level": "A1|A2|B1|B2|C1|C2|null",
+  "exchange_count": 5
+}
+
+=== CHAMP auto_eval_level ===
+Si l'eleve a indique son propre niveau en Phase 1 (auto-evaluation, choix parmi des descripteurs), extrais le niveau CECRL correspondant. Si pas d'auto-evaluation explicite, mets null.
+
+=== CHAMP exchange_count ===
+Compte le nombre de reponses EN ANGLAIS de l'eleve dans le transcript (phase 2 uniquement). Ne compte PAS les echanges en francais de la phase 1.`
     },
     { role: "user", content: transcript }
   ],
@@ -141,6 +149,13 @@ const personnaliteJson = JSON.stringify({
 
 const mode = (perso.mode_apprentissage === 'structure') ? 'structure' : 'libre';
 
+// Instrumentation
+const autoEval = esc(parsed.auto_eval_level || '');
+const exchangeCount = parseInt(parsed.exchange_count, 10) || 0;
+
+// details_par_competence as escaped JSON string for SQL
+const detailsJson = JSON.stringify(parsed.details_par_competence || {}).replace(/'/g, "''");
+
 return [{
   json: {
     username: original.username,
@@ -150,9 +165,11 @@ return [{
     points_forts: esc(parsed.points_forts || ''),
     lacunes: esc(parsed.lacunes || ''),
     plan_sessions: esc(parsed.plan_sessions || ''),
-    details: JSON.stringify(parsed.details_par_competence || {}),
+    details_json: detailsJson,
     personnalite_json: personnaliteJson,
     mode_apprentissage: mode,
+    auto_eval_level: autoEval,
+    exchange_count: exchangeCount,
     debug_raw: raw.substring(0, 500)
   }
 }];"""
@@ -160,7 +177,10 @@ return [{
 
 NEW_SQL_QUERY = """INSERT INTO profils_eleves (
     eleve_id, domaine, niveau_global, points_forts, lacunes, plan_sessions,
-    scores_confiance, personnalite, mode_apprentissage, derniere_session, updated_at
+    scores_confiance, personnalite, mode_apprentissage,
+    details_par_competence, diagnostic_justification, onboarding_completed_at,
+    auto_eval_level, diagnostic_exchange_count,
+    derniere_session, updated_at
   )
   SELECT e.id, '{{ $json.domaine }}',
     '{{ $json.niveau_global }}',
@@ -170,17 +190,27 @@ NEW_SQL_QUERY = """INSERT INTO profils_eleves (
     '{}'::jsonb,
     '{{ $json.personnalite_json }}'::jsonb,
     '{{ $json.mode_apprentissage }}',
+    '{{ $json.details_json }}'::jsonb,
+    NULLIF('{{ $json.justification }}', ''),
+    NOW(),
+    NULLIF('{{ $json.auto_eval_level }}', ''),
+    {{ $json.exchange_count }},
     NOW(), NOW()
   FROM eleves e WHERE e.username = '{{ $json.username }}'
   ON CONFLICT (eleve_id, domaine) DO UPDATE SET
-    niveau_global      = EXCLUDED.niveau_global,
-    points_forts       = COALESCE(NULLIF(EXCLUDED.points_forts,''), profils_eleves.points_forts),
-    lacunes            = COALESCE(NULLIF(EXCLUDED.lacunes,''), profils_eleves.lacunes),
-    plan_sessions      = COALESCE(NULLIF(EXCLUDED.plan_sessions,''), profils_eleves.plan_sessions),
-    scores_confiance   = '{}'::jsonb,
-    personnalite       = EXCLUDED.personnalite,
-    mode_apprentissage = EXCLUDED.mode_apprentissage,
-    derniere_session   = NOW(), updated_at = NOW()"""
+    niveau_global              = EXCLUDED.niveau_global,
+    points_forts               = COALESCE(NULLIF(EXCLUDED.points_forts,''), profils_eleves.points_forts),
+    lacunes                    = COALESCE(NULLIF(EXCLUDED.lacunes,''), profils_eleves.lacunes),
+    plan_sessions              = COALESCE(NULLIF(EXCLUDED.plan_sessions,''), profils_eleves.plan_sessions),
+    scores_confiance           = COALESCE(profils_eleves.scores_confiance, '{}'::jsonb),
+    personnalite               = EXCLUDED.personnalite,
+    mode_apprentissage         = EXCLUDED.mode_apprentissage,
+    details_par_competence     = EXCLUDED.details_par_competence,
+    diagnostic_justification   = EXCLUDED.diagnostic_justification,
+    onboarding_completed_at    = COALESCE(profils_eleves.onboarding_completed_at, NOW()),
+    auto_eval_level            = EXCLUDED.auto_eval_level,
+    diagnostic_exchange_count  = EXCLUDED.diagnostic_exchange_count,
+    derniere_session           = NOW(), updated_at = NOW()"""
 
 
 # ============================================================
