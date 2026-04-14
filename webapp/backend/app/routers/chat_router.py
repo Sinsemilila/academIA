@@ -8,7 +8,29 @@ from ..models import ChatRequest
 from ..auth import get_current_user
 from ..rate_limit import limiter
 from .. import database as db
-from ..error_taxonomy.rules import detect_errors
+from ..error_taxonomy.rules import detect_errors, ERROR_CODE_TO_FAMILY
+import yaml
+from pathlib import Path
+
+# Load tolerance matrix once at import
+_TOLERANCE_MATRIX = {}
+_tm_path = Path(__file__).parent.parent / "config" / "tolerance_matrix.yaml"
+if _tm_path.exists():
+    with open(_tm_path) as f:
+        _tm = yaml.safe_load(f)
+        _TOLERANCE_MATRIX = _tm.get("family_band_matrix", {})
+
+_NIVEAU_TO_BAND = {"A1": "beginner", "A2": "beginner", "B1": "intermediate",
+                    "B2": "upper", "C1": "advanced", "C2": "advanced"}
+
+
+def _get_error_tier(error_code: str, niveau: str) -> str:
+    """Get tolerance tier for an error code at a CECRL level."""
+    family = ERROR_CODE_TO_FAMILY.get(error_code)
+    if not family:
+        return "noted"  # unknown family → show it
+    band = _NIVEAU_TO_BAND.get(niveau, "intermediate")
+    return _TOLERANCE_MATRIX.get(family, {}).get(band, "noted")
 
 router = APIRouter(tags=["chat"])
 
@@ -62,10 +84,32 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         dify_inputs["mode_override"] = req.mode_override
 
     # Real-time error feedback (rules layer only, zero LLM cost)
+    # Filtered by tolerance_matrix: shadow errors are hidden, noted/penalized are tagged
     detections = detect_errors(req.message)
+    niveau = ""
+    eleve_id = user.get("eleve_id")
+    if eleve_id and detections:
+        try:
+            async with db.pool.acquire() as conn:
+                niveau = await conn.fetchval(
+                    "SELECT niveau_global FROM profils_eleves WHERE eleve_id = $1 AND domaine = 'anglais'",
+                    eleve_id) or ""
+        except Exception:
+            pass
+
     if detections:
-        lines = [f"- \"{d.original_text}\" → \"{d.suggested_correction}\" ({d.reasoning})" for d in detections]
-        dify_inputs["error_feedback"] = "\n".join(lines)
+        lines = []
+        for d in detections:
+            tier = _get_error_tier(d.error_code, niveau) if niveau else "noted"
+            if tier == "shadow":
+                continue  # don't show to student — they're not ready
+            tag = ""
+            if tier == "penalized":
+                tag = " [PRIORITE]"
+            elif tier == "noted":
+                tag = " [a travailler]"
+            lines.append(f"- \"{d.original_text}\" → \"{d.suggested_correction}\" ({d.reasoning}){tag}")
+        dify_inputs["error_feedback"] = "\n".join(lines) if lines else ""
 
         # Check for repeated errors (same codes seen in last 7 days) — non-critical
         try:
