@@ -28,7 +28,9 @@
   let conceptKeys = $derived(concepts?.concept_keys || []);
   let mastered = $derived(conceptKeys.filter((k: string) => (scores[k]?.score || 0) >= 80).length);
   let totalExpected = $derived(conceptKeys.length || 1);
-  let progressPct = $derived(Math.round(mastered / totalExpected * 100));
+  let progressPct = $derived(Math.round(
+    conceptKeys.reduce((sum: number, k: string) => sum + (scores[k]?.score || scores[k] || 0), 0) / totalExpected
+  ));
   let nextLevel = $derived(niveau ? levelOrder[levelOrder.indexOf(niveau) + 1] || null : null);
 
   function formatDate(iso: string): string {
