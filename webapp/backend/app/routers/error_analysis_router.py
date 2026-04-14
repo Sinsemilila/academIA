@@ -51,8 +51,12 @@ async def analyze_errors(req: AnalyzeRequest, x_internal_token: str = Header(Non
     if not req.session_id or not req.session_id.strip():
         raise HTTPException(status_code=400, detail="session_id is required")
 
+    # Resolve Dify UUID to real username if needed
     eleve_id = await db.pool.fetchval(
-        "SELECT id FROM eleves WHERE username = $1", req.username
+        """SELECT COALESCE(
+            (SELECT e.id FROM users u JOIN eleves e ON u.eleve_id = e.id WHERE u.dify_user_id = $1 LIMIT 1),
+            (SELECT id FROM eleves WHERE username = $1)
+        )""", req.username
     )
     if not eleve_id:
         raise HTTPException(status_code=404, detail=f"Student '{req.username}' not found")
