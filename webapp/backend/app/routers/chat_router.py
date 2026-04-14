@@ -15,9 +15,7 @@ from pathlib import Path
 
 # ── Daily token budget for gpt-4o-mini (free tier protection) ──
 _GPT4O_DAILY_LIMIT = 1_450_000
-_gpt4o_token_counter = {"date": date.today().isoformat(), "tokens": 0}
-# NOTE: counter resets on process restart. For persistent tracking across
-# restarts, check the OpenAI dashboard. The counter is a best-effort guard.
+_gpt4o_token_counter = {"date": "", "tokens": 0, "loaded": False}
 _tiktoken_enc = tiktoken.encoding_for_model("gpt-4o-mini")
 
 
@@ -25,33 +23,56 @@ def _count_tokens(text: str) -> int:
     return len(_tiktoken_enc.encode(text)) if text else 0
 
 
+async def _load_daily_tokens() -> None:
+    """Load today's token count from DB on first call."""
+    if _gpt4o_token_counter["loaded"] and _gpt4o_token_counter["date"] == date.today().isoformat():
+        return
+    today = date.today().isoformat()
+    try:
+        async with db.pool.acquire() as conn:
+            row = await conn.fetchrow(
+                "SELECT tokens_used FROM token_usage_daily WHERE usage_date = $1",
+                date.today())
+            _gpt4o_token_counter["tokens"] = row["tokens_used"] if row else 0
+    except Exception:
+        _gpt4o_token_counter["tokens"] = 0
+    _gpt4o_token_counter["date"] = today
+    _gpt4o_token_counter["loaded"] = True
+
+
 async def _track_gpt4o_tokens(input_tokens: int, output_tokens: int) -> None:
-    """Track daily gpt-4o-mini token usage. Resets at midnight + restores gpt-4o-mini."""
+    """Track daily gpt-4o-mini token usage in DB. Resets at midnight + restores gpt-4o-mini."""
     today = date.today().isoformat()
     if _gpt4o_token_counter["date"] != today:
         _gpt4o_token_counter["date"] = today
         _gpt4o_token_counter["tokens"] = 0
-        # New day: restore gpt-4o-mini if it was switched to groq
+        _gpt4o_token_counter["loaded"] = True
         if _current_dify_model != "gpt-4o-mini":
             await _switch_dify_model("gpt-4o-mini")
-    _gpt4o_token_counter["tokens"] += input_tokens + output_tokens
+    added = input_tokens + output_tokens
+    _gpt4o_token_counter["tokens"] += added
+    try:
+        async with db.pool.acquire() as conn:
+            await conn.execute(
+                """INSERT INTO token_usage_daily (usage_date, tokens_used)
+                   VALUES (CURRENT_DATE, $1)
+                   ON CONFLICT (usage_date) DO UPDATE SET tokens_used = token_usage_daily.tokens_used + $1""",
+                added)
+    except Exception:
+        pass
 
 
-def _gpt4o_budget_exceeded() -> bool:
-    today = date.today().isoformat()
-    if _gpt4o_token_counter["date"] != today:
-        return False
+async def _gpt4o_budget_exceeded() -> bool:
+    await _load_daily_tokens()
     return _gpt4o_token_counter["tokens"] >= _GPT4O_DAILY_LIMIT
 
 
-def get_gpt4o_usage() -> dict:
+async def get_gpt4o_usage() -> dict:
     """Return current daily token usage for gpt-4o-mini."""
-    today = date.today().isoformat()
-    if _gpt4o_token_counter["date"] != today:
-        return {"date": today, "tokens": 0, "limit": _GPT4O_DAILY_LIMIT, "pct": 0}
+    await _load_daily_tokens()
     tokens = _gpt4o_token_counter["tokens"]
     return {
-        "date": today,
+        "date": _gpt4o_token_counter["date"],
         "tokens": tokens,
         "limit": _GPT4O_DAILY_LIMIT,
         "pct": round(tokens / _GPT4O_DAILY_LIMIT * 100, 1),
@@ -202,7 +223,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
 
     # ── GPT-4o-mini daily token budget check ──
     input_token_est = _count_tokens(req.message) + 2000  # system prompt + history overhead
-    if _gpt4o_budget_exceeded():
+    if await _gpt4o_budget_exceeded():
         import logging
         logging.getLogger("chat").warning(
             "gpt-4o-mini daily budget exceeded (%d/%d). Switching Dify to groq-standard.",
@@ -273,7 +294,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
 @router.get("/api/chat/token-usage")
 async def token_usage(user: dict = Depends(get_current_user)):
     """Current daily gpt-4o-mini token usage."""
-    usage = get_gpt4o_usage()
+    usage = await get_gpt4o_usage()
     usage["model"] = _current_dify_model
     return usage
 
