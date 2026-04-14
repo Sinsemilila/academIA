@@ -30,6 +30,13 @@
   let creating = $state(false);
   let confirmDelete = $state<number | null>(null);
   let confirmReset = $state<string | null>(null);
+  let tokenUsage = $state<any>(null);
+
+  async function loadTokenUsage() {
+    try {
+      tokenUsage = await api.getTokenUsage();
+    } catch {}
+  }
 
   async function loadUsers() {
     try {
@@ -92,7 +99,7 @@
     return `il y a ${Math.floor(diff / 86400)}j`;
   }
 
-  onMount(loadUsers);
+  onMount(() => { loadUsers(); loadTokenUsage(); });
 </script>
 
 <svelte:head>
@@ -109,6 +116,30 @@
       + Nouvel utilisateur
     </button>
   </div>
+
+  <!-- Token Usage -->
+  {#if tokenUsage}
+    {@const pct = tokenUsage.pct}
+    {@const barColor = pct > 90 ? 'bg-maestro' : pct > 70 ? 'bg-lehrer' : 'bg-teacher'}
+    <div class="bg-surface border border-border-subtle rounded-xl p-4">
+      <div class="flex items-center justify-between mb-2">
+        <div>
+          <h2 class="text-sm font-semibold">GPT-4o-mini &mdash; Quota journalier</h2>
+          <p class="text-xs text-text-muted">Mod&#232;le actif : {tokenUsage.model}</p>
+        </div>
+        <div class="text-right">
+          <p class="text-lg font-mono font-semibold">{Math.round(tokenUsage.tokens / 1000)}K <span class="text-sm text-text-muted font-normal">/ {Math.round(tokenUsage.limit / 1000)}K</span></p>
+          <p class="text-xs text-text-muted">{pct}%</p>
+        </div>
+      </div>
+      <div class="w-full h-2 bg-elevated rounded-full overflow-hidden">
+        <div class="h-full {barColor} rounded-full transition-all" style="width: {Math.min(pct, 100)}%"></div>
+      </div>
+      {#if tokenUsage.exceeded}
+        <p class="text-xs text-maestro mt-2">Quota d&#233;pass&#233; &mdash; fallback groq-standard actif</p>
+      {/if}
+    </div>
+  {/if}
 
   {#if showCreateForm}
     <div class="bg-surface border border-border-subtle rounded-xl p-4 space-y-3">
