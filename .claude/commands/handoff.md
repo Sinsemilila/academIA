@@ -12,18 +12,21 @@ Session end. Execute in order.
 - `TODO.md`: mark completed tasks as DONE.
 - `CHANGELOG.md`: append via `log <type> "<message>"` tool.
 
-## 3. Write SESSION.md
-Overwrite `projects/academie-ia/SESSION.md`:
+## 3. Update SESSION.md
+**Prepend** (don't overwrite) a new session block at the top of `projects/academie-ia/SESSION.md`, after the header line.
+Keep all previous sessions below.
 ```
-# Session — YYYY-MM-DD
+---
 
-## Done
+## Session N — YYYY-MM-DD
+
+### Done
 - bullet list of what was accomplished
 
-## Next
+### Next
 - bullet list of suggested next steps
 
-## Gotchas
+### Gotchas
 - bullet list of risks/issues (if any, omit section if none)
 ```
 
