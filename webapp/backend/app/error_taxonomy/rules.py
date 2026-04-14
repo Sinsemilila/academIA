@@ -162,6 +162,79 @@ UNCOUNTABLE_NOUNS = {
     "behaviours": "behaviour", "behaviors": "behavior",
 }
 
+# ── A1: Irregular past tense (regularized forms) ──
+IRREGULAR_PAST_ERRORS = {
+    "goed": "went", "comed": "came", "taked": "took", "maked": "made",
+    "runned": "ran", "bringed": "brought", "buyed": "bought", "teached": "taught",
+    "catched": "caught", "thinked": "thought", "feeled": "felt", "leaved": "left",
+    "builded": "built", "sended": "sent", "spended": "spent", "keeped": "kept",
+    "finded": "found", "knowed": "knew", "growed": "grew", "drived": "drove",
+    "writed": "wrote", "speaked": "spoke", "breaked": "broke", "choosed": "chose",
+    "eated": "ate", "drinked": "drank", "gived": "gave", "hided": "hid",
+    "holded": "held", "leaded": "led", "meeted": "met", "payed": "paid",
+    "rided": "rode", "selled": "sold", "standed": "stood", "swimmed": "swam",
+    "weared": "wore", "winned": "won",
+}
+
+# ── B1: Gerund-only verbs (verb + to → should be + -ing) ──
+GERUND_VERBS = [
+    "enjoy", "avoid", "consider", "finish", "imagine", "mind", "miss",
+    "practice", "quit", "risk", "suggest", "deny", "keep", "appreciate",
+    "postpone", "recommend", "resist",
+]
+
+# ── B1-B2: Double comparative/superlative adjectives ──
+SHORT_COMPARATIVES = [
+    "bigger", "smaller", "taller", "shorter", "faster", "slower", "easier",
+    "harder", "nicer", "older", "younger", "cheaper", "richer", "poorer",
+    "simpler", "louder", "quieter", "stronger", "weaker", "longer", "wider",
+    "thinner", "darker", "lighter", "warmer", "colder", "closer", "newer",
+]
+SHORT_SUPERLATIVES = [
+    "biggest", "smallest", "tallest", "shortest", "fastest", "slowest",
+    "easiest", "hardest", "nicest", "oldest", "youngest", "cheapest",
+    "simplest", "strongest", "weakest", "longest", "widest", "newest",
+]
+
+# ── B1-C1: Make/Do collocations ──
+MAKE_NOT_DO = [
+    "mistake", "decision", "effort", "progress", "money", "noise",
+    "difference", "appointment", "complaint", "suggestion", "arrangement",
+    "choice", "promise", "plan", "offer", "comment", "contribution",
+]
+DO_NOT_MAKE = [
+    "homework", "housework", "exercise", "business", "research",
+    "damage", "work", "favor", "favour", "harm", "justice", "duty",
+]
+
+# ── Error code → family mapping (for tolerance_matrix filtering) ──
+ERROR_CODE_TO_FAMILY = {
+    "V:TENSE": "verb_tense", "V:SVA": "verb_tense", "V:FORM": "verb_tense",
+    "V:COND": "verb_tense", "V:ASPECT": "verb_tense", "V:AUX": "verb_tense",
+    "V:INFL": "verb_tense",
+    "V:MODAL": "verb_usage", "V:PASS": "verb_usage", "V:EXIST": "verb_usage",
+    "V:CHOICE": "verb_usage", "V:PHRASAL": "verb_usage",
+    "N:COUNT": "noun_det", "N:INFL": "noun_det", "N:POSS": "noun_det",
+    "N:CHOICE": "noun_det", "ART": "noun_det", "ART:GENERIC": "noun_det",
+    "DET": "noun_det",
+    "PRON:FORM": "pronoun", "PRON:CHOICE": "pronoun", "PRON:REF": "pronoun",
+    "WO": "word_order", "WO:QUEST": "word_order",
+    "SENT:RUNON": "sentence", "SENT:FRAG": "sentence", "SENT:NEG": "sentence",
+    "SENT:MOD": "sentence", "SENT:PARALLEL": "sentence", "SENT:SUBORD": "sentence",
+    "MORPH:DERIV": "morphology", "MORPH:WORDCLASS": "morphology",
+    "ADJ:CHOICE": "morphology", "ADJ:FORM": "morphology", "ADJ:ORDER": "morphology",
+    "ADV:CHOICE": "morphology",
+    "SPELL": "surface", "SPELL:COGNATE": "surface", "ORTH:CASE": "surface",
+    "ORTH:SPACE": "surface", "PUNCT": "surface", "PUNCT:COMMA": "surface",
+    "PUNCT:APOST": "surface", "CONTR": "surface", "REDUND": "surface",
+    "PREP": "preposition", "PREP:CALQUE": "calque", "LEX:CALQUE": "calque",
+    "LEX:CHOICE": "vocabulary", "LEX:COLLOC": "vocabulary",
+    "LEX:FALSE": "vocabulary", "LEX:IDIOM": "vocabulary",
+    "LEX:ARGSTRUCT": "vocabulary",
+    "DISC:TRANS": "discourse", "DISC:COHER": "discourse",
+    "REG:LEVEL": "discourse", "REG:PRAGMA": "discourse",
+}
+
 def detect_errors(text: str) -> list[RuleDetection]:
     """Run deterministic rules on raw user text. For monolithic pipeline."""
     results = []
@@ -226,6 +299,136 @@ def detect_errors(text: str) -> list[RuleDetection]:
     for pattern, orig, fix, reason in PREP_ERRORS:
         if re.search(pattern, text_lower):
             results.append(RuleDetection("PREP", orig, fix, reason))
+
+    # ── PREP — "despite of" ──
+    if re.search(r"\bdespite\s+of\b", text_lower):
+        results.append(RuleDetection("PREP", "despite of", "despite",
+            "No 'of' after 'despite': 'despite of' → 'despite'."))
+
+    # ── V:SVA — Subject-verb agreement (A1) ──
+    for subj in ["he", "she", "it"]:
+        for verb in ["go", "have", "do", "like", "want", "need", "come", "make", "take", "say",
+                      "know", "think", "live", "work", "play", "eat", "drink", "read", "write", "speak"]:
+            if re.search(rf"\b{subj}\s+{verb}\b", text_lower):
+                if verb == "have":
+                    fix = "has"
+                elif verb == "do":
+                    fix = "does"
+                elif verb == "go":
+                    fix = "goes"
+                elif verb.endswith("y") and verb not in ("play", "say"):
+                    fix = verb[:-1] + "ies"
+                else:
+                    fix = verb + "s"
+                results.append(RuleDetection("V:SVA", f"{subj} {verb}", f"{subj} {fix}",
+                    f"3rd person singular: '{subj} {verb}' → '{subj} {fix}'."))
+                break
+        else:
+            continue
+        break
+
+    # "he/she/it don't" → "doesn't"
+    if re.search(r"\b(he|she|it)\s+don'?t\b", text_lower):
+        m = re.search(r"\b(he|she|it)\s+don'?t\b", text_lower)
+        results.append(RuleDetection("V:SVA", m.group(0), f"{m.group(1)} doesn't",
+            "3rd person: 'don't' → 'doesn't'."))
+
+    # "I/you/we/they doesn't" → "don't"
+    if re.search(r"\b(i|you|we|they)\s+doesn'?t\b", text_lower):
+        m = re.search(r"\b(i|you|we|they)\s+doesn'?t\b", text_lower)
+        results.append(RuleDetection("V:SVA", m.group(0), f"{m.group(1)} don't",
+            "Plural subject: 'doesn't' → 'don't'."))
+
+    # "there is many/several" → "there are"
+    if re.search(r"\bthere\s+is\s+(many|several|numerous|a lot of|lots of|few|some)\b", text_lower):
+        results.append(RuleDetection("V:SVA", "there is", "there are",
+            "Plural noun: 'there is many' → 'there are many'."))
+
+    # ── V:FORM — Irregular past tense (A1-A2) ──
+    for wrong, correct in IRREGULAR_PAST_ERRORS.items():
+        if re.search(rf"\b{re.escape(wrong)}\b", text_lower):
+            results.append(RuleDetection("V:FORM", wrong, correct,
+                f"Irregular past: '{wrong}' → '{correct}'."))
+
+    # ── V:FORM — Gerund verbs + to (B1) ──
+    for verb in GERUND_VERBS:
+        if re.search(rf"\b{verb}(?:s|ed|ing)?\s+to\s+[a-z]", text_lower):
+            m = re.search(rf"\b({verb}(?:s|ed|ing)?)\s+to\s+([a-z]+)", text_lower)
+            if m:
+                results.append(RuleDetection("V:FORM", f"{m.group(1)} to {m.group(2)}",
+                    f"{m.group(1)} {m.group(2)}ing",
+                    f"'{m.group(1)}' takes -ing, not 'to': '{m.group(1)} to {m.group(2)}' → '{m.group(1)} {m.group(2)}ing'."))
+                break
+
+    # ── V:FORM — "look forward to + base form" (B1) ──
+    m = re.search(r"\blook(?:s|ed|ing)?\s+forward\s+to\s+([a-z]+)\b", text_lower)
+    if m and not m.group(1).endswith("ing"):
+        results.append(RuleDetection("V:FORM", f"forward to {m.group(1)}",
+            f"forward to {m.group(1)}ing",
+            f"'look forward to' + -ing: 'look forward to {m.group(1)}' → 'look forward to {m.group(1)}ing'."))
+
+    # ── V:FORM — "be used to / get used to + base form" (B1-B2) ──
+    m = re.search(r"\b(?:am|is|are|was|were|get|got|getting)\s+used\s+to\s+([a-z]+)\b", text_lower)
+    if m and not m.group(1).endswith("ing"):
+        results.append(RuleDetection("V:FORM", f"used to {m.group(1)}",
+            f"used to {m.group(1)}ing",
+            f"'be/get used to' + -ing: 'used to {m.group(1)}' → 'used to {m.group(1)}ing'."))
+
+    # ── V:COND — "if + would/will" in conditional clause (B1) ──
+    if re.search(r"\bif\s+(?:i|he|she|it|we|they|you)\s+would\s+(?!like|prefer|rather|mind)", text_lower):
+        results.append(RuleDetection("V:COND", "if ... would", "if ... had/past tense",
+            "Don't use 'would' in if-clause. Use past tense or past perfect."))
+    if re.search(r"\bif\s+(?:i|he|she|it|we|they|you)\s+will\s+", text_lower):
+        results.append(RuleDetection("V:COND", "if ... will", "if ... present tense",
+            "Don't use 'will' in if-clause. Use present tense."))
+
+    # ── WO:QUEST — Questions without auxiliary (A2) ──
+    m = re.search(r"\b(where|when|why|how|what)\s+(you|he|she|they|we)\s+"
+                  r"(go|went|like|liked|want|wanted|think|thought|buy|bought|eat|ate|see|saw|get|got)\b",
+                  text_lower)
+    if m:
+        results.append(RuleDetection("WO:QUEST", f"{m.group(1)} {m.group(2)} {m.group(3)}",
+            f"{m.group(1)} did {m.group(2)} {m.group(3)}",
+            f"Missing auxiliary: '{m.group(1)} {m.group(2)} {m.group(3)}' → '{m.group(1)} did {m.group(2)} ...'."))
+
+    # ── ADJ:FORM — Double comparative/superlative (B2) ──
+    comp_pattern = "|".join(re.escape(c) for c in SHORT_COMPARATIVES)
+    if re.search(rf"\bmore\s+({comp_pattern})\b", text_lower):
+        m = re.search(rf"\bmore\s+({comp_pattern})\b", text_lower)
+        results.append(RuleDetection("ADJ:FORM", f"more {m.group(1)}", m.group(1),
+            f"Double comparative: 'more {m.group(1)}' → '{m.group(1)}'."))
+    sup_pattern = "|".join(re.escape(s) for s in SHORT_SUPERLATIVES)
+    if re.search(rf"\bmost\s+({sup_pattern})\b", text_lower):
+        m = re.search(rf"\bmost\s+({sup_pattern})\b", text_lower)
+        results.append(RuleDetection("ADJ:FORM", f"most {m.group(1)}", m.group(1),
+            f"Double superlative: 'most {m.group(1)}' → '{m.group(1)}'."))
+
+    # ── LEX:COLLOC — Make/Do confusion (B1-C1) ──
+    for noun in MAKE_NOT_DO:
+        if re.search(rf"\b(?:do|does|did|doing)\s+(?:a\s+|an\s+|the\s+)?{re.escape(noun)}\b", text_lower):
+            results.append(RuleDetection("LEX:COLLOC", f"do a {noun}", f"make a {noun}",
+                f"Collocation: 'do a {noun}' → 'make a {noun}'."))
+            break
+    for noun in DO_NOT_MAKE:
+        if re.search(rf"\b(?:make|makes|made|making)\s+(?:a\s+|an\s+|the\s+|my\s+|his\s+|her\s+)?{re.escape(noun)}\b", text_lower):
+            results.append(RuleDetection("LEX:COLLOC", f"make {noun}", f"do {noun}",
+                f"Collocation: 'make {noun}' → 'do {noun}'."))
+            break
+
+    # ── V:CHOICE — Say/Tell confusion (B1-C1) ──
+    if re.search(r"\b(?:said|say|says)\s+(?:me|him|her|us|them)\s+(?:to|that)\b", text_lower):
+        m = re.search(r"\b(said|say|says)\s+(me|him|her|us|them)", text_lower)
+        results.append(RuleDetection("V:CHOICE", f"{m.group(1)} {m.group(2)}",
+            f"told {m.group(2)}",
+            f"'say' doesn't take a person: '{m.group(1)} {m.group(2)}' → 'told {m.group(2)}'."))
+    if re.search(r"\btold\s+that\b", text_lower):
+        results.append(RuleDetection("V:CHOICE", "told that", "said that / told [someone] that",
+            "'told' needs a person: 'told that' → 'said that' or 'told [someone] that'."))
+
+    # ── LEX:ARGSTRUCT — "suggest me to" (B1) ──
+    if re.search(r"\bsuggest(?:ed|s)?\s+(?:me|him|her|us|them)\s+to\b", text_lower):
+        results.append(RuleDetection("LEX:ARGSTRUCT", "suggest ... to", "suggest + -ing / suggest that",
+            "'suggest' doesn't take 'someone + to': use 'suggest + -ing' or 'suggest that...'."))
 
     return results
 
