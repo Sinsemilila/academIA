@@ -233,12 +233,52 @@
         </div>
       {/if}
     </div>
+  {:else if profile?.onboarding_completed_at && !profile?.derniere_session}
+    <!-- Post-diagnostic bilan — diagnosed but no session yet -->
+    <div class="bg-surface border border-teacher/30 rounded-xl p-6 sm:p-8">
+      <div class="flex items-center gap-3 mb-4">
+        <AgentFlag agent={agents[0]} size="md" />
+        <div>
+          <h2 class="font-semibold text-lg">Diagnostic termin&#233;</h2>
+          <p class="text-xs text-text-muted">Niveau provisoire &mdash; s'affinera au fil des sessions</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 mb-5">
+        <span class="px-3 py-1.5 bg-teacher/10 text-teacher font-bold text-xl rounded-lg">{profile.niveau}</span>
+        <span class="text-xs text-text-muted border border-border-subtle rounded px-2 py-0.5">provisoire</span>
+      </div>
+      {#if profile.details_par_competence}
+        <div class="grid grid-cols-3 gap-3 mb-5">
+          {#each Object.entries(profile.details_par_competence) as [skill, level]}
+            <div class="bg-elevated rounded-lg p-3 text-center">
+              <p class="text-xs text-text-muted capitalize">{skill}</p>
+              <p class="font-mono font-semibold text-sm mt-1">{level}</p>
+            </div>
+          {/each}
+        </div>
+      {/if}
+      {#if profile.points_forts}
+        <div class="mb-3">
+          <p class="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">Points forts</p>
+          <p class="text-sm text-text-secondary">{profile.points_forts}</p>
+        </div>
+      {/if}
+      {#if profile.lacunes}
+        <div class="mb-5">
+          <p class="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">&#192; travailler</p>
+          <p class="text-sm text-text-secondary">{profile.lacunes}</p>
+        </div>
+      {/if}
+      <a href="/chat/teacher" class="inline-block px-5 py-2.5 bg-teacher text-white text-sm font-medium rounded-lg hover:brightness-110 transition-all">
+        Commencer ma premi&#232;re session &#x2192;
+      </a>
+    </div>
   {:else}
-    <!-- Empty state -->
+    <!-- Empty state — no diagnostic yet -->
     <div class="bg-surface border border-border-subtle rounded-xl p-8 text-center">
       <p class="text-4xl mb-3">&#x1F393;</p>
       <h2 class="font-semibold text-lg mb-2">Bienvenue sur Acad&#233;mie-IA !</h2>
-      <p class="text-sm text-text-secondary mb-4">Lance ta premi&#232;re session avec Teacher pour cr&#233;er ton profil et commencer &#224; apprendre.</p>
+      <p class="text-sm text-text-secondary mb-4">En quelques minutes, Teacher va &#233;valuer ton niveau d'anglais et cr&#233;er ton programme personnalis&#233;.</p>
       <a href="/chat/teacher" class="inline-block px-5 py-2.5 bg-teacher text-white text-sm font-medium rounded-lg hover:brightness-110 transition-all">
         Commencer &#x2192;
       </a>
