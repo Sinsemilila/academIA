@@ -266,7 +266,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
                             pass
 
     # Track gpt-4o-mini tokens (input estimate before stream, output after)
-    _track_gpt4o_tokens(input_token_est, 0)  # pre-track input
+    await _track_gpt4o_tokens(input_token_est, 0)  # pre-track input
 
     # Update streak on chat activity
     await _update_streak(user["id"])
@@ -283,7 +283,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         # Track output tokens after stream completes
         full_answer = "".join(collected_answer)
         output_tokens = _count_tokens(full_answer)
-        _track_gpt4o_tokens(0, output_tokens)
+        await _track_gpt4o_tokens(0, output_tokens)
         if xp_earned > 0:
             xp_event = json.dumps({"event": "xp_earned", "amount": xp_earned, "reason": "session"})
             yield f"data: {xp_event}\n\n"
