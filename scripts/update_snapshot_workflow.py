@@ -68,7 +68,13 @@ return [{
         "position": [416, 0],
         "parameters": {
             "operation": "executeQuery",
-            "query": """WITH niveau_map AS (
+            "query": """WITH resolve_user AS (
+  SELECT COALESCE(
+    (SELECT el.username FROM users u JOIN eleves el ON u.eleve_id = el.id WHERE u.dify_user_id = '{{ $json.username }}' LIMIT 1),
+    '{{ $json.username }}'
+  ) AS resolved_username
+),
+niveau_map AS (
   SELECT unnest(ARRAY['A1','A2','B1','B2','C1','C2']) as niveau,
          unnest(ARRAY['A2','B1','B2','C1','C2','C2']) as next_niveau
 )
@@ -82,7 +88,7 @@ LEFT JOIN profils_eleves p ON p.eleve_id = e.id AND p.domaine = '{{ $json.domain
 LEFT JOIN curriculums c ON c.domaine = p.domaine AND c.niveau = p.niveau_global
 LEFT JOIN niveau_map nm ON nm.niveau = p.niveau_global
 LEFT JOIN curriculums cnext ON cnext.domaine = p.domaine AND cnext.niveau = nm.next_niveau
-WHERE e.username = '{{ $json.username }}'""",
+WHERE e.username = (SELECT resolved_username FROM resolve_user)""",
             "options": {}
         },
         "credentials": {
@@ -332,7 +338,7 @@ return [{
         "type": "n8n-nodes-base.postgres",
         "position": [1456, -100],
         "parameters": {
-            "query": "INSERT INTO snapshots_session (eleve_id, domaine, contenu)\n  SELECT e.id, '{{ $json.domaine }}', '{{ $json.contenu }}'\n  FROM eleves e\n  WHERE e.username = '{{ $json.username }}'",
+            "query": "WITH resolve_user AS (SELECT COALESCE((SELECT el.username FROM users u JOIN eleves el ON u.eleve_id = el.id WHERE u.dify_user_id = '{{ $json.username }}' LIMIT 1), '{{ $json.username }}') AS resolved_username)\nINSERT INTO snapshots_session (eleve_id, domaine, contenu)\n  SELECT e.id, '{{ $json.domaine }}', '{{ $json.contenu }}'\n  FROM eleves e\n  WHERE e.username = (SELECT resolved_username FROM resolve_user)",
             "options": {
                 "queryReplacement": "={{ $json.domaine }}, {{ $json.contenu }}, {{ $json.username }}"
             },
@@ -379,7 +385,13 @@ return [{
         "position": [1664, 100],
         "parameters": {
             "operation": "executeQuery",
-            "query": """INSERT INTO profils_eleves (
+            "query": """WITH resolve_user AS (
+  SELECT COALESCE(
+    (SELECT el.username FROM users u JOIN eleves el ON u.eleve_id = el.id WHERE u.dify_user_id = '{{ $json.username }}' LIMIT 1),
+    '{{ $json.username }}'
+  ) AS resolved_username
+)
+INSERT INTO profils_eleves (
     eleve_id, domaine, niveau_global, points_forts, lacunes, plan_sessions,
     scores_confiance, derniere_session, updated_at
   )
@@ -390,7 +402,7 @@ return [{
     NULLIF('{{ $json.plan_sessions }}', ''),
     '{{ $json.scores_confiance }}'::jsonb,
     NOW(), NOW()
-  FROM eleves e WHERE e.username = '{{ $json.username }}'
+  FROM eleves e WHERE e.username = (SELECT resolved_username FROM resolve_user)
   ON CONFLICT (eleve_id, domaine) DO UPDATE SET
     niveau_global    = COALESCE(NULLIF(EXCLUDED.niveau_global,''),    profils_eleves.niveau_global),
     points_forts     = COALESCE(NULLIF(EXCLUDED.points_forts,''),     profils_eleves.points_forts),

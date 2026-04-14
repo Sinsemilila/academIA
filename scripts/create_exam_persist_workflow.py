@@ -62,13 +62,13 @@ const shouldClear = body.clear === true;
 let sql;
 if (shouldClear) {
   sql = `UPDATE profils_eleves SET examen_en_cours = NULL
-         WHERE eleve_id = (SELECT id FROM eleves WHERE username = '${username}')
+         WHERE eleve_id = (SELECT id FROM eleves WHERE username = COALESCE((SELECT el.username FROM users u JOIN eleves el ON u.eleve_id = el.id WHERE u.dify_user_id = '${username}' LIMIT 1), '${username}'))
          AND domaine = '${domaine}';`;
 } else {
   const examState = body.exam_state || {};
   const stateJson = JSON.stringify(examState).replace(/'/g, "''");
   sql = `UPDATE profils_eleves SET examen_en_cours = '${stateJson}'::jsonb
-         WHERE eleve_id = (SELECT id FROM eleves WHERE username = '${username}')
+         WHERE eleve_id = (SELECT id FROM eleves WHERE username = COALESCE((SELECT el.username FROM users u JOIN eleves el ON u.eleve_id = el.id WHERE u.dify_user_id = '${username}' LIMIT 1), '${username}'))
          AND domaine = '${domaine}';`;
 }
 

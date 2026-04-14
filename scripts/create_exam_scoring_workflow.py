@@ -97,7 +97,7 @@ return [{
         "settings": {"alwaysOutputData": True},
         "parameters": {
             "operation": "executeQuery",
-            "query": """SELECT error_code, cnt FROM (SELECT error_code, COUNT(*) as cnt FROM error_log WHERE eleve_id = (SELECT id FROM eleves WHERE username = '{{ $json.username }}') AND session_id NOT LIKE 'full-battery%' AND session_id NOT LIKE 'phase1b-%' GROUP BY error_code UNION ALL SELECT '__none__', 0) sub ORDER BY cnt DESC LIMIT 10""",
+            "query": """SELECT error_code, cnt FROM (SELECT error_code, COUNT(*) as cnt FROM error_log WHERE eleve_id = (SELECT id FROM eleves WHERE username = COALESCE((SELECT el.username FROM users u JOIN eleves el ON u.eleve_id = el.id WHERE u.dify_user_id = '{{ $json.username }}' LIMIT 1), '{{ $json.username }}')) AND session_id NOT LIKE 'full-battery%' AND session_id NOT LIKE 'phase1b-%' GROUP BY error_code UNION ALL SELECT '__none__', 0) sub ORDER BY cnt DESC LIMIT 10""",
             "options": {}
         },
         "credentials": {
@@ -402,7 +402,7 @@ SET
   ${levelUpClause}
   examen_en_cours = NULL,
   derniere_session = NOW()
-WHERE eleve_id = (SELECT id FROM eleves WHERE username = '${esc(r.username)}')
+WHERE eleve_id = (SELECT id FROM eleves WHERE username = COALESCE((SELECT el.username FROM users u JOIN eleves el ON u.eleve_id = el.id WHERE u.dify_user_id = '${esc(r.username)}' LIMIT 1), '${esc(r.username)}'))
   AND domaine = '${esc(r.domaine)}';
 `;
 
