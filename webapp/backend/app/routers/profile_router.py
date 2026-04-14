@@ -99,9 +99,8 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
     mastered = sum(1 for s in scores.values() if s >= 80)
     total_expected = len(concept_keys) or 1
 
-    # Progress = average score across current level concepts only
-    avg_score = sum(scores.get(k, 0) for k in all_keys) / total_expected if total_expected > 0 else 0
-    progress_pct = round(avg_score)
+    # Progress = % of mastered concepts (aligned with stats page)
+    progress_pct = round(mastered / total_expected * 100) if total_expected > 0 else 0
 
     dernier_examen = row["dernier_examen"]
     if isinstance(dernier_examen, str):
