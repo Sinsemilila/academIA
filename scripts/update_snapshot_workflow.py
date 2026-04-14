@@ -193,6 +193,10 @@ Si l'eleve repete la meme erreur 2+ fois sur un meme concept dans cette session 
 - Note-la dans "lacunes" avec le pattern exact (ex: "confond present perfect et past simple avec 'yesterday'")
 - Sois specifique, pas generique ("erreurs de present perfect" est trop vague)
 
+TACHE 5 — Personnalite (mise a jour).
+Si l'eleve a mentionne ses centres d'interet ou ses preferences de correction dans cette session, extrais-les.
+Sinon, retourne null.
+
 Format JSON exact :
 {
   "resume": "resume pedagogique 3-5 phrases",
@@ -200,9 +204,11 @@ Format JSON exact :
   "points_forts": "description courte",
   "lacunes": "patterns d'erreurs specifiques detectes (ou vide si aucun)",
   "plan_sessions": "prochaine priorite concrete",
-  "scores_confiance": {"concept_key": {"attempts": N, "correct": N, "score": N}}
+  "scores_confiance": {"concept_key": {"attempts": N, "correct": N, "score": N}},
+  "personnalite_update": {"centres_interet": "musique, tech" | null, "style_correction": "direct" | "encourageant" | "humour" | null}
 }
-Si aucun concept n'a ete pratique, scores_confiance doit etre un objet vide : {}`
+Si aucun concept n'a ete pratique, scores_confiance doit etre un objet vide : {}
+Si pas de nouvelle info personnalite, mets personnalite_update a null.`
     },
     { role: "user", content: contenu }
   ],
@@ -314,6 +320,15 @@ for (const [concept, data] of Object.entries(newScoresRaw)) {
   mergedScores[concept] = { score: merged, last_seen: today, first_seen: firstSeen, days_seen: daysSeen };
 }
 
+// Personnalite update
+const persoUpdate = parsed.personnalite_update || null;
+let persoInterets = '';
+let persoStyle = '';
+if (persoUpdate) {
+  persoInterets = (persoUpdate.centres_interet || '').replace(/'/g, "''");
+  persoStyle = (persoUpdate.style_correction || '').replace(/'/g, "''");
+}
+
 return [{
   json: {
     username: original.username,
@@ -325,6 +340,8 @@ return [{
     lacunes: parsed.lacunes || '',
     plan_sessions: parsed.plan_sessions || '',
     scores_confiance: JSON.stringify(mergedScores),
+    perso_interets: persoInterets,
+    perso_style: persoStyle,
     debug_raw: raw.substring(0, 500)
   }
 }];"""
@@ -409,6 +426,23 @@ INSERT INTO profils_eleves (
     lacunes          = COALESCE(NULLIF(EXCLUDED.lacunes,''),          profils_eleves.lacunes),
     plan_sessions    = COALESCE(NULLIF(EXCLUDED.plan_sessions,''),    profils_eleves.plan_sessions),
     scores_confiance = '{{ $json.scores_confiance }}'::jsonb,
+    personnalite = CASE
+      WHEN NULLIF('{{ $json.perso_interets }}', '') IS NOT NULL OR NULLIF('{{ $json.perso_style }}', '') IS NOT NULL
+      THEN jsonb_set(
+        jsonb_set(
+          COALESCE(profils_eleves.personnalite, '{}'::jsonb),
+          '{centres_interet}',
+          CASE WHEN NULLIF('{{ $json.perso_interets }}', '') IS NOT NULL
+               THEN to_jsonb('{{ $json.perso_interets }}'::text)
+               ELSE COALESCE(profils_eleves.personnalite->'centres_interet', '""'::jsonb) END
+        ),
+        '{style_correction}',
+        CASE WHEN NULLIF('{{ $json.perso_style }}', '') IS NOT NULL
+             THEN to_jsonb('{{ $json.perso_style }}'::text)
+             ELSE COALESCE(profils_eleves.personnalite->'style_correction', '""'::jsonb) END
+      )
+      ELSE profils_eleves.personnalite
+    END,
     derniere_session = NOW(), updated_at = NOW()""",
             "options": {}
         },
