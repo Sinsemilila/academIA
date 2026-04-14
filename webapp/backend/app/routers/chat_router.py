@@ -10,7 +10,77 @@ from ..rate_limit import limiter
 from .. import database as db
 from ..error_taxonomy.rules import detect_errors, ERROR_CODE_TO_FAMILY
 import yaml
+import tiktoken
 from pathlib import Path
+
+# ── Daily token budget for gpt-4o-mini (free tier protection) ──
+_GPT4O_DAILY_LIMIT = 1_450_000
+_gpt4o_token_counter = {"date": date.today().isoformat(), "tokens": 0}
+# NOTE: counter resets on process restart. For persistent tracking across
+# restarts, check the OpenAI dashboard. The counter is a best-effort guard.
+_tiktoken_enc = tiktoken.encoding_for_model("gpt-4o-mini")
+
+
+def _count_tokens(text: str) -> int:
+    return len(_tiktoken_enc.encode(text)) if text else 0
+
+
+async def _track_gpt4o_tokens(input_tokens: int, output_tokens: int) -> None:
+    """Track daily gpt-4o-mini token usage. Resets at midnight + restores gpt-4o-mini."""
+    today = date.today().isoformat()
+    if _gpt4o_token_counter["date"] != today:
+        _gpt4o_token_counter["date"] = today
+        _gpt4o_token_counter["tokens"] = 0
+        # New day: restore gpt-4o-mini if it was switched to groq
+        if _current_dify_model != "gpt-4o-mini":
+            await _switch_dify_model("gpt-4o-mini")
+    _gpt4o_token_counter["tokens"] += input_tokens + output_tokens
+
+
+def _gpt4o_budget_exceeded() -> bool:
+    today = date.today().isoformat()
+    if _gpt4o_token_counter["date"] != today:
+        return False
+    return _gpt4o_token_counter["tokens"] >= _GPT4O_DAILY_LIMIT
+
+
+def get_gpt4o_usage() -> dict:
+    """Return current daily token usage for gpt-4o-mini."""
+    today = date.today().isoformat()
+    if _gpt4o_token_counter["date"] != today:
+        return {"date": today, "tokens": 0, "limit": _GPT4O_DAILY_LIMIT, "pct": 0}
+    tokens = _gpt4o_token_counter["tokens"]
+    return {
+        "date": today,
+        "tokens": tokens,
+        "limit": _GPT4O_DAILY_LIMIT,
+        "pct": round(tokens / _GPT4O_DAILY_LIMIT * 100, 1),
+        "exceeded": tokens >= _GPT4O_DAILY_LIMIT,
+    }
+
+
+_current_dify_model = "gpt-4o-mini"
+
+
+async def _switch_dify_model(target_model: str):
+    """Switch all Teacher LLM nodes in Dify to a different model."""
+    global _current_dify_model
+    if _current_dify_model == target_model:
+        return
+    try:
+        async with db.pool.acquire() as conn:
+            for wf_id in ['c52a451f-e381-46f1-a23a-077197b0fccb', 'ed0d1c91-8c9a-48ad-9c3a-063981f8da87']:
+                await conn.execute(
+                    "UPDATE workflows SET graph = replace(graph::text, "
+                    f"'\"name\": \"{_current_dify_model}\"', '\"name\": \"{target_model}\"')::json, "
+                    "updated_at = NOW() WHERE id = $1", wf_id)
+        _current_dify_model = target_model
+        import logging
+        logging.getLogger("chat").info("Dify model switched to %s", target_model)
+    except Exception as e:
+        import logging
+        logging.getLogger("chat").error("Failed to switch Dify model: %s", e)
+
 
 # Load tolerance matrix once at import
 _TOLERANCE_MATRIX = {}
@@ -130,6 +200,15 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
     else:
         dify_inputs["error_feedback"] = ""
 
+    # ── GPT-4o-mini daily token budget check ──
+    input_token_est = _count_tokens(req.message) + 2000  # system prompt + history overhead
+    if _gpt4o_budget_exceeded():
+        import logging
+        logging.getLogger("chat").warning(
+            "gpt-4o-mini daily budget exceeded (%d/%d). Switching Dify to groq-standard.",
+            _gpt4o_token_counter["tokens"], _GPT4O_DAILY_LIMIT)
+        await _switch_dify_model("groq-standard")
+
     payload = {
         "inputs": dify_inputs,
         "query": req.message,
@@ -137,6 +216,8 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         "response_mode": "streaming",
         "conversation_id": req.conversation_id or "",
     }
+
+    collected_answer = []
 
     async def stream():
         async with httpx.AsyncClient(timeout=120.0) as client:
@@ -155,6 +236,16 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
                 async for line in response.aiter_lines():
                     if line.startswith("data: "):
                         yield f"{line}\n\n"
+                        # Track output tokens from answer chunks
+                        try:
+                            evt = json.loads(line[6:])
+                            if "answer" in evt:
+                                collected_answer.append(evt["answer"])
+                        except Exception:
+                            pass
+
+    # Track gpt-4o-mini tokens (input estimate before stream, output after)
+    _track_gpt4o_tokens(input_token_est, 0)  # pre-track input
 
     # Update streak on chat activity
     await _update_streak(user["id"])
@@ -164,15 +255,27 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
     if req.conversation_id:
         xp_earned = await _update_session(user["id"], req.agent, req.conversation_id)
 
-    # Wrap stream to append XP event if earned
+    # Wrap stream to append XP event if earned + track output tokens
     async def stream_with_xp():
         async for chunk in stream():
             yield chunk
+        # Track output tokens after stream completes
+        full_answer = "".join(collected_answer)
+        output_tokens = _count_tokens(full_answer)
+        _track_gpt4o_tokens(0, output_tokens)
         if xp_earned > 0:
             xp_event = json.dumps({"event": "xp_earned", "amount": xp_earned, "reason": "session"})
             yield f"data: {xp_event}\n\n"
 
     return StreamingResponse(stream_with_xp(), media_type="text/event-stream")
+
+
+@router.get("/api/chat/token-usage")
+async def token_usage(user: dict = Depends(get_current_user)):
+    """Current daily gpt-4o-mini token usage."""
+    usage = get_gpt4o_usage()
+    usage["model"] = _current_dify_model
+    return usage
 
 
 @router.get("/api/chat/conversations")
