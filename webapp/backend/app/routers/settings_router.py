@@ -220,9 +220,10 @@ async def get_weekly_recap(domain: str = "anglais", user: dict = Depends(get_cur
             "SELECT COUNT(*) FROM user_sessions WHERE user_id = $1 AND started_at >= $2",
             user_id, week_ago,
         )
-        # Total minutes this week
+        # Total minutes this week (from actual session timestamps)
         total_sec = await conn.fetchval(
-            "SELECT COALESCE(SUM(duration_seconds), 0) FROM user_sessions WHERE user_id = $1 AND started_at >= $2",
+            """SELECT COALESCE(SUM(EXTRACT(EPOCH FROM (last_message_at - started_at))::int), 0)
+               FROM user_sessions WHERE user_id = $1 AND started_at >= $2""",
             user_id, week_ago,
         )
         # XP this week
@@ -235,14 +236,20 @@ async def get_weekly_recap(domain: str = "anglais", user: dict = Depends(get_cur
             "SELECT current_streak, longest_streak FROM streaks WHERE user_id = $1",
             user_id,
         )
-        # Concepts improved (compare snapshots?)
+        # Concepts with score > 0 this week
         concepts_worked = 0
         if eleve_id:
-            snap_count = await conn.fetchval(
-                "SELECT COUNT(*) FROM snapshots_session WHERE eleve_id = $1 AND created_at >= $2",
-                eleve_id, week_ago,
+            row = await conn.fetchrow(
+                "SELECT scores_confiance FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2",
+                eleve_id, domain,
             )
-            concepts_worked = snap_count or 0
+            if row and row["scores_confiance"]:
+                sc = row["scores_confiance"]
+                if isinstance(sc, str):
+                    import json as _json
+                    sc = _json.loads(sc)
+                concepts_worked = sum(1 for v in sc.values()
+                    if (v.get("score", 0) if isinstance(v, dict) else v) > 0)
 
     return {
         "sessions": sessions or 0,

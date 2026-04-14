@@ -180,16 +180,23 @@ async def get_weekly_stats(user: dict = Depends(get_current_user)):
     if not eleve_id:
         return {"sessions": 0, "concepts": 0, "minutes": 0}
 
+    user_id = user["id"]
     async with db.pool.acquire() as conn:
-        # Count snapshots this week (= sessions)
+        # Count actual sessions this week
         sessions = await conn.fetchval(
-            """SELECT COUNT(*) FROM snapshots_session
-               WHERE eleve_id = $1
-               AND created_at >= NOW() - INTERVAL '7 days'""",
-            eleve_id,
+            """SELECT COUNT(*) FROM user_sessions
+               WHERE user_id = $1
+               AND started_at >= NOW() - INTERVAL '7 days'""",
+            user_id,
         )
-        # Estimate minutes (avg 15 min per session)
-        minutes = (sessions or 0) * 15
+        # Real minutes from session duration (started_at → last_message_at)
+        minutes_val = await conn.fetchval(
+            """SELECT COALESCE(SUM(EXTRACT(EPOCH FROM (last_message_at - started_at))::int), 0) / 60
+               FROM user_sessions WHERE user_id = $1
+               AND started_at >= NOW() - INTERVAL '7 days'""",
+            user_id,
+        )
+        minutes = minutes_val or 0
 
         # Count concepts with score > 0 (worked on)
         row = await conn.fetchrow(
