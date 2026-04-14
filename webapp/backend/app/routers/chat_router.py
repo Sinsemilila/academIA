@@ -14,7 +14,7 @@ import tiktoken
 from pathlib import Path
 
 # ── Daily token budget for gpt-4o-mini (free tier protection) ──
-_GPT4O_DAILY_LIMIT = 1_450_000
+_GPT4O_DAILY_LIMIT = 1_500_000
 _gpt4o_token_counter = {"date": "", "tokens": 0, "loaded": False}
 _tiktoken_enc = tiktoken.encoding_for_model("gpt-4o-mini")
 
