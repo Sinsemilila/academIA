@@ -1,4 +1,6 @@
+import asyncio
 import json
+import logging
 import os
 import httpx
 from datetime import date, datetime, timedelta, timezone
@@ -9,14 +11,32 @@ from ..auth import get_current_user
 from ..rate_limit import limiter
 from .. import database as db
 from ..error_taxonomy.rules import detect_errors, ERROR_CODE_TO_FAMILY
+from ..openai_reconcile import reconcile_openai_usage
 import yaml
 import tiktoken
 from pathlib import Path
 
+logger = logging.getLogger("academie-api.chat_router")
+
 # ── Daily token budget for gpt-4o-mini (free tier protection) ──
 _GPT4O_DAILY_LIMIT = 1_500_000
+# Display safety margin: /admin shows tokens × 1.10 to stay above OpenAI dashboard.
+# Auto-switch threshold (`exceeded`) uses the same inflated value, so the model
+# bascule fires a touch early — protective bias.
+_DISPLAY_SAFETY_MARGIN = 1.10
+# Lazy reconciliation against OpenAI Usage API: skip if last reconcile is fresher
+# than this (seconds).
+_RECONCILE_STALENESS_S = 15 * 60
 _gpt4o_token_counter = {"date": "", "tokens": 0, "loaded": False}
 _tiktoken_enc = tiktoken.encoding_for_model("gpt-4o-mini")
+
+
+def _is_openai_billable(name: str | None) -> bool:
+    """Same OpenAI billing pool: gpt-4o-mini base + every ft:gpt-4o-mini-* derivative.
+    Used to compute the headline `base_tokens` that drives /admin display + auto-switch."""
+    if not name:
+        return False
+    return name == "gpt-4o-mini" or name.startswith("ft:gpt-4o-mini-")
 
 
 def _count_tokens(text: str) -> int:
@@ -24,16 +44,24 @@ def _count_tokens(text: str) -> int:
 
 
 async def _load_daily_tokens() -> None:
-    """Load today's token count from DB on first call."""
+    """Load today's token count from DB on first call.
+    Seeds the in-memory counter with MAX(local, litellm_snapshot, openai_snapshot)
+    so the auto-switch decision never undercounts external sources of truth."""
     if _gpt4o_token_counter["loaded"] and _gpt4o_token_counter["date"] == date.today().isoformat():
         return
     today = date.today().isoformat()
     try:
         async with db.pool.acquire() as conn:
             row = await conn.fetchrow(
-                "SELECT tokens_used FROM token_usage_daily WHERE usage_date = $1",
+                """SELECT tokens_used,
+                          COALESCE(litellm_tokens, 0) AS lt,
+                          COALESCE(openai_tokens, 0) AS ot
+                     FROM token_usage_daily WHERE usage_date = $1""",
                 date.today())
-            _gpt4o_token_counter["tokens"] = row["tokens_used"] if row else 0
+            if row:
+                _gpt4o_token_counter["tokens"] = max(row["tokens_used"], row["lt"], row["ot"])
+            else:
+                _gpt4o_token_counter["tokens"] = 0
     except Exception:
         _gpt4o_token_counter["tokens"] = 0
     _gpt4o_token_counter["date"] = today
@@ -68,57 +96,130 @@ async def _gpt4o_budget_exceeded() -> bool:
 
 
 async def _fetch_litellm_usage() -> list[dict] | None:
-    """Aggregate today's spend from LiteLLM_SpendLogs by model_group.
+    """Aggregate today's spend from LiteLLM_SpendLogs.
+    Bucket name = model_group when present, else falls back to model itself
+    (covers config quirks where LiteLLM didn't tag a model_group on the row).
     Returns None if LiteLLM DB is unavailable (caller should fall back to local estimate)."""
     if db.litellm_pool is None:
         return None
     try:
         async with db.litellm_pool.acquire() as conn:
             rows = await conn.fetch(
-                """SELECT model_group AS name,
-                          COALESCE(SUM(prompt_tokens + completion_tokens), 0)::bigint AS tokens,
-                          COALESCE(SUM(spend), 0)::float AS cost_usd
+                """SELECT
+                       COALESCE(NULLIF(model_group, ''), model) AS name,
+                       COALESCE(SUM(prompt_tokens + completion_tokens), 0)::bigint AS tokens,
+                       COALESCE(SUM(spend), 0)::float AS cost_usd
                    FROM "LiteLLM_SpendLogs"
                    WHERE "startTime"::date = CURRENT_DATE
-                     AND model_group IS NOT NULL
-                   GROUP BY model_group
+                   GROUP BY COALESCE(NULLIF(model_group, ''), model)
                    ORDER BY tokens DESC""")
             return [dict(r) for r in rows]
     except Exception:
         return None
 
 
+async def _do_reconcile_and_save(litellm_total: int) -> None:
+    """Background task: hit OpenAI Usage API, UPSERT snapshot into token_usage_daily,
+    and bump in-memory counter to MAX of all sources. Best-effort, swallows errors."""
+    try:
+        openai_total = await reconcile_openai_usage()
+        async with db.pool.acquire() as conn:
+            await conn.execute(
+                """INSERT INTO token_usage_daily
+                       (usage_date, tokens_used, litellm_tokens, openai_tokens, reconciled_at)
+                   VALUES (CURRENT_DATE, 0, $1, $2, NOW())
+                   ON CONFLICT (usage_date) DO UPDATE SET
+                       litellm_tokens = EXCLUDED.litellm_tokens,
+                       openai_tokens = EXCLUDED.openai_tokens,
+                       reconciled_at = NOW()""",
+                int(litellm_total),
+                int(openai_total) if openai_total is not None else 0,
+            )
+        # Bump in-memory counter so auto-switch sees the new ceiling immediately.
+        candidates = [_gpt4o_token_counter["tokens"], int(litellm_total)]
+        if openai_total is not None:
+            candidates.append(int(openai_total))
+        _gpt4o_token_counter["tokens"] = max(candidates)
+    except Exception as e:
+        logger.warning("_do_reconcile_and_save failed: %s", e)
+
+
+async def _maybe_schedule_reconcile(litellm_total: int) -> dict:
+    """Check if reconciliation is stale (>15 min) and schedule a fire-and-forget
+    background task. Returns a dict with the latest stored snapshot."""
+    snapshot = {"litellm_tokens": 0, "openai_tokens": 0, "reconciled_at": None}
+    try:
+        async with db.pool.acquire() as conn:
+            row = await conn.fetchrow(
+                """SELECT litellm_tokens, openai_tokens, reconciled_at
+                     FROM token_usage_daily WHERE usage_date = CURRENT_DATE""")
+            if row:
+                snapshot = {
+                    "litellm_tokens": row["litellm_tokens"],
+                    "openai_tokens": row["openai_tokens"],
+                    "reconciled_at": row["reconciled_at"],
+                }
+    except Exception:
+        pass
+
+    last = snapshot["reconciled_at"]
+    stale = last is None or (datetime.utcnow() - last).total_seconds() > _RECONCILE_STALENESS_S
+    if stale:
+        asyncio.create_task(_do_reconcile_and_save(litellm_total))
+    return snapshot
+
+
 async def get_gpt4o_usage() -> dict:
-    """Return current daily token usage. Source: LiteLLM SpendLogs (truth, batched ~30-60s).
-    Fallback: local tiktoken counter (real-time, used for auto-switch decisions)."""
+    """Return current daily token usage. Sources combined for safety:
+      1. local tiktoken counter (real-time, sub-second auto-switch decisions)
+      2. LiteLLM SpendLogs (~30-60s lag, includes ft:gpt-4o-mini-* fine-tunes)
+      3. OpenAI Usage API (authoritative, lazily refreshed every 15 min in background)
+    Headline `tokens` = max(all three) × +10% safety margin, so /admin always shows
+    a value >= what OpenAI dashboard reports."""
     await _load_daily_tokens()
     local_estimate = _gpt4o_token_counter["tokens"]
     today = _gpt4o_token_counter["date"]
 
     litellm_rows = await _fetch_litellm_usage()
     if litellm_rows is None:
-        # Fallback: local tiktoken estimate
+        # Fallback: local tiktoken estimate (no LiteLLM DB available)
+        margin_tokens = int(local_estimate * _DISPLAY_SAFETY_MARGIN)
         return {
             "date": today,
-            "tokens": local_estimate,
+            "tokens": margin_tokens,
+            "tokens_raw": local_estimate,
+            "safety_margin_pct": int((_DISPLAY_SAFETY_MARGIN - 1) * 100),
             "limit": _GPT4O_DAILY_LIMIT,
-            "pct": round(local_estimate / _GPT4O_DAILY_LIMIT * 100, 1),
-            "exceeded": local_estimate >= _GPT4O_DAILY_LIMIT,
+            "pct": round(margin_tokens / _GPT4O_DAILY_LIMIT * 100, 1),
+            "exceeded": margin_tokens >= _GPT4O_DAILY_LIMIT,
             "models": [],
             "source": "estimate",
             "local_estimate": local_estimate,
+            "openai_snapshot": None,
+            "reconciled_at": None,
         }
 
-    base_tokens = next((r["tokens"] for r in litellm_rows if r["name"] == "gpt-4o-mini"), 0)
+    # A: include base gpt-4o-mini + all ft:gpt-4o-mini-* (same OpenAI billing pool)
+    litellm_base = sum(r["tokens"] for r in litellm_rows if _is_openai_billable(r["name"]))
+    # C+D: lazy reconcile + take max of all sources for the headline
+    snapshot = await _maybe_schedule_reconcile(litellm_base)
+    raw_tokens = max(local_estimate, litellm_base, snapshot["openai_tokens"])
+    margin_tokens = int(raw_tokens * _DISPLAY_SAFETY_MARGIN)
+
     return {
         "date": today,
-        "tokens": base_tokens,
+        "tokens": margin_tokens,
+        "tokens_raw": raw_tokens,
+        "safety_margin_pct": int((_DISPLAY_SAFETY_MARGIN - 1) * 100),
         "limit": _GPT4O_DAILY_LIMIT,
-        "pct": round(base_tokens / _GPT4O_DAILY_LIMIT * 100, 1),
-        "exceeded": base_tokens >= _GPT4O_DAILY_LIMIT,
+        "pct": round(margin_tokens / _GPT4O_DAILY_LIMIT * 100, 1),
+        "exceeded": margin_tokens >= _GPT4O_DAILY_LIMIT,
         "models": litellm_rows,
-        "source": "litellm",
+        "source": "litellm+openai" if snapshot["reconciled_at"] else "litellm",
         "local_estimate": local_estimate,
+        "litellm_total": litellm_base,
+        "openai_snapshot": snapshot["openai_tokens"] or None,
+        "reconciled_at": snapshot["reconciled_at"].isoformat() if snapshot["reconciled_at"] else None,
     }
 
 

@@ -132,8 +132,8 @@
             <p class="text-xs text-text-muted">Mod&#232;le actif : {tokenUsage.model}</p>
           </div>
           <div class="text-right">
-            <p class="text-lg font-mono font-semibold">{Math.round(tokenUsage.tokens / 1000)}K <span class="text-sm text-text-muted font-normal">/ {Math.round(tokenUsage.limit / 1000)}K</span></p>
-            <p class="text-xs text-text-muted">{pct}%</p>
+            <p class="text-lg font-mono font-semibold" title="Affichage avec marge de sécurité +{tokenUsage.safety_margin_pct ?? 10}% pour rester ≥ OpenAI dashboard. Source brute : {tokenUsage.tokens_raw ? Math.round(tokenUsage.tokens_raw / 1000) + 'K' : 'n/a'}.">{Math.round(tokenUsage.tokens / 1000)}K <span class="text-sm text-text-muted font-normal">/ {Math.round(tokenUsage.limit / 1000)}K</span></p>
+            <p class="text-xs text-text-muted">{pct}%{tokenUsage.safety_margin_pct ? ` (+${tokenUsage.safety_margin_pct}% safety)` : ''}</p>
           </div>
         </div>
         <div class="w-full h-2 bg-elevated rounded-full overflow-hidden">
