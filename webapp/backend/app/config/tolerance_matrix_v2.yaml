@@ -531,3 +531,44 @@ glmm_diagnostics:
   sigma_v_mean: 1.374
   r_hat_max: 1.01
   ess_bulk_min: 329
+
+# ════════════════════════════════════════════════════════════
+# GRAVITY AXES (priors per family) — Sprint 2 Phase B2
+# linguistic   : grammatical severity (0=tolerable, 1=hard fault)
+# communicative: impact on message comprehension (0=intelligible, 1=blocking)
+# social       : pragmatic / register impact (0=ok, 1=inappropriate)
+# Source: SLA priors (Hartshorn 2013, James 1998), to be refined Sprint 6+.
+# ════════════════════════════════════════════════════════════
+gravity_per_family:
+  verb_tense:    {linguistic: 0.6, communicative: 0.4, social: 0.1}
+  verb_usage:    {linguistic: 0.7, communicative: 0.5, social: 0.2}
+  noun_det:      {linguistic: 0.4, communicative: 0.3, social: 0.0}
+  pronoun:       {linguistic: 0.6, communicative: 0.6, social: 0.2}
+  word_order:    {linguistic: 0.8, communicative: 0.7, social: 0.1}
+  sentence:      {linguistic: 0.7, communicative: 0.7, social: 0.1}
+  morphology:    {linguistic: 0.5, communicative: 0.3, social: 0.1}
+  surface:       {linguistic: 0.3, communicative: 0.2, social: 0.3}
+  preposition:   {linguistic: 0.5, communicative: 0.4, social: 0.1}
+  vocabulary:    {linguistic: 0.4, communicative: 0.7, social: 0.3}
+  calque:        {linguistic: 0.4, communicative: 0.5, social: 0.5}
+  discourse:     {linguistic: 0.3, communicative: 0.8, social: 0.5}
+
+# ════════════════════════════════════════════════════════════
+# CRITERIAL LEVELS (CEFR — emergence + mastery) — Sprint 2 Phase B2
+# emergence : first CEFR level where this family appears in curriculum
+# mastery   : CEFR level where reliable production is expected
+# Source: AcademIA curriculum + CEFR descriptors. Static priors.
+# ════════════════════════════════════════════════════════════
+criterial_per_family:
+  verb_tense:    {emergence: A1, mastery: B2}
+  verb_usage:    {emergence: A2, mastery: C1}
+  noun_det:      {emergence: A1, mastery: B1}
+  pronoun:       {emergence: A1, mastery: A2}
+  word_order:    {emergence: A1, mastery: B1}
+  sentence:      {emergence: A2, mastery: C1}
+  morphology:    {emergence: A1, mastery: C1}
+  surface:       {emergence: A1, mastery: A2}
+  preposition:   {emergence: A1, mastery: B2}
+  vocabulary:    {emergence: A1, mastery: C2}
+  calque:        {emergence: A1, mastery: B2}
+  discourse:     {emergence: B1, mastery: C1}

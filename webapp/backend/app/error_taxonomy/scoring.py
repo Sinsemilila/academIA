@@ -13,6 +13,8 @@ logger = logging.getLogger("academie-api.scoring")
 
 _CONFIG_DIR = Path(__file__).parent.parent / "config"
 _USE_V2 = os.getenv("USE_V2_TOLERANCE", "false").lower() in ("1", "true", "yes")
+# Sprint 2 B2 — read tier from error_log row (v2) vs derive from matrix (v1 default).
+_USE_V2_SCORING = os.getenv("USE_V2_SCORING", "false").lower() in ("1", "true", "yes")
 _MATRIX_PATH = _CONFIG_DIR / ("tolerance_matrix_v2.yaml" if _USE_V2 else "tolerance_matrix.yaml")
 _matrix = None
 
@@ -72,6 +74,56 @@ def get_concept_family(concept: str) -> str | None:
     return m.get("concept_families", {}).get(concept)
 
 
+# ── Sprint 2 Phase B2 — error_log v2 fields enrichment ──
+
+# Map v1 tier vocabulary to T-codes used in DB CHECK constraint (T0..T4).
+_TIER_LABEL_TO_CODE = {
+    "ignored": "T1",
+    "noted": "T2",
+    "penalized": "T3",
+    "regressive": "T4",
+    "shadow": "T0",
+}
+
+_NULL_ENRICHMENT = {
+    "tier": None,
+    "gravity_linguistic": None,
+    "gravity_communicative": None,
+    "gravity_social": None,
+    "criterial_level_emergence": None,
+    "criterial_level_mastery": None,
+}
+
+
+def enrich_error_fields(error_code: str, niveau_global: str | None) -> dict:
+    """Compute v2 fields (tier, gravity, criterial) for one error occurrence.
+
+    Used by error_analysis_router to populate error_log columns added in
+    Sprint 2 Phase A. Pure deterministic lookup against the loaded matrix
+    (override applied automatically when v2 active).
+
+    Returns a dict matching error_log v2 column names. Values may be None
+    if the family is unknown or yaml sections missing.
+    """
+    m = _load_matrix()
+    fam = get_family_for_code(error_code)
+    if not fam:
+        return dict(_NULL_ENRICHMENT)
+    band = get_band_for_level(niveau_global or "B1")
+    tier_label = m.get("matrix", {}).get(fam, {}).get(band, "ignored")
+    tier_code = _TIER_LABEL_TO_CODE.get(tier_label)
+    gravity = m.get("gravity_per_family", {}).get(fam, {})
+    criterial = m.get("criterial_per_family", {}).get(fam, {})
+    return {
+        "tier": tier_code,
+        "gravity_linguistic": gravity.get("linguistic"),
+        "gravity_communicative": gravity.get("communicative"),
+        "gravity_social": gravity.get("social"),
+        "criterial_level_emergence": criterial.get("emergence"),
+        "criterial_level_mastery": criterial.get("mastery"),
+    }
+
+
 def compute_error_profile(error_rows: list[dict], niveau_global: str,
                           concept_keys: list[str] | None = None,
                           scores_confiance: dict | None = None) -> dict:
@@ -93,6 +145,12 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str,
     max_per_turn = prog.get("max_errors_per_turn", 3)
     max_error_rate = prog.get("max_error_rate", 1.0)
     min_sessions = prog.get("min_sessions", 5)
+    # Sprint 2 B2 — USE_V2_SCORING flag is exposed but not yet wired to a code branch.
+    # Future Phase B3 will switch the family loop below to use row["tier"] (stored at
+    # insert time via enrich_error_fields) instead of m["matrix"][family][band] live
+    # lookup. This is a no-op until activated; flag is logged for traceability.
+    if _USE_V2_SCORING:
+        logger.debug("USE_V2_SCORING=true (no behavior change in B2 — stored in row.tier for future bascule)")
 
     # ── Aggregate errors by family + concept ──
     family_errors = defaultdict(lambda: defaultdict(int))   # family → {code: count}

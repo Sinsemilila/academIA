@@ -15,6 +15,7 @@ INTERNAL_TOKEN = os.environ.get("INTERNAL_API_TOKEN", "REDACTED_INTERNAL_API_TOK
 from ..error_taxonomy.rules import detect_errors, RuleDetection
 from ..error_taxonomy.llm import analyze_transcript, ANALYSIS_MODEL
 from ..error_taxonomy.categories import is_valid_code
+from ..error_taxonomy.scoring import enrich_error_fields
 
 logger = logging.getLogger("academie-api.error-analysis")
 
@@ -61,6 +62,12 @@ async def analyze_errors(req: AnalyzeRequest, x_internal_token: str = Header(Non
     if not eleve_id:
         raise HTTPException(status_code=404, detail=f"Student '{req.username}' not found")
 
+    # Sprint 2 B2: fetch CEFR level once for v2 field enrichment (None safe)
+    niveau_global = await db.pool.fetchval(
+        "SELECT niveau_global FROM profils_eleves WHERE eleve_id=$1 AND domaine=$2",
+        eleve_id, req.domaine,
+    )
+
     user_turns = _extract_user_turns(req.transcript)
     if not user_turns:
         return AnalyzeResponse(status="no_user_turns", errors_detected=0, rule_errors=0, llm_errors=0, turns_analyzed=0)
@@ -80,6 +87,7 @@ async def analyze_errors(req: AnalyzeRequest, x_internal_token: str = Header(Non
                 "llm_reasoning": det.reasoning,
                 "analysis_model": "rules",
                 "snapshot_id": req.snapshot_id,
+                **enrich_error_fields(det.error_code, niveau_global),
             })
 
     rule_count = len(all_errors)
@@ -107,6 +115,7 @@ async def analyze_errors(req: AnalyzeRequest, x_internal_token: str = Header(Non
                         "llm_reasoning": error.reasoning,
                         "analysis_model": ANALYSIS_MODEL,
                         "snapshot_id": req.snapshot_id,
+                        **enrich_error_fields(code, niveau_global),
                     })
                     llm_count += 1
     except Exception:
@@ -119,13 +128,19 @@ async def analyze_errors(req: AnalyzeRequest, x_internal_token: str = Header(Non
             await conn.executemany(
                 """INSERT INTO error_log
                    (eleve_id, session_id, turn_number, error_code, original_text,
-                    suggested_correction, llm_reasoning, analysis_model, snapshot_id)
-                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)""",
+                    suggested_correction, llm_reasoning, analysis_model, snapshot_id,
+                    tier, gravity_linguistic, gravity_communicative, gravity_social,
+                    criterial_level_emergence, criterial_level_mastery)
+                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
+                           $10, $11, $12, $13, $14, $15)""",
                 [
                     (e["eleve_id"], e["session_id"], e["turn_number"],
                      e["error_code"], e["original_text"],
                      e["suggested_correction"], e["llm_reasoning"],
-                     e["analysis_model"], e["snapshot_id"])
+                     e["analysis_model"], e["snapshot_id"],
+                     e["tier"], e["gravity_linguistic"], e["gravity_communicative"],
+                     e["gravity_social"], e["criterial_level_emergence"],
+                     e["criterial_level_mastery"])
                     for e in all_errors
                 ],
             )
