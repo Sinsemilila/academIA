@@ -67,16 +67,58 @@ async def _gpt4o_budget_exceeded() -> bool:
     return _gpt4o_token_counter["tokens"] >= _GPT4O_DAILY_LIMIT
 
 
+async def _fetch_litellm_usage() -> list[dict] | None:
+    """Aggregate today's spend from LiteLLM_SpendLogs by model_group.
+    Returns None if LiteLLM DB is unavailable (caller should fall back to local estimate)."""
+    if db.litellm_pool is None:
+        return None
+    try:
+        async with db.litellm_pool.acquire() as conn:
+            rows = await conn.fetch(
+                """SELECT model_group AS name,
+                          COALESCE(SUM(prompt_tokens + completion_tokens), 0)::bigint AS tokens,
+                          COALESCE(SUM(spend), 0)::float AS cost_usd
+                   FROM "LiteLLM_SpendLogs"
+                   WHERE "startTime"::date = CURRENT_DATE
+                     AND model_group IS NOT NULL
+                   GROUP BY model_group
+                   ORDER BY tokens DESC""")
+            return [dict(r) for r in rows]
+    except Exception:
+        return None
+
+
 async def get_gpt4o_usage() -> dict:
-    """Return current daily token usage for gpt-4o-mini."""
+    """Return current daily token usage. Source: LiteLLM SpendLogs (truth, batched ~30-60s).
+    Fallback: local tiktoken counter (real-time, used for auto-switch decisions)."""
     await _load_daily_tokens()
-    tokens = _gpt4o_token_counter["tokens"]
+    local_estimate = _gpt4o_token_counter["tokens"]
+    today = _gpt4o_token_counter["date"]
+
+    litellm_rows = await _fetch_litellm_usage()
+    if litellm_rows is None:
+        # Fallback: local tiktoken estimate
+        return {
+            "date": today,
+            "tokens": local_estimate,
+            "limit": _GPT4O_DAILY_LIMIT,
+            "pct": round(local_estimate / _GPT4O_DAILY_LIMIT * 100, 1),
+            "exceeded": local_estimate >= _GPT4O_DAILY_LIMIT,
+            "models": [],
+            "source": "estimate",
+            "local_estimate": local_estimate,
+        }
+
+    base_tokens = next((r["tokens"] for r in litellm_rows if r["name"] == "gpt-4o-mini"), 0)
     return {
-        "date": _gpt4o_token_counter["date"],
-        "tokens": tokens,
+        "date": today,
+        "tokens": base_tokens,
         "limit": _GPT4O_DAILY_LIMIT,
-        "pct": round(tokens / _GPT4O_DAILY_LIMIT * 100, 1),
-        "exceeded": tokens >= _GPT4O_DAILY_LIMIT,
+        "pct": round(base_tokens / _GPT4O_DAILY_LIMIT * 100, 1),
+        "exceeded": base_tokens >= _GPT4O_DAILY_LIMIT,
+        "models": litellm_rows,
+        "source": "litellm",
+        "local_estimate": local_estimate,
     }
 
 
