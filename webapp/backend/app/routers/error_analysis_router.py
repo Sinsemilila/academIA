@@ -206,7 +206,7 @@ async def _build_error_profile(eleve_id: int, domain: str):
         scores_confiance = sc_raw if isinstance(sc_raw, dict) else _json.loads(sc_raw or "{}") if sc_raw else {}
 
         rows = await conn.fetch(
-            """SELECT error_code, turn_number, session_id FROM error_log
+            """SELECT error_code, turn_number, session_id, tier FROM error_log
                WHERE eleve_id = $1 AND session_id NOT LIKE 'full-battery%%'
                AND session_id NOT LIKE 'phase1b-%%' ORDER BY created_at""", eleve_id)
 

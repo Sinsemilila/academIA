@@ -7,7 +7,7 @@ import os
 import yaml
 import logging
 from pathlib import Path
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 logger = logging.getLogger("academie-api.scoring")
 
@@ -84,6 +84,7 @@ _TIER_LABEL_TO_CODE = {
     "regressive": "T4",
     "shadow": "T0",
 }
+_TIER_CODE_TO_LABEL = {v: k for k, v in _TIER_LABEL_TO_CODE.items()}
 
 _NULL_ENRICHMENT = {
     "tier": None,
@@ -145,16 +146,10 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str,
     max_per_turn = prog.get("max_errors_per_turn", 3)
     max_error_rate = prog.get("max_error_rate", 1.0)
     min_sessions = prog.get("min_sessions", 5)
-    # Sprint 2 B2 — USE_V2_SCORING flag is exposed but not yet wired to a code branch.
-    # Future Phase B3 will switch the family loop below to use row["tier"] (stored at
-    # insert time via enrich_error_fields) instead of m["matrix"][family][band] live
-    # lookup. This is a no-op until activated; flag is logged for traceability.
-    if _USE_V2_SCORING:
-        logger.debug("USE_V2_SCORING=true (no behavior change in B2 — stored in row.tier for future bascule)")
-
     # ── Aggregate errors by family + concept ──
     family_errors = defaultdict(lambda: defaultdict(int))   # family → {code: count}
     family_sessions = defaultdict(set)                       # family → set of session_ids
+    family_tier_codes = defaultdict(list)                    # family → [stored T-codes] (v2)
     concept_errors_direct = defaultdict(int)                 # concept_key → error count (turn-capped)
     concept_sessions_direct = defaultdict(set)               # concept_key → set of session_ids
     all_sessions = set()
@@ -175,6 +170,9 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str,
         if family_key:
             family_errors[family_key][code] += 1
             family_sessions[family_key].add(session_id)
+            stored_tier = row.get("tier")
+            if stored_tier:
+                family_tier_codes[family_key].append(stored_tier)
 
         # session_id format: "Q3/10:concept_key:MODE" — extract concept
         parts = session_id.split(":")
@@ -200,6 +198,14 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str,
 
         mode = family_def["mode"]
         tier = m["matrix"][family_key][band]
+        # Sprint 2 B3 — when flag active, prefer the tier stored on error_log rows
+        # (enriched at insert time). Majority wins; fall back to matrix lookup if
+        # no rows carried a tier (e.g. legacy rows pre-backfill or NULL tiers).
+        if _USE_V2_SCORING:
+            stored = family_tier_codes.get(family_key)
+            if stored:
+                top_code = Counter(stored).most_common(1)[0][0]
+                tier = _TIER_CODE_TO_LABEL.get(top_code, tier)
         weight = weights.get(tier, 0.0)
 
         sessions_appeared = len(family_sessions.get(family_key, set()))
