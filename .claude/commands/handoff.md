@@ -9,11 +9,11 @@ Session end. Execute in order.
 - Fail → STOP + fix before continuing.
 
 ## 2. Update state
-- `TODO.md`: mark completed tasks as DONE.
-- `CHANGELOG.md`: append via `log <type> "<message>"` tool.
+- `/root/sinse-workspace/projects/academie-ia/TODO.md`: mark completed tasks as DONE.
+- `/root/sinse-workspace/projects/academie-ia/CHANGELOG.md`: append via `log <type> "<message>"` tool.
 
 ## 3. Update SESSION.md
-**Prepend** (don't overwrite) a new session block at the top of `projects/academie-ia/SESSION.md`, after the header line.
+**Prepend** (don't overwrite) a new session block at the top of `/root/sinse-workspace/projects/academie-ia/SESSION.md`, after the header line.
 Keep all previous sessions below.
 ```
 ---
