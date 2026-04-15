@@ -255,7 +255,11 @@ def main(dialogue_count: int, profil_text: str, concept_keys_json: str, scores_j
          minutes_since_last: int,
          mock_exam: str, mode_override: str,
          error_feedback: str, turn_response_secs: str, repeated_errors: str,
-         error_exam_eligible: bool) -> dict:
+         error_exam_eligible: bool,
+         rubric_for_level: str = '', fewshots_block: str = '',
+         dosage_block: str = '', level_reminder_inject: str = '',
+         drift_validation_request: str = '', l1_watch: str = '',
+         spaced_retrieval_today: str = '', output_schema_block: str = '') -> dict:
     n = int(dialogue_count or 0)
     mode = str(mode_apprentissage or 'libre')
     # Mode override from frontend toggle (immediate effect)
@@ -788,7 +792,17 @@ def main(dialogue_count: int, profil_text: str, concept_keys_json: str, scores_j
         'scoring_recovery': scoring_recovery,
         'error_feedback': '' if exam_active or mock_exam_instruction else str(error_feedback or ''),
         'turn_response_secs': str(turn_response_secs or '0'),
-        'repeated_errors': str(repeated_errors or '')
+        'repeated_errors': str(repeated_errors or ''),
+        # Sprint 3 V2 sections — passthrough so prompt template can reference
+        # `{{#code_turn_check.<name>#}}`. Empty strings when V1 active.
+        'rubric_for_level': str(rubric_for_level or ''),
+        'fewshots_block': str(fewshots_block or ''),
+        'dosage_block': str(dosage_block or ''),
+        'level_reminder_inject': str(level_reminder_inject or ''),
+        'drift_validation_request': str(drift_validation_request or ''),
+        'l1_watch': str(l1_watch or ''),
+        'spaced_retrieval_today': str(spaced_retrieval_today or ''),
+        'output_schema_block': str(output_schema_block or ''),
     }
 """
 
@@ -1571,9 +1585,28 @@ def patch_graph(graph):
                     "required": False,
                     "max_length": 500,
                     "default": ""
-                }
+                },
+                # Sprint 3 Phase 4 — 8 new inputs for V2 prompt dynamic sections.
+                # Computed by chat_router.py via teacher_prompt.build_dynamic_sections().
+                # Always defined (even when V1 active) so deploys are forward-compatible.
+                {"type": "paragraph", "variable": "rubric_for_level", "label": "rubric_for_level",
+                 "required": False, "max_length": 4000, "default": ""},
+                {"type": "paragraph", "variable": "fewshots_block", "label": "fewshots_block",
+                 "required": False, "max_length": 4000, "default": ""},
+                {"type": "paragraph", "variable": "dosage_block", "label": "dosage_block",
+                 "required": False, "max_length": 2000, "default": ""},
+                {"type": "paragraph", "variable": "level_reminder_inject", "label": "level_reminder_inject",
+                 "required": False, "max_length": 2000, "default": ""},
+                {"type": "paragraph", "variable": "drift_validation_request", "label": "drift_validation_request",
+                 "required": False, "max_length": 2000, "default": ""},
+                {"type": "paragraph", "variable": "l1_watch", "label": "l1_watch",
+                 "required": False, "max_length": 2000, "default": ""},
+                {"type": "paragraph", "variable": "spaced_retrieval_today", "label": "spaced_retrieval_today",
+                 "required": False, "max_length": 2000, "default": ""},
+                {"type": "paragraph", "variable": "output_schema_block", "label": "output_schema_block",
+                 "required": False, "max_length": 2000, "default": ""},
             ]
-            print("  Patched: start node (6 inputs: minutes_since_last, mock_exam, mode_override, error_feedback, turn_response_secs, repeated_errors)")
+            print("  Patched: start node (6 base inputs + 8 Sprint 3 V2 inputs)")
 
         # --- Code nodes ---
         if nid == "code_profil_check":
@@ -1633,7 +1666,16 @@ def patch_graph(graph):
                 {"variable": "error_feedback", "value_selector": ["1775343637677", "error_feedback"]},
                 {"variable": "turn_response_secs", "value_selector": ["1775343637677", "turn_response_secs"]},
                 {"variable": "repeated_errors", "value_selector": ["1775343637677", "repeated_errors"]},
-                {"variable": "error_exam_eligible", "value_selector": ["code_profil_check", "error_exam_eligible"]}
+                {"variable": "error_exam_eligible", "value_selector": ["code_profil_check", "error_exam_eligible"]},
+                # Sprint 3 Phase 4 — forward 8 V2 dynamic sections from start to prompt.
+                {"variable": "rubric_for_level", "value_selector": ["1775343637677", "rubric_for_level"]},
+                {"variable": "fewshots_block", "value_selector": ["1775343637677", "fewshots_block"]},
+                {"variable": "dosage_block", "value_selector": ["1775343637677", "dosage_block"]},
+                {"variable": "level_reminder_inject", "value_selector": ["1775343637677", "level_reminder_inject"]},
+                {"variable": "drift_validation_request", "value_selector": ["1775343637677", "drift_validation_request"]},
+                {"variable": "l1_watch", "value_selector": ["1775343637677", "l1_watch"]},
+                {"variable": "spaced_retrieval_today", "value_selector": ["1775343637677", "spaced_retrieval_today"]},
+                {"variable": "output_schema_block", "value_selector": ["1775343637677", "output_schema_block"]},
             ]
             data["outputs"] = {
                 "is_first_turn": {"type": "boolean", "children": None},
@@ -1655,9 +1697,18 @@ def patch_graph(graph):
                 "scoring_recovery": {"type": "boolean", "children": None},
                 "error_feedback": {"type": "string", "children": None},
                 "turn_response_secs": {"type": "string", "children": None},
-                "repeated_errors": {"type": "string", "children": None}
+                "repeated_errors": {"type": "string", "children": None},
+                # Sprint 3 Phase 4 — V2 dynamic sections passthrough.
+                "rubric_for_level": {"type": "string", "children": None},
+                "fewshots_block": {"type": "string", "children": None},
+                "dosage_block": {"type": "string", "children": None},
+                "level_reminder_inject": {"type": "string", "children": None},
+                "drift_validation_request": {"type": "string", "children": None},
+                "l1_watch": {"type": "string", "children": None},
+                "spaced_retrieval_today": {"type": "string", "children": None},
+                "output_schema_block": {"type": "string", "children": None},
             }
-            print("  Patched: code_turn_check")
+            print("  Patched: code_turn_check (Sprint 3: +8 V2 outputs)")
 
         if nid == "code_check":
             data["code"] = CODE_CHECK
@@ -1749,10 +1800,13 @@ def patch_graph(graph):
             print("  Patched: llm_plan_choice (groq-standard)")
 
         if nid == "llm_session":
-            data["prompt_template"] = [{"id": "session-prompt", "role": "system", "text": PROMPT_SESSION, "edition_type": "basic"}]
+            session_prompt_text = PROMPT_SESSION_V2 if USE_V2_PROMPT else PROMPT_SESSION
+            session_prompt_id = "session-prompt-v2" if USE_V2_PROMPT else "session-prompt"
+            data["prompt_template"] = [{"id": session_prompt_id, "role": "system", "text": session_prompt_text, "edition_type": "basic"}]
             data["prompt_config"] = {"jinja2_variables": []}
             data["model"] = {**GROQ_STANDARD_MODEL, "completion_params": {"temperature": 0.7, "max_tokens": 600}}
-            print("  Patched: llm_session (groq-standard)")
+            v2_label = " V2 (Sprint 3 Lyster)" if USE_V2_PROMPT else ""
+            print(f"  Patched: llm_session (groq-standard){v2_label}")
 
         if nid == "llm_onboarding":
             data["prompt_template"] = [{"id": "onboarding-prompt", "role": "system", "text": PROMPT_ONBOARDING, "edition_type": "basic"}]
@@ -2156,33 +2210,73 @@ def add_conversation_variable(workflow_id, var_name, var_type, default_value, de
 # APPLY
 # ============================================================
 
-for wf_id, label in [(PUBLISHED_ID, "published"), (DRAFT_ID, "draft")]:
-    print(f"\n=== Updating {label} ({wf_id}) ===")
-    try:
-        graph = load_graph(wf_id)
-        graph = patch_graph(graph)
-        save_graph(wf_id, graph)
-    except Exception as e:
-        print(f"  [ERR] {e}")
-        import traceback
-        traceback.print_exc()
+# Sprint 3 Phase 4 — runtime flags. USE_V2_PROMPT toggles PROMPT_SESSION_V2 in
+# patch_graph. Defaults to FALSE for safety; deploys keep using PROMPT_SESSION
+# (V1) unless explicitly opted in via --use-v2.
+USE_V2_PROMPT = False
 
-print("\n=== Adding conversation variable: review_mode ===")
-for wf_id, label in [(PUBLISHED_ID, "published"), (DRAFT_ID, "draft")]:
-    add_conversation_variable(
-        wf_id, "review_mode", "string", "",
-        "Mode revision actif (active = review demande par eleve, vide = normal)"
-    )
 
-print("\n=== Adding conversation variables: exam_niveau_from / exam_niveau_to ===")
-for wf_id, label in [(PUBLISHED_ID, "published"), (DRAFT_ID, "draft")]:
-    add_conversation_variable(
-        wf_id, "exam_niveau_from", "string", "",
-        "Niveau de depart gele au moment du EXAM_START (evite hallucination apres promotion)"
-    )
-    add_conversation_variable(
-        wf_id, "exam_niveau_to", "string", "",
-        "Niveau cible gele au moment du EXAM_START"
-    )
+def deploy_chatflow(target: str = "both", use_v2: bool = False) -> None:
+    """Deploy the Teacher chatflow to the selected workflow(s).
 
-print("\nDone. Restart Dify: docker restart dify-api dify-worker")
+    target: 'draft', 'published', or 'both' (Sprint 3 Phase 4 added this flag
+            to allow safe draft-only iterations before publishing).
+    use_v2: switch llm_session prompt to PROMPT_SESSION_V2 (Sprint 3 Lyster).
+    """
+    global USE_V2_PROMPT
+    USE_V2_PROMPT = use_v2
+
+    targets = []
+    if target in ("both", "published"):
+        targets.append((PUBLISHED_ID, "published"))
+    if target in ("both", "draft"):
+        targets.append((DRAFT_ID, "draft"))
+
+    for wf_id, label in targets:
+        print(f"\n=== Updating {label} ({wf_id}) ===")
+        try:
+            graph = load_graph(wf_id)
+            graph = patch_graph(graph)
+            save_graph(wf_id, graph)
+        except Exception as e:
+            print(f"  [ERR] {e}")
+            import traceback
+            traceback.print_exc()
+
+    print("\n=== Adding conversation variable: review_mode ===")
+    for wf_id, label in targets:
+        add_conversation_variable(
+            wf_id, "review_mode", "string", "",
+            "Mode revision actif (active = review demande par eleve, vide = normal)"
+        )
+
+    print("\n=== Adding conversation variables: exam_niveau_from / exam_niveau_to ===")
+    for wf_id, label in targets:
+        add_conversation_variable(
+            wf_id, "exam_niveau_from", "string", "",
+            "Niveau de depart gele au moment du EXAM_START (evite hallucination apres promotion)"
+        )
+        add_conversation_variable(
+            wf_id, "exam_niveau_to", "string", "",
+            "Niveau cible gele au moment du EXAM_START"
+        )
+
+    print(f"\nDone (target={target}, use_v2={use_v2}). Restart Dify: docker restart dify-api dify-worker")
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Patch the Teacher chatflow in Dify.")
+    parser.add_argument(
+        "--target",
+        choices=("both", "draft", "published"),
+        default="both",
+        help="Which workflow to patch (default: both for backward compat).",
+    )
+    parser.add_argument(
+        "--use-v2",
+        action="store_true",
+        help="Use Sprint 3 PROMPT_SESSION_V2 (Lyster + dosage + anti-drift).",
+    )
+    args = parser.parse_args()
+    deploy_chatflow(target=args.target, use_v2=args.use_v2)

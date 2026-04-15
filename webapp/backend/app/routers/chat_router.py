@@ -11,7 +11,9 @@ from ..auth import get_current_user
 from ..rate_limit import limiter
 from .. import database as db
 from ..error_taxonomy.rules import detect_errors, ERROR_CODE_TO_FAMILY
+from ..error_taxonomy.scoring import enrich_error_fields
 from ..openai_reconcile import reconcile_openai_usage
+from ..teacher_prompt import build_dynamic_sections, PromptContext
 import yaml
 import tiktoken
 from pathlib import Path
@@ -383,6 +385,69 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             pass  # Informational signal, chat must not fail on this
     else:
         dify_inputs["error_feedback"] = ""
+
+    # ── Sprint 3 V2 dynamic sections (Lyster + dosing + anti-drift) ──
+    # Computed every request even when V1 prompt is active in Dify — the start
+    # node accepts these inputs unconditionally (forward compat). When V2 prompt
+    # is wired in patch_graph, the prompt references them; when V1 is wired,
+    # they're ignored. No-op risk = zero.
+    try:
+        # Build error context with full v2 enrichment (tier + gravity axes)
+        v2_errors = []
+        if niveau:
+            for d in detections:
+                enriched = enrich_error_fields(d.error_code, niveau)
+                if not enriched.get("tier"):
+                    continue
+                v2_errors.append({
+                    "error_code": d.error_code,
+                    "family": ERROR_CODE_TO_FAMILY.get(d.error_code, "unknown"),
+                    "tier": enriched["tier"],
+                    "gravity_linguistic": enriched.get("gravity_linguistic") or 0,
+                    "gravity_communicative": enriched.get("gravity_communicative") or 0,
+                    "gravity_social": enriched.get("gravity_social") or 0,
+                })
+        # Turn count: best-effort from session history. Phase 4 MVP defaults to 1
+        # so anti-drift triggers (turn % 5/10) won't fire mid-conversation; full
+        # turn-counter integration is Phase 5+ tuning.
+        turn_count = 1
+        if req.conversation_id and eleve_id:
+            try:
+                async with db.pool.acquire() as conn:
+                    msg_count = await conn.fetchval(
+                        """SELECT COALESCE(message_count, 0) FROM user_sessions
+                           WHERE user_id = $1 AND agent_name = $2 AND dify_conversation_id = $3""",
+                        user["id"], req.agent, req.conversation_id,
+                    )
+                    if msg_count is not None:
+                        turn_count = int(msg_count) + 1
+            except Exception:
+                pass
+
+        ctx = PromptContext(
+            level=niveau or "B1",
+            turn_count=turn_count,
+            errors_detected=v2_errors,
+            last_feedback_per_family={},  # Phase 5+ once teacher_response_log exists
+            l1="fr",  # Default for familial deploy; Phase 6 will pull from profile
+            spaced_retrieval_due=[],  # Phase 7
+        )
+        sections = build_dynamic_sections(ctx)
+        for key, val in sections.items():
+            if key.startswith("_"):
+                continue
+            if isinstance(val, str):
+                dify_inputs[key] = val
+    except Exception as e:
+        import logging
+        logging.getLogger("chat").warning("Sprint 3 dynamic sections build failed: %s", e)
+        # Empty defaults so Dify start node doesn't reject unknown inputs
+        for key in (
+            "rubric_for_level", "fewshots_block", "dosage_block",
+            "level_reminder_inject", "drift_validation_request",
+            "l1_watch", "spaced_retrieval_today", "output_schema_block",
+        ):
+            dify_inputs.setdefault(key, "")
 
     # ── GPT-4o-mini daily token budget check ──
     input_token_est = _count_tokens(req.message) + 2000  # system prompt + history overhead
