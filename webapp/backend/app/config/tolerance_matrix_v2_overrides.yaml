@@ -1,0 +1,22 @@
+# Tolerance Matrix v2 — Manual overrides (applied on top of tolerance_matrix_v2.yaml)
+# Source : docs/01-pedagogy/matrix_v2_review.md § "Synthèse des overrides Phase B"
+# Created: 2026-04-15 (Sprint 2 Phase A review)
+# Active : Phase B (loader to be added in scoring.py — cf. ADR-009 Actions de mise en œuvre)
+#
+# Each override is a human judgment that supersedes the empirical GLMM calibration
+# because of a known corpus bias (W&I essays vs AcademIA chat) or a pedagogical
+# safety concern (Lyster prompts, motivation).
+
+overrides:
+  sentence:
+    # sentence × beginner : penalized → noted
+    # Reason: chat fragments ("yes", "ok", "maybe") are normal conversational
+    # behavior at A1/A2, not sentence-level failures. W&I corpus measures
+    # reach <10% in structured essays, but this does not transfer to chat.
+    # Penalizing SENT:FRAG at beginner would punish natural production.
+    beginner: noted
+
+# Fields to monitor for future overrides (Sprint 6 recalibration):
+#   - word_order × beginner : currently penalized, flag for drop-off correlation
+#   - sentence × intermediate : currently penalized, monitor in-session count
+#   - noun_det × B1..C2 : currently ignored globally, verify on L1-french subpop
