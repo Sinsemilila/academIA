@@ -22,6 +22,20 @@ def _load_matrix():
     if _matrix is None:
         with open(_MATRIX_PATH) as f:
             _matrix = yaml.safe_load(f)
+        # Manual overrides (only meaningful when v2 active)
+        if _USE_V2:
+            ov_path = _CONFIG_DIR / "tolerance_matrix_v2_overrides.yaml"
+            if ov_path.exists():
+                with open(ov_path) as f:
+                    ov_doc = yaml.safe_load(f) or {}
+                applied = []
+                for fam, bands in (ov_doc.get("overrides") or {}).items():
+                    if fam in _matrix.get("matrix", {}):
+                        _matrix["matrix"][fam].update(bands)
+                        applied.append(f"{fam}={bands}")
+                if applied:
+                    logger.info("Applied %d overrides from %s: %s",
+                                len(applied), ov_path.name, applied)
         logger.info(
             "Loaded tolerance matrix: %s (v2=%s)",
             _MATRIX_PATH.name, _USE_V2,

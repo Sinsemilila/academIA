@@ -149,13 +149,28 @@ async def _switch_dify_model(target_model: str):
 import logging as _logging
 _TOLERANCE_MATRIX = {}
 _use_v2 = os.getenv("USE_V2_TOLERANCE", "false").lower() in ("1", "true", "yes")
-_tm_path = Path(__file__).parent.parent / "config" / (
+_config_dir = Path(__file__).parent.parent / "config"
+_tm_path = _config_dir / (
     "tolerance_matrix_v2.yaml" if _use_v2 else "tolerance_matrix.yaml"
 )
 if _tm_path.exists():
     with open(_tm_path) as f:
         _tm = yaml.safe_load(f)
         _TOLERANCE_MATRIX = _tm.get("matrix", {})
+    # Apply manual overrides (v2 only) — same logic as scoring._load_matrix
+    if _use_v2:
+        _ov_path = _config_dir / "tolerance_matrix_v2_overrides.yaml"
+        if _ov_path.exists():
+            with open(_ov_path) as f:
+                _ov = yaml.safe_load(f) or {}
+            _applied = []
+            for _fam, _bands in (_ov.get("overrides") or {}).items():
+                if _fam in _TOLERANCE_MATRIX:
+                    _TOLERANCE_MATRIX[_fam].update(_bands)
+                    _applied.append(f"{_fam}={_bands}")
+            if _applied:
+                _logging.getLogger("chat").info(
+                    "Applied %d overrides: %s", len(_applied), _applied)
     _logging.getLogger("chat").info("Loaded tolerance matrix: %s (v2=%s)", _tm_path.name, _use_v2)
 
 _NIVEAU_TO_BAND = {"A1": "beginner", "A2": "beginner", "B1": "intermediate",
