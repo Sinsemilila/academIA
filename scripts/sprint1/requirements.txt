@@ -1,0 +1,30 @@
+# Core data stack
+pandas
+pyarrow
+numpy
+scipy
+statsmodels
+
+# Survival / GLMM backends
+# pymer4 dropped: requires R/lme4, not available in this env (wolfi-like container)
+numpyro
+jax
+lifelines
+
+# Corpus processing
+errant
+spacy
+# Note: run `python -m spacy download en_core_web_sm` after install
+
+# Viz
+matplotlib
+seaborn
+
+# Utils
+scikit-learn
+pyyaml
+tqdm
+requests
+pytest
+jupyter
+

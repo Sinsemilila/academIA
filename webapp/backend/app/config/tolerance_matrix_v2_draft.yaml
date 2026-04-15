@@ -1,0 +1,533 @@
+# Tolerance Matrix v2 — DRAFT (Sprint 1 + 1.5, Path A)
+# Weights calibrated via NumPyro hierarchical logistic GLMM on W&I + LOCNESS BEA 2019.
+# Corpus: 2,598 learners × 29,412 essay×family Bernoulli obs, CEFR A1–C2.
+# Updated: 2026-04-15 — Sprint 1.5 GLMM posterior
+# Status: draft — review before activating in place of tolerance_matrix.yaml.
+#
+# Weights derived from β_tier posterior with relative-to-T1 mapping:
+#   weight[t] = 1 - sigmoid(β_0 + β_tier[t]) / sigmoid(β_0)
+# T1 (endemic at level) → weight 0 (free pass). Higher tiers → proportional surprise.
+#
+# GLMM convergence: R-hat_max=1.01, ESS_bulk_min=329, 2 chains × 1000 samples.
+# See glmm_summary.json + weights_from_posterior.json for full posterior.
+#
+# Calibrated families (via ERRANT mapping, 84.7% coverage of W&I):
+#   verb_tense, noun_det, preposition, pronoun, word_order,
+#   morphology, surface, sentence
+# NOT calibrated (priors kept — ERRANT too coarse or L1-dependent):
+#   verb_usage (modals/conditionals), vocabulary, calque, discourse
+#
+# See also: /mnt/cosmos-data/sprint1/results/figures/
+
+families:
+  verb_tense:
+    label: Temps & conjugaison
+    label_en: Tense & conjugation
+    codes:
+    - V:TENSE
+    - V:SVA
+    - V:FORM
+    - V:COND
+    - V:ASPECT
+    - V:AUX
+    - V:INFL
+    mode: active
+  verb_usage:
+    label: Verbes (usage)
+    label_en: Verb usage
+    codes:
+    - V:MODAL
+    - V:PASS
+    - V:EXIST
+    - V:CHOICE
+    - V:PHRASAL
+    mode: active
+  noun_det:
+    label: Noms & déterminants
+    label_en: Nouns & determiners
+    codes:
+    - N:COUNT
+    - N:INFL
+    - N:POSS
+    - N:CHOICE
+    - ART
+    - ART:GENERIC
+    - DET
+    mode: active
+  pronoun:
+    label: Pronoms
+    label_en: Pronouns
+    codes:
+    - PRON:FORM
+    - PRON:CHOICE
+    - PRON:REF
+    mode: active
+  word_order:
+    label: Ordre des mots
+    label_en: Word order
+    codes:
+    - WO
+    - WO:QUEST
+    mode: active
+  sentence:
+    label: Structure de phrase
+    label_en: Sentence structure
+    codes:
+    - SENT:RUNON
+    - SENT:FRAG
+    - SENT:NEG
+    - SENT:MOD
+    - SENT:PARALLEL
+    - SENT:SUBORD
+    mode: active
+  morphology:
+    label: Morphologie
+    label_en: Morphology
+    codes:
+    - MORPH:DERIV
+    - MORPH:WORDCLASS
+    - ADJ:CHOICE
+    - ADJ:FORM
+    - ADJ:ORDER
+    - ADV:CHOICE
+    mode: active
+  surface:
+    label: Surface
+    label_en: Surface errors
+    codes:
+    - SPELL
+    - SPELL:COGNATE
+    - ORTH:CASE
+    - ORTH:SPACE
+    - PUNCT
+    - PUNCT:COMMA
+    - PUNCT:APOST
+    - CONTR
+    - REDUND
+    mode: active
+  preposition:
+    label: Prépositions
+    label_en: Prepositions
+    codes:
+    - PREP
+    mode: active
+  vocabulary:
+    label: Vocabulaire
+    label_en: Vocabulary
+    codes:
+    - LEX:CHOICE
+    - LEX:COLLOC
+    - LEX:FALSE
+    - LEX:IDIOM
+    - LEX:ARGSTRUCT
+    mode: active
+  calque:
+    label: Calques français
+    label_en: French transfer
+    codes:
+    - LEX:CALQUE
+    - PREP:CALQUE
+    mode: active
+  discourse:
+    label: Discours & registre
+    label_en: Discourse & register
+    codes:
+    - DISC:TRANS
+    - DISC:COHER
+    - REG:LEVEL
+    - REG:PRAGMA
+    mode: active
+code_labels:
+  V:TENSE: Choix du temps (passé/présent/futur)
+  V:SVA: Accord sujet-verbe
+  V:FORM: Forme du verbe (infinitif/gérondif)
+  V:COND: Structures conditionnelles (if...)
+  V:ASPECT: Aspect (progressif / continu)
+  V:AUX: Auxiliaires (do/have/be)
+  V:INFL: Conjugaison irrégulière
+  V:MODAL: Verbes modaux (can/must/should)
+  V:PASS: Voix passive
+  V:EXIST: Il y a (there is/are)
+  V:CHOICE: Choix du verbe
+  V:PHRASAL: Verbes à particule (phrasal verbs)
+  N:COUNT: Noms indénombrables
+  N:INFL: Pluriels irréguliers
+  N:POSS: Possessifs (student's book)
+  N:CHOICE: Choix du nom
+  ART: Articles (a/the)
+  ART:GENERIC: Article zéro (life, music)
+  DET: Déterminants (this/these, much/many)
+  PRON:FORM: Forme du pronom (he/him)
+  PRON:CHOICE: Choix du pronom (who/which)
+  PRON:REF: Référence du pronom (ambiguïté)
+  WO: Ordre des mots
+  WO:QUEST: Ordre dans les questions
+  SENT:RUNON: Phrases trop longues (run-on)
+  SENT:FRAG: Phrases incomplètes
+  SENT:NEG: Négation (double négation)
+  SENT:MOD: Modificateurs mal placés
+  SENT:PARALLEL: Parallélisme
+  SENT:SUBORD: Subordonnées
+  MORPH:DERIV: Dérivation (hapiness → happiness)
+  MORPH:WORDCLASS: Catégorie de mot (happy → happiness)
+  ADJ:CHOICE: Choix de l'adjectif
+  ADJ:FORM: Comparatif/superlatif
+  ADJ:ORDER: Place de l'adjectif
+  ADV:CHOICE: Choix de l'adverbe
+  SPELL: Orthographe
+  SPELL:COGNATE: Orthographe (réflexe français)
+  ORTH:CASE: Majuscules
+  ORTH:SPACE: Espacement
+  PUNCT: Ponctuation
+  PUNCT:COMMA: Virgules
+  PUNCT:APOST: Apostrophes (don't, it's)
+  CONTR: Contractions
+  REDUND: Redondance (return back → return)
+  PREP: Prépositions
+  LEX:CHOICE: Choix du mot
+  LEX:COLLOC: Collocations (make/do a mistake)
+  LEX:FALSE: Faux amis (actually ≠ actuellement)
+  LEX:IDIOM: Expressions idiomatiques
+  LEX:ARGSTRUCT: Construction verbale (explain to me)
+  LEX:CALQUE: Calque français (I have 25 years)
+  PREP:CALQUE: Préposition calque (depend of → on)
+  DISC:TRANS: Transitions / connecteurs
+  DISC:COHER: Cohérence du discours
+  REG:LEVEL: Registre de langue
+  REG:PRAGMA: Politesse / pragmatique
+concept_families:
+  to_be_forms: verb_tense
+  to_have_got: verb_tense
+  present_simple: verb_tense
+  subject_pronouns: pronoun
+  object_pronouns: pronoun
+  possessive_adjectives: noun_det
+  articles_a_an_the: noun_det
+  plural_nouns: noun_det
+  adjective_position: morphology
+  demonstratives: noun_det
+  wh_questions: word_order
+  short_answers: verb_tense
+  prepositions_place: preposition
+  prepositions_time: preposition
+  there_is_there_are: verb_usage
+  imperative: verb_tense
+  cardinal_numbers: surface
+  ordinal_numbers: surface
+  present_simple_full: verb_tense
+  present_continuous: verb_tense
+  past_simple_regular: verb_tense
+  past_simple_irregular: verb_tense
+  past_continuous: verb_tense
+  future_going_to: verb_tense
+  future_will: verb_tense
+  comparatives: morphology
+  superlatives: morphology
+  modals_can_must_should: verb_usage
+  modals_permission: verb_usage
+  some_any_no: noun_det
+  much_many_countable: noun_det
+  adverbs_frequency: morphology
+  relative_clauses_simple: pronoun
+  prepositions_movement: preposition
+  conjunctions_basic: sentence
+  question_tags: word_order
+  present_perfect_simple: verb_tense
+  present_perfect_vs_past_simple: verb_tense
+  present_perfect_continuous: verb_tense
+  past_perfect: verb_tense
+  passive_voice: verb_usage
+  conditional_1: verb_tense
+  conditional_2: verb_tense
+  modal_deduction: verb_usage
+  reported_speech: sentence
+  indirect_questions: word_order
+  phrasal_verbs: verb_usage
+  gerund_vs_infinitive: verb_tense
+  relative_clauses: pronoun
+  connectors: sentence
+  used_to: verb_tense
+  would_habitual: verb_usage
+  adj_prepositions: preposition
+  adverbs_degree: morphology
+  so_such_that: sentence
+  both_either_neither: noun_det
+  conditional_3: verb_tense
+  mixed_conditionals: verb_tense
+  modal_deduction_past: verb_usage
+  modal_reproach_regret: verb_usage
+  reported_speech_full: sentence
+  passive_advanced: verb_usage
+  inversion_negative: word_order
+  cleft_sentences: sentence
+  wish_past_perfect: verb_tense
+  wish_would: verb_tense
+  participle_clauses: sentence
+  causative_structures: verb_usage
+  compound_adjectives: morphology
+  prefixes_suffixes: morphology
+  articles_advanced: noun_det
+  reduced_relative_clauses: pronoun
+  connectors_sophisticated: sentence
+  parallel_structures: sentence
+  nominalization: morphology
+  inversion_stylistic: word_order
+  subjunctive_formal: verb_tense
+  ellipsis_substitution: sentence
+  cohesion_deixis: discourse
+  topicalization: word_order
+  modals_stylistic: verb_usage
+  conditionals_implicit: verb_tense
+  reported_speech_nuanced: sentence
+  hedging_academic: discourse
+  gerund_subjects_complex: verb_tense
+  absolute_constructions: sentence
+  aspect_mastery: verb_tense
+  gradation_stylistic: morphology
+  tense_aspect_flexibility: verb_tense
+  rhetorical_manipulation: discourse
+  stylistic_norm_breaking: discourse
+  literary_forms: sentence
+  creative_punctuation: surface
+  code_switching_register: discourse
+  free_indirect_discourse: sentence
+  complex_coordination: sentence
+  meta_grammatical_awareness: morphology
+  pragmatics_implicature: discourse
+concept_labels:
+  to_be_forms: Verbe être (am/is/are)
+  to_have_got: Verbe avoir (have got)
+  present_simple: Présent simple
+  subject_pronouns: Pronoms sujets (I/you/he)
+  object_pronouns: Pronoms compléments (me/you/him)
+  possessive_adjectives: Adjectifs possessifs (my/your)
+  articles_a_an_the: Articles (a/an/the)
+  plural_nouns: Pluriels des noms
+  adjective_position: Place de l'adjectif
+  demonstratives: Démonstratifs (this/that/these)
+  wh_questions: Questions en WH
+  short_answers: Réponses courtes (Yes I do)
+  prepositions_place: Prépositions de lieu (in/on/at)
+  prepositions_time: Prépositions de temps (in/on/at)
+  there_is_there_are: Il y a (there is/are)
+  imperative: Impératif
+  cardinal_numbers: Nombres cardinaux
+  ordinal_numbers: Nombres ordinaux
+  present_simple_full: Présent simple (complet)
+  present_continuous: Présent continu (be + -ing)
+  past_simple_regular: Passé simple régulier (-ed)
+  past_simple_irregular: Passé simple irrégulier
+  past_continuous: Passé continu
+  future_going_to: Futur (going to)
+  future_will: Futur (will)
+  comparatives: Comparatifs (bigger, more beautiful)
+  superlatives: Superlatifs (biggest, most beautiful)
+  modals_can_must_should: Modaux (can/must/should)
+  modals_permission: Permission (can/may/could)
+  some_any_no: Some / any / no
+  much_many_countable: Much / many / dénombrables
+  adverbs_frequency: Adverbes de fréquence
+  relative_clauses_simple: Relatives simples (who/which)
+  prepositions_movement: Prépositions de mouvement
+  conjunctions_basic: Conjonctions de base (and/but/or)
+  question_tags: Question tags (isn't it?)
+  present_perfect_simple: Present perfect simple
+  present_perfect_vs_past_simple: Present perfect vs passé simple
+  present_perfect_continuous: Present perfect continu
+  past_perfect: Plus-que-parfait (had + pp)
+  passive_voice: Voix passive
+  conditional_1: Conditionnel 1 (if + present)
+  conditional_2: Conditionnel 2 (if + past)
+  modal_deduction: Déduction modale (must be, can't be)
+  reported_speech: Discours rapporté
+  indirect_questions: Questions indirectes
+  phrasal_verbs: Verbes à particule
+  gerund_vs_infinitive: Gérondif vs infinitif
+  relative_clauses: Propositions relatives
+  connectors: Connecteurs logiques
+  used_to: Used to (habitudes passées)
+  would_habitual: Would (habitudes passées)
+  adj_prepositions: Adjectifs + prépositions
+  adverbs_degree: Adverbes de degré
+  so_such_that: So / such / that
+  both_either_neither: Both / either / neither
+  conditional_3: Conditionnel 3 (if + had pp)
+  mixed_conditionals: Conditionnels mixtes
+  modal_deduction_past: Déduction modale passée
+  modal_reproach_regret: Reproche / regret (should have)
+  reported_speech_full: Discours rapporté avancé
+  passive_advanced: Passif avancé
+  inversion_negative: Inversion négative (never have I)
+  cleft_sentences: Phrases clivées (it is X that)
+  wish_past_perfect: Wish + past perfect
+  wish_would: Wish + would
+  participle_clauses: Propositions participiales
+  causative_structures: Causatif (have/get sth done)
+  compound_adjectives: Adjectifs composés
+  prefixes_suffixes: Préfixes / suffixes
+  articles_advanced: Articles avancés
+  reduced_relative_clauses: Relatives réduites
+  connectors_sophisticated: Connecteurs avancés
+  parallel_structures: Structures parallèles
+  nominalization: Nominalisation
+  inversion_stylistic: Inversion stylistique
+  subjunctive_formal: Subjonctif formel
+  ellipsis_substitution: Ellipse et substitution
+  cohesion_deixis: Cohésion et deixis
+  topicalization: Topicalisation
+  modals_stylistic: Modaux stylistiques
+  conditionals_implicit: Conditionnels implicites
+  reported_speech_nuanced: Discours rapporté nuancé
+  hedging_academic: Hedging académique
+  gerund_subjects_complex: Gérondif sujet (complexe)
+  absolute_constructions: Constructions absolues
+  aspect_mastery: Maîtrise de l'aspect
+  gradation_stylistic: Gradation stylistique
+  tense_aspect_flexibility: Flexibilité temps/aspect
+  rhetorical_manipulation: Manipulation rhétorique
+  stylistic_norm_breaking: Transgression stylistique
+  literary_forms: Formes littéraires
+  creative_punctuation: Ponctuation créative
+  code_switching_register: Alternance de registre
+  free_indirect_discourse: Discours indirect libre
+  complex_coordination: Coordination complexe
+  meta_grammatical_awareness: Conscience méta-grammaticale
+  pragmatics_implicature: Pragmatique / implicature
+matrix:
+  verb_tense:
+    beginner: ignored
+    intermediate: ignored
+    upper: ignored
+    advanced: ignored
+  verb_usage:
+    beginner: ignored
+    intermediate: noted
+    upper: noted
+    advanced: penalized
+  noun_det:
+    beginner: ignored
+    intermediate: ignored
+    upper: ignored
+    advanced: ignored
+  pronoun:
+    beginner: noted
+    intermediate: noted
+    upper: noted
+    advanced: penalized
+  word_order:
+    beginner: penalized
+    intermediate: noted
+    upper: noted
+    advanced: penalized
+  sentence:
+    beginner: penalized
+    intermediate: penalized
+    upper: penalized
+    advanced: penalized
+  morphology:
+    beginner: noted
+    intermediate: noted
+    upper: noted
+    advanced: noted
+  surface:
+    beginner: ignored
+    intermediate: ignored
+    upper: ignored
+    advanced: ignored
+  preposition:
+    beginner: ignored
+    intermediate: ignored
+    upper: ignored
+    advanced: noted
+  vocabulary:
+    beginner: shadow
+    intermediate: noted
+    upper: noted
+    advanced: penalized
+  calque:
+    beginner: noted
+    intermediate: penalized
+    upper: penalized
+    advanced: penalized
+  discourse:
+    beginner: shadow
+    intermediate: shadow
+    upper: noted
+    advanced: penalized
+weights:
+  ignored: 0.0
+  noted: 0.196
+  penalized: 0.394
+  regressive: 0.538
+  shadow: 0.0
+feedback_labels:
+  penalized:
+    fr: Priorité haute
+    en: High priority
+    color: red
+  noted:
+    fr: À travailler
+    en: Work on this
+    color: orange
+  ignored:
+    fr: Normal pour ton niveau
+    en: Normal for your level
+    color: gray
+cefr_bands:
+  A1: beginner
+  A2: beginner
+  B1: intermediate
+  B2: upper
+  C1: advanced
+  C2: advanced
+progression:
+  max_error_rate: 1.0
+  min_sessions: 5
+  max_errors_per_turn: 3
+weights_source: empirical_external_corpora_v1_1 (W&I + LOCNESS BEA 2019, NumPyro GLMM
+  posterior relative-to-T1, 2026-04-15)
+calibration_status:
+  verb_tense: calibrated_empirically
+  verb_usage: v1_prior_kept
+  noun_det: calibrated_empirically
+  pronoun: calibrated_empirically
+  word_order: calibrated_empirically
+  sentence: calibrated_empirically
+  morphology: calibrated_empirically
+  surface: calibrated_empirically
+  preposition: calibrated_empirically
+  vocabulary: v1_prior_kept
+  calque: v1_prior_kept
+  discourse: v1_prior_kept
+weights_ci_95:
+  ignored:
+  - 0.0
+  - 0.0
+  noted:
+  - 0.10362643003463745
+  - 0.3019349277019501
+  penalized:
+  - 0.2339857816696167
+  - 0.541449785232544
+  regressive:
+  - 0.3422742187976837
+  - 0.6983201503753662
+  shadow:
+  - 0.0
+  - 0.0
+glmm_diagnostics:
+  model: hierarchical_logistic_glmm_T1_baseline
+  n_obs: 29412
+  n_learners: 2598
+  n_families: 9
+  n_samples: 2000
+  beta_0_mean: 0.961
+  beta_tier_means:
+    T1_ignored: 0.0
+    T2_noted: -0.629
+    T3_penalized: -1.215
+    T4_regressive: -1.675
+  sigma_u_mean: 0.925
+  sigma_v_mean: 1.374
+  r_hat_max: 1.01
+  ess_bulk_min: 329
