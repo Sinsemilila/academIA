@@ -1,0 +1,262 @@
+general_settings:
+    database_url: ENC[AES256_GCM,data:5dmXB+k0J/ai9pziTJM18OxrT691cT12FFKiTaz+ohB25yHAQOJumLq8DZOkPbf6U6L9OkN3pUV9sIgBybce1UgHxkaFCxY5hxov3xWeyDcP/isk/w==,iv:EO6fSUoraN+h7Uk2s06OqUjAwTrzWgLTbFTA/Y1/fBs=,tag:V24BTB7F8+Rmprfirj/MBg==,type:str]
+    disable_spend_logs: false
+    disable_spend_updates: false
+    # économie disque, on n'a pas besoin du contenu
+    store_prompts_in_spend_logs: false
+router_settings:
+    # route vers la clé la moins utilisée
+    routing_strategy: usage-based-routing-v2
+    fallbacks:
+        - gpt-4o-mini:
+            - groq-standard
+            - mistral-small
+        - groq-snapshot:
+            - mistral-small
+        - groq-standard:
+            - ollama-cloud
+            - mistral-small
+        - groq-qwen:
+            - mistral-small
+    # 1 échec (429) → cooldown cette clé
+    allowed_fails: 1
+    # clé en pause 60s après rate limit
+    cooldown_time: 60
+    # 3 tentatives sur d'autres clés avant abandon
+    num_retries: 3
+    # secondes avant retry
+    retry_after: 5
+model_list:
+    # ══════════════════════════════════════════════════════════════
+    #  OPENAI — Free tier (chatbot + exams) + Paid (fine-tune error analysis)
+    #  1 seule clé admin, pas de pool nécessaire
+    # ══════════════════════════════════════════════════════════════
+    - model_name: gpt-4o-mini
+      litellm_params:
+        model: openai/gpt-4o-mini
+        api_key: ENC[AES256_GCM,data:FPF0FHIQ91hI7AvZp8AbtUoJTvik6tVH2uREM4E8JjEPDAkgmiu32t7NIaxb1e5wq2TnTX7fjrIPI+6qKYm+J6eU/mH27AQi7un1nERLI4qF0wwdBHZnBMUWMD43CpiMVqAJlp9a1qEY62QP/TFhZjfQGTxt4dX0rWBCwcmuSs0tUsroN5x4EONzDrJpxASmx0CI9fTX46tEoRF+Zmqq5RkUvec=,iv:lHfvv86SP7tg2lYHjfDOmpE/Ue26DkDTm46riyYNn/4=,tag:7NcTpb66+r210vPYUoS1eA==,type:str]
+      model_info:
+        owner: sinse
+        tier: free
+        description: 'Complimentary daily tokens (data sharing). Fallback: groq-standard'
+    - model_name: ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v2:DTurinhs
+      litellm_params:
+        model: openai/ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v2:DTurinhs
+        api_key: ENC[AES256_GCM,data:gFDZaHsEwWLXr1TQQjI4RqO3mLO/ACC/RDzb6B/vkki4hHu/fFZA0Hr7q63czeRc2FXNxNIi6hxG3VKk8wbMNF5zkWwQGKwAFtyTfMtyhRHUnUe54FjG2cAH+VKCjg70b5OWef0BgKYi4pOn1DzWKdncmOXks9+ZRCQ8oltZaKsgdrAQ2UlcfNatvWqOOHg+5Om4rhvMKMHHJroa2jbhJWgXrBY=,iv:CN+7RxcpY3Du9GhYvktxh4+GXD8CXMKNjn28SzqFb3g=,tag:sJcFRcdKHTH7EJzA+H9XeA==,type:str]
+      model_info:
+        owner: sinse
+        tier: paid
+        description: Fine-tuned gpt-4o-mini for error taxonomy (1214 examples, v2) — DEPRECATED, use v3
+    - model_name: ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v3:DU6GUv6v
+      litellm_params:
+        model: openai/ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v3:DU6GUv6v
+        api_key: ENC[AES256_GCM,data:vhJwNpUe3rRElvU6OdGCrVeIIR0tstQtM0Xd9RzQt0G/kMdekWAcuWM4dUTQajlcHCVexcX5Ltc9i7TqfTey/QAIRUfkcqNBBBJZazsfuawADvsDIfsXp9W8FgmovvSe9yNWEvmO0PAL/98pBfIDeNgCJYcjz3O68SXTXns52w7zYXYLwDGxGfez0fXlXm1bZ0CRV7p/lmygu6WEUu0/9rNIzHE=,iv:yPdEiDqPzMwEUghIAuxhdzwy20FE1aLklUd6ajAa3BQ=,tag:0wMDLB/wlXVmZXUdmL62PQ==,type:str]
+      model_info:
+        owner: sinse
+        tier: paid
+        description: Fine-tuned gpt-4o-mini for error taxonomy (4208 examples, v3)
+    # ══════════════════════════════════════════════════════════════
+    #  GROQ — Pool partagé (sessions + snapshots + qwen)
+    #  Même model_name = LiteLLM load-balance automatiquement
+    #  Limites free tier par clé : 30 RPM, 1000 RPD, 100K TPD
+    # ══════════════════════════════════════════════════════════════
+    # ── groq-standard (Llama 3.3 70B) — sessions Teacher ──
+    - model_name: groq-standard
+      litellm_params:
+        model: groq/llama-3.3-70b-versatile
+        api_key: ENC[AES256_GCM,data:rwok2/ZdTlVQgqZeHj5oCAYpn24pvk5WDbet/0sYcas0kUeOfB1R1BkmYo83qo1t0Pz9Cmav3sE=,iv:rSrCHKfua+9MJqGfB9S4BtgKiaVnajlxmSKLxs3/A8w=,tag:6phvWKTNMG39VrdRCMKoJg==,type:str]
+        # throttle à 83% du max (12K) → bounce avant saturation
+        tpm: 10000
+        # throttle à 83% du max (30)
+        rpm: 25
+      model_info:
+        owner: sinse
+        tier: free
+    - model_name: groq-standard
+      litellm_params:
+        model: groq/llama-3.3-70b-versatile
+        api_key: ENC[AES256_GCM,data:F0E8rfVEW/KP1a55vO+XOI+Ca4KrvkZvw4xh3ZqQbkjcnAiHMubLw5SXmYkPyDDxy/SZxrYcICI=,iv:zYlWuIQCtdc8dj0FuOycwXksi6udOkVDS1ajm9IAU1g=,tag:iQTsFrFTLV1thHNSuh2Jpw==,type:str]
+        tpm: 10000
+        rpm: 25
+      model_info:
+        owner: sinse-alt
+        tier: free
+    # - model_name: groq-standard
+    #   litellm_params:
+    #     model: groq/llama-3.3-70b-versatile
+    #     api_key: "GROQ_KEY_USER_3"          # ← clé Groq user 3
+    #     tpm: 10000
+    #     rpm: 25
+    #   model_info:
+    #     owner: "user3"
+    #     tier: "free"
+    # - model_name: groq-standard
+    #   litellm_params:
+    #     model: groq/llama-3.3-70b-versatile
+    #     api_key: "GROQ_KEY_USER_4"          # ← clé Groq user 4
+    #     tpm: 10000
+    #     rpm: 25
+    #   model_info:
+    #     owner: "user4"
+    #     tier: "free"
+    # - model_name: groq-standard
+    #   litellm_params:
+    #     model: groq/llama-3.3-70b-versatile
+    #     api_key: "GROQ_KEY_USER_5"          # ← clé Groq user 5
+    #     tpm: 10000
+    #     rpm: 25
+    #   model_info:
+    #     owner: "user5"
+    #     tier: "free"
+    # ── groq-snapshot (Llama 3.1 8B) — résumés session ──
+    - model_name: groq-snapshot
+      litellm_params:
+        model: groq/llama-3.1-8b-instant
+        api_key: ENC[AES256_GCM,data:m5NwRDwIpNnZ1knWyF7TduVU/62OoZjtfL5/+2MknVlEdGx0noENx7Y20Bjw5girNs1m+xLfk/Y=,iv:eCjKgaWUaakEa4wekYK16d3jXWMDCWmRX5jBtSkJI/0=,tag:5CrMhI2r0r+FoHIPqOoGiQ==,type:str]
+        tpm: 5000
+        rpm: 25
+      model_info:
+        owner: sinse
+        tier: free
+    - model_name: groq-snapshot
+      litellm_params:
+        model: groq/llama-3.1-8b-instant
+        api_key: ENC[AES256_GCM,data:cnVcPNLNy7qLJWboJ6+BMwAuj4XizQhkk1hIPYx666EDoieTBUN2rakOmtHUtZjZj518C3Q3k+o=,iv:4Ht/Xjl5MP/DE+5kChSJU1G9rSMM3LhrcbmzxIqSKqc=,tag:xbWZOenML4VnqtP3Vlo1Zg==,type:str]
+        tpm: 5000
+        rpm: 25
+      model_info:
+        owner: sinse-alt
+        tier: free
+    # - model_name: groq-snapshot
+    #   litellm_params:
+    #     model: groq/llama-3.1-8b-instant
+    #     api_key: "GROQ_KEY_USER_3"
+    #     tpm: 5000
+    #     rpm: 25
+    #   model_info:
+    #     owner: "user3"
+    #     tier: "free"
+    # - model_name: groq-snapshot
+    #   litellm_params:
+    #     model: groq/llama-3.1-8b-instant
+    #     api_key: "GROQ_KEY_USER_4"
+    #     tpm: 5000
+    #     rpm: 25
+    #   model_info:
+    #     owner: "user4"
+    #     tier: "free"
+    # - model_name: groq-snapshot
+    #   litellm_params:
+    #     model: groq/llama-3.1-8b-instant
+    #     api_key: "GROQ_KEY_USER_5"
+    #     tpm: 5000
+    #     rpm: 25
+    #   model_info:
+    #     owner: "user5"
+    #     tier: "free"
+    # ── groq-qwen (Qwen 32B) — japonais/CJK ──
+    - model_name: groq-qwen
+      litellm_params:
+        model: groq/qwen/qwen3-32b
+        api_key: ENC[AES256_GCM,data:cg3feg6ibwy+3Re5qoT9wgxKDQaK5oxjN3kMmheBSdtLPikRkW48a0yM3IE4PevWDFTSeqk1HgA=,iv:pHmU34LbQi0EIG/XBTwgJfq+955lmqHhVpY/13k258M=,tag:eV/uTSwIuCGgeuPgNc6SuA==,type:str]
+        tpm: 5000
+        rpm: 50
+      model_info:
+        owner: sinse
+        tier: free
+    # - model_name: groq-qwen
+    #   litellm_params:
+    #     model: groq/qwen/qwen3-32b
+    #     api_key: "GROQ_KEY_NICO"
+    #     tpm: 5000
+    #     rpm: 50
+    #   model_info:
+    #     owner: "nico"
+    #     tier: "free"
+    # (ajouter users 3-5 même pattern)
+    # ══════════════════════════════════════════════════════════════
+    #  OLLAMA CLOUD — Error taxonomy analysis (free tier)
+    #  gpt-oss:20b-cloud via ollama.com OpenAI-compatible API
+    #  No RPM/TPM limits documented — usage-based
+    # ══════════════════════════════════════════════════════════════
+    - model_name: ollama-cloud
+      litellm_params:
+        model: openai/nemotron-3-nano:30b-cloud
+        api_key: ENC[AES256_GCM,data:D54U4F9jUu4LZ2EjDgeTMsoFCY0sQVUE8CpCikCUTnqnwZKTduC2KrN9b2CekH4VAe2oNe7DqhMK,iv:a82s5F0dHaGOeif7ayzSZUD0shL8fqc1e9scChrxOlM=,tag:DjIMdCFLWgoD1LaApCtg8A==,type:str]
+        api_base: https://ollama.com/v1
+      model_info:
+        owner: sinse
+        tier: free
+    # ══════════════════════════════════════════════════════════════
+    #  MISTRAL — Pool partagé (fallback si Groq saturé)
+    #  Même model_name = LiteLLM load-balance automatiquement
+    #  Limites free tier par clé : 2 RPM (!), 500K TPM, 1B tokens/mois
+    # ══════════════════════════════════════════════════════════════
+    - model_name: mistral-small
+      litellm_params:
+        model: mistral/mistral-small-latest
+        api_key: ENC[AES256_GCM,data:Y2yyCe+zLKybF3E4BJ4ZUDKBX3YKF4pwgrFZfAegYFM=,iv:Bh+oqPDBJn/1CVyULrC5GkqIWgMkDLaeQsfT5zXRarc=,tag:TTjWnb7HyFZBeNcLeOryow==,type:str]
+        # limite réelle Mistral free
+        rpm: 2
+      model_info:
+        owner: sinse
+        tier: free
+# - model_name: mistral-small
+#   litellm_params:
+#     model: mistral/mistral-small-latest
+#     api_key: "MISTRAL_KEY_NICO"
+#     rpm: 2
+#   model_info:
+#     owner: "nico"
+#     tier: "free"
+# - model_name: mistral-small
+#   litellm_params:
+#     model: mistral/mistral-small-latest
+#     api_key: "MISTRAL_KEY_USER_3"
+#     rpm: 2
+#   model_info:
+#     owner: "user3"
+#     tier: "free"
+# - model_name: mistral-small
+#   litellm_params:
+#     model: mistral/mistral-small-latest
+#     api_key: "MISTRAL_KEY_USER_4"
+#     rpm: 2
+#   model_info:
+#     owner: "user4"
+#     tier: "free"
+# - model_name: mistral-small
+#   litellm_params:
+#     model: mistral/mistral-small-latest
+#     api_key: "MISTRAL_KEY_USER_5"
+#     rpm: 2
+#   model_info:
+#     owner: "user5"
+#     tier: "free"
+# ══════════════════════════════════════════════════════════════
+#  ACTIVATION : Quand tu as les clés d'un pote, décommente
+#  son bloc et remplace le placeholder par la vraie clé.
+#  Puis : docker restart litellm-proxy
+#
+#  Capacité actuelle  : 1 clé  → ~6 sessions/jour
+#  Capacité 5 clés    : 5 clés → ~30 sessions/jour
+#
+#  Le bounce est automatique (usage-based-routing-v2) :
+#  Clé la moins utilisée en premier → cooldown 60s si 429
+#  → clé suivante → fallback Mistral si tous les Groq down
+# ══════════════════════════════════════════════════════════════
+sops:
+    age:
+        - recipient: age18jr3jdq05a4wr9hdgpdfz3vtya9u4rng88tu58lnv7jlw5hkxszsl00nnv
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBkMkpkb1RwWDVNcGlJT2ov
+            TzI4NUliVjFHb2lLOExNejM0ZW04VnNyWncwCmFqcEhjNWIrU0F0NHpUdTlSeGRY
+            MklPRzhxdXFVZS9GWHVFaThUMERUc3MKLS0tIHNDbmxxUE1kV3FwT3JMQUFwYnE1
+            aFJ6Tkw3TXdBZ1lLaWp4Z2FkaFBEQkUKJgjVU+gDFzjziYpxDBHo5KJ3Blu1Tjb6
+            BV3YMyJLks8DaAQnIK5l0+Sak5JMrD/LybjmwVedzvzasZN1Nb4ubg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-04-15T20:02:41Z"
+    mac: ENC[AES256_GCM,data:sXODz+pjCT+mIsnitsrn4kLmnHQ+wZDo88JjTvDT1pHgQ259fACgIqdFVeRIVyHb/LIFMM+SGm1++/G86fEsS61+J1oVBLpiKNinqLnLRdfI1s17h1uXIXotdKX04xdYcjSExD/Ri5cIdD6rWff4f7y5GtjIZsXPfBzewjeE32k=,iv:9sSHWjqB8ZCS742bEWVDGQHGApUnZ5lbMGUB5xb4Lq0=,tag:gX5a69oNoPvVKUB3k7dJow==,type:str]
+    encrypted_regex: ^(api_key|database_url|master_key|salt_key)$
+    version: 3.12.2

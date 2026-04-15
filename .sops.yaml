@@ -1,3 +1,8 @@
 creation_rules:
+  # litellm config: encrypt only sensitive leaf values, keep model names diff-readable
+  - path_regex: litellm/config\.yaml\.sops$
+    encrypted_regex: '^(api_key|database_url|master_key|salt_key)$'
+    age: age18jr3jdq05a4wr9hdgpdfz3vtya9u4rng88tu58lnv7jlw5hkxszsl00nnv
+  # dotenv + generic fallback
   - path_regex: \.sops(\.[^.]+)?$
     age: age18jr3jdq05a4wr9hdgpdfz3vtya9u4rng88tu58lnv7jlw5hkxszsl00nnv

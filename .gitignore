@@ -10,5 +10,8 @@ dist/
 .dify_admin_key
 venv/
 .venv/
-litellm/
+# Plaintext LiteLLM config must never be committed (contains OpenAI key).
+# Encrypted sops file + wrapper are tracked explicitly under litellm/ subdir.
+litellm/config.yaml
+litellm/config.yaml.backup*
 .agent
