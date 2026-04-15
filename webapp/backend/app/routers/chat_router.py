@@ -145,13 +145,18 @@ async def _switch_dify_model(target_model: str):
         logging.getLogger("chat").error("Failed to switch Dify model: %s", e)
 
 
-# Load tolerance matrix once at import
+# Load tolerance matrix once at import. Selection via USE_V2_TOLERANCE env var.
+import logging as _logging
 _TOLERANCE_MATRIX = {}
-_tm_path = Path(__file__).parent.parent / "config" / "tolerance_matrix.yaml"
+_use_v2 = os.getenv("USE_V2_TOLERANCE", "false").lower() in ("1", "true", "yes")
+_tm_path = Path(__file__).parent.parent / "config" / (
+    "tolerance_matrix_v2.yaml" if _use_v2 else "tolerance_matrix.yaml"
+)
 if _tm_path.exists():
     with open(_tm_path) as f:
         _tm = yaml.safe_load(f)
         _TOLERANCE_MATRIX = _tm.get("matrix", {})
+    _logging.getLogger("chat").info("Loaded tolerance matrix: %s (v2=%s)", _tm_path.name, _use_v2)
 
 _NIVEAU_TO_BAND = {"A1": "beginner", "A2": "beginner", "B1": "intermediate",
                     "B2": "upper", "C1": "advanced", "C2": "advanced"}

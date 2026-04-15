@@ -3,6 +3,7 @@ AcademIA — Unified Progression Scoring Engine
 Aggregates error_log by family, applies tolerance matrix, computes progression + recommendations.
 """
 
+import os
 import yaml
 import logging
 from pathlib import Path
@@ -10,7 +11,9 @@ from collections import defaultdict
 
 logger = logging.getLogger("academie-api.scoring")
 
-_MATRIX_PATH = Path(__file__).parent.parent / "config" / "tolerance_matrix.yaml"
+_CONFIG_DIR = Path(__file__).parent.parent / "config"
+_USE_V2 = os.getenv("USE_V2_TOLERANCE", "false").lower() in ("1", "true", "yes")
+_MATRIX_PATH = _CONFIG_DIR / ("tolerance_matrix_v2.yaml" if _USE_V2 else "tolerance_matrix.yaml")
 _matrix = None
 
 
@@ -19,6 +22,10 @@ def _load_matrix():
     if _matrix is None:
         with open(_MATRIX_PATH) as f:
             _matrix = yaml.safe_load(f)
+        logger.info(
+            "Loaded tolerance matrix: %s (v2=%s)",
+            _MATRIX_PATH.name, _USE_V2,
+        )
     return _matrix
 
 
