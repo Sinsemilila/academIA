@@ -1,5 +1,6 @@
 ---
 description: Session start — read context, check health, pick task
+model: claude-sonnet-4-6
 ---
 
 Session start. Execute in order.

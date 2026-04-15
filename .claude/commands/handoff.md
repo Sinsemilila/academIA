@@ -15,7 +15,9 @@ Session end. Execute in order.
 
 ## 3. Update SESSION.md
 **Prepend** (don't overwrite) a new session block at the top of `/root/sinse-workspace/projects/academie-ia/SESSION.md`, after the header line.
-Keep all previous sessions below.
+Keep previous sessions below.
+
+**Rotation** : SESSION.md ne contient que les **3 dernières sessions**. Après avoir prepended la nouvelle, si le fichier contient >3 sessions, déplacer la plus ancienne (celle en bas) vers le haut de `SESSION_ARCHIVE.md` (aussi newest-on-top). L'archive n'est jamais lue au pickup mais reste disponible pour consultation manuelle.
 ```
 ---
 
