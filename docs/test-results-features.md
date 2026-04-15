@@ -10,13 +10,13 @@ User test : test-phase3 (A2, mode libre)
 
 ## ONBOARDING (F1-F4) — 24/26 PASS
 
-### F1: Onboarding (3 FR + 5-7 EN + diagnostic) — PASS (avec réserve)
+### F1: Onboarding (3 FR + 5-7 EN + diagnostic) — PASS
 - ✅ T1 : Teacher demande nom + motivation
 - ✅ T2 : Teacher demande auto-évaluation (5 choix)
 - ✅ T3 → F2 (voir ci-dessous)
-- ✅ 5-7 échanges EN respectés (6 échanges)
-- ❌ EVAL_READY : Teacher a envoyé "Envoie-moi ok" sur un message séparé au lieu de le mettre dans le même message que la dernière question. Le diagnostic a quand même tourné correctement. **Problème de compliance LLM, pas de pipeline.**
-- ✅ Profil créé : niveau A2, details_par_competence, points_forts, lacunes, plan_sessions
+- ✅ 5-7 échanges EN respectés
+- ✅ EVAL_READY : fix déterministe appliqué (2026-04-15) — si le LLM envoie `[EVAL_READY]` seul, `code_eval_check` retourne un message fallback FR au lieu d'une bulle vide. Validé E2E.
+- ✅ Profil créé : niveau, details_par_competence, points_forts, lacunes, plan_sessions
 - ✅ auto_eval_level capturé, exchange_count > 0, onboarding_completed_at set
 - ✅ mode_apprentissage = libre par défaut
 
@@ -150,4 +150,4 @@ User test : test-phase3 (A2, mode libre)
 4. **F5 : Session plan non affiché** — Teacher passe directement à l'exercice au lieu d'afficher le plan de session.
 
 ### MINEUR
-5. **F1 : EVAL_READY timing** — Le marqueur est envoyé dans un message séparé au lieu du même message. Problème de compliance LLM, pas de fix technique simple.
+5. ~~**F1 : EVAL_READY timing**~~ — **RÉSOLU 2026-04-15** : fix déterministe dans `code_eval_check`, fallback FR quand le marker arrive seul (scripts/fix_eval_ready_fallback.py).

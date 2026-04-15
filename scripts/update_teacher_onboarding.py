@@ -118,6 +118,8 @@ def patch_graph(graph):
     marker = "[EVAL_READY]"
     eval_ready = marker in text
     cleaned = text.replace(marker, "").strip()
+    if eval_ready and not cleaned:
+        cleaned = "Merci pour tes réponses ! Envoie-moi **ok** pour découvrir ton bilan de niveau."
     return {"cleaned_text": cleaned, "eval_ready": eval_ready}
 """,
             "code_language": "python3",
