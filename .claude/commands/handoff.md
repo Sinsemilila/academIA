@@ -11,6 +11,7 @@ Session end. Execute in order.
 ## 2. Update state
 - `/root/sinse-workspace/projects/academie-ia/TODO.md`: mark completed tasks as DONE.
 - `/root/sinse-workspace/projects/academie-ia/CHANGELOG.md`: append via `log <type> "<message>"` tool.
+- **Docs consistency check**: for each structural change this session (schema, architecture, pedagogy rules, infra), verify the corresponding `docs/*.md` was updated in the same session. If not, update `last_reviewed` OR flip `status: needs-review`. For new architectural decisions, create `docs/05-decisions/ADR-NNN-<slug>.md` from template.
 
 ## 3. Update SESSION.md
 **Prepend** (don't overwrite) a new session block at the top of `/root/sinse-workspace/projects/academie-ia/SESSION.md`, after the header line.

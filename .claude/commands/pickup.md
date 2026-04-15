@@ -7,6 +7,7 @@ Session start. Execute in order.
 ## 1. Context
 - `git log --oneline -10`
 - Read `/root/sinse-workspace/projects/academie-ia/SESSION.md`. Missing → first session, skip.
+- Read `/root/sinse-workspace/projects/academie-ia/docs/INDEX.md`. Scan sections relevant to user's expected request.
 
 ## 2. Health check
 - `smoke-test --quick`
