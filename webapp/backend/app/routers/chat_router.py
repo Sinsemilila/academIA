@@ -14,6 +14,7 @@ from academie_core.taxonomy.rules import detect_errors, ERROR_CODE_TO_FAMILY
 from academie_core.taxonomy.scoring import enrich_error_fields
 from ..openai_reconcile import reconcile_openai_usage
 from academie_core.pedagogy.teacher_prompt import build_dynamic_sections, PromptContext, parse_teacher_response
+from academie_core.domain.language import LanguageDomain
 import yaml
 import tiktoken
 from pathlib import Path
@@ -31,6 +32,11 @@ _DISPLAY_SAFETY_MARGIN = 1.10
 _RECONCILE_STALENESS_S = 15 * 60
 _gpt4o_token_counter = {"date": "", "tokens": 0, "loaded": False}
 _tiktoken_enc = tiktoken.encoding_for_model("gpt-4o-mini")
+
+# Sprint 4 Phase E — Teacher EN via LanguageDomain abstraction.
+# Single instance (no boot state); future multi-domain will keep a dict keyed by
+# lang_target and resolve at request time from `user.domain` or `req.agent`.
+_TEACHER_DOMAIN = LanguageDomain(lang_target="en")
 
 
 def _is_openai_billable(name: str | None) -> bool:
@@ -423,7 +429,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
 
     # Real-time error feedback (rules layer only, zero LLM cost)
     # Filtered by tolerance_matrix: shadow errors are hidden, noted/penalized are tagged
-    detections = detect_errors(req.message)
+    detections = _TEACHER_DOMAIN.detect_errors(req.message)
     niveau = ""
     profile_l1: str | None = "fr"  # default familial (Phase 6)
     l1_watch_on: bool = True
@@ -485,7 +491,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         v2_errors = []
         if niveau:
             for d in detections:
-                enriched = enrich_error_fields(d.error_code, niveau)
+                enriched = _TEACHER_DOMAIN.score_tier(d.error_code, niveau)
                 if not enriched.get("tier"):
                     continue
                 v2_errors.append({
@@ -525,7 +531,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             l1=profile_l1 if l1_watch_on else None,
             spaced_retrieval_due=spaced_due,
         )
-        sections = build_dynamic_sections(ctx)
+        sections = _TEACHER_DOMAIN.build_dynamic_sections(ctx)
         for key, val in sections.items():
             if key.startswith("_"):
                 continue
@@ -609,7 +615,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         # Flag-gated (no-op when off). Best-effort: never crash the stream on parse error.
         if SPACED_RETRIEVAL_ENABLED and eleve_id:
             try:
-                parsed = parse_teacher_response(full_answer)
+                parsed = _TEACHER_DOMAIN.parse_response(full_answer)
                 if parsed.parse_ok:
                     await _persist_spaced_retrieval(
                         eleve_id, "anglais",
