@@ -287,6 +287,27 @@ def test_l1_watch_top_n_respected():
     assert len(bullets) == 2
 
 
+def test_l1_watch_renders_language_names():
+    """Phase 7 tuning — prose should use English names, not ISO codes."""
+    block = build_l1_watch("fr", target_lang="en")
+    assert "French" in block, "l1 name should be spelled out"
+    assert "English" in block, "target lang name should be spelled out"
+    assert "In French we say" in block, "EXPLICIT_CONTRAST example should use name"
+    assert "(fr)" in block, "code should still appear once parenthetically"
+
+
+def test_l1_watch_unknown_code_falls_back():
+    """Unknown ISO code (not in L1_NAMES) should render the code verbatim, not crash."""
+    from app.teacher_prompt import L1_TRANSFER_SEED
+    # Inject a dummy transfer for an unmapped code.
+    L1_TRANSFER_SEED.setdefault("xy", {})["en"] = [("articles", 1.0, "dummy")]
+    try:
+        block = build_l1_watch("xy", target_lang="en")
+        assert "xy" in block
+    finally:
+        L1_TRANSFER_SEED.pop("xy", None)
+
+
 # ── Spaced retrieval (Phase 7) ──────────────────────────────────────
 
 

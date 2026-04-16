@@ -312,6 +312,27 @@ def build_drift_check_request() -> str:
 # ── L1 transfer hook (Phase 6) ──────────────────────────────────────
 
 
+# ISO-639-1 → English name (for `build_l1_watch` prose — LLM reads language names
+# better than codes). Kept minimal to the languages we reasonably support today;
+# unknown codes fall back to the code itself.
+L1_NAMES = {
+    "fr": "French",
+    "es": "Spanish",
+    "de": "German",
+    "it": "Italian",
+    "pt": "Portuguese",
+    "ja": "Japanese",
+    "zh": "Chinese",
+    "ar": "Arabic",
+    "ru": "Russian",
+    "en": "English",
+    "nl": "Dutch",
+    "tr": "Turkish",
+    "pl": "Polish",
+    "ko": "Korean",
+}
+
+
 # Minimal seed for FR→EN. Phase 6 will move this to YAML config + DB.
 L1_TRANSFER_SEED = {
     "fr": {
@@ -332,20 +353,30 @@ L1_TRANSFER_SEED = {
 
 
 def build_l1_watch(l1: str | None, target_lang: str = "en", top_n: int = 3) -> str:
-    """Returns the L1 WATCH block. Empty string if no L1 set or no transfer data."""
+    """Returns the L1 WATCH block. Empty string if no L1 set or no transfer data.
+
+    Renders the native language NAME in prose (e.g., "French" instead of "fr")
+    so the LLM produces natural EXPLICIT_CONTRAST feedback — "In French we say X"
+    reads better than "In fr we say X" and increases L1 mention rate in battery.
+    """
     if not l1:
         return ""
-    transfers = L1_TRANSFER_SEED.get(l1.lower(), {}).get(target_lang.lower(), [])
+    l1_code = l1.lower()
+    target_code = target_lang.lower()
+    transfers = L1_TRANSFER_SEED.get(l1_code, {}).get(target_code, [])
     if not transfers:
         return ""
+    l1_name = L1_NAMES.get(l1_code, l1_code)
+    target_name = L1_NAMES.get(target_code, target_code)
     top = sorted(transfers, key=lambda t: -t[1])[:top_n]
     bullets = "\n".join(f"  - {family} (×{mult}): {ex}" for family, mult, ex in top)
     return (
         "=== L1 WATCH ===\n"
-        f"Learner's L1 is {l1}. Common transfer errors to anticipate:\n"
+        f"Learner's native language is {l1_name} ({l1_code}). "
+        f"Common {l1_name}→{target_name} transfer errors to anticipate:\n"
         f"{bullets}\n"
         "When you detect such errors, prefer EXPLICIT_CONTRAST feedback:\n"
-        f"\"In {l1} we say X, but in {target_lang} Y because Z.\" (Lardiere 1998).\n"
+        f"\"In {l1_name} we say X, but in {target_name} Y because Z.\" (Lardiere 1998).\n"
         "=== END L1 WATCH ==="
     )
 
@@ -483,7 +514,9 @@ def render_fewshots_block(level: str, max_examples: int = 3) -> str:
 OUTPUT_SCHEMA_BLOCK = """=== OUTPUT FORMAT (JSON STRICT) ===
 
 You MUST wrap your response in <output>...</output> tags containing valid JSON
-matching this schema:
+matching this schema.
+
+HONESTY REQUIREMENT — `tier_applied` MUST list EVERY tier whose error you address in your feedback this turn. If your feedback mentions a previously-learned structure the learner has regressed on (signals: "we saw this", "previously learned", "adding to spaced retrieval", "this should be automatic at your level", "you know this one"), you MUST include "T4" in tier_applied — even when combined with T2/T3. Do not omit tiers you actually addressed.
 
 <output>
 {
