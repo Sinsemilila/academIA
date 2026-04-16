@@ -13,7 +13,7 @@ from .. import database as db
 from academie_core.taxonomy.rules import detect_errors, ERROR_CODE_TO_FAMILY
 from academie_core.taxonomy.scoring import enrich_error_fields
 from ..openai_reconcile import reconcile_openai_usage
-from ..teacher_prompt import build_dynamic_sections, PromptContext, parse_teacher_response
+from academie_core.pedagogy.teacher_prompt import build_dynamic_sections, PromptContext, parse_teacher_response
 import yaml
 import tiktoken
 from pathlib import Path
