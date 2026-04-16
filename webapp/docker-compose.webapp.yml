@@ -29,7 +29,11 @@ services:
           cpus: "0.5"
 
   academie-api:
-    build: ${WEBAPP_SRC:-.}/backend
+    # Build context = repo root (one level up from webapp/) so Dockerfile can COPY
+    # packages/academie-core for Sprint 4 Phase B onwards. Frontend stays `.`.
+    build:
+      context: ${WEBAPP_SRC:-..}
+      dockerfile: webapp/backend/Dockerfile
     container_name: academie-api
     restart: unless-stopped
     ports:

@@ -12,10 +12,10 @@ from pydantic import BaseModel
 from .. import database as db
 
 INTERNAL_TOKEN = os.environ.get("INTERNAL_API_TOKEN", "REDACTED_INTERNAL_API_TOKEN")
-from ..error_taxonomy.rules import detect_errors, RuleDetection
-from ..error_taxonomy.llm import analyze_transcript, ANALYSIS_MODEL
-from ..error_taxonomy.categories import is_valid_code
-from ..error_taxonomy.scoring import enrich_error_fields
+from academie_core.taxonomy.rules import detect_errors, RuleDetection
+from academie_core.taxonomy.llm import analyze_transcript, ANALYSIS_MODEL
+from academie_core.taxonomy.categories import is_valid_code
+from academie_core.taxonomy.scoring import enrich_error_fields
 
 logger = logging.getLogger("academie-api.error-analysis")
 
@@ -195,7 +195,7 @@ async def get_my_error_profile(domain: str = "anglais", user: dict = Depends(get
 async def _build_error_profile(eleve_id: int, domain: str):
     """Build error profile for a student. Shared by both endpoints."""
     import json as _json
-    from ..error_taxonomy.scoring import compute_error_profile
+    from academie_core.taxonomy.scoring import compute_error_profile
 
     async with db.pool.acquire() as conn:
         profil = await conn.fetchrow(

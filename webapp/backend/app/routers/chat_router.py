@@ -10,8 +10,8 @@ from ..models import ChatRequest
 from ..auth import get_current_user
 from ..rate_limit import limiter
 from .. import database as db
-from ..error_taxonomy.rules import detect_errors, ERROR_CODE_TO_FAMILY
-from ..error_taxonomy.scoring import enrich_error_fields
+from academie_core.taxonomy.rules import detect_errors, ERROR_CODE_TO_FAMILY
+from academie_core.taxonomy.scoring import enrich_error_fields
 from ..openai_reconcile import reconcile_openai_usage
 from ..teacher_prompt import build_dynamic_sections, PromptContext, parse_teacher_response
 import yaml
