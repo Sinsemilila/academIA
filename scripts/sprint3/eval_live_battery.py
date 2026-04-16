@@ -51,6 +51,18 @@ from app.teacher_prompt import (  # noqa: E402
 )
 from sprint3.eval_personas import PERSONAS  # noqa: E402
 
+# Phase 6 — families whose FR→EN transfer the L1_WATCH block highlights.
+# Map: planted error family (from eval_personas.py) → L1_TRANSFER_SEED family.
+L1_PLANTED_FAMILIES_FR_EN = {
+    "preposition": "prepositions",
+    "noun_det": "articles",
+    "vocabulary": "false_friends",
+}
+_L1_MENTION_RE = re.compile(
+    r"\b(french|fran[çc]ais|articles?|prepositions?|false[ -]?friend)\b",
+    re.IGNORECASE,
+)
+
 API_BASE = os.environ.get("API_BASE", "http://127.0.0.1:8000")
 TEST_USERNAME = "test-v2-battery"
 TEST_PASSWORD = "BatteryV2-2026!"
@@ -112,6 +124,8 @@ def seed_profile(level: str) -> None:
 
     Forces Dify Teacher chatflow to skip ONBOARDING and enter SESSION (V2 prompt) —
     required so the battery tests the V2 output schema, not the V1 onboarding prompt.
+    Phase 6 — explicitly set l1='fr' + watch enabled so the L1_WATCH block is
+    deterministically injected regardless of DB default drift.
     """
     e = _db_query_one("SELECT id FROM eleves WHERE username = %s", (TEST_USERNAME,))
     if not e:
@@ -120,10 +134,12 @@ def seed_profile(level: str) -> None:
     _db_exec(
         """INSERT INTO profils_eleves
            (eleve_id, domaine, niveau_global, personnalite, scores_confiance,
-            mode_apprentissage, onboarding_completed_at, updated_at)
-           VALUES (%s, 'anglais', %s, %s::jsonb, %s::jsonb, 'libre', NOW(), NOW())
+            mode_apprentissage, onboarding_completed_at, l1, l1_watch_enabled, updated_at)
+           VALUES (%s, 'anglais', %s, %s::jsonb, %s::jsonb, 'libre', NOW(), 'fr', TRUE, NOW())
            ON CONFLICT (eleve_id, domaine) DO UPDATE SET
              niveau_global = EXCLUDED.niveau_global,
+             l1 = 'fr',
+             l1_watch_enabled = TRUE,
              onboarding_completed_at = COALESCE(profils_eleves.onboarding_completed_at, NOW()),
              updated_at = NOW()""",
         (eid, level,
@@ -277,6 +293,21 @@ def assert_persona_turn(persona: dict, turn_idx: int, battery_seq: int,
             t4_addressed = "T4" in parsed.tier_applied
             checks.append(Check("t4_addressed", t4_addressed,
                                 f"tier_applied={parsed.tier_applied}"))
+        # Phase 6 — L1 transfer telemetry (informational, pass=True always).
+        # When a planted error belongs to an FR→EN transfer family, track
+        # whether the Teacher's feedback or reasoning references the L1 context
+        # (mentions French, or names the transfer family). Model-honesty varies,
+        # so we log the rate without enforcing it. The rate should trend up once
+        # the feature is mature; if it stays flat, tune build_l1_watch.
+        planted_l1 = [e for e in planted
+                      if e.get("family") in L1_PLANTED_FAMILIES_FR_EN
+                      and e.get("tier") in ("T3", "T4")]
+        if planted_l1:
+            combined = f"{parsed.feedback}\n{parsed.reasoning}"
+            mentioned = bool(_L1_MENTION_RE.search(combined))
+            fams = ",".join(sorted({L1_PLANTED_FAMILIES_FR_EN[e["family"]] for e in planted_l1}))
+            checks.append(Check("l1_contrast_mention_rate", True,
+                                f"mentioned={mentioned} l1_families={fams}"))
     return checks
 
 
@@ -417,7 +448,18 @@ def render_report(records: list[TurnRecord]) -> tuple[str, dict]:
     lines.append(f"- **Turns executed** : {len(records)}")
     lines.append(f"- **Latency** p50={p50}ms, p95={p95}ms")
     verdict = "✅ GREEN" if pass_rate >= 0.95 else "❌ RED"
-    lines.append(f"- **Verdict** : {verdict} (threshold 95%)\n")
+    lines.append(f"- **Verdict** : {verdict} (threshold 95%)")
+
+    # Phase 6 — L1 contrast mention telemetry (informational).
+    l1_checks = [c for r in records for c in r.checks if c.name == "l1_contrast_mention_rate"]
+    if l1_checks:
+        mentioned_count = sum(1 for c in l1_checks if "mentioned=True" in c.detail)
+        mention_rate = mentioned_count / len(l1_checks) if l1_checks else 0.0
+        lines.append(
+            f"- **L1 contrast mention rate** : {mention_rate:.0%} "
+            f"({mentioned_count}/{len(l1_checks)} FR→EN transfer turns) — informational"
+        )
+    lines.append("")
 
     by_persona: dict[str, list[TurnRecord]] = {}
     for rec in records:

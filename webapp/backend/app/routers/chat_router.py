@@ -343,13 +343,20 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
     # Filtered by tolerance_matrix: shadow errors are hidden, noted/penalized are tagged
     detections = detect_errors(req.message)
     niveau = ""
+    profile_l1: str | None = "fr"  # default familial (Phase 6)
+    l1_watch_on: bool = True
     eleve_id = user.get("eleve_id")
-    if eleve_id and detections:
+    if eleve_id:
         try:
             async with db.pool.acquire() as conn:
-                niveau = await conn.fetchval(
-                    "SELECT niveau_global FROM profils_eleves WHERE eleve_id = $1 AND domaine = 'anglais'",
-                    eleve_id) or ""
+                row = await conn.fetchrow(
+                    """SELECT niveau_global, l1, l1_watch_enabled
+                       FROM profils_eleves WHERE eleve_id = $1 AND domaine = 'anglais'""",
+                    eleve_id)
+            if row:
+                niveau = row["niveau_global"] or ""
+                profile_l1 = row["l1"] or "fr"
+                l1_watch_on = bool(row["l1_watch_enabled"]) if row["l1_watch_enabled"] is not None else True
         except Exception:
             pass
 
@@ -429,7 +436,9 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             turn_count=turn_count,
             errors_detected=v2_errors,
             last_feedback_per_family={},  # Phase 5+ once teacher_response_log exists
-            l1="fr",  # Default for familial deploy; Phase 6 will pull from profile
+            # Phase 6 : l1 & toggle sourced from profils_eleves. When toggle off,
+            # pass None so build_l1_watch returns empty (block absent from prompt).
+            l1=profile_l1 if l1_watch_on else None,
             spaced_retrieval_due=[],  # Phase 7
         )
         sections = build_dynamic_sections(ctx)

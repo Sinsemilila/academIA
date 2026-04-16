@@ -1,6 +1,8 @@
 import json
+import re
 from datetime import date
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel, Field
 from ..auth import get_current_user
 from .. import database as db
 
@@ -43,6 +45,52 @@ def _get_rank(xp: int) -> dict:
         "next_name": next_rank[1] if next_rank else None,
         "next_threshold": next_rank[0] if next_rank else None,
     }
+
+
+_ISO_639_1_RE = re.compile(r"^[a-z]{2}$")
+
+
+class L1Payload(BaseModel):
+    l1: str = Field(..., min_length=2, max_length=2, description="ISO-639-1 2-letter code (lowercase)")
+    l1_watch_enabled: bool = True
+
+
+@router.get("/api/profile/l1")
+async def get_l1(user: dict = Depends(get_current_user)):
+    """Return the learner's L1 (native language) + watch toggle. Defaults: fr / enabled."""
+    eleve_id = user.get("eleve_id")
+    if not eleve_id:
+        return {"l1": "fr", "l1_watch_enabled": True}
+    async with db.pool.acquire() as conn:
+        row = await conn.fetchrow(
+            """SELECT l1, l1_watch_enabled FROM profils_eleves
+               WHERE eleve_id = $1 AND domaine = 'anglais'""",
+            eleve_id,
+        )
+    if not row:
+        return {"l1": "fr", "l1_watch_enabled": True}
+    return {"l1": row["l1"] or "fr", "l1_watch_enabled": bool(row["l1_watch_enabled"])}
+
+
+@router.put("/api/profile/l1")
+async def set_l1(payload: L1Payload, user: dict = Depends(get_current_user)):
+    """Update the learner's L1 + watch toggle. Creates the profile row if missing."""
+    eleve_id = user.get("eleve_id")
+    if not eleve_id:
+        raise HTTPException(status_code=400, detail="No learner profile bound to this user.")
+    l1 = payload.l1.lower()
+    if not _ISO_639_1_RE.match(l1):
+        raise HTTPException(status_code=422, detail="l1 must be ISO-639-1 lowercase (2 letters).")
+    async with db.pool.acquire() as conn:
+        result = await conn.execute(
+            """UPDATE profils_eleves
+               SET l1 = $1, l1_watch_enabled = $2, updated_at = NOW()
+               WHERE eleve_id = $3 AND domaine = 'anglais'""",
+            l1, payload.l1_watch_enabled, eleve_id,
+        )
+    if result.endswith(" 0"):
+        raise HTTPException(status_code=404, detail="Profile not found. Complete onboarding first.")
+    return {"l1": l1, "l1_watch_enabled": payload.l1_watch_enabled}
 
 
 @router.get("/api/profile/{domain}")
