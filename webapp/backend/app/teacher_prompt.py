@@ -494,6 +494,7 @@ matching this schema:
   "error_codes": ["V:TENSE", "PREP"],
   "dosage_check": "2/3",
   "silenced_for_spaced_retrieval": [],
+  "spaced_retrieval_addressed": [],
   "drift_self_grade": "compliant",
   "level_reinjected": false
 }
@@ -517,6 +518,7 @@ class TeacherResponse:
     error_codes: list[str] = field(default_factory=list)
     dosage_check: str = ""
     silenced_for_spaced_retrieval: list[str] = field(default_factory=list)
+    spaced_retrieval_addressed: list[str] = field(default_factory=list)
     drift_self_grade: Literal["compliant", "drift_detected", "not_checked"] = "not_checked"
     level_reinjected: bool = False
     parse_ok: bool = True
@@ -544,6 +546,7 @@ def parse_teacher_response(raw_text: str) -> TeacherResponse:
         error_codes=list(data.get("error_codes") or []),
         dosage_check=str(data.get("dosage_check") or ""),
         silenced_for_spaced_retrieval=list(data.get("silenced_for_spaced_retrieval") or []),
+        spaced_retrieval_addressed=list(data.get("spaced_retrieval_addressed") or []),
         drift_self_grade=data.get("drift_self_grade") or "not_checked",
         level_reinjected=bool(data.get("level_reinjected") or False),
         parse_ok=True,

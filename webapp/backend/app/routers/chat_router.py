@@ -13,7 +13,7 @@ from .. import database as db
 from ..error_taxonomy.rules import detect_errors, ERROR_CODE_TO_FAMILY
 from ..error_taxonomy.scoring import enrich_error_fields
 from ..openai_reconcile import reconcile_openai_usage
-from ..teacher_prompt import build_dynamic_sections, PromptContext
+from ..teacher_prompt import build_dynamic_sections, PromptContext, parse_teacher_response
 import yaml
 import tiktoken
 from pathlib import Path
@@ -305,6 +305,88 @@ def get_dify_key(agent: str) -> str:
     return key
 
 
+# ── Phase 7 — Spaced retrieval (feature-flagged) ─────────────────────
+# Flag gating: OFF by default (ENABLE by setting SPACED_RETRIEVAL_ENABLED=true).
+# When OFF, pre-turn skip queue read + post-turn skip enqueue/complete → runtime
+# identical to Phase 6. When ON, silenced-for-spaced-retrieval errors are queued
+# for revisit at J+1; items due inject into PROMPT_SESSION_V2 via `spaced_retrieval_today`.
+SPACED_RETRIEVAL_ENABLED = os.environ.get("SPACED_RETRIEVAL_ENABLED", "false").lower() in ("1", "true", "yes")
+_SPACED_RETRIEVAL_INTERVAL_DAYS = 1  # MVP — fixed J+1. FSRS ladder is post-MVP.
+_SPACED_RETRIEVAL_MAX_DUE = 3  # surface at most 3 items/turn to avoid prompt bloat
+
+
+async def _fetch_due_retrieval_items(eleve_id: int, domaine: str = "anglais") -> list[dict]:
+    """Return items due for spaced retrieval now. Empty list when flag OFF or none due."""
+    if not SPACED_RETRIEVAL_ENABLED or not eleve_id:
+        return []
+    try:
+        async with db.pool.acquire() as conn:
+            rows = await conn.fetch(
+                """SELECT id, concept_key, error_code
+                   FROM spaced_retrieval_queue
+                   WHERE eleve_id = $1 AND domaine = $2
+                     AND completed_at IS NULL
+                     AND scheduled_at <= NOW()
+                   ORDER BY scheduled_at ASC
+                   LIMIT $3""",
+                eleve_id, domaine, _SPACED_RETRIEVAL_MAX_DUE,
+            )
+    except Exception as e:
+        logger.warning("spaced_retrieval fetch failed: %s", e)
+        return []
+    return [
+        {
+            "queue_id": r["id"],
+            "concept_key": r["concept_key"] or (r["error_code"] or "review"),
+            "error_code": r["error_code"],
+            "last_error_summary": r["error_code"] or "review needed",
+        }
+        for r in rows
+    ]
+
+
+async def _persist_spaced_retrieval(
+    eleve_id: int,
+    domaine: str,
+    silenced_codes: list[str],
+    addressed_keys: list[str],
+) -> None:
+    """Enqueue newly-silenced errors (J+1) and mark addressed items complete.
+
+    Idempotent-ish: enqueue ON CONFLICT by (eleve_id, error_code, completed_at IS NULL)
+    is not enforced by a unique index, so a learner repeating the same mistake two
+    turns in a row will accumulate multiple queue rows — we tolerate this as the
+    queue is polled with LIMIT 3 and duplicates surface as a single bullet
+    (`concept_key` is used for display). Cleanup cron can dedupe post-MVP.
+    """
+    if not SPACED_RETRIEVAL_ENABLED or not eleve_id:
+        return
+    try:
+        async with db.pool.acquire() as conn:
+            async with conn.transaction():
+                for code in silenced_codes or []:
+                    if not isinstance(code, str) or not code.strip():
+                        continue
+                    family = ERROR_CODE_TO_FAMILY.get(code) or code
+                    await conn.execute(
+                        """INSERT INTO spaced_retrieval_queue
+                           (eleve_id, domaine, concept_key, error_code, scheduled_at, created_at)
+                           VALUES ($1, $2, $3, $4, NOW() + ($5 || ' days')::INTERVAL, NOW())""",
+                        eleve_id, domaine, family, code, str(_SPACED_RETRIEVAL_INTERVAL_DAYS),
+                    )
+                if addressed_keys:
+                    await conn.execute(
+                        """UPDATE spaced_retrieval_queue
+                           SET completed_at = NOW(), outcome = 'addressed'
+                           WHERE eleve_id = $1 AND domaine = $2
+                             AND completed_at IS NULL
+                             AND (concept_key = ANY($3::text[]) OR error_code = ANY($3::text[]))""",
+                        eleve_id, domaine, list(addressed_keys),
+                    )
+    except Exception as e:
+        logger.warning("spaced_retrieval persist failed: %s", e)
+
+
 @router.post("/api/chat/send")
 async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get_current_user)):
     """Stream a chat message through Dify API."""
@@ -431,6 +513,8 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             except Exception:
                 pass
 
+        # Phase 7 — query items due for spaced retrieval (flag-gated, empty when OFF)
+        spaced_due = await _fetch_due_retrieval_items(eleve_id, "anglais") if eleve_id else []
         ctx = PromptContext(
             level=niveau or "B1",
             turn_count=turn_count,
@@ -439,7 +523,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             # Phase 6 : l1 & toggle sourced from profils_eleves. When toggle off,
             # pass None so build_l1_watch returns empty (block absent from prompt).
             l1=profile_l1 if l1_watch_on else None,
-            spaced_retrieval_due=[],  # Phase 7
+            spaced_retrieval_due=spaced_due,
         )
         sections = build_dynamic_sections(ctx)
         for key, val in sections.items():
@@ -521,6 +605,19 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         full_answer = "".join(collected_answer)
         output_tokens = _count_tokens(full_answer)
         await _track_gpt4o_tokens(0, output_tokens)
+        # Phase 7 — parse Teacher JSON, enqueue silenced + complete addressed.
+        # Flag-gated (no-op when off). Best-effort: never crash the stream on parse error.
+        if SPACED_RETRIEVAL_ENABLED and eleve_id:
+            try:
+                parsed = parse_teacher_response(full_answer)
+                if parsed.parse_ok:
+                    await _persist_spaced_retrieval(
+                        eleve_id, "anglais",
+                        parsed.silenced_for_spaced_retrieval,
+                        parsed.spaced_retrieval_addressed,
+                    )
+            except Exception as e:
+                logger.warning("spaced_retrieval post-turn persist skipped: %s", e)
         if xp_earned > 0:
             xp_event = json.dumps({"event": "xp_earned", "amount": xp_earned, "reason": "session"})
             yield f"data: {xp_event}\n\n"
