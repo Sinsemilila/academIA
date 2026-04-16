@@ -23,7 +23,7 @@ if _BACKEND not in sys.path:
 
 @pytest.fixture(scope="module")
 def scoring_mod():
-    from app.error_taxonomy import scoring as s
+    from academie_core.taxonomy import scoring as s
     s._matrix = None
     return importlib.reload(s)
 

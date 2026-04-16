@@ -10,10 +10,9 @@ from ..models import ChatRequest
 from ..auth import get_current_user
 from ..rate_limit import limiter
 from .. import database as db
-from academie_core.taxonomy.rules import detect_errors, ERROR_CODE_TO_FAMILY
-from academie_core.taxonomy.scoring import enrich_error_fields
+from academie_core.taxonomy.rules import ERROR_CODE_TO_FAMILY
 from ..openai_reconcile import reconcile_openai_usage
-from academie_core.pedagogy.teacher_prompt import build_dynamic_sections, PromptContext, parse_teacher_response
+from academie_core.pedagogy.teacher_prompt import PromptContext
 from academie_core.domain.language import LanguageDomain
 import yaml
 import tiktoken

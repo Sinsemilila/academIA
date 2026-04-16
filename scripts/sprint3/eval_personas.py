@@ -36,7 +36,7 @@ _SCRIPTS = "/opt/academie/scripts"
 if _SCRIPTS not in sys.path:
     sys.path.insert(0, _SCRIPTS)
 
-from app.teacher_prompt import (
+from academie_core.pedagogy.teacher_prompt import (
     build_dynamic_sections,
     parse_teacher_response,
     PromptContext,

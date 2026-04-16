@@ -16,7 +16,7 @@ _BACKEND = "/opt/academie/webapp/backend"
 if _BACKEND not in sys.path:
     sys.path.insert(0, _BACKEND)
 
-from app.teacher_prompt import (
+from academie_core.pedagogy.teacher_prompt import (
     DOSAGE_BUDGET,
     DOSAGE_HARD_CAP,
     FEEDBACK_TYPES,
@@ -298,7 +298,7 @@ def test_l1_watch_renders_language_names():
 
 def test_l1_watch_unknown_code_falls_back():
     """Unknown ISO code (not in L1_NAMES) should render the code verbatim, not crash."""
-    from app.teacher_prompt import L1_TRANSFER_SEED
+    from academie_core.pedagogy.teacher_prompt import L1_TRANSFER_SEED
     # Inject a dummy transfer for an unmapped code.
     L1_TRANSFER_SEED.setdefault("xy", {})["en"] = [("articles", 1.0, "dummy")]
     try:

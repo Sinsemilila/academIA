@@ -23,9 +23,9 @@ Codes: V:TENSE V:SVA V:FORM N:NUM ART PREP PREP:CALQUE WO LEX:CHOICE SPELL SPELL
 
 # ── Import our rules + differ (add to path) ──
 sys.path.insert(0, "/opt/academie/webapp/backend")
-from app.error_taxonomy.differ import extract_edits
-from app.error_taxonomy.rules import classify_edits
-from app.error_taxonomy.categories import TIER1_CATEGORIES
+from academie_core.taxonomy.differ import extract_edits
+from academie_core.taxonomy.rules import classify_edits
+from academie_core.taxonomy.categories import TIER1_CATEGORIES
 
 # ── Test cases: 1 per category + 4 multi-error ──
 CASES = [

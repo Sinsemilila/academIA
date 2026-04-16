@@ -2,7 +2,7 @@
 """Test suite for error detection rules coverage A1-C1."""
 import sys
 sys.path.insert(0, "/opt/academie/webapp/backend")
-from app.error_taxonomy.rules import detect_errors, ERROR_CODE_TO_FAMILY
+from academie_core.taxonomy.rules import detect_errors, ERROR_CODE_TO_FAMILY
 
 TESTS = {
     # ── A1: Surface ──

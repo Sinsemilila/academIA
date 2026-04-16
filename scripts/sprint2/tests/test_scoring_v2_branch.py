@@ -21,7 +21,7 @@ if _BACKEND not in sys.path:
 
 @pytest.fixture
 def scoring_mod():
-    from app.error_taxonomy import scoring as s
+    from academie_core.taxonomy import scoring as s
     # Reset cached matrix so USE_V2_TOLERANCE env effect stays deterministic
     s._matrix = None
     return importlib.reload(s)

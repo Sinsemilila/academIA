@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path("/opt/academie/webapp/backend").resolve()))
 import os as _os
 _os.environ.setdefault("USE_V2_TOLERANCE", "true")
 
-from app.error_taxonomy.scoring import enrich_error_fields  # noqa: E402
+from academie_core.taxonomy.scoring import enrich_error_fields  # noqa: E402
 
 
 def psql(sql: str) -> str:

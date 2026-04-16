@@ -43,7 +43,7 @@ _SCRIPTS = "/opt/academie/scripts"
 if _SCRIPTS not in sys.path:
     sys.path.insert(0, _SCRIPTS)
 
-from app.teacher_prompt import (  # noqa: E402
+from academie_core.pedagogy.teacher_prompt import (  # noqa: E402
     DOSAGE_HARD_CAP,
     parse_teacher_response,
     should_inject_level_reminder,
