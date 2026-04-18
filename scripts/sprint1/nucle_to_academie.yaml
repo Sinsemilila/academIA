@@ -1,0 +1,54 @@
+# NUCLE tag → AcademIA code + family mapping
+# For the legacy NUCLE-style tags in nucle.train.gold.bea19.m2
+# (ERRANT-style tags in the same file are handled by errant_to_academie.yaml)
+#
+# Sources:
+#   Dahlmeier et al. (2013) — NUCLE taxonomy
+#   NUCLE v2.1 mapping doc (Prep/Rloc- refinement)
+
+mappings:
+  # ══ Verb ══
+  "Vt":       { academie_code: "V:TENSE",       family: "verb_tense" }
+  "Vm":       { academie_code: "V:MODAL",        family: "verb_usage" }
+  "V0":       { academie_code: "V:MISSING",      family: "verb_tense" }
+  "Vform":    { academie_code: "V:FORM",         family: "verb_tense" }
+  "SVA":      { academie_code: "V:SVA",          family: "verb_tense" }
+
+  # ══ Noun / Determiner ══
+  "ArtOrDet": { academie_code: "DET",            family: "noun_det" }
+  "Nn":       { academie_code: "N:COUNT",        family: "noun_det" }
+  "Npos":     { academie_code: "N:POSS",         family: "noun_det" }
+
+  # ══ Pronoun ══
+  "Pform":    { academie_code: "PRON:FORM",      family: "pronoun" }
+  "Pref":     { academie_code: "PRON:REF",       family: "pronoun" }
+
+  # ══ Preposition ══
+  "Prep":     { academie_code: "PREP",           family: "preposition" }
+
+  # ══ Lexical ══
+  "Wci":      { academie_code: "LEX:COLLOC",     family: "lexical" }
+  "Rloc-":    { academie_code: "LEX:REDUND",     family: "lexical" }
+  "Wform":    { academie_code: "MORPH:WORDCLASS", family: "morphology" }
+  "Wtone":    { academie_code: "LEX:REGISTER",   family: "lexical" }
+
+  # ══ Word Order / Syntax ══
+  "WOinc":    { academie_code: "WO",             family: "word_order" }
+  "WOadv":    { academie_code: "WO",             family: "word_order" }
+  "Spar":     { academie_code: "WO",             family: "word_order" }
+  "Smod":     { academie_code: "WO",             family: "word_order" }
+  "Srun":     { academie_code: "PUNCT",          family: "surface" }
+  "Sfrag":    { academie_code: "SYNTAX:FRAG",    family: "word_order" }
+  "Ssub":     { academie_code: "SYNTAX:SUB",     family: "word_order" }
+
+  # ══ Surface / Mechanics ══
+  "Mec":      { academie_code: "SPELL",          family: "surface" }
+  "Wa":       { academie_code: "ORTH:ABBREV",    family: "surface" }
+
+  # ══ Discourse ══
+  "Trans":    { academie_code: "DISC:CONNECT",   family: "discourse" }
+
+  # ══ Unmappable ══
+  "Others":   null
+  "Um":       null
+  "Cit":      null

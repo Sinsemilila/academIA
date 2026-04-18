@@ -11,8 +11,9 @@ from pathlib import Path
 import pytest
 import yaml
 
-V2_YAML = Path("/opt/academie/webapp/backend/app/config/tolerance_matrix_v2.yaml")
-OV_YAML = Path("/opt/academie/webapp/backend/app/config/tolerance_matrix_v2_overrides.yaml")
+_TM_DIR = Path("/opt/academie/packages/academie-core/academie_core/data/tolerance_matrix")
+V2_YAML = _TM_DIR / "tolerance_matrix_v2.yaml"
+OV_YAML = _TM_DIR / "tolerance_matrix_v2_overrides.yaml"
 
 
 def _apply_overrides(matrix: dict, overrides_doc: dict) -> dict:

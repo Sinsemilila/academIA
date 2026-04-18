@@ -16,8 +16,9 @@ import pytest
 import yaml
 
 RESULTS = Path("/mnt/cosmos-data/sprint1/results/v1_vs_v2_retrospective.json")
-V2_YAML = Path("/opt/academie/webapp/backend/app/config/tolerance_matrix_v2.yaml")
-V1_YAML = Path("/opt/academie/webapp/backend/app/config/tolerance_matrix.yaml")
+_TM_DIR = Path("/opt/academie/packages/academie-core/academie_core/data/tolerance_matrix")
+V2_YAML = _TM_DIR / "tolerance_matrix_v2.yaml"
+V1_YAML = _TM_DIR / "tolerance_matrix.yaml"
 
 
 def _psql(sql: str) -> str:
