@@ -556,6 +556,29 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
                 continue
             if isinstance(val, str):
                 dify_inputs[key] = val
+
+        # Sprint 5 Phase 3 — lang-specific inputs for the unified language-tutor chatflow.
+        # Replaces hardcoded EN dicts (concept_hint_map + CEFR diagnostic examples) that
+        # used to live inside Dify JS/prompts. Backend ships the full per-lang content
+        # as Dify Start inputs so the chatflow stays language-agnostic.
+        try:
+            import json as _json
+            from academie_core.data.loader import (
+                load_concept_hints as _load_hints,
+                build_cefr_diagnostics_block as _build_cefr,
+                get_persona_label as _persona,
+            )
+            dify_inputs["concept_hints_json"] = _json.dumps(_load_hints(lang.lang_target))
+            dify_inputs["cefr_diagnostics_block"] = _build_cefr(lang.lang_target)
+            dify_inputs["lang_target_name"] = _persona(lang.lang_target, "target_name", "Anglais")
+            dify_inputs["lang_target_prof"] = _persona(lang.lang_target, "target_prof", "d'anglais")
+        except Exception as e:
+            import logging
+            logging.getLogger("chat").warning("Sprint 5 Phase 3 lang inputs build failed: %s", e)
+            dify_inputs.setdefault("concept_hints_json", "{}")
+            dify_inputs.setdefault("cefr_diagnostics_block", "")
+            dify_inputs.setdefault("lang_target_name", "Anglais")
+            dify_inputs.setdefault("lang_target_prof", "d'anglais")
     except Exception as e:
         import logging
         logging.getLogger("chat").warning("Sprint 3 dynamic sections build failed: %s", e)
@@ -564,6 +587,9 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             "rubric_for_level", "fewshots_block", "dosage_block",
             "level_reminder_inject", "drift_validation_request",
             "l1_watch", "spaced_retrieval_today", "output_schema_block",
+            # Sprint 5 Phase 3 — unified language-tutor inputs
+            "concept_hints_json", "cefr_diagnostics_block",
+            "lang_target_name", "lang_target_prof",
         ):
             dify_inputs.setdefault(key, "")
 

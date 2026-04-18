@@ -1,0 +1,37 @@
+# CEFR diagnostic question examples — English (EN).
+# Extracted from Dify Teacher chatflow `llm_onboarding` system prompt (Sprint 5 Phase 3).
+# Consumed by backend chat_router → passed as `cefr_diagnostics_block` Dify input.
+# Used during onboarding Phase 2 (diagnostic) to set palier-appropriate first question
+# + provide palier reference for subsequent questions.
+#
+# Structure:
+#   paliers_first_question  — picked based on student's self-evaluation (Phase 1 Q2)
+#   paliers_reference       — full palier→example map for dynamic question choice
+
+paliers_first_question:
+  zero_ou_presque: "A1-A2 : 'Tell me about yourself'"
+  phrases_simples: "A2-B1 : 'What did you do last weekend?'"
+  conversation_basique: "B1 : 'What would you do if you won the lottery?'"
+  a_laise: "B2 : 'What are the pros and cons of remote work?'"
+  avance: "C1 : 'Some argue that AI will replace teachers. Do you agree?'"
+
+paliers_reference:
+  A1-A2: '"Tell me about yourself" / "What do you like to do?"'
+  A2-B1: '"What did you do last weekend?" / "Describe your best friend"'
+  B1: '"What would you do if you won the lottery?"'
+  B1-B2: '"Tell me about a difficult decision you had to make"'
+  B2: '"What are the pros and cons of remote work?"'
+  B2-C1: '"How would the world be different if internet hadn''t been invented?"'
+  C1: '"Some argue that AI will replace teachers. Do you agree?"'
+  C1-C2: '"To what extent does language shape thought?"'
+
+microtasks:
+  - "Write a sentence to decline an invitation"
+  - "Describe this situation: you arrive at a restaurant and your reserved table is taken"
+  - "Complete this sentence in your own words: If I had known..."
+  - "Write a short email to reschedule a meeting"
+
+# Language labels for persona building (used across prompts)
+persona:
+  target_name: "Anglais"         # "prof d'Anglais" — display form
+  target_prof: "d'anglais"       # "prof d'anglais" — prepositional form for Teacher persona

@@ -1,0 +1,25 @@
+# Concept hint map — English (EN).
+# Extracted from Dify Teacher chatflow `code_turn_check` node (Sprint 5 Phase 3).
+# Consumed by backend chat_router → passed as `concept_hints_block` Dify input.
+# Each key matches a concept_key in curriculums.concept_keys JSONB.
+
+present_perfect_simple: "have/has + past participle (I have visited)"
+present_perfect_vs_past_simple: "quand utiliser have done vs did"
+present_perfect_continuous: "have been + -ing (I have been working)"
+past_perfect: "had + past participle (I had finished)"
+passive_voice: "be + past participle (It was built)"
+conditional_1: "if + present → will (If it rains, I will stay)"
+conditional_2: "if + past → would (If I had money, I would travel)"
+modal_deduction: "must/might/can't be (She must be tired)"
+reported_speech: "He said that... / She told me that..."
+indirect_questions: "Could you tell me where...?"
+phrasal_verbs: "verbes a particule (look up, give in, turn off)"
+gerund_vs_infinitive: "enjoy doing vs want to do"
+relative_clauses: "who/which/that/where/whose"
+connectors: "although, however, despite, whereas"
+used_to: "used to + base (I used to live there)"
+would_habitual: "would + base pour habitudes passees"
+adj_prepositions: "good at, interested in, afraid of"
+adverbs_degree: "quite, rather, fairly, extremely"
+so_such_that: "so + adj / such + noun (so tired that...)"
+both_either_neither: "both...and / either...or / neither...nor"
