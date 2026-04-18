@@ -32,10 +32,24 @@ _RECONCILE_STALENESS_S = 15 * 60
 _gpt4o_token_counter = {"date": "", "tokens": 0, "loaded": False}
 _tiktoken_enc = tiktoken.encoding_for_model("gpt-4o-mini")
 
-# Sprint 4 Phase E — Teacher EN via LanguageDomain abstraction.
-# Single instance (no boot state); future multi-domain will keep a dict keyed by
-# lang_target and resolve at request time from `user.domain` or `req.agent`.
-_TEACHER_DOMAIN = LanguageDomain(lang_target="en")
+# Sprint 5 — Multi-domain registry.
+# Each agent maps to a (domaine_db_string, LanguageDomain) pair.
+# Adding a new language = one line here + YAML data files + env var.
+_DOMAIN_REGISTRY: dict[str, tuple[str, LanguageDomain]] = {
+    "teacher": ("anglais", LanguageDomain("en")),
+    # "maestro": ("espagnol", LanguageDomain("es")),  # Sprint 5-ES
+    # "professore": ("italien", LanguageDomain("it")),
+    # "lehrer": ("allemand", LanguageDomain("de")),
+    # "sensei": ("japonais", LanguageDomain("ja")),
+}
+
+
+def _get_domain(agent: str) -> tuple[str, LanguageDomain]:
+    """Resolve agent name to (domaine, LanguageDomain). Raises 404 if unknown."""
+    entry = _DOMAIN_REGISTRY.get(agent)
+    if not entry:
+        raise HTTPException(status_code=404, detail=f"Agent '{agent}' non disponible")
+    return entry
 
 
 def _is_openai_billable(name: str | None) -> bool:
@@ -398,6 +412,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
     # Rate limit: 30 messages per minute per IP
     limiter.check(request, max_requests=30, window_seconds=60)
     dify_key = get_dify_key(req.agent)
+    domaine, domain = _get_domain(req.agent)
     # Use existing Dify UUID if set, otherwise generate a stable ID
     dify_user = user.get("dify_user_id") or f"user_{user['id']}"
 
@@ -428,7 +443,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
 
     # Real-time error feedback (rules layer only, zero LLM cost)
     # Filtered by tolerance_matrix: shadow errors are hidden, noted/penalized are tagged
-    detections = _TEACHER_DOMAIN.detect_errors(req.message)
+    detections = domain.detect_errors(req.message)
     niveau = ""
     profile_l1: str | None = "fr"  # default familial (Phase 6)
     l1_watch_on: bool = True
@@ -438,8 +453,8 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             async with db.pool.acquire() as conn:
                 row = await conn.fetchrow(
                     """SELECT niveau_global, l1, l1_watch_enabled
-                       FROM profils_eleves WHERE eleve_id = $1 AND domaine = 'anglais'""",
-                    eleve_id)
+                       FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2""",
+                    eleve_id, domaine)
             if row:
                 niveau = row["niveau_global"] or ""
                 profile_l1 = row["l1"] or "fr"
@@ -490,7 +505,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         v2_errors = []
         if niveau:
             for d in detections:
-                enriched = _TEACHER_DOMAIN.score_tier(d.error_code, niveau)
+                enriched = domain.score_tier(d.error_code, niveau)
                 if not enriched.get("tier"):
                     continue
                 v2_errors.append({
@@ -519,7 +534,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
                 pass
 
         # Phase 7 — query items due for spaced retrieval (flag-gated, empty when OFF)
-        spaced_due = await _fetch_due_retrieval_items(eleve_id, "anglais") if eleve_id else []
+        spaced_due = await _fetch_due_retrieval_items(eleve_id, domaine) if eleve_id else []
         ctx = PromptContext(
             level=niveau or "B1",
             turn_count=turn_count,
@@ -529,8 +544,9 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             # pass None so build_l1_watch returns empty (block absent from prompt).
             l1=profile_l1 if l1_watch_on else None,
             spaced_retrieval_due=spaced_due,
+            target_lang=domain.lang_target,
         )
-        sections = _TEACHER_DOMAIN.build_dynamic_sections(ctx)
+        sections = domain.build_dynamic_sections(ctx)
         for key, val in sections.items():
             if key.startswith("_"):
                 continue
@@ -614,10 +630,10 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         # Flag-gated (no-op when off). Best-effort: never crash the stream on parse error.
         if SPACED_RETRIEVAL_ENABLED and eleve_id:
             try:
-                parsed = _TEACHER_DOMAIN.parse_response(full_answer)
+                parsed = domain.parse_response(full_answer)
                 if parsed.parse_ok:
                     await _persist_spaced_retrieval(
-                        eleve_id, "anglais",
+                        eleve_id, domaine,
                         parsed.silenced_for_spaced_retrieval,
                         parsed.spaced_retrieval_addressed,
                     )

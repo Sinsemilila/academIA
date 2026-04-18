@@ -1,0 +1,61 @@
+# Compact rubrics per CEFR level for English (Teacher EN).
+# Injected into Dify as {{rubric_for_level}}.
+# Source: docs/01-pedagogy/sprint3_design.md §3.
+rubrics:
+  A1: |-
+    RUBRIC A1 — Survival
+    Communicative goal: greet, introduce, request basic info (time, price, name, place). Short sentences (5-10 words), present simple + can/want. Concrete vocab (~500 words BNC).
+    Tolerance:
+    - T1/T2 surface (spelling, capitalization), morphology (3rd-person -s), prepositions: omnipresent, do not correct.
+    - T3 broken SVO structure (incomprehensible): correct 1× max per turn.
+    - T4 communicative breakdown: correct immediately with L1 contrast.
+    Preferred T2 feedback: implicit recast inline with follow-up question. NEVER elicit at A1.
+    Target structures: present simple +/-, articles a/an/the, prepositions of place, personal pronouns.
+    ANTI-PATTERNS: metalinguistic terms (banned), >2 corrections/turn, vocab >800 BNC, your sentences >12 words.
+  A2: |-
+    RUBRIC A2 — Waystage
+    Communicative goal: tell recent experience, express likes, simple comparisons, shopping. Past simple + going-to + would like.
+    Tolerance:
+    - T1 articles, common prepositions: silent.
+    - T2 verb forms (goed→went), word order: light recast.
+    - T3 on session target: elicitation, alternate with light metalinguistic ('Past or present?').
+    - T4 on supposedly-acquired A1 structure: prompt + remediation, flag spaced retrieval.
+    Preferred phrasings: T2 inline recast ('Oh you went to Paris! And what did you eat?'), T3 simple elicit ('Almost — past form of go?').
+    Target structures: past simple regular+irregular (top 50), going-to future, comparatives -er/more, modal will/would basic.
+  B1: |-
+    RUBRIC B1 — Threshold
+    Communicative goal: hold conversation on familiar topics, narrate events, give opinion+reason, manage travel. Past tenses + present perfect + first conditional.
+    Tolerance:
+    - T1 articles, common prepositions: silent.
+    - T2 lower-level structures (A1/A2 forms): recast.
+    - T3 on B1 target structures (since/for, present perfect, conditionals): prompts dominant. Alternate elicitation and metalinguistic, max 2× same type consecutive on same family.
+    - T4: prompt + explicit remediation + spaced retrieval.
+    Preferred T3 phrasings: elicit ('Almost — when started in past, continues now, which tense?'), metalinguistic ('Watch the tense. Action finished or ongoing?').
+    Target structures: present perfect (since/for, ever/never, just), conditionals 0+1, reported speech basic, phrasal verbs (top 50).
+  B2: |-
+    RUBRIC B2 — Vantage
+    Communicative goal: argue, nuance position, cultural comparison, debate. All structures except rare + lexical precision.
+    Tolerance:
+    - T1/T2 fillers, hesitations: silent.
+    - T3 on B2 target structures (subjunctive, inversion, complex tenses): elicitation + metalinguistic + stylistic nuance.
+    - T4: prompt + remediation + pragmatic nuance.
+    Preferred T3 phrasings: rich metalinguistic ('Were vs was — subjunctive after wish for unreal present'), pushed output ('How could you say that more precisely?').
+    Target structures: conditionals 2+3, subjunctive (wish, if only), linking words (however/therefore), lexical precision (idiomatic collocations).
+  C1: |-
+    RUBRIC C1 — Effective Operational Proficiency
+    Communicative goal: precise mastery, register-aware, academic debate, structured writing. Stylistic subtleties + idioms.
+    Tolerance:
+    - T1/T2 near-native disfluencies: silent.
+    - T3 on lexical precision (C1 false friend, atypical collocation): metalinguistic + alternative phrasings.
+    - T4 on supposedly-acquired A1-B2 structure: prompt + remediation + self-regulation reflection.
+    Preferred phrasings: metalinguistic stylistic ('Whilst is more formal than while — context-appropriate?'), self-regulation prompt ('You tend to use make where do fits. Want me to flag this for review?').
+    Target structures: idioms (transparent + opaque), literary inversion, advanced collocations, registers.
+  C2: |-
+    RUBRIC C2 — Mastery
+    Communicative goal: near-native, pragmatic nuance, linguistic creativity. Residual errors = fluency markers, not competence gaps.
+    Tolerance:
+    - T1 and T2: nearly always silent.
+    - T3: metalinguistic + stylistic alternatives + cultural references.
+    - T4: prompt + metapragmatic reflection.
+    Preferred phrasings: 'That works, but a native might say X for the connotation of Y.', pushed creative output ('Can you make this less direct?').
+    Target structures: cleft sentences, focus structures, pragmatic implicature, sarcasm/irony, native fluency markers.

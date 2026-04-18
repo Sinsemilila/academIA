@@ -27,6 +27,13 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Literal
 
+from academie_core.data.loader import (
+    load_rubrics as _load_rubrics,
+    load_fewshots as _load_fewshots,
+    load_l1_names as _load_l1_names,
+    load_l1_transfers,
+)
+
 
 # ── Constants ────────────────────────────────────────────────────────
 
@@ -80,7 +87,9 @@ LEVEL_REINJECT_TURN = 5
 
 # Compact rubrics (~150 words each) injected dynamically as `{{rubric_for_level}}`.
 # Detailed source: docs/01-pedagogy/sprint3_design.md §3.
-RUBRICS = {
+# Loaded from data/rubrics/{lang}.yaml; hardcoded EN dict as fallback.
+_RUBRICS_YAML = _load_rubrics("en")
+RUBRICS: dict[str, str] = _RUBRICS_YAML if _RUBRICS_YAML else {
     "A1": (
         "RUBRIC A1 — Survival\n"
         "Communicative goal: greet, introduce, request basic info (time, price, name, place). "
@@ -161,9 +170,28 @@ RUBRICS = {
 }
 
 
-def rubric_for_level(level: str) -> str:
+@dataclass
+class LanguageData:
+    """Language-specific data bundle loaded from YAML (or hardcoded fallback)."""
+    lang_target: str
+    rubrics: dict[str, str]
+    fewshots: list[dict]
+    l1_names: dict[str, str]
+
+    @classmethod
+    def for_lang(cls, lang_target: str) -> "LanguageData":
+        return cls(
+            lang_target=lang_target,
+            rubrics=_load_rubrics(lang_target) or RUBRICS,
+            fewshots=_load_fewshots(lang_target) or FEWSHOT_BANK,
+            l1_names=_load_l1_names() or L1_NAMES,
+        )
+
+
+def rubric_for_level(level: str, lang_data: LanguageData | None = None) -> str:
     """Returns the compact rubric block for the given CEFR level."""
-    return RUBRICS.get(level.upper().rstrip("+"), RUBRICS["B1"])
+    rubrics = lang_data.rubrics if lang_data else RUBRICS
+    return rubrics.get(level.upper().rstrip("+"), rubrics.get("B1", ""))
 
 
 # ── Dosage budget computation ───────────────────────────────────────
@@ -315,7 +343,9 @@ def build_drift_check_request() -> str:
 # ISO-639-1 → English name (for `build_l1_watch` prose — LLM reads language names
 # better than codes). Kept minimal to the languages we reasonably support today;
 # unknown codes fall back to the code itself.
-L1_NAMES = {
+# Loaded from data/l1_transfer/l1_names.yaml; hardcoded dict as fallback.
+_L1_NAMES_YAML = _load_l1_names()
+L1_NAMES: dict[str, str] = _L1_NAMES_YAML if _L1_NAMES_YAML else {
     "fr": "French",
     "es": "Spanish",
     "de": "German",
@@ -333,8 +363,10 @@ L1_NAMES = {
 }
 
 
-# Minimal seed for FR→EN. Phase 6 will move this to YAML config + DB.
-L1_TRANSFER_SEED = {
+# Minimal seed for FR→EN. Now loaded from data/l1_transfer/*_to_*.yaml.
+# Hardcoded dict as fallback.
+_L1_SEED_YAML_FR_EN = load_l1_transfers("fr", "en")
+L1_TRANSFER_SEED = {"fr": {"en": _L1_SEED_YAML_FR_EN}} if _L1_SEED_YAML_FR_EN else {
     "fr": {
         "en": [
             ("articles", 1.5,
@@ -352,7 +384,7 @@ L1_TRANSFER_SEED = {
 }
 
 
-def build_l1_watch(l1: str | None, target_lang: str = "en", top_n: int = 3) -> str:
+def build_l1_watch(l1: str | None, target_lang: str = "en", top_n: int = 3, lang_data: LanguageData | None = None) -> str:
     """Returns the L1 WATCH block. Empty string if no L1 set or no transfer data.
 
     Renders the native language NAME in prose (e.g., "French" instead of "fr")
@@ -363,11 +395,15 @@ def build_l1_watch(l1: str | None, target_lang: str = "en", top_n: int = 3) -> s
         return ""
     l1_code = l1.lower()
     target_code = target_lang.lower()
-    transfers = L1_TRANSFER_SEED.get(l1_code, {}).get(target_code, [])
+    # Try YAML loader first, then fall back to module-level seed
+    transfers = load_l1_transfers(l1_code, target_code)
+    if not transfers:
+        transfers = L1_TRANSFER_SEED.get(l1_code, {}).get(target_code, [])
     if not transfers:
         return ""
-    l1_name = L1_NAMES.get(l1_code, l1_code)
-    target_name = L1_NAMES.get(target_code, target_code)
+    names = lang_data.l1_names if lang_data else L1_NAMES
+    l1_name = names.get(l1_code, l1_code)
+    target_name = names.get(target_code, target_code)
     top = sorted(transfers, key=lambda t: -t[1])[:top_n]
     bullets = "\n".join(f"  - {family} (×{mult}): {ex}" for family, mult, ex in top)
     return (
@@ -411,7 +447,9 @@ def build_spaced_retrieval_block(items_due: list[dict]) -> str:
 # Compact bank of synthetic few-shots (id, level, learner_turn → teacher_response, feedback_type).
 # Detailed source: docs/01-pedagogy/sprint3_fewshots.md (24 examples).
 # Here we keep a minimal bank for runtime selection; full library is for human review.
-FEWSHOT_BANK: list[dict] = [
+# Loaded from data/fewshots/{lang}.yaml; hardcoded EN list as fallback.
+_FEWSHOTS_YAML = _load_fewshots("en")
+FEWSHOT_BANK: list[dict] = _FEWSHOTS_YAML if _FEWSHOTS_YAML else [
     # A1
     {"id": "a1-recast-past-go", "level": "A1", "type": "implicit_recast",
      "learner": "Yesterday I go to the market with my mother.",
@@ -463,16 +501,17 @@ FEWSHOT_BANK: list[dict] = [
 ]
 
 
-def select_fewshots(level: str, max_examples: int = 3) -> list[dict]:
+def select_fewshots(level: str, max_examples: int = 3, lang_data: LanguageData | None = None) -> list[dict]:
     """Pick few-shots most relevant for the level + diversity of feedback types.
 
     Returns a list of fewshot dicts (id, level, type, learner, teacher).
     """
+    bank = lang_data.fewshots if lang_data else FEWSHOT_BANK
     level = level.upper().rstrip("+")
-    candidates = [fs for fs in FEWSHOT_BANK if fs["level"] == level]
+    candidates = [fs for fs in bank if fs["level"] == level]
     if not candidates:
         # fallback: pick from adjacent level
-        candidates = [fs for fs in FEWSHOT_BANK if fs["level"] in {"B1", "A2"}]
+        candidates = [fs for fs in bank if fs["level"] in {"B1", "A2"}]
     # diversify by type
     seen_types: set[str] = set()
     selected: list[dict] = []
@@ -491,9 +530,9 @@ def select_fewshots(level: str, max_examples: int = 3) -> list[dict]:
     return selected
 
 
-def render_fewshots_block(level: str, max_examples: int = 3) -> str:
+def render_fewshots_block(level: str, max_examples: int = 3, lang_data: LanguageData | None = None) -> str:
     """Returns a markdown-flavored block listing the few-shots for the given level."""
-    fewshots = select_fewshots(level, max_examples=max_examples)
+    fewshots = select_fewshots(level, max_examples=max_examples, lang_data=lang_data)
     if not fewshots:
         return ""
     lines = ["=== FEW-SHOT EXAMPLES ==="]
@@ -625,16 +664,16 @@ class PromptContext:
     target_lang: str = "en"
 
 
-def build_dynamic_sections(ctx: PromptContext) -> dict:
+def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = None) -> dict:
     """Pre-compute every dynamic section of PROMPT_SESSION_v2.
 
     Returns a dict that maps to the Dify variable names so chat_router.py
     can pass them as `dify_inputs`. Each value is a string ready to be
     injected (or empty string if not applicable).
     """
-    rubric = rubric_for_level(ctx.level)
+    rubric = rubric_for_level(ctx.level, lang_data=lang_data)
     dosage = arbitrate_dosage(ctx.level, ctx.errors_detected)
-    fewshots = render_fewshots_block(ctx.level, max_examples=3)
+    fewshots = render_fewshots_block(ctx.level, max_examples=3, lang_data=lang_data)
 
     level_reminder = (
         build_level_reminder(ctx.level)
@@ -647,7 +686,7 @@ def build_dynamic_sections(ctx: PromptContext) -> dict:
         else ""
     )
 
-    l1_watch = build_l1_watch(ctx.l1, ctx.target_lang)
+    l1_watch = build_l1_watch(ctx.l1, ctx.target_lang, lang_data=lang_data)
     spaced_retrieval = build_spaced_retrieval_block(ctx.spaced_retrieval_due)
 
     # tier_summary describes what the LLM will see for arbitration

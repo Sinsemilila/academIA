@@ -241,8 +241,15 @@ class LLMAnalysisResult(BaseModel):
 
 
 @retry(stop=stop_after_attempt(2), wait=wait_exponential(multiplier=1, min=2, max=10))
-async def analyze_transcript(transcript: str) -> LLMAnalysisResult:
-    """Monolithic: LLM finds AND classifies errors in one pass."""
+async def analyze_transcript(transcript: str, lang: str = "en") -> LLMAnalysisResult:
+    """Monolithic: LLM finds AND classifies errors in one pass.
+
+    Only English analysis is implemented (fine-tuned model + EN prompts).
+    Other languages return empty results until per-language prompts/models exist.
+    """
+    if lang != "en":
+        logger.warning("LLM analysis not available for lang=%s, returning empty", lang)
+        return LLMAnalysisResult(errors=[])
     payload = {
         "model": ANALYSIS_MODEL,
         "messages": [

@@ -17,6 +17,7 @@ Usage :
 from __future__ import annotations
 
 from ..pedagogy.teacher_prompt import (
+    LanguageData,
     PromptContext,
     TeacherResponse,
     build_dynamic_sections as _build_sections,
@@ -40,12 +41,13 @@ class LanguageDomain:
     def __init__(self, lang_target: str = "en"):
         self.id = f"lang:{lang_target}"
         self.lang_target = lang_target
+        self._lang_data = LanguageData.for_lang(lang_target)
 
     # === Taxonomy layer (delegates to academie_core.taxonomy) ===
 
     def detect_errors(self, user_input: str, context=None) -> list[RuleDetection]:
         """Run rules layer on the user input. Returns a list of RuleDetection."""
-        return _detect(user_input)
+        return _detect(user_input, lang=self.lang_target)
 
     def score_tier(self, error_code: str, level: str) -> dict:
         """Get tier + gravity axes for an error_code at a CEFR level."""
@@ -66,7 +68,7 @@ class LanguageDomain:
     def build_dynamic_sections(self, context: PromptContext) -> dict:
         """8 dynamic sections for PROMPT_SESSION_V2 (rubric/fewshots/dosage/
         level_reminder/drift/l1_watch/spaced/output_schema)."""
-        return _build_sections(context)
+        return _build_sections(context, lang_data=self._lang_data)
 
     def parse_response(self, raw_text: str) -> TeacherResponse:
         """Extract `<output>JSON</output>` from LLM response. Fallback graceful."""

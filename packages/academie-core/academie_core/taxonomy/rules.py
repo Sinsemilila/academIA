@@ -235,8 +235,14 @@ ERROR_CODE_TO_FAMILY = {
     "REG:LEVEL": "discourse", "REG:PRAGMA": "discourse",
 }
 
-def detect_errors(text: str) -> list[RuleDetection]:
-    """Run deterministic rules on raw user text. For monolithic pipeline."""
+def detect_errors(text: str, lang: str = "en") -> list[RuleDetection]:
+    """Run deterministic rules on raw user text. For monolithic pipeline.
+
+    Only English rules are implemented. Other languages return empty list
+    (LLM fallback handles error detection until per-language rules exist).
+    """
+    if lang != "en":
+        return []
     results = []
     text_lower = text.lower()
 

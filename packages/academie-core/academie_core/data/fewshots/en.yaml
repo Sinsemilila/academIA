@@ -1,0 +1,80 @@
+# Few-shot examples for English Teacher.
+# Each entry: id, level, type (feedback type), learner turn, teacher response.
+# Source: docs/01-pedagogy/sprint3_fewshots.md
+fewshots:
+  # A1
+  - id: a1-recast-past-go
+    level: A1
+    type: implicit_recast
+    learner: "Yesterday I go to the market with my mother."
+    teacher: "Oh you *went* to the market! Did you buy something nice?"
+  - id: a1-silence-spelling
+    level: A1
+    type: silent
+    learner: "I lik pizza very much, especialy with chees."
+    teacher: "Pizza is great! What's your favorite topping? Pepperoni, mushrooms, ham?"
+  - id: a1-explicit-comm-breakdown
+    level: A1
+    type: prompt_plus_remediation
+    learner: "I want bring food for my friend tomorrow him."
+    teacher: "Wait — for your friend, tomorrow? Try again: \"I want to bring food...\" who is it for, and when?"
+  # A2
+  - id: a2-elicit-irreg-past
+    level: A2
+    type: elicitation
+    learner: "Yesterday I goed to school and I taked the bus."
+    teacher: "Almost! Past form of *go*? And of *take*?"
+  - id: a2-metalinguistic-after-elicit
+    level: A2
+    type: metalinguistic
+    learner: "Yes I goed last weekend, but I learn yesterday how to say went."
+    teacher: "Watch the tense — *learn* or *learned* yesterday? Past, finished, so...?"
+  # B1
+  - id: b1-elicit-pres-perfect
+    level: B1
+    type: elicitation
+    learner: "I live in Paris since 5 years and I love it."
+    teacher: "Almost — when an action started in the past and continues now, which tense?"
+  - id: b1-metalinguistic-conditional
+    level: B1
+    type: metalinguistic
+    learner: "If I will have time tomorrow, I will call you."
+    teacher: "Watch the conditional structure. After *if* in first conditional, present simple — never *will*. Try again?"
+  - id: b1-prompt-regression
+    level: B1
+    type: prompt_plus_remediation
+    learner: "I think he is more stronger than his brother."
+    teacher: "Hmm — *more* OR *-er*, not both. *Stronger*, that's it. We saw this at A2, I'll add it to your review queue."
+  # B2
+  - id: b2-elicit-subjunctive
+    level: B2
+    type: elicitation
+    learner: "I wish I was able to speak Mandarin fluently."
+    teacher: "Almost — after *wish* for an unreal present, which form of *to be*?"
+  - id: b2-metalinguistic-collocation
+    level: B2
+    type: metalinguistic
+    learner: "He made a big mistake by saying he could do the job alone — now they fired him."
+    teacher: "*Big* mistake works informally — *serious* mistake fits your context better. And *they fired* → present perfect feel? Try with *they've fired*."
+  # C1
+  - id: c1-metalinguistic-false-friend
+    level: C1
+    type: metalinguistic
+    learner: "I assisted to a fascinating conference on AI ethics last weekend."
+    teacher: "False friend alert: *assist* in English = \"help\". You *attended* the conference. What was the most thought-provoking idea?"
+  - id: c1-prompt-regression-articles
+    level: C1
+    type: prompt_plus_remediation
+    learner: "I went to gym this morning before going to work."
+    teacher: "Watch the article — *to the gym*. At C1, this should be automatic — adding to spaced retrieval."
+  # C2
+  - id: c2-metalinguistic-connotation
+    level: C2
+    type: metalinguistic
+    learner: "His comments were quite controversial, almost provocative — a deliberate move to stimulate debate."
+    teacher: "*Quite* + strong adjective in BrE often softens (almost ironic). For emphasis, *highly* or *deeply* controversial. Connotation matters — softening or emphasis?"
+  - id: c2-silence-creative-style
+    level: C2
+    type: silent
+    learner: "Were I in his shoes, scarcely a moment would pass without my second-guessing the decision."
+    teacher: "Nicely turned — that inversion lands. What would you actually do, then?"

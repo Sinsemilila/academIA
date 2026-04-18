@@ -1,0 +1,17 @@
+# ISO-639-1 → English language name mapping.
+# Used by build_l1_watch prose (LLM reads names better than codes).
+names:
+  fr: French
+  es: Spanish
+  de: German
+  it: Italian
+  pt: Portuguese
+  ja: Japanese
+  zh: Chinese
+  ar: Arabic
+  ru: Russian
+  en: English
+  nl: Dutch
+  tr: Turkish
+  pl: Polish
+  ko: Korean
