@@ -7,11 +7,11 @@ In-place edit of the published Teacher workflow (app_id 39565197-...):
 2. Replace hardcoded `concept_hint_map = {...}` in code_turn_check JS with
    JSON.parse of the start input
 3. Replace the 15 lines of EN example questions in llm_onboarding system prompt
-   with the {{#start.cefr_diagnostics_block#}} placeholder
+   with the {{#code_turn_check.cefr_diagnostics_block#}} placeholder
 4. Replace "Teacher, prof d'anglais" in 4 LLM node persona lines with
-   "Teacher, prof {{#start.lang_target_prof#}}"
+   "Teacher, prof {{#code_turn_check.lang_target_prof#}}"
 5. Replace "Maintenant je vais evaluer ton niveau avec quelques echanges en
-   anglais" → in {{#start.lang_target_name#}}
+   anglais" → in {{#code_turn_check.lang_target_name#}}
 
 Updates both published + draft versions. Backup in dify_workflows_backup_sprint5.
 Requires Dify service restart after run.
@@ -50,19 +50,21 @@ def patch_graph(graph_str: str) -> str:
     nodes = graph.get("nodes", [])
 
     # ── 1. Start node: add 4 new inputs ──
+    # Format MUST match existing Dify Start variables: use `default` (not `default_value`),
+    # keep `label` to the variable name, skip optional keys like `options`/`hint`.
     new_vars = [
-        {"variable": "lang_target_name", "type": "text-input", "required": False,
-         "label": "Lang target display name", "max_length": 40, "options": [],
-         "default_value": "Anglais", "hint": "e.g., Anglais, Espagnol"},
-        {"variable": "lang_target_prof", "type": "text-input", "required": False,
-         "label": "Lang target prof-label", "max_length": 40, "options": [],
-         "default_value": "d'anglais", "hint": "e.g., d'anglais, d'espagnol"},
-        {"variable": "concept_hints_json", "type": "paragraph", "required": False,
-         "label": "Concept hints (JSON dict)", "max_length": 10000, "options": [],
-         "default_value": "{}"},
-        {"variable": "cefr_diagnostics_block", "type": "paragraph", "required": False,
-         "label": "CEFR diagnostic examples block", "max_length": 5000, "options": [],
-         "default_value": ""},
+        {"type": "text-input", "variable": "lang_target_name",
+         "label": "lang_target_name", "required": False, "max_length": 40,
+         "default": "Anglais"},
+        {"type": "text-input", "variable": "lang_target_prof",
+         "label": "lang_target_prof", "required": False, "max_length": 40,
+         "default": "d'anglais"},
+        {"type": "paragraph", "variable": "concept_hints_json",
+         "label": "concept_hints_json", "required": False, "max_length": 10000,
+         "default": "{}"},
+        {"type": "paragraph", "variable": "cefr_diagnostics_block",
+         "label": "cefr_diagnostics_block", "required": False, "max_length": 5000,
+         "default": ""},
     ]
     for n in nodes:
         if n.get("data", {}).get("type") == "start":
@@ -72,39 +74,127 @@ def patch_graph(graph_str: str) -> str:
                     n["data"]["variables"].append(nv)
             break
 
-    # ── 2. code_turn_check: inject JSON.parse for concept_hint_map ──
-    #    Dify code nodes access start vars via the `variables` array (value_selector),
-    #    NOT via {{#start.X#}} template syntax. We:
-    #      - Add concept_hints_json to the variables array (mapped to start node)
-    #      - Replace the hardcoded dict with JSON.parse of the injected variable
+    # ── 2. code_turn_check: wire 4 new inputs through the node ──
+    #    Dify LLM prompts can ONLY reference `{{#<node_id>.<var>#}}` — start vars
+    #    are NOT directly accessible via {{#start.X#}}. Pattern used by existing
+    #    wiring (rubric_for_level, fewshots_block, etc.):
+    #      (1) Declare var in code_turn_check.variables[] mapped to start
+    #      (2) Add param to main() signature
+    #      (3) Return value in the main() return dict
+    #      (4) Declare in node.outputs array
+    #    Then LLM prompts can use {{#code_turn_check.<var>#}}.
+
+    NEW_VARS_TO_WIRE = [
+        "lang_target_name",
+        "lang_target_prof",
+        "concept_hints_json",
+        "cefr_diagnostics_block",
+    ]
+
     for n in nodes:
         if n.get("id") == "code_turn_check":
             data = n["data"]
-            # Register concept_hints_json as an input variable for this code node
-            existing = {v.get("variable") for v in data.get("variables", [])}
-            if "concept_hints_json" not in existing:
-                data["variables"].append({
-                    "variable": "concept_hints_json",
-                    "value_selector": ["start", "concept_hints_json"],
-                })
+
+            # 2.1 — Register in variables[] (input wiring from start node)
+            existing_vars = {v.get("variable") for v in data.get("variables", [])}
+            for var_name in NEW_VARS_TO_WIRE:
+                if var_name not in existing_vars:
+                    data["variables"].append({
+                        "variable": var_name,
+                        "value_selector": ["start", var_name],
+                    })
+
+            # 2.2 — Register in outputs declaration (Dify stores as dict with type schema)
+            outputs = data.get("outputs", {})
+            if isinstance(outputs, dict):
+                for var_name in NEW_VARS_TO_WIRE:
+                    if var_name not in outputs:
+                        outputs[var_name] = {"type": "string", "children": None}
+
             code = data.get("code", "")
-            new_block = (
-                "let concept_hint_map = {};\n"
-                "            try { concept_hint_map = JSON.parse(concept_hints_json || '{}'); }\n"
-                "            catch(e) { concept_hint_map = {}; }"
-            )
+
+            # 2.3 — Inject 4 new params into main() signature
+            if "concept_hints_json: str" not in code:
+                m = re.search(r"def main\(", code)
+                if m:
+                    depth = 1
+                    i = m.end()
+                    while i < len(code) and depth > 0:
+                        c = code[i]
+                        if c == '(':
+                            depth += 1
+                        elif c == ')':
+                            depth -= 1
+                        i += 1
+                    if depth == 0:
+                        sig_end = i
+                        inject = (
+                            ",\n         lang_target_name: str = 'Anglais',"
+                            " lang_target_prof: str = \"d'anglais\","
+                            "\n         concept_hints_json: str = '{}',"
+                            " cefr_diagnostics_block: str = ''"
+                        )
+                        code = code[:sig_end - 1] + inject + code[sig_end - 1:]
+
+            # 2.4 — Replace hardcoded concept_hint_map dict with json.loads call
             pattern = re.compile(
-                r"concept_hint_map\s*=\s*\{[^{}]{0,50}(?:[^{}]|\{[^{}]*\})*?\}",
+                r"(\n(?P<indent>[ \t]+))concept_hint_map\s*=\s*\{[^{}]{0,50}(?:[^{}]|\{[^{}]*\})*?\}",
                 re.DOTALL,
             )
-            # First check if already patched (JSON.parse present)
-            if "JSON.parse(concept_hints_json" not in code:
-                code, n_sub = pattern.subn(new_block.strip(), code, count=1)
-                if n_sub:
-                    data["code"] = code
+
+            def _replace(m_):
+                ind = m_.group("indent")
+                return (
+                    f"{m_.group(1)}concept_hint_map = {{}}\n"
+                    f"{ind}try:\n"
+                    f"{ind}    concept_hint_map = json.loads(concept_hints_json or '{{}}')\n"
+                    f"{ind}except Exception:\n"
+                    f"{ind}    concept_hint_map = {{}}"
+                )
+
+            if "json.loads(concept_hints_json" not in code:
+                code, _ = pattern.subn(_replace, code, count=1)
+
+            # 2.5 — Insert the 4 new keys into the return dict
+            # Brace-balance approach: find "return {" then scan forward tracking depth
+            if "'lang_target_name':" not in code:
+                ret_idx = code.rfind("return {")
+                if ret_idx >= 0:
+                    depth = 0
+                    i = ret_idx + len("return ")  # position of {
+                    while i < len(code):
+                        c = code[i]
+                        if c == '{':
+                            depth += 1
+                        elif c == '}':
+                            depth -= 1
+                            if depth == 0:
+                                break
+                        i += 1
+                    # i is now at the closing } of the return dict
+                    # Typical 8-space indent for return dict entries
+                    ind = "        "
+                    addition = (
+                        f"        # Sprint 5 Phase 3 — language-tutor passthrough\n"
+                        f"        'lang_target_name': str(lang_target_name or 'Anglais'),\n"
+                        f"        'lang_target_prof': str(lang_target_prof or \"d'anglais\"),\n"
+                        f"        'concept_hints_json': str(concept_hints_json or '{{}}'),\n"
+                        f"        'cefr_diagnostics_block': str(cefr_diagnostics_block or ''),\n"
+                        f"    "
+                    )
+                    # Ensure there's a trailing comma on the last existing entry (look back from i)
+                    # Check last non-whitespace before i
+                    j = i - 1
+                    while j > 0 and code[j] in " \t\n":
+                        j -= 1
+                    needs_comma = code[j] != ","
+                    prefix = "," if needs_comma else ""
+                    code = code[:i] + prefix + "\n" + addition + code[i:]
+
+            data["code"] = code
             break
 
-    # ── 3. llm_onboarding: swap EN example paliers for {{#start.cefr_diagnostics_block#}} ──
+    # ── 3. llm_onboarding: swap EN example paliers for {{#code_turn_check.cefr_diagnostics_block#}} ──
     # Find the "=== PHASE 2 — DIAGNOSTIC" section and replace the Palier reference table.
     for n in nodes:
         if n.get("id") == "llm_onboarding":
@@ -118,7 +208,7 @@ def patch_graph(graph_str: str) -> str:
                         re.DOTALL,
                     )
                     txt = patt.sub(
-                        "{{#start.cefr_diagnostics_block#}}\n\n",
+                        "{{#code_turn_check.cefr_diagnostics_block#}}\n\n",
                         txt, count=1,
                     )
                     # Also replace the "REGLE CRITIQUE : PALIER DE DEPART" first-question map
@@ -128,7 +218,7 @@ def patch_graph(graph_str: str) -> str:
                         re.DOTALL,
                     )
                     txt = patt2.sub(
-                        "La PREMIERE question en {{#start.lang_target_name#}} "
+                        "La PREMIERE question en {{#code_turn_check.lang_target_name#}} "
                         "DOIT correspondre au niveau choisi par l'eleve (voir "
                         "paliers_first_question dans cefr_diagnostics_block ci-dessus).",
                         txt, count=1,
@@ -136,57 +226,57 @@ def patch_graph(graph_str: str) -> str:
                     # Param persona
                     txt = txt.replace(
                         "Tu es Teacher, prof d'anglais",
-                        "Tu es Teacher, prof {{#start.lang_target_prof#}}",
+                        "Tu es Teacher, prof {{#code_turn_check.lang_target_prof#}}",
                     )
                     # Param "en anglais" references
                     txt = txt.replace(
                         "tu passes a l'anglais",
-                        "tu passes a {{#start.lang_target_name#}}",
+                        "tu passes a {{#code_turn_check.lang_target_name#}}",
                     )
                     txt = txt.replace(
                         "questions en anglais",
-                        "questions en {{#start.lang_target_name#}}",
+                        "questions en {{#code_turn_check.lang_target_name#}}",
                     )
                     txt = txt.replace(
                         "question en anglais",
-                        "question en {{#start.lang_target_name#}}",
+                        "question en {{#code_turn_check.lang_target_name#}}",
                     )
                     txt = txt.replace(
                         "echanges en anglais",
-                        "echanges en {{#start.lang_target_name#}}",
+                        "echanges en {{#code_turn_check.lang_target_name#}}",
                     )
                     txt = txt.replace(
                         "en anglais DOIT correspondre",
-                        "en {{#start.lang_target_name#}} DOIT correspondre",
+                        "en {{#code_turn_check.lang_target_name#}} DOIT correspondre",
                     )
                     txt = txt.replace(
                         "en anglais aujourd'hui",
-                        "en {{#start.lang_target_name#}} aujourd'hui",
+                        "en {{#code_turn_check.lang_target_name#}} aujourd'hui",
                     )
                     txt = txt.replace(
                         "l'anglais ? (travail",
-                        "{{#start.lang_target_name#}} ? (travail",
+                        "{{#code_turn_check.lang_target_name#}} ? (travail",
                     )
                     # Phase 3 follow-up: remaining narrative references
                     txt = txt.replace(
                         "Tu passes a l'anglais",
-                        "Tu passes a {{#start.lang_target_name#}}",
+                        "Tu passes a {{#code_turn_check.lang_target_name#}}",
                     )
                     txt = txt.replace(
                         "tu evaluerais ton anglais",
-                        "tu evaluerais ton {{#start.lang_target_name#}}",
+                        "tu evaluerais ton {{#code_turn_check.lang_target_name#}}",
                     )
                     txt = txt.replace(
                         "questions EN ANGLAIS",
-                        "questions EN {{#start.lang_target_name#}}",
+                        "questions EN {{#code_turn_check.lang_target_name#}}",
                     )
                     txt = txt.replace(
                         "premiere question EN ANGLAIS",
-                        "premiere question EN {{#start.lang_target_name#}}",
+                        "premiere question EN {{#code_turn_check.lang_target_name#}}",
                     )
                     txt = txt.replace(
                         "La question DOIT etre en anglais",
-                        "La question DOIT etre en {{#start.lang_target_name#}}",
+                        "La question DOIT etre en {{#code_turn_check.lang_target_name#}}",
                     )
                     msg["text"] = txt
                     break
@@ -200,7 +290,7 @@ def patch_graph(graph_str: str) -> str:
                 if msg.get("role") == "system":
                     msg["text"] = msg["text"].replace(
                         "Tu es Teacher, prof d'anglais",
-                        "Tu es Teacher, prof {{#start.lang_target_prof#}}",
+                        "Tu es Teacher, prof {{#code_turn_check.lang_target_prof#}}",
                     )
 
     return json.dumps(graph, ensure_ascii=False)
