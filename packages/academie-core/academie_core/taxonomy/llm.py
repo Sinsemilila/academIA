@@ -15,11 +15,19 @@ from .categories import TIER1_CATEGORIES
 logger = logging.getLogger("academie-api.error-taxonomy")
 
 LITELLM_URL = "http://litellm-proxy:4000/v1/chat/completions"
-# gpt-4o-mini for dev/tuning (1.5M tokens/day free, no rate limit issues)
-# Switch to groq-standard for production once tuned
-ANALYSIS_MODEL = "ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v3:DU6GUv6v"
 
-SYSTEM_PROMPT = """You analyze French speakers learning English. Identify EVERY error made by the USER. Do NOT analyze TEACHER messages.
+# Sprint 5 D3 — Per-language dispatch. EN uses fine-tune v3 (85% F1 on W&I).
+# New languages start on base gpt-4o-mini (Option B audit) until enough real
+# user data (~500 msgs) to re-fine-tune per language.
+ANALYSIS_MODEL_BY_LANG: dict[str, str] = {
+    "en": "ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v3:DU6GUv6v",
+    # "es": "gpt-4o-mini",  # Sprint 5-ES (Phase 4 content pack) will activate
+}
+
+# Backward-compat alias — still imported by error_analysis_router.py for logs
+ANALYSIS_MODEL = ANALYSIS_MODEL_BY_LANG["en"]
+
+SYSTEM_PROMPT_EN = """You analyze French speakers learning English. Identify EVERY error made by the USER. Do NOT analyze TEACHER messages.
 
 ═══ ANALYSIS METHOD ═══
 
@@ -240,20 +248,37 @@ class LLMAnalysisResult(BaseModel):
     errors: list[LLMError]
 
 
+# Sprint 5 D3 — Per-language system prompt. Each prompt is calibrated for a
+# specific L1→target pair (codes, few-shot errors, typical calques).
+SYSTEM_PROMPT_BY_LANG: dict[str, str] = {
+    "en": SYSTEM_PROMPT_EN,
+    # "es": SYSTEM_PROMPT_ES,  # Phase 4 — adapted for FR→ES (ser/estar, subj, gender)
+}
+
+# Backward-compat alias
+SYSTEM_PROMPT = SYSTEM_PROMPT_EN
+
+
 @retry(stop=stop_after_attempt(2), wait=wait_exponential(multiplier=1, min=2, max=10))
 async def analyze_transcript(transcript: str, lang: str = "en") -> LLMAnalysisResult:
     """Monolithic: LLM finds AND classifies errors in one pass.
 
-    Only English analysis is implemented (fine-tuned model + EN prompts).
-    Other languages return empty results until per-language prompts/models exist.
+    Sprint 5 D3 — Per-language dispatch via ANALYSIS_MODEL_BY_LANG +
+    SYSTEM_PROMPT_BY_LANG. Unknown langs return empty result (no model
+    configured = safe no-op, not a crash).
     """
-    if lang != "en":
-        logger.warning("LLM analysis not available for lang=%s, returning empty", lang)
+    model = ANALYSIS_MODEL_BY_LANG.get(lang)
+    system_prompt = SYSTEM_PROMPT_BY_LANG.get(lang)
+    if not model or not system_prompt:
+        logger.warning(
+            "LLM analysis not configured for lang=%s (model=%s, prompt=%s), returning empty",
+            lang, bool(model), bool(system_prompt),
+        )
         return LLMAnalysisResult(errors=[])
     payload = {
-        "model": ANALYSIS_MODEL,
+        "model": model,
         "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": USER_PROMPT_TEMPLATE.format(transcript=transcript)},
         ],
         "response_format": {"type": "json_object"},
