@@ -54,9 +54,9 @@ async def setup(conn) -> int:
     eid = await conn.fetchval("SELECT id FROM eleves WHERE username = $1", TEST_USERNAME)
     await conn.execute("UPDATE users SET eleve_id = $1 WHERE username = $2", eid, TEST_USERNAME)
     await conn.execute(
-        """INSERT INTO profils_eleves (eleve_id, domaine, niveau_global, updated_at)
-           VALUES ($1, 'anglais', 'B1', NOW())
-           ON CONFLICT (eleve_id, domaine) DO NOTHING""",
+        """INSERT INTO profils_eleves (eleve_id, domain, niveau_global, updated_at)
+           VALUES ($1, 'en', 'B1', NOW())
+           ON CONFLICT (eleve_id, domain) DO NOTHING""",
         eid,
     )
     await conn.execute("DELETE FROM spaced_retrieval_queue WHERE eleve_id = $1", eid)
@@ -96,7 +96,7 @@ async def _inner() -> int:
     try:
         # 1. Persist silenced — expect 2 rows enqueued at NOW()+1d.
         await chat_router._persist_spaced_retrieval(
-            eid, "anglais",
+            eid, "en",
             silenced_codes=["V:TENSE", "PREP"],
             addressed_keys=[],
         )
@@ -123,7 +123,7 @@ async def _inner() -> int:
                 fails.append(f"Step 1: completed_at should be NULL, got {r['completed_at']}")
 
         # 2. Fetch before due — must be empty (scheduled_at > NOW()).
-        due_now = await chat_router._fetch_due_retrieval_items(eid, "anglais")
+        due_now = await chat_router._fetch_due_retrieval_items(eid, "en")
         print(f"  2. Fetch now (items due): {len(due_now)} — expect 0")
         if due_now:
             fails.append(f"Step 2: expected 0 due items, got {len(due_now)}")
@@ -134,7 +134,7 @@ async def _inner() -> int:
                 "UPDATE spaced_retrieval_queue SET scheduled_at = NOW() - INTERVAL '1 hour' "
                 "WHERE eleve_id = $1", eid,
             )
-        due = await chat_router._fetch_due_retrieval_items(eid, "anglais")
+        due = await chat_router._fetch_due_retrieval_items(eid, "en")
         print(f"  3. After backdate — fetch: {len(due)} items")
         for item in due:
             print(f"     {item}")
@@ -147,7 +147,7 @@ async def _inner() -> int:
 
         # 4. Persist addressed={concept_key} → row completed.
         await chat_router._persist_spaced_retrieval(
-            eid, "anglais",
+            eid, "en",
             silenced_codes=[],
             addressed_keys=["verb_tense"],
         )
@@ -171,19 +171,19 @@ async def _inner() -> int:
             fails.append(f"Step 4: preposition row should still be NULL-completed: {prep_rows}")
 
         # 5. Fetch after completion — only preposition remains.
-        due = await chat_router._fetch_due_retrieval_items(eid, "anglais")
+        due = await chat_router._fetch_due_retrieval_items(eid, "en")
         print(f"  5. Fetch after completion: {len(due)} items (expect 1: preposition)")
         if len(due) != 1 or due[0]["concept_key"] != "preposition":
             fails.append(f"Step 5: expected [preposition], got {due}")
 
         # 6. Flag OFF short-circuits fetch + persist.
         chat_router.SPACED_RETRIEVAL_ENABLED = False
-        due_off = await chat_router._fetch_due_retrieval_items(eid, "anglais")
+        due_off = await chat_router._fetch_due_retrieval_items(eid, "en")
         print(f"  6. Flag OFF — fetch: {len(due_off)} (expect 0)")
         if due_off:
             fails.append(f"Step 6: flag OFF should short-circuit, got {due_off}")
         await chat_router._persist_spaced_retrieval(
-            eid, "anglais", silenced_codes=["V:SVA"], addressed_keys=[]
+            eid, "en", silenced_codes=["V:SVA"], addressed_keys=[]
         )
         async with app_db.pool.acquire() as conn:
             n = await conn.fetchval(

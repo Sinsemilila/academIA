@@ -47,7 +47,7 @@ def main() -> int:
     rows = psql(
         "SELECT el.id, el.error_code, COALESCE(pe.niveau_global, 'B1') "
         "FROM error_log el "
-        "LEFT JOIN profils_eleves pe ON pe.eleve_id=el.eleve_id AND pe.domaine='anglais' "
+        "LEFT JOIN profils_eleves pe ON pe.eleve_id=el.eleve_id AND pe.domain='en' "
         "WHERE el.tier IS NULL "
         "ORDER BY el.id;"
     )

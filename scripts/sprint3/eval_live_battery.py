@@ -133,10 +133,10 @@ def seed_profile(level: str) -> None:
     eid = e[0]
     _db_exec(
         """INSERT INTO profils_eleves
-           (eleve_id, domaine, niveau_global, personnalite, scores_confiance,
+           (eleve_id, domain, niveau_global, personnalite, scores_confiance,
             mode_apprentissage, onboarding_completed_at, l1, l1_watch_enabled, updated_at)
-           VALUES (%s, 'anglais', %s, %s::jsonb, %s::jsonb, 'libre', NOW(), 'fr', TRUE, NOW())
-           ON CONFLICT (eleve_id, domaine) DO UPDATE SET
+           VALUES (%s, 'en', %s, %s::jsonb, %s::jsonb, 'libre', NOW(), 'fr', TRUE, NOW())
+           ON CONFLICT (eleve_id, domain) DO UPDATE SET
              niveau_global = EXCLUDED.niveau_global,
              l1 = 'fr',
              l1_watch_enabled = TRUE,

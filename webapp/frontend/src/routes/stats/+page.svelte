@@ -1,6 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { get } from 'svelte/store';
   import { api } from '$lib/api';
+  import { currentAgent, currentDomain } from '$lib/stores/navigation';
+  import { domainLabel } from '$lib/config';
   import ProgressionGraph from '$lib/components/ProgressionGraph.svelte';
 
   const levelLabels: Record<string, string> = {
@@ -39,11 +42,12 @@
   }
 
   onMount(async () => {
+    const domain = get(currentDomain);
     const [c, e, x, b, xh] = await Promise.all([
-      api.getConcepts(),
-      api.getExams(),
+      api.getConcepts(domain),
+      api.getExams(domain),
       api.getXp(),
-      api.getBadges(),
+      api.getBadges(domain),
       api.getXpHistory(),
     ]);
     concepts = c;
@@ -72,14 +76,14 @@
 
   <!-- Level card — clickable → concepts detail -->
   {#if niveau}
-    <a href="/stats/concepts?domain=anglais"
+    <a href="/stats/concepts?domain={$currentDomain}"
        class="block bg-surface border border-border-subtle rounded-xl p-6 hover:border-teacher/50 transition-all group">
       <div class="flex items-center gap-4 mb-4">
         <div class="w-16 h-16 rounded-2xl bg-teacher/15 flex items-center justify-center text-2xl font-bold text-teacher">
           {niveau}
         </div>
         <div class="flex-1">
-          <h2 class="font-semibold text-lg">Anglais — {levelLabels[niveau] || niveau}</h2>
+          <h2 class="font-semibold text-lg">{domainLabel($currentDomain)} — {levelLabels[niveau] || niveau}</h2>
           <p class="text-sm text-text-secondary">
             {mastered}/{totalExpected} concepts ma&#238;tris&#233;s
           </p>
@@ -106,7 +110,7 @@
   {:else}
     <div class="bg-surface border border-border-subtle rounded-xl p-6 text-center">
       <p class="text-text-secondary">Pas encore de niveau. Lance ta premi&#232;re session !</p>
-      <a href="/chat/teacher" class="inline-block mt-3 px-4 py-2 bg-teacher text-white text-sm font-medium rounded-lg hover:brightness-110 transition-all">
+      <a href="/chat/{$currentAgent}" class="inline-block mt-3 px-4 py-2 bg-teacher text-white text-sm font-medium rounded-lg hover:brightness-110 transition-all">
         Commencer
       </a>
     </div>

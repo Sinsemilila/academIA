@@ -30,7 +30,7 @@ N8N_SNAPSHOT_URL = "http://127.0.0.1:5678/webhook/dify-snapshot"
 STALE_HOURS = 2
 
 AGENT_DOMAIN = {
-    "teacher": "anglais",
+    "teacher": "en",
     "maestro": "espagnol",
     "sensei": "japonais",
     "lehrer": "allemand",
@@ -62,10 +62,10 @@ async def run():
 
         async with httpx.AsyncClient(timeout=120.0) as client:
             for row in rows:
-                domaine = AGENT_DOMAIN.get(row["agent_name"], "anglais")
+                domain = AGENT_DOMAIN.get(row["agent_name"], "en")
                 payload = {
                     "username": row["username"],
-                    "domaine": domaine,
+                    "domain": domain,
                     "conversation_id": row["dify_conversation_id"],
                 }
                 label = f"{row['username']}/{row['agent_name']} ({row['message_count']} msgs)"

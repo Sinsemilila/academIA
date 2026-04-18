@@ -14,6 +14,7 @@
   import CelebrationModal from '$lib/components/CelebrationModal.svelte';
   import { toastError } from '$lib/stores/toasts';
   import { userAppearance } from '$lib/stores/user';
+  import { currentAgent } from '$lib/stores/navigation';
 
   let { children } = $props();
 
@@ -132,6 +133,14 @@
       });
     }
   }
+
+  // Sprint 5 D4: sync currentAgent store from URL on every navigation
+  afterNavigate((nav) => {
+    const agentParam = nav.to?.params?.agent;
+    if (typeof agentParam === 'string' && agentParam) {
+      currentAgent.set(agentParam);
+    }
+  });
 
   onMount(() => {
     initTheme();

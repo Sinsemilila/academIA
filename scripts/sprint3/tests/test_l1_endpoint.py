@@ -71,9 +71,9 @@ def setup() -> int:
     _exec("UPDATE users SET eleve_id = %s WHERE username = %s", (eid, TEST_USERNAME))
     # Seed the profile row so the PUT endpoint doesn't 404.
     _exec(
-        """INSERT INTO profils_eleves (eleve_id, domaine, niveau_global, updated_at)
-           VALUES (%s, 'anglais', 'B1', NOW())
-           ON CONFLICT (eleve_id, domaine) DO NOTHING""",
+        """INSERT INTO profils_eleves (eleve_id, domain, niveau_global, updated_at)
+           VALUES (%s, 'en', 'B1', NOW())
+           ON CONFLICT (eleve_id, domain) DO NOTHING""",
         (eid,),
     )
     return eid
@@ -131,13 +131,14 @@ def main() -> int:
                 body = r.json()
                 if body.get("l1") != "es" or body.get("l1_watch_enabled") is not False:
                     fails.append(f"PUT es/off response unexpected: {body}")
-                # Verify DB write.
-                row = _query(
-                    "SELECT l1, l1_watch_enabled FROM profils_eleves WHERE eleve_id = %s AND domaine = 'anglais'",
+                # Verify DB write. Sprint 5 D2: l1 is now in eleves, l1_watch_enabled stays per-domain on profils_eleves.
+                l1_row = _query("SELECT l1 FROM eleves WHERE id = %s", (eid,))
+                watch_row = _query(
+                    "SELECT l1_watch_enabled FROM profils_eleves WHERE eleve_id = %s AND domain = 'en'",
                     (eid,),
                 )
-                if row != ("es", False):
-                    fails.append(f"DB state after PUT es/off: {row}")
+                if l1_row != ("es",) or watch_row != (False,):
+                    fails.append(f"DB state after PUT es/off: l1={l1_row}, watch={watch_row}")
 
             # 3. GET again — reflects updated state.
             r = client.get(f"{API_BASE}/api/profile/l1", headers=headers)

@@ -65,8 +65,8 @@ async def exam_result(req: ExamResultRequest, x_internal_token: str = Header(Non
 # ── Admin dashboard ──────────────────────────────────────
 
 @router.get("/api/admin/users")
-async def list_users(admin: dict = Depends(require_admin)):
-    """List all users with stats for admin dashboard."""
+async def list_users(domain: str = "en", admin: dict = Depends(require_admin)):
+    """List all users with stats for admin dashboard. Profile stats scoped to `domain` (ISO)."""
     async with db.pool.acquire() as conn:
         rows = await conn.fetch("""
             SELECT
@@ -77,11 +77,11 @@ async def list_users(admin: dict = Depends(require_admin)):
                 u.last_seen_at
             FROM users u
             LEFT JOIN eleves e ON u.eleve_id = e.id
-            LEFT JOIN profils_eleves p ON e.id = p.eleve_id AND p.domaine = 'anglais'
+            LEFT JOIN profils_eleves p ON e.id = p.eleve_id AND p.domain = $1
             LEFT JOIN streaks s ON u.id = s.user_id
             LEFT JOIN (SELECT user_id, SUM(amount) as total_xp FROM xp_log GROUP BY user_id) xp ON u.id = xp.user_id
             ORDER BY u.last_seen_at DESC NULLS LAST
-        """)
+        """, domain)
 
     return [
         {

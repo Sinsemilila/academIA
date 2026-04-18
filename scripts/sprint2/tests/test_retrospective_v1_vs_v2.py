@@ -70,7 +70,7 @@ def error_log_rows():
         "SELECT el.error_code, COALESCE(pe.niveau_global, 'B1') "
         "FROM error_log el "
         "LEFT JOIN profils_eleves pe ON pe.eleve_id = el.eleve_id "
-        "  AND pe.domaine='anglais';"
+        "  AND pe.domain='en';"
     )
     rows = []
     for line in out.splitlines():

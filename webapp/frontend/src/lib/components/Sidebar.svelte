@@ -3,6 +3,7 @@
   import { afterNavigate } from '$app/navigation';
   import { onMount } from 'svelte';
   import { agents } from '$lib/config';
+  import { currentAgent } from '$lib/stores/navigation';
   import { userAppearance } from '$lib/stores/user';
   import AgentFlag from '$lib/components/AgentFlag.svelte';
 
@@ -14,12 +15,13 @@
     return unsub;
   });
 
-  const nav = [
-    { href: '/',          icon: '\uD83C\uDFE0', label: 'Home' },
-    { href: '/chat/teacher', icon: '\uD83D\uDCAC', label: 'Chat' },
-    { href: '/stats',     icon: '\uD83D\uDCCA', label: 'Stats' },
-    { href: '/profile',   icon: '\u2699\uFE0F', label: 'Profil' },
-  ];
+  // Sprint 5 D4: Chat link goes to the user's current agent (persisted in store)
+  const nav = $derived([
+    { href: '/',                          icon: '\uD83C\uDFE0', label: 'Home' },
+    { href: `/chat/${$currentAgent}`,     icon: '\uD83D\uDCAC', label: 'Chat' },
+    { href: '/stats',                     icon: '\uD83D\uDCCA', label: 'Stats' },
+    { href: '/profile',                   icon: '\u2699\uFE0F', label: 'Profil' },
+  ]);
 
   // Auto-close sidebar on mobile after navigation
   afterNavigate(() => {

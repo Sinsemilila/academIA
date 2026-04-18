@@ -31,8 +31,7 @@
       action: () => goto(`/chat/${a.slug}`),
       category: 'Agents',
     })),
-    // Actions
-    { id: 'chat-teacher', label: 'Parler \u00E0 Teacher', icon: '\uD83D\uDCAC', action: () => goto('/chat/teacher'), category: 'Actions' },
+    // (Sprint 5: removed duplicate "Parler à Teacher" — covered by per-agent entries above)
   ];
 
   let filtered = $derived(

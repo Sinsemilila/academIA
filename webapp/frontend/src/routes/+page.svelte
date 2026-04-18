@@ -1,7 +1,9 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
+  import { get } from 'svelte/store';
   import { api } from '$lib/api';
   import { agents } from '$lib/config';
+  import { currentAgent, currentDomain } from '$lib/stores/navigation';
   import AgentFlag from '$lib/components/AgentFlag.svelte';
   import Tooltip from '$lib/components/Tooltip.svelte';
   import WeeklyRecap from '$lib/components/WeeklyRecap.svelte';
@@ -16,6 +18,9 @@
   let conceptData = $state<any>(null);
   let conceptLoading = $state(false);
   let popoverRef = $state<HTMLElement | null>(null);
+
+  // Sprint 5 D4: resolve current agent object from the slug store
+  let currentAgentObj = $derived(agents.find(a => a.slug === $currentAgent) ?? agents[0]);
 
   // Derived concept stats
   let conceptScores = $derived(conceptData?.scores || {});
@@ -54,7 +59,7 @@
     if (!conceptData) {
       conceptLoading = true;
       try {
-        conceptData = await api.getConcepts('anglais');
+        conceptData = await api.getConcepts(get(currentDomain));
       } catch { /* ignore */ }
       conceptLoading = false;
     }
@@ -73,10 +78,11 @@
   ];
 
   onMount(async () => {
+    const domain = get(currentDomain);
     const [me, prof, st] = await Promise.all([
       api.me(),
-      api.getProfile('anglais'),
-      api.getWeeklyStats(),
+      api.getProfile(domain),
+      api.getWeeklyStats(domain),
     ]);
     username = me.display_name || me.username;
     profile = prof;
@@ -122,9 +128,9 @@
       >
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-3">
-            <AgentFlag agent={agents[0]} size="md" />
+            <AgentFlag agent={currentAgentObj} size="md" />
             <div>
-              <h2 class="font-semibold">Teacher &#183; Anglais</h2>
+              <h2 class="font-semibold">{currentAgentObj.name} &#183; {currentAgentObj.lang}</h2>
               <p class="text-sm text-text-secondary">Niveau {profile.niveau}</p>
             </div>
           </div>
@@ -137,7 +143,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
             <a
-              href="/chat/teacher"
+              href="/chat/{$currentAgent}"
               class="px-4 py-2 bg-teacher text-white text-sm font-medium rounded-lg
                      hover:brightness-110 transition-all"
               onclick={(e) => e.stopPropagation()}
@@ -269,7 +275,7 @@
           <p class="text-sm text-text-secondary">{profile.lacunes}</p>
         </div>
       {/if}
-      <a href="/chat/teacher" class="inline-block px-5 py-2.5 bg-teacher text-white text-sm font-medium rounded-lg hover:brightness-110 transition-all">
+      <a href="/chat/{$currentAgent}" class="inline-block px-5 py-2.5 bg-teacher text-white text-sm font-medium rounded-lg hover:brightness-110 transition-all">
         Commencer ma premi&#232;re session &#x2192;
       </a>
     </div>
@@ -279,7 +285,7 @@
       <p class="text-4xl mb-3">&#x1F393;</p>
       <h2 class="font-semibold text-lg mb-2">Bienvenue sur Acad&#233;mie-IA !</h2>
       <p class="text-sm text-text-secondary mb-4">En quelques minutes, Teacher va &#233;valuer ton niveau d'anglais et cr&#233;er ton programme personnalis&#233;.</p>
-      <a href="/chat/teacher" class="inline-block px-5 py-2.5 bg-teacher text-white text-sm font-medium rounded-lg hover:brightness-110 transition-all">
+      <a href="/chat/{$currentAgent}" class="inline-block px-5 py-2.5 bg-teacher text-white text-sm font-medium rounded-lg hover:brightness-110 transition-all">
         Commencer &#x2192;
       </a>
     </div>

@@ -56,25 +56,35 @@ class L1Payload(BaseModel):
 
 
 @router.get("/api/profile/l1")
-async def get_l1(user: dict = Depends(get_current_user)):
-    """Return the learner's L1 (native language) + watch toggle. Defaults: fr / enabled."""
+async def get_l1(domain: str = "en", user: dict = Depends(get_current_user)):
+    """Return the learner's L1 (user-global, from eleves) + watch toggle (per-domain).
+    Defaults: fr / enabled. Sprint 5 D2: L1 lives on eleves, toggle on profils_eleves.
+    """
     eleve_id = user.get("eleve_id")
     if not eleve_id:
         return {"l1": "fr", "l1_watch_enabled": True}
     async with db.pool.acquire() as conn:
-        row = await conn.fetchrow(
-            """SELECT l1, l1_watch_enabled FROM profils_eleves
-               WHERE eleve_id = $1 AND domaine = 'anglais'""",
+        l1_val = await conn.fetchval(
+            "SELECT l1 FROM eleves WHERE id = $1",
             eleve_id,
         )
-    if not row:
-        return {"l1": "fr", "l1_watch_enabled": True}
-    return {"l1": row["l1"] or "fr", "l1_watch_enabled": bool(row["l1_watch_enabled"])}
+        watch_row = await conn.fetchrow(
+            """SELECT l1_watch_enabled FROM profils_eleves
+               WHERE eleve_id = $1 AND domain = $2""",
+            eleve_id, domain,
+        )
+    return {
+        "l1": l1_val or "fr",
+        "l1_watch_enabled": bool(watch_row["l1_watch_enabled"]) if watch_row and watch_row["l1_watch_enabled"] is not None else True,
+    }
 
 
 @router.put("/api/profile/l1")
-async def set_l1(payload: L1Payload, user: dict = Depends(get_current_user)):
-    """Update the learner's L1 + watch toggle. Creates the profile row if missing."""
+async def set_l1(payload: L1Payload, domain: str = "en", user: dict = Depends(get_current_user)):
+    """Update the learner's L1 (user-global) + watch toggle (per-domain).
+    Sprint 5 D2: L1 is user-global on eleves.l1. The watch toggle stays per-profile
+    to allow toggling hints differently per target language.
+    """
     eleve_id = user.get("eleve_id")
     if not eleve_id:
         raise HTTPException(status_code=400, detail="No learner profile bound to this user.")
@@ -82,11 +92,17 @@ async def set_l1(payload: L1Payload, user: dict = Depends(get_current_user)):
     if not _ISO_639_1_RE.match(l1):
         raise HTTPException(status_code=422, detail="l1 must be ISO-639-1 lowercase (2 letters).")
     async with db.pool.acquire() as conn:
+        # Update L1 on eleves (user-global)
+        await conn.execute(
+            "UPDATE eleves SET l1 = $1 WHERE id = $2",
+            l1, eleve_id,
+        )
+        # Update watch toggle on profile (per-domain)
         result = await conn.execute(
             """UPDATE profils_eleves
-               SET l1 = $1, l1_watch_enabled = $2, updated_at = NOW()
-               WHERE eleve_id = $3 AND domaine = 'anglais'""",
-            l1, payload.l1_watch_enabled, eleve_id,
+               SET l1_watch_enabled = $1, updated_at = NOW()
+               WHERE eleve_id = $2 AND domain = $3""",
+            payload.l1_watch_enabled, eleve_id, domain,
         )
     if result.endswith(" 0"):
         raise HTTPException(status_code=404, detail="Profile not found. Complete onboarding first.")
@@ -107,7 +123,7 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
                       mode_apprentissage, derniere_session, examen_en_cours,
                       dernier_examen, nb_examens_niveau, plan_sessions,
                       details_par_competence, onboarding_completed_at
-               FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2""",
+               FROM profils_eleves WHERE eleve_id = $1 AND domain = $2""",
             eleve_id, domain,
         )
     if not row:
@@ -125,13 +141,13 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
     next_niv = next_niveau_map.get(niveau)
     async with db.pool.acquire() as conn:
         ck_row = await conn.fetchval(
-            "SELECT concept_keys FROM curriculums WHERE domaine = $1 AND niveau = $2",
+            "SELECT concept_keys FROM curriculums WHERE domain = $1 AND niveau = $2",
             domain, niveau)
         all_keys = ck_row if isinstance(ck_row, list) else json.loads(ck_row or "[]")
         next_keys = []
         if next_niv:
             nk_row = await conn.fetchval(
-                "SELECT concept_keys FROM curriculums WHERE domaine = $1 AND niveau = $2",
+                "SELECT concept_keys FROM curriculums WHERE domain = $1 AND niveau = $2",
                 domain, next_niv)
             next_keys = nk_row if isinstance(nk_row, list) else json.loads(nk_row or "[]")
 
@@ -187,7 +203,7 @@ async def _derive_concept_scores(eleve_id: int, domain: str, niveau: str) -> dic
     # Primary: scores_confiance maintained by n8n snapshot workflow (per-concept LLM eval)
     async with db.pool.acquire() as conn:
         sc_raw = await conn.fetchval(
-            "SELECT scores_confiance FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2",
+            "SELECT scores_confiance FROM profils_eleves WHERE eleve_id = $1 AND domain = $2",
             eleve_id, domain)
 
     scores = {}
@@ -223,7 +239,7 @@ async def get_streak(user: dict = Depends(get_current_user)):
 
 
 @router.get("/api/stats/weekly")
-async def get_weekly_stats(user: dict = Depends(get_current_user)):
+async def get_weekly_stats(domain: str = "en", user: dict = Depends(get_current_user)):
     eleve_id = user.get("eleve_id")
     if not eleve_id:
         return {"sessions": 0, "concepts": 0, "minutes": 0}
@@ -246,11 +262,11 @@ async def get_weekly_stats(user: dict = Depends(get_current_user)):
         )
         minutes = minutes_val or 0
 
-        # Count concepts with score > 0 (worked on)
+        # Count concepts with score > 0 (worked on) — scoped to domain
         row = await conn.fetchrow(
             """SELECT scores_confiance FROM profils_eleves
-               WHERE eleve_id = $1 AND domaine = 'anglais'""",
-            eleve_id,
+               WHERE eleve_id = $1 AND domain = $2""",
+            eleve_id, domain,
         )
         concepts = 0
         if row and row["scores_confiance"]:
@@ -268,7 +284,7 @@ async def get_weekly_stats(user: dict = Depends(get_current_user)):
 
 
 @router.get("/api/me/concepts")
-async def get_concepts(domain: str = "anglais", user: dict = Depends(get_current_user)):
+async def get_concepts(domain: str = "en", user: dict = Depends(get_current_user)):
     """Return detailed concept scores grouped by module."""
     eleve_id = user.get("eleve_id")
     if not eleve_id:
@@ -278,7 +294,7 @@ async def get_concepts(domain: str = "anglais", user: dict = Depends(get_current
         # Profile data
         row = await conn.fetchrow(
             """SELECT niveau_global
-               FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2""",
+               FROM profils_eleves WHERE eleve_id = $1 AND domain = $2""",
             eleve_id, domain,
         )
         if not row or not row["niveau_global"]:
@@ -295,7 +311,7 @@ async def get_concepts(domain: str = "anglais", user: dict = Depends(get_current
         # Curriculum data (groups + weights)
         cur = await conn.fetchrow(
             """SELECT concept_keys, concept_groups, concept_weights
-               FROM curriculums WHERE domaine = $1 AND niveau = $2""",
+               FROM curriculums WHERE domain = $1 AND niveau = $2""",
             domain, niveau,
         )
         concept_keys = []
@@ -498,7 +514,7 @@ async def get_concepts(domain: str = "anglais", user: dict = Depends(get_current
 
 
 @router.get("/api/me/history")
-async def get_history(domain: str = "anglais", limit: int = 20, user: dict = Depends(get_current_user)):
+async def get_history(domain: str = "en", limit: int = 20, user: dict = Depends(get_current_user)):
     """Return recent session snapshots."""
     eleve_id = user.get("eleve_id")
     if not eleve_id:
@@ -508,7 +524,7 @@ async def get_history(domain: str = "anglais", limit: int = 20, user: dict = Dep
         rows = await conn.fetch(
             """SELECT id, contenu, created_at
                FROM snapshots_session
-               WHERE eleve_id = $1 AND domaine = $2
+               WHERE eleve_id = $1 AND domain = $2
                ORDER BY created_at DESC LIMIT $3""",
             eleve_id, domain, limit,
         )
@@ -525,7 +541,7 @@ async def get_history(domain: str = "anglais", limit: int = 20, user: dict = Dep
 
 
 @router.get("/api/me/exams")
-async def get_exams(domain: str = "anglais", user: dict = Depends(get_current_user)):
+async def get_exams(domain: str = "en", user: dict = Depends(get_current_user)):
     """Return exam history from dernier_examen JSONB."""
     eleve_id = user.get("eleve_id")
     if not eleve_id:
@@ -534,7 +550,7 @@ async def get_exams(domain: str = "anglais", user: dict = Depends(get_current_us
     async with db.pool.acquire() as conn:
         row = await conn.fetchrow(
             """SELECT examen_en_cours, dernier_examen, nb_examens_niveau
-               FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2""",
+               FROM profils_eleves WHERE eleve_id = $1 AND domain = $2""",
             eleve_id, domain,
         )
 
@@ -666,7 +682,7 @@ async def get_heatmap(user: dict = Depends(get_current_user)):
 
 
 @router.get("/api/me/badges")
-async def get_badges(domain: str = "anglais", user: dict = Depends(get_current_user)):
+async def get_badges(domain: str = "en", user: dict = Depends(get_current_user)):
     """Compute which badges are unlocked based on live data."""
     user_id = user["id"]
     eleve_id = user.get("eleve_id")
@@ -693,7 +709,7 @@ async def get_badges(domain: str = "anglais", user: dict = Depends(get_current_u
         if eleve_id:
             exam_row = await conn.fetchrow(
                 """SELECT nb_examens_niveau, dernier_examen
-                   FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2""",
+                   FROM profils_eleves WHERE eleve_id = $1 AND domain = $2""",
                 eleve_id, domain,
             )
             if exam_row:

@@ -121,14 +121,14 @@ class ApiClient {
   }
 
   // ── Profile ───────────────────────────────
-  async getProfile(domain: string = 'anglais') {
+  async getProfile(domain: string = 'en') {
     const res = await this.fetch(`/profile/${domain}`);
     if (!res.ok) return null;
     return await res.json();
   }
 
   // ── Error Profile ─────────────────────────
-  async getErrorProfile(domain: string = 'anglais') {
+  async getErrorProfile(domain: string = 'en') {
     const res = await this.fetch(`/error-profile/${domain}`);
     if (!res.ok) return null;
     return await res.json();
@@ -142,8 +142,8 @@ class ApiClient {
   }
 
   // ── Stats ─────────────────────────────────
-  async getWeeklyStats() {
-    const res = await this.fetch('/stats/weekly');
+  async getWeeklyStats(domain: string = 'en') {
+    const res = await this.fetch(`/stats/weekly?domain=${domain}`);
     if (!res.ok) return { sessions: 0, concepts: 0, minutes: 0 };
     return await res.json();
   }
@@ -156,19 +156,19 @@ class ApiClient {
   }
 
   // ── Stats ─────────────────────────────────
-  async getConcepts(domain: string = 'anglais') {
+  async getConcepts(domain: string = 'en') {
     const res = await this.fetch(`/me/concepts?domain=${domain}`);
     if (!res.ok) return { niveau: null, groups: {}, scores: {}, weights: {}, concept_keys: [] };
     return await res.json();
   }
 
-  async getHistory(domain: string = 'anglais', limit: number = 20) {
+  async getHistory(domain: string = 'en', limit: number = 20) {
     const res = await this.fetch(`/me/history?domain=${domain}&limit=${limit}`);
     if (!res.ok) return { sessions: [] };
     return await res.json();
   }
 
-  async getExams(domain: string = 'anglais') {
+  async getExams(domain: string = 'en') {
     const res = await this.fetch(`/me/exams?domain=${domain}`);
     if (!res.ok) return { current_exam: null, last_exam: null, nb_exams: 0 };
     return await res.json();
@@ -193,7 +193,7 @@ class ApiClient {
     return await res.json();
   }
 
-  async getBadges(domain: string = 'anglais') {
+  async getBadges(domain: string = 'en') {
     const res = await this.fetch(`/me/badges?domain=${domain}`);
     if (!res.ok) return { badges: [] };
     return await res.json();
@@ -232,7 +232,15 @@ class ApiClient {
     return await res.json();
   }
 
-  async updateProfile(data: { display_name?: string; avatar_color?: string; theme?: string; daily_goal_minutes?: number }) {
+  async updateProfile(data: {
+    display_name?: string;
+    avatar_color?: string;
+    theme?: string;
+    daily_goal_minutes?: number;
+    centres_interet?: string;
+    style_correction?: string;
+    domain?: string;  // Sprint 5 D1: per-language personality scoping
+  }) {
     const res = await this.fetch('/me/profile', { method: 'PATCH', body: JSON.stringify(data) });
     return await res.json();
   }
@@ -263,7 +271,7 @@ class ApiClient {
     await this.fetch('/me/sessions', { method: 'DELETE' });
   }
 
-  async getRecommendation(domain: string = 'anglais') {
+  async getRecommendation(domain: string = 'en') {
     const res = await this.fetch(`/me/recommendation?domain=${domain}`);
     if (!res.ok) return null;
     return await res.json();
@@ -275,7 +283,7 @@ class ApiClient {
     return await res.json();
   }
 
-  async getWeeklyRecap(domain: string = 'anglais') {
+  async getWeeklyRecap(domain: string = 'en') {
     const res = await this.fetch(`/me/weekly-recap?domain=${domain}`);
     if (!res.ok) return null;
     return await res.json();

@@ -33,19 +33,21 @@ _gpt4o_token_counter = {"date": "", "tokens": 0, "loaded": False}
 _tiktoken_enc = tiktoken.encoding_for_model("gpt-4o-mini")
 
 # Sprint 5 — Multi-domain registry.
-# Each agent maps to a (domaine_db_string, LanguageDomain) pair.
-# Adding a new language = one line here + YAML data files + env var.
+# Each agent maps to a (domain_db_string, LanguageDomain) pair.
+# Domain string uses ISO-639-1 codes for languages ("en", "es"), free strings
+# for non-language domains ("python", "cybersec"). Adding a new language =
+# one line here + YAML data files + env var.
 _DOMAIN_REGISTRY: dict[str, tuple[str, LanguageDomain]] = {
-    "teacher": ("anglais", LanguageDomain("en")),
-    # "maestro": ("espagnol", LanguageDomain("es")),  # Sprint 5-ES
-    # "professore": ("italien", LanguageDomain("it")),
-    # "lehrer": ("allemand", LanguageDomain("de")),
-    # "sensei": ("japonais", LanguageDomain("ja")),
+    "teacher": ("en", LanguageDomain("en")),
+    # "maestro": ("es", LanguageDomain("es")),  # Sprint 5-ES
+    # "professore": ("it", LanguageDomain("it")),
+    # "lehrer": ("de", LanguageDomain("de")),
+    # "sensei": ("ja", LanguageDomain("ja")),
 }
 
 
 def _get_domain(agent: str) -> tuple[str, LanguageDomain]:
-    """Resolve agent name to (domaine, LanguageDomain). Raises 404 if unknown."""
+    """Resolve agent name to (domain, LanguageDomain). Raises 404 if unknown."""
     entry = _DOMAIN_REGISTRY.get(agent)
     if not entry:
         raise HTTPException(status_code=404, detail=f"Agent '{agent}' non disponible")
@@ -334,7 +336,7 @@ _SPACED_RETRIEVAL_INTERVAL_DAYS = 1  # MVP — fixed J+1. FSRS ladder is post-MV
 _SPACED_RETRIEVAL_MAX_DUE = 3  # surface at most 3 items/turn to avoid prompt bloat
 
 
-async def _fetch_due_retrieval_items(eleve_id: int, domaine: str = "anglais") -> list[dict]:
+async def _fetch_due_retrieval_items(eleve_id: int, domain: str = "en") -> list[dict]:
     """Return items due for spaced retrieval now. Empty list when flag OFF or none due."""
     if not SPACED_RETRIEVAL_ENABLED or not eleve_id:
         return []
@@ -343,12 +345,12 @@ async def _fetch_due_retrieval_items(eleve_id: int, domaine: str = "anglais") ->
             rows = await conn.fetch(
                 """SELECT id, concept_key, error_code
                    FROM spaced_retrieval_queue
-                   WHERE eleve_id = $1 AND domaine = $2
+                   WHERE eleve_id = $1 AND domain = $2
                      AND completed_at IS NULL
                      AND scheduled_at <= NOW()
                    ORDER BY scheduled_at ASC
                    LIMIT $3""",
-                eleve_id, domaine, _SPACED_RETRIEVAL_MAX_DUE,
+                eleve_id, domain, _SPACED_RETRIEVAL_MAX_DUE,
             )
     except Exception as e:
         logger.warning("spaced_retrieval fetch failed: %s", e)
@@ -366,7 +368,7 @@ async def _fetch_due_retrieval_items(eleve_id: int, domaine: str = "anglais") ->
 
 async def _persist_spaced_retrieval(
     eleve_id: int,
-    domaine: str,
+    domain: str,
     silenced_codes: list[str],
     addressed_keys: list[str],
 ) -> None:
@@ -389,18 +391,18 @@ async def _persist_spaced_retrieval(
                     family = ERROR_CODE_TO_FAMILY.get(code) or code
                     await conn.execute(
                         """INSERT INTO spaced_retrieval_queue
-                           (eleve_id, domaine, concept_key, error_code, scheduled_at, created_at)
+                           (eleve_id, domain, concept_key, error_code, scheduled_at, created_at)
                            VALUES ($1, $2, $3, $4, NOW() + ($5 || ' days')::INTERVAL, NOW())""",
-                        eleve_id, domaine, family, code, str(_SPACED_RETRIEVAL_INTERVAL_DAYS),
+                        eleve_id, domain, family, code, str(_SPACED_RETRIEVAL_INTERVAL_DAYS),
                     )
                 if addressed_keys:
                     await conn.execute(
                         """UPDATE spaced_retrieval_queue
                            SET completed_at = NOW(), outcome = 'addressed'
-                           WHERE eleve_id = $1 AND domaine = $2
+                           WHERE eleve_id = $1 AND domain = $2
                              AND completed_at IS NULL
                              AND (concept_key = ANY($3::text[]) OR error_code = ANY($3::text[]))""",
-                        eleve_id, domaine, list(addressed_keys),
+                        eleve_id, domain, list(addressed_keys),
                     )
     except Exception as e:
         logger.warning("spaced_retrieval persist failed: %s", e)
@@ -412,7 +414,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
     # Rate limit: 30 messages per minute per IP
     limiter.check(request, max_requests=30, window_seconds=60)
     dify_key = get_dify_key(req.agent)
-    domaine, domain = _get_domain(req.agent)
+    domain, lang = _get_domain(req.agent)
     # Use existing Dify UUID if set, otherwise generate a stable ID
     dify_user = user.get("dify_user_id") or f"user_{user['id']}"
 
@@ -443,18 +445,20 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
 
     # Real-time error feedback (rules layer only, zero LLM cost)
     # Filtered by tolerance_matrix: shadow errors are hidden, noted/penalized are tagged
-    detections = domain.detect_errors(req.message)
+    detections = lang.detect_errors(req.message)
     niveau = ""
     profile_l1: str | None = "fr"  # default familial (Phase 6)
     l1_watch_on: bool = True
     eleve_id = user.get("eleve_id")
     if eleve_id:
         try:
+            # Sprint 5 D2: L1 is now user-global (eleves.l1), l1_watch stays per-profile
             async with db.pool.acquire() as conn:
                 row = await conn.fetchrow(
-                    """SELECT niveau_global, l1, l1_watch_enabled
-                       FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2""",
-                    eleve_id, domaine)
+                    """SELECT p.niveau_global, e.l1, p.l1_watch_enabled
+                       FROM profils_eleves p JOIN eleves e ON e.id = p.eleve_id
+                       WHERE p.eleve_id = $1 AND p.domain = $2""",
+                    eleve_id, domain)
             if row:
                 niveau = row["niveau_global"] or ""
                 profile_l1 = row["l1"] or "fr"
@@ -505,7 +509,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         v2_errors = []
         if niveau:
             for d in detections:
-                enriched = domain.score_tier(d.error_code, niveau)
+                enriched = lang.score_tier(d.error_code, niveau)
                 if not enriched.get("tier"):
                     continue
                 v2_errors.append({
@@ -534,19 +538,19 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
                 pass
 
         # Phase 7 — query items due for spaced retrieval (flag-gated, empty when OFF)
-        spaced_due = await _fetch_due_retrieval_items(eleve_id, domaine) if eleve_id else []
+        spaced_due = await _fetch_due_retrieval_items(eleve_id, domain) if eleve_id else []
         ctx = PromptContext(
             level=niveau or "B1",
             turn_count=turn_count,
             errors_detected=v2_errors,
             last_feedback_per_family={},  # Phase 5+ once teacher_response_log exists
-            # Phase 6 : l1 & toggle sourced from profils_eleves. When toggle off,
+            # Phase 6 : l1 & toggle sourced from profils_eleves + eleves. When toggle off,
             # pass None so build_l1_watch returns empty (block absent from prompt).
             l1=profile_l1 if l1_watch_on else None,
             spaced_retrieval_due=spaced_due,
-            target_lang=domain.lang_target,
+            target_lang=lang.lang_target,
         )
-        sections = domain.build_dynamic_sections(ctx)
+        sections = lang.build_dynamic_sections(ctx)
         for key, val in sections.items():
             if key.startswith("_"):
                 continue
@@ -630,10 +634,10 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         # Flag-gated (no-op when off). Best-effort: never crash the stream on parse error.
         if SPACED_RETRIEVAL_ENABLED and eleve_id:
             try:
-                parsed = domain.parse_response(full_answer)
+                parsed = lang.parse_response(full_answer)
                 if parsed.parse_ok:
                     await _persist_spaced_retrieval(
-                        eleve_id, domaine,
+                        eleve_id, domain,
                         parsed.silenced_for_spaced_retrieval,
                         parsed.spaced_retrieval_addressed,
                     )

@@ -2,19 +2,16 @@
   import { page } from '$app/state';
   import { onMount } from 'svelte';
   import { api } from '$lib/api';
-
-  const domainLabels: Record<string, string> = {
-    anglais: 'Anglais', espagnol: 'Espagnol', japonais: 'Japonais',
-    allemand: 'Allemand', italien: 'Italien', python: 'Python', cybersec: 'Cybersec',
-  };
+  import { domainLabel as getDomainLabel } from '$lib/config';
 
   const levelLabels: Record<string, string> = {
     A1: 'Survie', A2: 'Quotidien', B1: 'Autonomie',
     B2: 'Aisance', C1: 'Ma\u00EEtrise', C2: 'Excellence',
   };
 
-  let domain = $derived(page.url.searchParams.get('domain') || 'anglais');
-  let domainLabel = $derived(domainLabels[domain] || domain);
+  // Sprint 5 D1: domain uses ISO codes ("en"/"es"/...)
+  let domain = $derived(page.url.searchParams.get('domain') || 'en');
+  let domainLabel = $derived(getDomainLabel(domain));
 
   let concepts = $state<any>(null);
   let loading = $state(true);

@@ -51,7 +51,7 @@
     if (!agent?.available) { loadingHistory = false; return; }
     try {
       // Load profile to get current mode
-      const profile = await api.getProfile('anglais');
+      const profile = await api.getProfile(agent.domain);
       if (profile?.mode_apprentissage) {
         currentMode = profile.mode_apprentissage;
       }
@@ -188,7 +188,7 @@
               const status = event.data?.status;
               if (status === 'failed' || status === 'error') {
                 if (!messages[streamingIdx].content) {
-                  messages[streamingIdx].content = 'Teacher ne répond pas. Réessaie dans un instant.';
+                  messages[streamingIdx].content = `${agent?.name ?? 'L\'agent'} ne répond pas. Réessaie dans un instant.`;
                 }
               } else if (!messages[streamingIdx].content) {
                 const fallback = event.data?.outputs?.answer || '';
@@ -266,7 +266,8 @@
     quizLoading = true;
     try {
       // Load concepts to build quiz plan
-      const data = await api.getConcepts('anglais');
+      if (!agent) return;
+      const data = await api.getConcepts(agent.domain);
       if (!data?.concept_keys?.length) {
         toastError('Pas de concepts disponibles pour le quiz');
         quizLoading = false;

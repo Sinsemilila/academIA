@@ -34,7 +34,7 @@ def get_or_create_eleve(username):
     conn.close()
     return eleve_id
 
-def get_profil(username, domaine):
+def get_profil(username, domain):
     eleve_id = get_or_create_eleve(username)
     conn = get_connection()
     cur = conn.cursor()
@@ -42,8 +42,8 @@ def get_profil(username, domaine):
         SELECT niveau_global, personnalite, scores_confiance,
                points_forts, lacunes, plan_sessions, derniere_session
         FROM profils_eleves
-        WHERE eleve_id = %s AND domaine = %s
-    """, (eleve_id, domaine))
+        WHERE eleve_id = %s AND domain = %s
+    """, (eleve_id, domain))
     row = cur.fetchone()
     cur.close()
     conn.close()
@@ -59,16 +59,16 @@ def get_profil(username, domaine):
         "derniere_session": str(row[6]) if row[6] else None
     }
 
-def save_profil(username, domaine, profil):
+def save_profil(username, domain, profil):
     eleve_id = get_or_create_eleve(username)
     conn = get_connection()
     cur = conn.cursor()
     cur.execute("""
         INSERT INTO profils_eleves
-            (eleve_id, domaine, niveau_global, personnalite, scores_confiance,
+            (eleve_id, domain, niveau_global, personnalite, scores_confiance,
              points_forts, lacunes, plan_sessions, derniere_session, updated_at)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW())
-        ON CONFLICT (eleve_id, domaine) DO UPDATE SET
+        ON CONFLICT (eleve_id, domain) DO UPDATE SET
             niveau_global = EXCLUDED.niveau_global,
             personnalite = EXCLUDED.personnalite,
             scores_confiance = EXCLUDED.scores_confiance,
@@ -78,7 +78,7 @@ def save_profil(username, domaine, profil):
             derniere_session = NOW(),
             updated_at = NOW()
     """, (
-        eleve_id, domaine,
+        eleve_id, domain,
         profil.get("niveau_global"),
         json.dumps(profil.get("personnalite", {})),
         json.dumps(profil.get("scores_confiance", {})),
@@ -90,14 +90,14 @@ def save_profil(username, domaine, profil):
     cur.close()
     conn.close()
 
-def save_snapshot(username, domaine, contenu):
+def save_snapshot(username, domain, contenu):
     eleve_id = get_or_create_eleve(username)
     conn = get_connection()
     cur = conn.cursor()
     cur.execute("""
-        INSERT INTO snapshots_session (eleve_id, domaine, contenu)
+        INSERT INTO snapshots_session (eleve_id, domain, contenu)
         VALUES (%s, %s, %s)
-    """, (eleve_id, domaine, contenu))
+    """, (eleve_id, domain, contenu))
     conn.commit()
     cur.close()
     conn.close()
@@ -128,6 +128,6 @@ if __name__ == "__main__":
         "lacunes": "Precision du vocabulaire C1, nuances stylistiques",
         "plan_sessions": "Session 1: nuances vocabulaire C1. Session 2: registres formels. Session 3: debat"
     }
-    save_profil("sinse", "anglais", profil_test)
-    profil = get_profil("sinse", "anglais")
+    save_profil("sinse", "en", profil_test)
+    profil = get_profil("sinse", "en")
     print(format_profil_for_injection(profil))

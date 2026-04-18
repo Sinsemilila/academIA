@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from ..models import UpdateProfileRequest, ChangePasswordRequest, ModeChangeRequest
 from ..auth import get_current_user, verify_password, hash_password
 from ..rate_limit import limiter
+from ..domain_registry import chat_url_for_domain
 from .. import database as db
 
 router = APIRouter(tags=["settings"])
@@ -41,12 +42,13 @@ async def update_profile(req: UpdateProfileRequest, user: dict = Depends(get_cur
                 perso_updates["centres_interet"] = req.centres_interet
             if req.style_correction is not None:
                 perso_updates["style_correction"] = req.style_correction
+            domain = req.domain or "en"
             for key, val in perso_updates.items():
                 await conn.execute(
                     "UPDATE profils_eleves SET personnalite = jsonb_set("
                     "COALESCE(personnalite, '{}'::jsonb), $1, $2::jsonb"
-                    ") WHERE eleve_id = $3 AND domaine = 'anglais'",
-                    [key], json.dumps(val), eleve_id,
+                    ") WHERE eleve_id = $3 AND domain = $4",
+                    [key], json.dumps(val), eleve_id, domain,
                 )
 
     return {"ok": True}
@@ -60,11 +62,12 @@ async def change_mode(req: ModeChangeRequest, user: dict = Depends(get_current_u
     if not eleve_id:
         raise HTTPException(status_code=400, detail="Pas de profil eleve")
 
+    domain = req.domain or "en"
     async with db.pool.acquire() as conn:
         await conn.execute(
             """UPDATE profils_eleves SET mode_apprentissage = $1
-               WHERE eleve_id = $2 AND domaine = 'anglais'""",
-            req.mode, eleve_id,
+               WHERE eleve_id = $2 AND domain = $3""",
+            req.mode, eleve_id, domain,
         )
 
     return {"ok": True, "mode": req.mode}
@@ -94,16 +97,16 @@ async def change_password(
 
 # ── Full user settings (for profile page load) ───────
 @router.get("/api/me/settings")
-async def get_settings(user: dict = Depends(get_current_user)):
-    # Read personality from profils_eleves
+async def get_settings(domain: str = "en", user: dict = Depends(get_current_user)):
+    # Read personality from profils_eleves (scoped to domain)
     centres_interet = ""
     style_correction = ""
     eleve_id = user.get("eleve_id")
     if eleve_id:
         async with db.pool.acquire() as conn:
             row = await conn.fetchrow(
-                "SELECT personnalite FROM profils_eleves WHERE eleve_id = $1 AND domaine = 'anglais'",
-                eleve_id,
+                "SELECT personnalite FROM profils_eleves WHERE eleve_id = $1 AND domain = $2",
+                eleve_id, domain,
             )
             if row and row["personnalite"]:
                 perso = row["personnalite"] if isinstance(row["personnalite"], dict) else json.loads(row["personnalite"])
@@ -171,20 +174,21 @@ async def revoke_all_sessions(user: dict = Depends(get_current_user)):
 
 # ── Recommendation engine (unified — error-based) ─────
 @router.get("/api/me/recommendation")
-async def get_recommendation(domain: str = "anglais", user: dict = Depends(get_current_user)):
+async def get_recommendation(domain: str = "en", user: dict = Depends(get_current_user)):
     """Return a single contextual recommendation based on error profile."""
+    chat_url = chat_url_for_domain(domain)
     eleve_id = user.get("eleve_id")
     if not eleve_id:
         return {"type": "start", "message": "Commence ta premiere session pour debloquer ton profil !",
-                "action": "/chat/teacher", "label": "Commencer"}
+                "action": chat_url, "label": "Commencer"}
 
     async with db.pool.acquire() as conn:
         row = await conn.fetchrow(
-            "SELECT niveau_global, derniere_session FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2",
+            "SELECT niveau_global, derniere_session FROM profils_eleves WHERE eleve_id = $1 AND domain = $2",
             eleve_id, domain)
         if not row or not row["niveau_global"]:
             return {"type": "start", "message": "Commence ta premiere session pour debloquer ton profil !",
-                    "action": "/chat/teacher", "label": "Commencer"}
+                    "action": chat_url, "label": "Commencer"}
         derniere = row["derniere_session"]
 
     # Days since last session — still useful as top priority
@@ -197,7 +201,7 @@ async def get_recommendation(domain: str = "anglais", user: dict = Depends(get_c
         return {
             "type": "comeback",
             "message": f"Ca fait {days_absent} jours ! On reprend en douceur ?",
-            "action": "/chat/teacher",
+            "action": chat_url,
             "label": "Reprendre",
         }
 
@@ -207,7 +211,7 @@ async def get_recommendation(domain: str = "anglais", user: dict = Depends(get_c
     return profile.get("recommendation", {
         "type": "continue",
         "message": "Continue ta progression, tu avances bien !",
-        "action": "/chat/teacher",
+        "action": chat_url,
         "label": "Continuer",
     })
 
@@ -238,7 +242,7 @@ async def get_daily_progress(user: dict = Depends(get_current_user)):
 
 # ── Weekly recap ──────────────────────────────────────
 @router.get("/api/me/weekly-recap")
-async def get_weekly_recap(domain: str = "anglais", user: dict = Depends(get_current_user)):
+async def get_weekly_recap(domain: str = "en", user: dict = Depends(get_current_user)):
     """Return a weekly summary card."""
     eleve_id = user.get("eleve_id")
     user_id = user["id"]
@@ -270,7 +274,7 @@ async def get_weekly_recap(domain: str = "anglais", user: dict = Depends(get_cur
         concepts_worked = 0
         if eleve_id:
             row = await conn.fetchrow(
-                "SELECT scores_confiance FROM profils_eleves WHERE eleve_id = $1 AND domaine = $2",
+                "SELECT scores_confiance FROM profils_eleves WHERE eleve_id = $1 AND domain = $2",
                 eleve_id, domain,
             )
             if row and row["scores_confiance"]:

@@ -63,6 +63,8 @@ class ChatRequest(BaseModel):
 # ── Mode ──────────────────────────────────────────────
 class ModeChangeRequest(BaseModel):
     mode: str = Field(..., pattern=r"^(structure|libre)$")
+    # Sprint 5 D1: ISO domain ("en"/"es"/...). None → default "en" backward-compat.
+    domain: str | None = Field(default=None, max_length=20)
 
 
 # ── Settings ───────────────────────────────────────────
@@ -73,6 +75,8 @@ class UpdateProfileRequest(BaseModel):
     daily_goal_minutes: int | None = Field(None, ge=5, le=120)
     centres_interet: str | None = Field(None, max_length=200)
     style_correction: str | None = Field(None, pattern=r"^(direct|encourageant|humour)?$")
+    # Sprint 5 D1: target domain for personality prefs (per-language scoping)
+    domain: str | None = Field(default=None, max_length=20)
 
 
 class ChangePasswordRequest(BaseModel):
