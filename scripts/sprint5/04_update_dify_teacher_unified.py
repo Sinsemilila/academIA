@@ -203,9 +203,16 @@ def patch_graph(graph_str: str) -> str:
             data["code"] = code
             break
 
-    # ── 3. llm_onboarding: swap EN example paliers for {{#code_turn_check.cefr_diagnostics_block#}} ──
-    # Find the "=== PHASE 2 — DIAGNOSTIC" section and replace the Palier reference table.
-    for n in nodes:
+    # ── 3. llm_onboarding: LEAVE EN prompt AS-IS (critical) ──────────────
+    # The onboarding branch runs when if_profil=false (new user, no profile yet).
+    # That branch BYPASSES code_turn_check entirely. Therefore we CANNOT use
+    # {{#code_turn_check.X#}} refs here — VariablePool won't have those keys.
+    # Keep the original EN persona hardcoded for first-time users. Maestro ES /
+    # Professore IT / etc. will be SEPARATE Dify apps with their own onboarding
+    # prompts (content pack Phase 4).
+    # The `for` loop below is intentionally dead-code (empty nodes list) to
+    # preserve the script logic for future reference without applying it.
+    for n in []:
         if n.get("id") == "llm_onboarding":
             pt = n["data"].get("prompt_template", [])
             for msg in pt:
@@ -292,8 +299,10 @@ def patch_graph(graph_str: str) -> str:
             break
 
     # ── 4. Other LLM nodes: param persona ──
+    # IMPORTANT: exclude llm_onboarding — see section 3. Onboarding branch
+    # bypasses code_turn_check so {{#code_turn_check.X#}} refs would fail.
     for n in nodes:
-        if n.get("id") in ("llm_plan_choice", "llm_session", "llm_onboarding"):
+        if n.get("id") in ("llm_plan_choice", "llm_session"):
             pt = n["data"].get("prompt_template", [])
             for msg in pt:
                 if msg.get("role") == "system":
