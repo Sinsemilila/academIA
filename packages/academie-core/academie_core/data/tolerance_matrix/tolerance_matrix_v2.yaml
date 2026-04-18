@@ -1,17 +1,17 @@
-# Tolerance Matrix v2 — DRAFT (Sprint 1 + 1.5, Path A)
-# Weights calibrated via NumPyro hierarchical logistic GLMM on W&I + LOCNESS BEA 2019.
-# Corpus: 2,598 learners × 29,412 essay×family Bernoulli obs, CEFR A1–C2.
-# Updated: 2026-04-15 — Sprint 1.5 GLMM posterior
-# Status: draft — review before activating in place of tolerance_matrix.yaml.
+# Tolerance Matrix v2 — (Sprint 1 + 1.5, Path A)
+# Weights calibrated via NumPyro hierarchical logistic GLMM on W&I + LOCNESS + NUCLE.
+# Corpus: 7,920 learners × 412,371 obs, CEFR A1–C2.
+# Updated: 2026-04-18 — Sprint 1.5 extended GLMM posterior (NUCLE added)
+# Status: active (USE_V2_TOLERANCE=true in prod).
 #
 # Weights derived from β_tier posterior with relative-to-T1 mapping:
 #   weight[t] = 1 - sigmoid(β_0 + β_tier[t]) / sigmoid(β_0)
 # T1 (endemic at level) → weight 0 (free pass). Higher tiers → proportional surprise.
 #
-# GLMM convergence: R-hat_max=1.01, ESS_bulk_min=329, 2 chains × 1000 samples.
-# See glmm_summary.json + weights_from_posterior.json for full posterior.
+# GLMM convergence: R-hat_max=1.01, ESS_bulk_min=429, 0 divergences,
+# 2 chains × 1000 samples. See glmm_summary.json + weights_from_posterior.json.
 #
-# Calibrated families (via ERRANT mapping, 84.7% coverage of W&I):
+# Calibrated families (via ERRANT mapping):
 #   verb_tense, noun_det, preposition, pronoun, word_order,
 #   morphology, surface, sentence
 # NOT calibrated (priors kept — ERRANT too coarse or L1-dependent):
@@ -456,9 +456,9 @@ matrix:
     advanced: penalized
 weights:
   ignored: 0.0
-  noted: 0.196
-  penalized: 0.394
-  regressive: 0.538
+  noted: 0.005
+  penalized: 0.165
+  regressive: 0.683
   shadow: 0.0
 feedback_labels:
   penalized:
