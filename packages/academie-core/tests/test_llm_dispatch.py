@@ -42,12 +42,16 @@ def test_unknown_lang_returns_empty():
     assert result.errors == []
 
 
-def test_es_not_yet_configured_returns_empty():
-    """ES is a known target language but not yet configured in Phase 2.1.
-    Returns empty, doesn't crash, logs a warning. Activation happens in Phase 4."""
-    result = asyncio.run(analyze_transcript("Hola mundo", lang="es"))
-    assert isinstance(result, LLMAnalysisResult)
-    assert result.errors == []
+def test_es_configured_in_phase_4():
+    """Sprint 5 Phase 4 activated ES dispatch. ES should now be in the lookup
+    tables (model = gpt-4o-mini, Spanish system prompt, Spanish user template).
+    Actual HTTP invocation is not tested here — network required — but dispatch
+    config is validated.
+    """
+    assert "es" in ANALYSIS_MODEL_BY_LANG, "ES missing from ANALYSIS_MODEL_BY_LANG"
+    assert ANALYSIS_MODEL_BY_LANG["es"] == "gpt-4o-mini"
+    assert "es" in SYSTEM_PROMPT_BY_LANG
+    assert "español" in SYSTEM_PROMPT_BY_LANG["es"].lower() or "spanish" in SYSTEM_PROMPT_BY_LANG["es"].lower()
 
 
 def test_en_dispatches_to_finetune_model():

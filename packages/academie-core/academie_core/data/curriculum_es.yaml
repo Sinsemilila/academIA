@@ -1,0 +1,175 @@
+# Spanish curriculum — CEFR concepts + weights + groups per level.
+# DRAFT — sourced from PCIC (Plan Curricular Instituto Cervantes). Requires
+# native-speaker + pedagogy review before prod. 52 concepts total.
+# Format mirrors curriculum_anglais structure (used by Dify chatflow Teacher).
+# Keys MUST match concept_hints/es.yaml and rules_es.py where applicable.
+#
+# weight = minutes estimées par concept (3 = léger, 5 = moyen, 8 = lourd)
+# group = thème fonctionnel pour les examens (regroupe concepts reliés)
+
+domain: es
+
+A1:
+  description: "Acceso — survie communicative, présent indicatif, ser/estar basique, genre."
+  concept_keys:
+    - genero_masculino_femenino
+    - ser_estar_basico
+    - presente_indicativo_regular
+    - articulos_definidos
+    - articulos_indefinidos
+    - hay_vs_esta
+    - tener_que
+    - numeros_fechas
+    - pronombres_sujeto
+    - saludos_presentaciones
+  concept_weights:
+    genero_masculino_femenino: 5
+    ser_estar_basico: 8
+    presente_indicativo_regular: 5
+    articulos_definidos: 3
+    articulos_indefinidos: 3
+    hay_vs_esta: 5
+    tener_que: 3
+    numeros_fechas: 3
+    pronombres_sujeto: 3
+    saludos_presentaciones: 3
+  concept_groups:
+    grammar: [genero_masculino_femenino, presente_indicativo_regular, articulos_definidos, articulos_indefinidos, pronombres_sujeto]
+    verbs_basic: [ser_estar_basico, hay_vs_esta, tener_que]
+    vocab: [numeros_fechas, saludos_presentaciones]
+
+A2:
+  description: "Plataforma — passé simple et composé, comparaisons, gustar-type, impératif."
+  concept_keys:
+    - preterito_indefinido
+    - preterito_perfecto
+    - gustar_type
+    - imperativo_afirmativo_tu
+    - comparativos
+    - futuro_ir_a
+    - pronombres_objeto_directo
+    - adverbios_frecuencia
+    - conectores_temporales_basicos
+  concept_weights:
+    preterito_indefinido: 8
+    preterito_perfecto: 5
+    gustar_type: 8
+    imperativo_afirmativo_tu: 5
+    comparativos: 5
+    futuro_ir_a: 3
+    pronombres_objeto_directo: 5
+    adverbios_frecuencia: 3
+    conectores_temporales_basicos: 3
+  concept_groups:
+    past_tenses: [preterito_indefinido, preterito_perfecto]
+    structures: [gustar_type, imperativo_afirmativo_tu, futuro_ir_a]
+    pronouns: [pronombres_objeto_directo]
+    comparison: [comparativos]
+    discourse: [adverbios_frecuencia, conectores_temporales_basicos]
+
+B1:
+  description: "Umbral — subjonctif triggers, imperfecto/indefinido, condicional, estilo indirecto."
+  concept_keys:
+    - imperfecto_vs_indefinido
+    - subjuntivo_presente
+    - subjuntivo_temporal
+    - condicional_simple
+    - por_para
+    - estilo_indirecto_basico
+    - verbos_preposicion
+    - pronombres_indirectos
+    - pronombres_reflexivos
+    - marcadores_discursivos_b1
+  concept_weights:
+    imperfecto_vs_indefinido: 8
+    subjuntivo_presente: 8
+    subjuntivo_temporal: 5
+    condicional_simple: 5
+    por_para: 8
+    estilo_indirecto_basico: 5
+    verbos_preposicion: 5
+    pronombres_indirectos: 5
+    pronombres_reflexivos: 3
+    marcadores_discursivos_b1: 3
+  concept_groups:
+    aspect: [imperfecto_vs_indefinido]
+    subjunctive_core: [subjuntivo_presente, subjuntivo_temporal]
+    conditional: [condicional_simple]
+    prepositions: [por_para, verbos_preposicion]
+    reported_speech: [estilo_indirecto_basico]
+    pronouns: [pronombres_indirectos, pronombres_reflexivos]
+    discourse: [marcadores_discursivos_b1]
+
+B2:
+  description: "Avanzado — subjonctif complexe, condicional compuesto, pasiva refleja, argumentation."
+  concept_keys:
+    - condicional_compuesto
+    - subjuntivo_imperfecto
+    - subjuntivo_pluscuamperfecto
+    - pasiva_refleja
+    - aunque_modo
+    - conectores_argumentativos
+    - colocaciones_b2
+    - verbos_pronominales
+    - estilo_indirecto_avanzado
+  concept_weights:
+    condicional_compuesto: 5
+    subjuntivo_imperfecto: 8
+    subjuntivo_pluscuamperfecto: 8
+    pasiva_refleja: 5
+    aunque_modo: 5
+    conectores_argumentativos: 5
+    colocaciones_b2: 5
+    verbos_pronominales: 3
+    estilo_indirecto_avanzado: 5
+  concept_groups:
+    subjunctive_advanced: [subjuntivo_imperfecto, subjuntivo_pluscuamperfecto, aunque_modo]
+    conditional: [condicional_compuesto]
+    voice: [pasiva_refleja]
+    argumentation: [conectores_argumentativos]
+    lexicon: [colocaciones_b2, verbos_pronominales]
+    reported_speech: [estilo_indirecto_avanzado]
+
+C1:
+  description: "Dominio operativo eficaz — registre, modismos, inversion, précision stylistique."
+  concept_keys:
+    - colocaciones_avanzadas
+    - registros_formal_informal
+    - modismos
+    - inversion_enfatica
+    - subjuntivo_estilo
+    - marcadores_discursivos_c1
+    - lexico_preciso
+    - construcciones_focales
+  concept_weights:
+    colocaciones_avanzadas: 8
+    registros_formal_informal: 5
+    modismos: 8
+    inversion_enfatica: 5
+    subjuntivo_estilo: 5
+    marcadores_discursivos_c1: 3
+    lexico_preciso: 5
+    construcciones_focales: 5
+  concept_groups:
+    lexicon_advanced: [colocaciones_avanzadas, modismos, lexico_preciso]
+    register: [registros_formal_informal, marcadores_discursivos_c1]
+    syntax_stylistic: [inversion_enfatica, subjuntivo_estilo, construcciones_focales]
+
+C2:
+  description: "Maestría — native-like, pragmatique, créativité linguistique."
+  concept_keys:
+    - estructuras_hendidas
+    - discurso_referido_complejo
+    - ironia_pragmatica
+    - matiz_perfectivo_imperfectivo
+    - literatura_referencial
+  concept_weights:
+    estructuras_hendidas: 5
+    discurso_referido_complejo: 5
+    ironia_pragmatica: 5
+    matiz_perfectivo_imperfectivo: 5
+    literatura_referencial: 3
+  concept_groups:
+    advanced_syntax: [estructuras_hendidas, matiz_perfectivo_imperfectivo]
+    pragmatics: [ironia_pragmatica, discurso_referido_complejo]
+    cultural: [literatura_referencial]

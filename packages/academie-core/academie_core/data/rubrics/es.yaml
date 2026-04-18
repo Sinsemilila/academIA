@@ -1,0 +1,63 @@
+# Compact rubrics per CEFR level for Spanish (Maestro ES).
+# DRAFT — sourced from PCIC (Plan Curricular del Instituto Cervantes)
+# vol. A1-C2 gramática + funciones. Requires native-speaker (C2 ES) review
+# before prod activation. Structure mirrors en.yaml for consistency.
+# Source: cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/
+rubrics:
+  A1: |-
+    RUBRIC A1 — Acceso (PCIC A1)
+    Objetivo comunicativo: saludar, presentarse, pedir información básica (hora, precio, nombre, lugar). Frases cortas (5-10 palabras), presente de indicativo + querer/poder. Léxico concreto (~500 palabras frecuentes).
+    Tolerancia:
+    - T1/T2 ortografía (acentos, ñ, tilde diacrítica), morfología (concordancia simple): omnipresentes, no corregir.
+    - T3 género/número adj-sust incorrecto que rompe concordancia: corregir 1× máx. por turno.
+    - T4 confusión ser/estar en identidad vs estado: corregir inmediatamente con contraste L1 (FR: être couvre les deux).
+    Feedback T2 preferido: recast implícito en respuesta + pregunta seguimiento. NO elicitar nunca en A1.
+    Estructuras objetivo: presente de indicativo regular, ser/estar básico (identidad/estado/ubicación), género masc/fem, artículos el/la/los/las + un/una, pronombres personales sujeto.
+    ANTI-PATTERNS: términos metalingüísticos (prohibidos), >2 correcciones/turno, léxico avanzado, frases >12 palabras.
+  A2: |-
+    RUBRIC A2 — Plataforma (PCIC A2)
+    Objetivo comunicativo: narrar experiencia reciente, expresar gustos, comparaciones simples, compras. Pretérito indefinido + pretérito perfecto + ir a + inf.
+    Tolerancia:
+    - T1 artículos contractos (al/del), preposiciones frecuentes: silencio.
+    - T2 formas verbales irregulares (dije/dijo), concordancia gustar-indirecto: recast ligero.
+    - T3 en estructura target de sesión: elicitación, alternar con metalingüístico ligero ('¿Pasado o presente?').
+    - T4 en estructura A1 supuestamente adquirida: prompt + remediación, flag spaced retrieval.
+    Feedback preferido: T2 recast inline ('Ah, fuiste a Madrid! ¿Y qué comiste?'), T3 elicit simple ('Casi — pretérito indefinido de ir?').
+    Estructuras objetivo: pretérito indefinido regular+irregular (top 30), pretérito perfecto, imperativo afirmativo tú, gustar-type verbs, comparativos (más/menos…que).
+  B1: |-
+    RUBRIC B1 — Umbral (PCIC B1)
+    Objetivo comunicativo: mantener conversación sobre temas familiares, narrar acontecimientos, dar opinión+razón, gestionar viajes. Contraste indefinido/imperfecto + subjuntivo básico + condicional.
+    Tolerancia:
+    - T1 artículos, preposiciones frecuentes: silencio.
+    - T2 estructuras de nivel inferior (A1/A2): recast.
+    - T3 en estructura target B1 (subjuntivo triggers, indefinido/imperfecto, ser/estar avanzado): prompts dominantes. Alternar elicitación y metalingüístico, máx. 2× mismo tipo consecutivo en misma familia.
+    - T4: prompt + remediación explícita + spaced retrieval.
+    Fraseos T3 preferidos: elicit ('Casi — después de "cuando" con futuro, ¿qué modo?'), metalingüístico ('Atento al modo. Hecho seguro o deseo/duda?').
+    Estructuras objetivo: subjuntivo presente (querer que, para que, cuando+futuro), imperfecto vs indefinido, condicional simple, estilo indirecto básico, verbos con preposición (soñar con, consistir en).
+  B2: |-
+    RUBRIC B2 — Avanzado (PCIC B2)
+    Objetivo comunicativo: argumentar, matizar posición, comparación cultural, debatir. Todas las estructuras excepto raras + precisión léxica.
+    Tolerancia:
+    - T1/T2 muletillas, dudas: silencio.
+    - T3 en estructuras B2 (subjuntivo complejo, pretérito pluscuamperfecto, pasiva refleja): elicitación + metalingüístico + matiz estilístico.
+    - T4: prompt + remediación + matiz pragmático.
+    Fraseos T3 preferidos: metalingüístico rico ('Subjuntivo tras "aunque" indica concesión hipotética, indicativo = hecho reconocido'), pushed output ('¿Cómo lo dirías con más precisión?').
+    Estructuras objetivo: condicional compuesto (habría hecho), subjuntivo imperfecto y pluscuamperfecto, pasiva refleja (se vende), conectores (sin embargo, no obstante), colocaciones idiomáticas (dar pena, hacer falta).
+  C1: |-
+    RUBRIC C1 — Dominio operativo eficaz (PCIC C1)
+    Objetivo comunicativo: dominio preciso, conciencia de registro, debate académico, escritura estructurada. Sutilezas estilísticas + modismos.
+    Tolerancia:
+    - T1/T2 dudas próximas a nativo: silencio.
+    - T3 en precisión léxica (falso amigo C1, colocación atípica): metalingüístico + alternativas.
+    - T4 en estructura A1-B2 supuestamente adquirida: prompt + remediación + reflexión auto-regulación.
+    Fraseos preferidos: metalingüístico estilístico ('"Acaso" es más literario que "quizá" — ¿registro apropiado aquí?'), auto-regulación ('Tiendes a usar "hacer" donde va "realizar". ¿Lo flag para revisión?').
+    Estructuras objetivo: modismos (transparentes + opacos), inversión enfática (Raro es que…), colocaciones avanzadas, registros (formal/informal/culto/coloquial).
+  C2: |-
+    RUBRIC C2 — Maestría (PCIC C2)
+    Objetivo comunicativo: próximo a nativo, matices pragmáticos, creatividad lingüística. Errores residuales = marcadores de fluidez, no lagunas de competencia.
+    Tolerancia:
+    - T1 y T2: casi siempre silencio.
+    - T3: metalingüístico + alternativas estilísticas + referencias culturales.
+    - T4: prompt + reflexión metapragmática.
+    Fraseos preferidos: 'Funciona, pero un nativo diría X por la connotación de Y.', pushed creative ('¿Puedes decirlo menos directamente?').
+    Estructuras objetivo: oraciones hendidas (Fue Juan quien…), estructuras de foco, implicatura pragmática, sarcasmo/ironía, marcadores de fluidez nativa (pues, vale, oye).

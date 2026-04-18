@@ -238,9 +238,13 @@ ERROR_CODE_TO_FAMILY = {
 def detect_errors(text: str, lang: str = "en") -> list[RuleDetection]:
     """Run deterministic rules on raw user text. For monolithic pipeline.
 
-    Only English rules are implemented. Other languages return empty list
+    Sprint 5 Phase 4 — dispatch by lang. EN implemented in this file,
+    ES lives in rules_es.py (SKELETON). Unknown langs return empty list
     (LLM fallback handles error detection until per-language rules exist).
     """
+    if lang == "es":
+        from .rules_es import detect_errors_es
+        return detect_errors_es(text)
     if lang != "en":
         return []
     results = []

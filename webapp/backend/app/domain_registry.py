@@ -13,7 +13,7 @@ from __future__ import annotations
 # domain (ISO) → agent slug
 AGENT_BY_DOMAIN: dict[str, str] = {
     "en": "teacher",
-    # "es": "maestro",       # Sprint 5-ES
+    "es": "maestro",       # Sprint 5 Phase 4 — activation gated by ENABLE_MAESTRO
     # "it": "professore",
     # "de": "lehrer",
     # "ja": "sensei",

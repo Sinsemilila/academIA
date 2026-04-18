@@ -39,11 +39,26 @@ _tiktoken_enc = tiktoken.encoding_for_model("gpt-4o-mini")
 # one line here + YAML data files + env var.
 _DOMAIN_REGISTRY: dict[str, tuple[str, LanguageDomain]] = {
     "teacher": ("en", LanguageDomain("en")),
-    # "maestro": ("es", LanguageDomain("es")),  # Sprint 5-ES
-    # "professore": ("it", LanguageDomain("it")),
-    # "lehrer": ("de", LanguageDomain("de")),
-    # "sensei": ("ja", LanguageDomain("ja")),
 }
+
+# Sprint 5 Phase 4 — Maestro ES activation behind feature flag.
+# Requires: (1) ENABLE_MAESTRO env var = "true", (2) content pack YAMLs
+# (rubrics/fewshots/l1_transfer/concept_hints/cefr_diagnostics for es),
+# (3) DIFY_KEY_MAESTRO env var set, (4) frontend config.ts `maestro.available=true`,
+# (5) native-speaker validation of the content pack.
+# Drafted YAMLs ship with the codebase but activation is gated to prevent
+# accidental exposure of unvetted ES content.
+if os.environ.get("ENABLE_MAESTRO", "false").lower() in ("1", "true", "yes"):
+    try:
+        _DOMAIN_REGISTRY["maestro"] = ("es", LanguageDomain("es"))
+    except Exception as _e:
+        import logging
+        logging.getLogger("chat").error(
+            "ENABLE_MAESTRO=true but LanguageDomain('es') failed to initialize: %s", _e
+        )
+    # "professore": ("it", LanguageDomain("it")),  # Sprint 6 — Italian
+    # "lehrer": ("de", LanguageDomain("de")),      # Sprint 7 — German
+    # "sensei": ("ja", LanguageDomain("ja")),      # Sprint 8 — Japanese
 
 
 def _get_domain(agent: str) -> tuple[str, LanguageDomain]:
@@ -315,8 +330,11 @@ router = APIRouter(tags=["chat"])
 DIFY_API_URL = os.environ.get("DIFY_API_URL", "http://dify-api:5001/v1")
 DIFY_APP_KEYS = {
     "teacher": os.environ.get("DIFY_KEY_TEACHER", ""),
-    # Future agents via env vars: DIFY_KEY_MAESTRO, DIFY_KEY_SENSEI, etc.
 }
+# Sprint 5 Phase 4 — Maestro ES Dify app key (gated by ENABLE_MAESTRO).
+if os.environ.get("ENABLE_MAESTRO", "false").lower() in ("1", "true", "yes"):
+    DIFY_APP_KEYS["maestro"] = os.environ.get("DIFY_KEY_MAESTRO", "")
+# Future agents: DIFY_KEY_PROFESSORE (IT), DIFY_KEY_LEHRER (DE), DIFY_KEY_SENSEI (JP)
 
 
 def get_dify_key(agent: str) -> str:

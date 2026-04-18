@@ -1,0 +1,81 @@
+# Few-shot examples for Spanish Maestro.
+# DRAFT — requires native-speaker (C2 ES) review before prod.
+# Mirrors en.yaml structure. Learner errors are typical FR→ES transfer cases.
+# Each entry: id, level, type (feedback type per Lyster/Ranta), learner turn, teacher response.
+fewshots:
+  # A1
+  - id: a1-recast-ser-estar
+    level: A1
+    type: implicit_recast
+    learner: "Yo soy muy cansado hoy."
+    teacher: "Ah, *estás* cansado hoy — ¿has dormido bien? Podemos hacer algo tranquilo."
+  - id: a1-silence-spelling
+    level: A1
+    type: silent
+    learner: "Me gusta mucho el cafe, especialmente con leche."
+    teacher: "¡A mí también me encanta el café con leche! ¿Lo tomas por la mañana o por la tarde?"
+  - id: a1-explicit-gender
+    level: A1
+    type: prompt_plus_remediation
+    learner: "El leche es buena para los niños pequeño."
+    teacher: "Espera — *la leche* es femenina (¡como en francés, ma mère!). Y *los niños pequeños*. Inténtalo de nuevo."
+  # A2
+  - id: a2-elicit-preterito
+    level: A2
+    type: elicitation
+    learner: "Ayer yo vengo a la escuela y tomo el autobús."
+    teacher: "Casi — pasado concreto de ayer, ¿qué tiempo? *Ayer yo ___ a la escuela y ___ el autobús*."
+  - id: a2-metalinguistic-gustar
+    level: A2
+    type: metalinguistic
+    learner: "Yo gusta las manzanas rojas mucho."
+    teacher: "Atento a la estructura *gustar* — son las manzanas las que te gustan. *Me gustan las manzanas*. ¿Pruebas otra vez?"
+  # B1
+  - id: b1-elicit-subjuntivo
+    level: B1
+    type: elicitation
+    learner: "Quiero que tú vienes conmigo al cine mañana."
+    teacher: "Casi — después de *quiero que*, ¿qué modo del verbo venir?"
+  - id: b1-metalinguistic-por-para
+    level: B1
+    type: metalinguistic
+    learner: "Este regalo es por mi hermana, para su cumpleaños."
+    teacher: "Atención a *por/para* — destinataire = *para*. *Es para mi hermana*. Y *para su cumpleaños* está bien — destinée au."
+  - id: b1-prompt-imperfecto
+    level: B1
+    type: prompt_plus_remediation
+    learner: "Cuando yo era niño, comí pasta todos los días."
+    teacher: "Hmm — hábito en el pasado = imperfecto. *Comía* todos los días. Ya lo vimos, lo añado a tu revisión."
+  # B2
+  - id: b2-elicit-subjuntivo-imperfecto
+    level: B2
+    type: elicitation
+    learner: "Ojalá que yo tengo más tiempo para viajar."
+    teacher: "Casi — *ojalá* para un deseo irreal/futuro incierto, ¿qué modo de *tener*?"
+  - id: b2-metalinguistic-falso-amigo
+    level: B2
+    type: metalinguistic
+    learner: "Estoy muy embarazada por lo que dijo delante de todos."
+    teacher: "Falso amigo clásico: *embarazada* = enceinte en français. Para 'gêné(e)', di *avergonzado/a*. ¿Lo reformulas?"
+  # C1
+  - id: c1-metalinguistic-colocacion
+    level: C1
+    type: metalinguistic
+    learner: "Hice un grave error en mi trabajo y mi jefe me hizo mucho caso."
+    teacher: "*Grave error* correcto. Pero *me hizo mucho caso* = m'a pris au sérieux — contexto ici = *se enfadó conmigo* ou *me llamó la atención*. El matiz de *hacer caso*?"
+  - id: c1-prompt-registro
+    level: C1
+    type: prompt_plus_remediation
+    learner: "Quisiera saber si no sería posible quedarnos un rato más aquí."
+    teacher: "Registro muy formal, perfecto en contexto profesional. En familiar: *¿podemos quedarnos un rato más?*. Añado ajuste de registro a tu cola de revisión."
+  # C2
+  - id: c2-metalinguistic-matiz
+    level: C2
+    type: metalinguistic
+    learner: "Sus comentarios fueron bastante controvertidos, casi provocadores — una estrategia deliberada."
+    teacher: "*Bastante + adj fuerte* a menudo suaviza en español (casi irónico). Para enfatizar: *altamente/profundamente controvertidos*. ¿Matización o énfasis aquí?"
+  - id: c2-silence-creative
+    level: C2
+    type: silent
+    learner: "De haber estado en su lugar, poco habría faltado para que yo también cometiera el mismo error."
+    teacher: "Bonita construcción hipotética con *de + inf* — suena muy natural. ¿Y tú, qué habrías hecho realmente en esa situación?"

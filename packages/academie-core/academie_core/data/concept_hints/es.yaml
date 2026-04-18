@@ -1,0 +1,50 @@
+# Concept hint map — Spanish (ES).
+# DRAFT — sourced from PCIC. Requires native-speaker review for pedagogical accuracy.
+# Format : concept_key (stable ID, kebab/snake case) → short Spanish hint with example.
+# Mirrors en.yaml pattern. concept_keys aligned with curriculum_es.yaml + rules_es.py.
+
+# === A1 ===
+genero_masculino_femenino: "el/la + concordancia adj (el libro rojo / la mesa roja)"
+ser_estar_basico: "ser = identidad/nacionalidad, estar = estado/ubicación (soy francés / estoy cansado)"
+presente_indicativo_regular: "-ar (hablo), -er (como), -ir (vivo) — 6 personas"
+articulos_definidos: "el/la/los/las — concordancia con el sustantivo"
+hay_vs_esta: "hay = existencia indefinida (hay un libro), está = localización de algo conocido (el libro está aquí)"
+tener_que: "obligación simple — tengo que estudiar"
+
+# === A2 ===
+preterito_indefinido: "acción terminada en pasado concreto (ayer, la semana pasada) — hablé, comí, viví"
+preterito_perfecto: "acción pasada con conexión al presente (hoy, esta semana) — he hablado"
+gustar_type: "verbo con pronombre OI — me gusta / te gustan (concordancia avec sujet logique ≠ FR)"
+imperativo_afirmativo_tu: "¡habla! ¡come! ¡vive! — 2e pers sing, utilisé pour instruction"
+comparativos: "más/menos + adj + que / tan + adj + como (más alto que / tan alto como)"
+futuro_ir_a: "acción future proche — voy a estudiar mañana"
+
+# === B1 ===
+imperfecto_vs_indefinido: "imperfecto = descripción/hábito passé (comía), indefinido = événement concret (comí ayer)"
+subjuntivo_presente: "après expressions volonté/émotion/doute — quiero que vengas, me alegra que estés aquí"
+subjuntivo_temporal: "après cuando/en cuanto/hasta que + référence au FUTUR — cuando venga (subj), cuando viene (ind habituel)"
+condicional_simple: "-ía endings pour hypothèse/politesse — estudiaría, podría, me gustaría"
+por_para: "por = cause/moyen/durée/échange (gracias por, viajar por tren), para = but/destinataire/délai (para ti, para mañana)"
+estilo_indirecto_basico: "cambio de persona + tiempo — dice: 'estoy bien' → dice que está bien"
+verbos_preposicion: "soñar CON, consistir EN, acordarse DE — prépositions obligatoires, souvent ≠ FR"
+
+# === B2 ===
+condicional_compuesto: "habría + participio — hypothèse irréalisable passée (habría ido si hubiera podido)"
+subjuntivo_imperfecto: "-ara/-iera — après si hypothétique présent (si tuviera tiempo), wish pasado (ojalá tuviera)"
+subjuntivo_pluscuamperfecto: "hubiera + participio — si hypothétique passé (si hubiera sabido)"
+pasiva_refleja: "se + verbe 3e pers — se venden libros (livres sont vendus), alternative à la passive"
+aunque_modo: "aunque + ind = fait reconnu, + subj = concession hypothétique (aunque llueve / aunque llueva)"
+conectores_argumentativos: "sin embargo, no obstante, por lo tanto, a pesar de que — registre élevé"
+
+# === C1 ===
+colocaciones_avanzadas: "hacer/dar/tomar + nom spécifique (hacer caso, dar pena, tomar cariño)"
+registros_formal_informal: "choix tú/usted, lexique (amigo/colega/tío), inversions (Ruego que…)"
+modismos: "expressions idiomatiques (meter la pata, estar en las nubes, ponerse las pilas)"
+inversion_enfatica: "Poco esperaba yo…, Raro es que…, No sin razón…"
+subjuntivo_estilo: "valor estilístico du subjonctif après certains verbes de pensée/perception"
+
+# === C2 ===
+estructuras_hendidas: "Fue Juan quien lo hizo / Lo que necesito es descansar"
+discurso_referido_complejo: "transposition temporelle + modale + pragmatique"
+ironia_pragmatica: "signaux prosodiques + lexique contraire + context partagé"
+matiz_perfectivo_imperfectivo: "visión aspectual fine (estaba haciendo vs hacía vs hizo)"

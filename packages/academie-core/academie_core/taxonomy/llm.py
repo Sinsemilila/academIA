@@ -21,7 +21,8 @@ LITELLM_URL = "http://litellm-proxy:4000/v1/chat/completions"
 # user data (~500 msgs) to re-fine-tune per language.
 ANALYSIS_MODEL_BY_LANG: dict[str, str] = {
     "en": "ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v3:DU6GUv6v",
-    # "es": "gpt-4o-mini",  # Sprint 5-ES (Phase 4 content pack) will activate
+    "es": "gpt-4o-mini",  # Phase 4 content pack — base model + Spanish prompt
+    # Re-fine-tune per language when ~500 real msgs available (see audit Option A)
 }
 
 # Backward-compat alias — still imported by error_analysis_router.py for logs
@@ -248,15 +249,140 @@ class LLMAnalysisResult(BaseModel):
     errors: list[LLMError]
 
 
+# Sprint 5 Phase 4 — Spanish analysis prompt (FR→ES). DRAFT, requires
+# native-speaker review. Codes are universal (V:TENSE, ART, PREP…) ; examples
+# focus on typical FR→ES transfer errors (ser/estar, por/para, subjuntivo,
+# gender mismatch, false friends).
+SYSTEM_PROMPT_ES = """Analizas a hablantes franceses aprendiendo español. Identifica CADA error del USUARIO. NO analices mensajes del TEACHER (Maestro).
+
+═══ MÉTODO DE ANÁLISIS ═══
+
+Para CADA mensaje del aprendiz, haz un 3-PASS SCAN:
+
+PASS 1 — SUPERFICIE: ¿Acentos correctos? (está vs esta, sé vs se, tú vs tu). ¿Ñ correcta? ¿Tilde diacrítica (más/mas, sí/si)? ¿Mayúsculas? ¿Errores ortográficos? ¿Ortografía francesa (attentivamente→atentamente)?
+
+PASS 2 — GRAMÁTICA: ¿Concordancia género/número adj-sust (la libro→el libro)? ¿Ser/estar mal elegido (soy cansado→estoy cansado)? ¿Tiempo verbal (ayer he comido→ayer comí)? ¿Preterito irregular (dice→dijo)? ¿Subjuntivo ausente después de querer que/cuando+futuro? ¿Por/para confundidos? ¿Gustar-type structure (yo gusto→me gusta)? ¿Artículo antes de profesión tras ser (soy un médico→soy médico)? ¿Pronombres dobles mal ordenados (le lo→se lo)?
+
+PASS 3 — LÉXICO: ¿Palabra mal elegida? ¿Calco literal del francés (hago 25 años→tengo 25 años)? ¿Falso amigo (embarazada ≠ gênée)?
+
+CRÍTICO: Un mensaje tiene a menudo 3-5+ errores. Reporta TODOS. No pares en los obvios.
+
+Salida SOLO JSON válido. Nada de texto libre."""
+
+USER_PROMPT_TEMPLATE_ES = """Clasifica los errores usando SOLO estos códigos:
+
+V:TENSE — tiempo verbal incorrecto (ayer he comido → comí; cuando viene mañana → venga)
+V:SVA — concordancia sujeto-verbo (ellos tiene → tienen)
+V:FORM — forma verbal (gerundio/infinitivo/participio) incorrecta (quiero venir→quiero que vengas en subj)
+V:MOOD — modo verbal (indicativo vs subjuntivo) (quiero que vienes → vengas ; cuando viene → venga con valor futuro)
+V:COND — estructura condicional errada (si tengo dinero, compraría → compraría/tuviera)
+V:ASPECT — aspecto (estar+gerundio vs simple) mal empleado
+V:SER_ESTAR — confusión ser/estar (soy cansado → estoy cansado ; está médico → es médico)
+V:INFL — conjugación irregular incorrecta (dice ayer → dijo ; ponó → puso)
+V:PASS — pasiva mal formada (fue escrito por → escrito por / se escribió)
+N:NUM — número singular/plural incorrecto
+N:GEN — género incorrecto (el mesa → la mesa ; la problema → el problema)
+N:POSS — posesivo mal empleado
+N:INFL — plural irregular incorrecto
+N:CHOICE — sustantivo incorrecto (un bon trabajo → un buen empleo)
+ART — artículo incorrecto o ausente
+ART:PROF — artículo antes de profesión tras ser (soy un médico → soy médico)
+ART:GENERIC — artículo genérico (la música es arte — correcto ES, ≠ EN)
+DET — determinante incorrecto (este libros → estos libros)
+PREP — preposición incorrecta
+PREP:POR_PARA — por/para confundidos (gracias para → gracias por ; camino para → camino por)
+PREP:CALQUE — preposición francesa calcada (dependo de → correcto ES, pero soñar DE → soñar CON)
+WO — orden de palabras incorrecto
+WO:QUEST — orden de pregunta calque FR (Qué tú quieres? → ¿Qué quieres?)
+ADJ:CHOICE — adjetivo incorrecto
+ADJ:FORM — comparativo/superlativo (más mejor → mejor)
+ADJ:ORDER — posición adjetivo (un rojo coche → un coche rojo)
+ADJ:CONCORD — concordancia adj-sust incorrecta (libros roja → libros rojos)
+ADV:CHOICE — adverbio incorrecto
+ADV:ORDER — adverbio mal colocado
+PRON:FORM — forma pronombre incorrecta (mí gusta → me gusta)
+PRON:CHOICE — pronombre incorrecto (el que → quien)
+PRON:REF — referente pronominal ambiguo
+PRON:DOBLES — doble pronombre mal ordenado (le lo → se lo)
+SENT:RUNON — oración corrida (coma splice)
+SENT:FRAG — fragmento de oración
+SENT:NEG — negación mal formada (no tengo nada / no… nunca)
+SENT:MOD — modificador colgado
+SENT:SUBORD — oración subordinada mal formada
+CONJ — conjunción incorrecta
+LEX:CHOICE — palabra incorrecta o calco francés (hacer los deberes de matemáticas OK ; faire attention → tener cuidado)
+LEX:COLLOC — colocación incorrecta (tomar una decisión OK ; hacer un error → cometer un error)
+LEX:FALSE — falso amigo (embarazada ≠ gênée ; éxito ≠ exit ; largo ≠ large)
+LEX:CALQUE — traducción literal francesa (hago 25 años → tengo ; tiene frío → OK)
+LEX:IDIOM — modismo mal empleado
+LEX:REGISTER — registro léxico incorrecto
+MORPH:DERIV — derivación incorrecta
+MORPH:WORDCLASS — clase gramatical incorrecta
+DISC:TRANS — conector ausente o incorrecto
+DISC:COHER — coherencia (fluidez lógica)
+DISC:COHES — cohesión (referencias inter-oraciones)
+REG:LEVEL — nivel de formalidad inadecuado
+REG:PRAGMA — error pragmático
+ORTH:CASE — mayúscula/minúscula incorrecta
+ORTH:ACCENT — acento escrito faltante o incorrecto (ésta, está, esta ; sí/si ; tú/tu ; él/el)
+ORTH:NY — uso incorrecto de ñ (manana → mañana)
+ORTH:SPACE — espaciado incorrecto
+SPELL — error ortográfico NO francés
+SPELL:COGNATE — ortografía francesa calcada (possible → posible ; attentivamente → atentamente)
+PUNCT — puntuación general
+PUNCT:INTERROG — signo de interrogación/exclamación inicial ausente (¿? ¡!)
+
+{{"errors": [{{"turn": N, "original": "cita", "correction": "corrección", "codes": ["CODE"], "reasoning": "por qué"}}]}}
+
+Si no hay errores: {{"errors": []}}
+
+RESTRICCIONES DE CÓDIGOS (LEE CUIDADOSAMENTE):
+
+V:SER_ESTAR = SIEMPRE para confusión ser/estar — NUNCA V:CHOICE.
+PREP:POR_PARA = SIEMPRE para confusión por/para — NUNCA PREP.
+N:GEN = incluso si el problema es la concordancia del artículo (el mesa → la mesa), clasifícalo como N:GEN.
+ADJ:CONCORD = cuando el adj no concuerda en género O número con el sustantivo (libros roja, mesas grande).
+ORTH:ACCENT = SIEMPRE para tilde faltante o incorrecta — NUNCA SPELL.
+PRON:DOBLES = cuando le+lo/la → se+lo/la no se aplica (le lo doy → se lo doy).
+LEX:FALSE = SOLO si la palabra francesa se usa con el significado francés.
+SPELL:COGNATE = SOLO si el error es la palabra francesa (possible, attentivamente, développar).
+
+### Ejemplos:
+
+Turno 1: "ayer he comido en casa con la leche de mi madre"
+{{"turn":1,"original":"he comido","correction":"comí","codes":["V:TENSE"],"reasoning":"Ayer con pretérito indefinido, no perfecto"}}
+
+Turno 2: "Soy muy cansado porque yo gusto dormir poco"
+{{"turn":2,"original":"Soy","correction":"Estoy","codes":["V:SER_ESTAR"],"reasoning":"Estado transitorio con estar"}}
+{{"turn":2,"original":"yo gusto","correction":"me gusta","codes":["PRON:FORM","V:SVA"],"reasoning":"Estructura gustar — sujeto lógico es dormir"}}
+
+Turno 3: "Quiero que tú vienes conmigo para mi cumpleaños mañana"
+{{"turn":3,"original":"vienes","correction":"vengas","codes":["V:MOOD"],"reasoning":"Subjuntivo tras querer que"}}
+{{"turn":3,"original":"para mi cumpleaños","correction":"por mi cumpleaños","codes":["PREP:POR_PARA"],"reasoning":"Motivo/causa = por, no para"}}
+
+Turno 4: "Yo estoy muy embarazada porque mi amigo me hizo mucho caso delante de todos"
+{{"turn":4,"original":"embarazada","correction":"avergonzada","codes":["LEX:FALSE"],"reasoning":"Falso amigo: embarazada = enceinte, no gênée"}}
+
+Análisis del siguiente transcript:
+{transcript}
+"""
+
+
 # Sprint 5 D3 — Per-language system prompt. Each prompt is calibrated for a
 # specific L1→target pair (codes, few-shot errors, typical calques).
 SYSTEM_PROMPT_BY_LANG: dict[str, str] = {
     "en": SYSTEM_PROMPT_EN,
-    # "es": SYSTEM_PROMPT_ES,  # Phase 4 — adapted for FR→ES (ser/estar, subj, gender)
+    "es": SYSTEM_PROMPT_ES,  # Phase 4 content pack — DRAFT, needs review
 }
 
 # Backward-compat alias
 SYSTEM_PROMPT = SYSTEM_PROMPT_EN
+
+# Per-language user prompt template dispatch
+USER_PROMPT_TEMPLATE_BY_LANG: dict[str, str] = {
+    "en": USER_PROMPT_TEMPLATE,
+    "es": USER_PROMPT_TEMPLATE_ES,
+}
 
 
 @retry(stop=stop_after_attempt(2), wait=wait_exponential(multiplier=1, min=2, max=10))
@@ -269,17 +395,18 @@ async def analyze_transcript(transcript: str, lang: str = "en") -> LLMAnalysisRe
     """
     model = ANALYSIS_MODEL_BY_LANG.get(lang)
     system_prompt = SYSTEM_PROMPT_BY_LANG.get(lang)
-    if not model or not system_prompt:
+    user_template = USER_PROMPT_TEMPLATE_BY_LANG.get(lang)
+    if not model or not system_prompt or not user_template:
         logger.warning(
-            "LLM analysis not configured for lang=%s (model=%s, prompt=%s), returning empty",
-            lang, bool(model), bool(system_prompt),
+            "LLM analysis not configured for lang=%s (model=%s, prompt=%s, template=%s), returning empty",
+            lang, bool(model), bool(system_prompt), bool(user_template),
         )
         return LLMAnalysisResult(errors=[])
     payload = {
         "model": model,
         "messages": [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": USER_PROMPT_TEMPLATE.format(transcript=transcript)},
+            {"role": "user", "content": user_template.format(transcript=transcript)},
         ],
         "response_format": {"type": "json_object"},
         "temperature": 0.2,

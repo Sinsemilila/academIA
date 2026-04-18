@@ -1,0 +1,28 @@
+# L1 transfer patterns: French → Spanish.
+# DRAFT — requires FR-native + ES-native cross-check before prod.
+# Prioritized by multiplier (higher = show first to LLM in L1 watch block).
+# Based on typological distance FR-ES (close) + most frequent transfer errors.
+l1: fr
+target: es
+transfers:
+  - family: por_para
+    multiplier: 1.6
+    description: "'Pour' français ambigu : 'gracias por' (cause/échange) vs 'para ti' (destinataire/but). Calque 'para' où 'por' requis : 'camino para Madrid' → 'camino por Madrid' (transit)."
+  - family: ser_estar
+    multiplier: 1.5
+    description: "'Être' FR recouvre ser (identité/caractéristique essentielle) + estar (état/localisation). Calque 'soy cansado' (suis fatigué) → 'estoy cansado'. 'está médico' → 'es médico'."
+  - family: gender_mismatch
+    multiplier: 1.4
+    description: "Genre différent FR/ES : 'la leche' (FR 'le lait' masc) ; 'el problema' (FR 'le problème' masc, MAIS FR devrait aider ici — erreur par hypercorrection) ; 'la nariz' (FR 'le nez'). Liste top 30 : leche, nariz, sangre, sal, miel (fém ES ↔ masc FR)."
+  - family: false_friends
+    multiplier: 1.3
+    description: "embarazada ≠ embarrassée (= enceinte) ; éxito ≠ exit (= succès) ; largo ≠ large (= long) ; realizar ≠ réaliser dans sens 'se rendre compte' (=effectuer) ; constipado = rhume (pas constipation)."
+  - family: subjuntivo_ausente
+    multiplier: 1.2
+    description: "FR subjonctif plus faible qu'ES. Calque indicatif après 'quiero que tienes' → 'quiero que tengas' (subj). 'cuando vengo mañana' (ind) → 'cuando venga mañana' (subj avec valeur future)."
+  - family: article_profession
+    multiplier: 1.1
+    description: "FR 'je suis un médecin' → ES 'soy médico' (sans article après ser + profession/nationalité non-modifiée)."
+  - family: pronombres_dobles
+    multiplier: 1.0
+    description: "ES requiert réorganisation objet direct+indirect : 'se lo doy' (le le donne) — ordre OI+OD inversé par rapport au FR 'je le lui donne'. Le → se quand suivi de lo/la (se lo, pas le lo)."
