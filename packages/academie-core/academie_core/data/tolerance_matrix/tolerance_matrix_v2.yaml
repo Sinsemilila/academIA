@@ -484,6 +484,9 @@ progression:
   max_error_rate: 1.0
   min_sessions: 5
   max_errors_per_turn: 3
+  # Sprint 6 — concept gate
+  concept_validated_threshold: 75   # score >= this = concept validated
+  concept_gate_ratio: 0.75          # 75% of concept_keys must be validated
 weights_source: empirical_external_corpora_v1_1 (W&I + LOCNESS BEA 2019, NumPyro GLMM
   posterior relative-to-T1, 2026-04-15)
 calibration_status:

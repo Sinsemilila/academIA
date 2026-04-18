@@ -257,8 +257,8 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str,
         }
 
     # ── Progression ──
-    # Exam eligibility: all tracked families clean + enough sessions
-    eligible_for_exam = (
+    # Gate 1 — family-level: all tracked families clean + enough sessions
+    families_gate = (
         len(penalized_families) > 0
         and len(penalized_clean) == len(penalized_families)
         and total_sessions >= min_sessions
@@ -286,9 +286,32 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str,
     total_concepts = len(concept_scores) or 1
     progress_pct = round(sum(concept_scores) / total_concepts)
 
-    # For beginner band (A1-A2): if no tracked families, base eligibility on sessions
+    # Gate 2 — concept-level: enough concepts validated by LLM/error score
+    concept_validated_threshold = prog.get("concept_validated_threshold", 75)
+    concept_gate_ratio = prog.get("concept_gate_ratio", 0.75)
+    concepts_validated = sum(
+        1 for ck in (concept_keys or [])
+        if concept_scores_map.get(ck, 0) >= concept_validated_threshold
+    )
+    concept_gate = _check_concept_gate(
+        concept_keys or [], concept_scores_map,
+        concept_validated_threshold, concept_gate_ratio,
+    )
+
+    # Gate 3 — T4 hard block: regressive errors on already-acquired structures
+    # A family is "actively regressive" when its dominant tier is T4 and it has errors.
+    regressive_families = [
+        fk for fk, fam in families_result.items()
+        if fam.get("tier") == "regressive" and fam.get("count", 0) > 0
+        and fam.get("mode") != "shadow"
+    ]
+    has_regressive_block = len(regressive_families) > 0
+
+    eligible_for_exam = families_gate and concept_gate and not has_regressive_block
+
+    # For beginner band (A1-A2): if no tracked families, base eligibility on sessions + concept gate
     if band == "beginner" and not penalized_families:
-        eligible_for_exam = total_sessions >= min_sessions
+        eligible_for_exam = total_sessions >= min_sessions and concept_gate and not has_regressive_block
 
     # ── Concepts for current level ──
     concepts_by_family = defaultdict(list)
@@ -305,7 +328,11 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str,
     # ── Recommendation ──
     recommendation = _compute_recommendation(
         families_result, penalized_families, penalized_clean,
-        total_sessions, min_sessions, eligible_for_exam, niveau_global
+        total_sessions, min_sessions, eligible_for_exam, niveau_global,
+        regressive_families=regressive_families,
+        concept_gate_passes=concept_gate,
+        concepts_validated=concepts_validated,
+        concepts_total=len(concept_keys or []),
     )
 
     # ── Build summary lists ──
@@ -326,6 +353,13 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str,
             "eligible_for_exam": eligible_for_exam,
             "sessions_total": total_sessions,
             "sessions_required": min_sessions,
+            # Sprint 6 — concept gate
+            "concepts_validated": concepts_validated,
+            "concepts_total": len(concept_keys or []),
+            "concept_gate_ratio": concept_gate_ratio,
+            "concept_gate_passes": concept_gate,
+            "has_regressive_block": has_regressive_block,
+            "regressive_families": regressive_families,
         },
         "recommendation": recommendation,
         "summary": {
@@ -338,6 +372,34 @@ def compute_error_profile(error_rows: list[dict], niveau_global: str,
             "normal": normal,
         },
     }
+
+
+def _check_concept_gate(
+    concept_keys: list,
+    concept_scores_map: dict,
+    threshold: int,
+    required_ratio: float,
+) -> bool:
+    """Return True if enough concepts are validated for exam eligibility.
+
+    Gradual gate: requires `required_ratio` fraction of concept_keys to have
+    a score >= threshold. Falls back to True when no concept data exists yet
+    (graceful degradation for learners without n8n snapshot data).
+
+    Args:
+        concept_keys: ordered list of concept keys for current CEFR level.
+        concept_scores_map: per-concept scores (0-100), may be partial.
+        threshold: minimum score to count a concept as validated (default 75).
+        required_ratio: fraction of concept_keys that must be validated (default 0.75).
+    """
+    if not concept_keys or not concept_scores_map:
+        return True  # no curriculum or no data yet — don't block
+    validated = sum(
+        1 for ck in concept_keys
+        if concept_scores_map.get(ck, 0) >= threshold
+    )
+    required = max(1, round(len(concept_keys) * required_ratio))
+    return validated >= required
 
 
 def _score_concept(
@@ -380,6 +442,10 @@ def _compute_recommendation(
     families: dict, penalized: list, penalized_clean: list,
     total_sessions: int, min_sessions: int,
     eligible: bool, niveau: str,
+    regressive_families: list | None = None,
+    concept_gate_passes: bool = True,
+    concepts_validated: int = 0,
+    concepts_total: int = 0,
 ) -> dict:
     """Priority-based recommendation for the student."""
     level_order = ["A1", "A2", "B1", "B2", "C1", "C2"]
@@ -397,6 +463,27 @@ def _compute_recommendation(
             "message": f"Tous les modules prioritaires sont maîtrisés. Prêt pour l'examen {next_level} ?",
             "action": "/chat/teacher",
             "label": "Passer l'examen",
+        }
+
+    # 1b. T4 regressive block — concept debt on lower-level structures
+    if regressive_families:
+        fam_labels = [families[fk]["label"] for fk in regressive_families if fk in families]
+        label_str = fam_labels[0] if len(fam_labels) == 1 else f"{fam_labels[0]} et {len(fam_labels) - 1} autre(s)"
+        return {
+            "type": "regressive_block",
+            "message": f"Des structures d'un niveau antérieur réapparaissent : {label_str}. Consolidez-les avant de progresser.",
+            "action": "/chat/teacher",
+            "label": "Consolider les bases",
+        }
+
+    # 1c. Concept gate — families clean but concepts not sufficiently validated
+    if not concept_gate_passes and concepts_total > 0:
+        missing = concepts_total - concepts_validated
+        return {
+            "type": "concept_gap",
+            "message": f"Vous êtes proche de l'examen {next_level or ''}. Il reste {missing} concept(s) à consolider avant d'être prêt(e).",
+            "action": "/chat/teacher",
+            "label": "Continuer à pratiquer",
         }
 
     # 2. High priority — penalized family with high error rate

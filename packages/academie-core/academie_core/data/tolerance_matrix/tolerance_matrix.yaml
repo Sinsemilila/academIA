@@ -425,3 +425,6 @@ progression:
   max_error_rate: 1.0        # ≤1 error/session in family to be "clean"
   min_sessions: 5            # family must appear in ≥5 sessions
   max_errors_per_turn: 3     # cap per sentence (avoid discouraging)
+  # Sprint 6 — concept gate
+  concept_validated_threshold: 75   # score >= this = concept validated
+  concept_gate_ratio: 0.75          # 75% of concept_keys must be validated
