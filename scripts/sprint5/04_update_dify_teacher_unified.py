@@ -91,17 +91,26 @@ def patch_graph(graph_str: str) -> str:
         "cefr_diagnostics_block",
     ]
 
+    # Find the actual Start node ID (Dify uses UUID-like ids, not the string "start")
+    start_node_id = None
+    for n in nodes:
+        if n.get("data", {}).get("type") == "start":
+            start_node_id = n.get("id")
+            break
+    if not start_node_id:
+        raise RuntimeError("Start node not found — aborting patch")
+
     for n in nodes:
         if n.get("id") == "code_turn_check":
             data = n["data"]
 
-            # 2.1 — Register in variables[] (input wiring from start node)
+            # 2.1 — Register in variables[] (input wiring from start node by ID)
             existing_vars = {v.get("variable") for v in data.get("variables", [])}
             for var_name in NEW_VARS_TO_WIRE:
                 if var_name not in existing_vars:
                     data["variables"].append({
                         "variable": var_name,
-                        "value_selector": ["start", var_name],
+                        "value_selector": [start_node_id, var_name],
                     })
 
             # 2.2 — Register in outputs declaration (Dify stores as dict with type schema)
