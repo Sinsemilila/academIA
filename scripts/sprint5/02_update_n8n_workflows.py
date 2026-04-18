@@ -14,6 +14,10 @@ Verified pre-run: "domaine" appears only in technical contexts
 Idempotent: re-running after success is safe (no-op since patterns already replaced).
 
 Backup: creates `workflow_entity_backup_sprint5` table with pre-update nodes.
+
+IMPORTANT: This script only updates `workflow_entity`. n8n actually executes the
+version pointed to by `workflow_entity.activeVersionId` → `workflow_history` row.
+To complete the migration, run `02b_update_workflow_history.sql` afterwards.
 """
 import os
 import json
@@ -36,6 +40,47 @@ def psql(sql: str, fetch: bool = False) -> str:
 def psql_many(sql: str) -> None:
     cmd = ["docker", "exec", "-i", CONTAINER, "psql", "-U", DB_USER, "-d", DB_NAME]
     subprocess.run(cmd, input=sql, text=True, check=True)
+
+
+_SUBSTITUTIONS = [
+    ("body.domaine || 'anglais'", "body.domaine"),
+    ("body.domain || 'anglais'", "body.domain"),
+    ('"anglais"', '"en"'),
+    ("'anglais'", "'en'"),
+    ("domaine", "domain"),
+]
+
+
+def _apply(text: str) -> str:
+    for pattern, replacement in _SUBSTITUTIONS:
+        text = text.replace(pattern, replacement)
+    return text
+
+
+def update_table_nodes(table: str, where: str, label: str) -> int:
+    """Replace patterns in a table's nodes column. Returns count of rows updated."""
+    # Fetch all matching rows with key + nodes
+    key_col = "id" if table == "workflow_entity" else '"versionId"'
+    rows_text = psql(
+        f"SELECT {key_col} || '|' || nodes::text FROM {table} WHERE {where}"
+    )
+    if not rows_text:
+        return 0
+    updated = 0
+    for line in rows_text.splitlines():
+        key, _, nodes_text = line.partition("|")
+        if not nodes_text:
+            continue
+        new_text = _apply(nodes_text)
+        if new_text == nodes_text:
+            continue
+        escaped = new_text.replace("'", "''")
+        psql_many(
+            f"UPDATE {table} SET nodes = '{escaped}'::json WHERE {key_col} = '{key}';"
+        )
+        updated += 1
+    print(f"  [{label}] {table}: {updated} rows updated")
+    return updated
 
 
 def update_workflow_nodes(wf_name: str) -> tuple[int, int]:
