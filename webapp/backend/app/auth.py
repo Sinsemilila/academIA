@@ -7,8 +7,10 @@ from passlib.context import CryptContext
 from . import database as db
 
 # ── Config ──────────────────────────────────────────────
-SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "dev-only-not-for-prod")
-REFRESH_SECRET = os.environ.get("JWT_REFRESH_SECRET", "dev-only-not-for-prod")
+# Fail-fast : refuse to start if JWT secrets aren't provided via env
+# (webapp/.env.sops → DIFY_KEY_* / JWT_*). No guessable defaults.
+SECRET_KEY = os.environ["JWT_SECRET_KEY"]
+REFRESH_SECRET = os.environ["JWT_REFRESH_SECRET"]
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_DAYS = 7

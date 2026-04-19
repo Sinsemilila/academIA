@@ -16,7 +16,8 @@ logger = logging.getLogger("academie-api.admin")
 
 router = APIRouter()
 
-INTERNAL_TOKEN = os.environ.get("INTERNAL_API_TOKEN", "REDACTED_INTERNAL_API_TOKEN")
+# Fail-fast: must be set via webapp/.env.sops, no guessable fallback.
+INTERNAL_TOKEN = os.environ["INTERNAL_API_TOKEN"]
 
 
 # ── XP triggers (internal, called by n8n) ────────────────

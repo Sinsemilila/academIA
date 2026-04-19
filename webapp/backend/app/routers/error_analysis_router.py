@@ -11,7 +11,8 @@ from ..auth import get_current_user
 from pydantic import BaseModel
 from .. import database as db
 
-INTERNAL_TOKEN = os.environ.get("INTERNAL_API_TOKEN", "REDACTED_INTERNAL_API_TOKEN")
+# Fail-fast: must be set via webapp/.env.sops, no guessable fallback.
+INTERNAL_TOKEN = os.environ["INTERNAL_API_TOKEN"]
 from academie_core.taxonomy.rules import detect_errors, RuleDetection
 from academie_core.taxonomy.llm import analyze_transcript, ANALYSIS_MODEL
 from academie_core.taxonomy.categories import is_valid_code
