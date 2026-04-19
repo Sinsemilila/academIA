@@ -1,0 +1,33 @@
+# COWS-L2H (ES) → AcademIA taxonomy mapping — STUB (Wave 1)
+#
+# UC Davis corpus : 500 essais annotés par natifs avec 6 types d'erreur.
+# Source : https://github.com/ucdaviscl/cowsl2h (confirm exact schema at download).
+#
+# Provisional mapping — to refine once COWS-L2H schema is inspected.
+
+mappings:
+  # Expected 6 COWS-L2H types (from published docs, to verify at Wave 1 kickoff)
+  "morphology":  { academie_code: "MORPH", family: "morphology" }
+  "syntax":      { academie_code: "SYNT",  family: "word_order" }
+  "lexis":       { academie_code: "LEX",   family: "vocabulary" }
+  "spelling":    { academie_code: "SPELL", family: "surface" }
+  "accent":      { academie_code: "ORTH:ACCENT", family: "surface" }
+  "agreement":   { academie_code: "ADJ:CONCORD", family: "morphology" }
+  # ES-specific refinements expected after corpus inspection
+  "ser_estar":   { academie_code: "V:SER_ESTAR", family: "verb_usage" }
+  "por_para":    { academie_code: "PREP:POR_PARA", family: "preposition" }
+  "subjuntivo":  { academie_code: "V:SUBJ", family: "verb_usage" }
+
+unmappable: {}
+
+academie_codes_no_source:
+  # COWS-L2H is surface-annotation focused — it cannot provide discourse/register signal.
+  discourse:
+    - DISC:TRANS
+    - DISC:COHER
+  register:
+    - REG:LEVEL
+    - REG:PRAGMA
+  calque:
+    - LEX:CALQUE
+    - PREP:CALQUE

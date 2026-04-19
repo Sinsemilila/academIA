@@ -1,0 +1,26 @@
+# MERLIN-DE → AcademIA taxonomy mapping — STUB (Wave 2)
+#
+# Eurac Research, 1000 texts, CEFR-annotated.
+# Source : https://www.merlin-platform.eu
+#
+# Provisional mapping — refine at Wave 2 DE kickoff (with Profile Deutsch ref).
+
+mappings:
+  "LEX":       { academie_code: "LEX:CHOICE",   family: "vocabulary" }
+  "GRAM":      { academie_code: "GRAM",         family: "morphology" }
+  "SPELL":     { academie_code: "SPELL",        family: "surface" }
+  "PUNCT":     { academie_code: "PUNCT",        family: "surface" }
+  "SYNT":      { academie_code: "SYNT",         family: "word_order" }
+  # DE-specific
+  "CASE":      { academie_code: "DE:CASE",      family: "morphology" }
+  "GENDER":    { academie_code: "DE:GENDER",    family: "morphology" }
+  "V2":        { academie_code: "DE:V2",        family: "word_order" }
+  "COMPOUND":  { academie_code: "DE:COMPOUND",  family: "surface" }
+  "UMLAUT":    { academie_code: "DE:UMLAUT",    family: "surface" }
+
+unmappable: {}
+
+academie_codes_no_source:
+  discourse:
+    - DISC:TRANS
+    - DISC:COHER

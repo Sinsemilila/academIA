@@ -1,0 +1,27 @@
+# MERLIN-IT → AcademIA taxonomy mapping — STUB (Wave 2)
+#
+# Eurac Research, 813 texts, CEFR-annotated, 70 features.
+# Source : https://www.merlin-platform.eu
+#
+# Provisional mapping — to refine at Wave 2 kickoff after MERLIN-IT inspection.
+
+mappings:
+  # Core MERLIN IT error tags (common ground across MERLIN releases)
+  "LEX":      { academie_code: "LEX:CHOICE", family: "vocabulary" }
+  "GRAM":     { academie_code: "GRAM",       family: "morphology" }
+  "SPELL":    { academie_code: "SPELL",      family: "surface" }
+  "PUNCT":    { academie_code: "PUNCT",      family: "surface" }
+  "SYNT":     { academie_code: "SYNT",       family: "word_order" }
+  # IT-specific
+  "AUX":      { academie_code: "IT:AUX",     family: "verb_usage" }
+  "SUBJ":     { academie_code: "IT:SUBJ",    family: "verb_usage" }
+  "ARTICLE":  { academie_code: "IT:ART",     family: "noun_det" }
+  "CLITIC":   { academie_code: "IT:CLITIC",  family: "pronoun" }
+  "CONCORD":  { academie_code: "CONCORD",    family: "morphology" }
+
+unmappable: {}
+
+academie_codes_no_source:
+  discourse:
+    - DISC:TRANS
+    - DISC:COHER

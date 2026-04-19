@@ -1,0 +1,24 @@
+# RLC (HSE Moscow) → AcademIA taxonomy mapping — STUB (Wave 4)
+#
+# Russian Learner Corpus, ~7000 textes multi-L1.
+# Source : http://web-corpora.net/RLC
+#
+# Provisional mapping — refine after RLC XML/TSV export inspection.
+
+mappings:
+  # Typical RLC tag categories (guess — to verify)
+  "CASE":         { academie_code: "RU:CASE",      family: "morphology" }
+  "ASPECT":       { academie_code: "RU:ASPECT",    family: "verb_usage" }
+  "GENDER":       { academie_code: "RU:GENDER",    family: "morphology" }
+  "MOTION":       { academie_code: "RU:MOTION",    family: "verb_usage" }
+  "AGREEMENT":    { academie_code: "RU:AGREEMENT", family: "morphology" }
+  "WORD_ORDER":   { academie_code: "WO",           family: "word_order" }
+  "LEX":          { academie_code: "LEX:CHOICE",   family: "vocabulary" }
+  "SPELL":        { academie_code: "SPELL",        family: "surface" }
+
+unmappable: {}
+
+academie_codes_no_source:
+  discourse:
+    - DISC:TRANS
+    - DISC:COHER

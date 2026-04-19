@@ -1,0 +1,21 @@
+# Falko → AcademIA taxonomy mapping — STUB (Wave 2)
+#
+# HU Berlin, ~1500 textes advanced (C1-C2 dominant).
+# Multi-layer annotation: ZH1 (minimal target), ZH2 (normalized target).
+# Source : https://www.linguistik.hu-berlin.de/.../falko
+#
+# Provisional mapping — refine after ANNIS export inspection.
+
+mappings:
+  # Falko uses multi-layer diff-based annotation. Tag vocabulary differs from MERLIN.
+  # Common abstractions (to verify at Wave kickoff) :
+  "LEX":       { academie_code: "LEX:CHOICE",   family: "vocabulary" }
+  "MORPH":     { academie_code: "MORPH",        family: "morphology" }
+  "SYNTAX":    { academie_code: "SYNT",         family: "word_order" }
+  "ORTHO":     { academie_code: "ORTHO",        family: "surface" }
+  "CASE":      { academie_code: "DE:CASE",      family: "morphology" }
+  "COMPOUND":  { academie_code: "DE:COMPOUND",  family: "surface" }
+
+unmappable: {}
+
+academie_codes_no_source: {}

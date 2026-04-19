@@ -1,0 +1,123 @@
+# ERRANT tag → AcademIA code + family mapping
+# Used to map W&I + LOCNESS BEA 2019 M2 annotations to AcademIA taxonomy.
+# Coverage : ~55 ERRANT tags → 8/12 AcademIA families directly calibrated.
+# Families not covered by ERRANT (kept at priors): verb_usage (modals/conditionals),
+#   discourse, calque (L1-specific), vocabulary (lex subtypes).
+#
+# Convention:
+#   ERRANT tag format: "OP:CAT[:SUBCAT]"  — OP = M (missing), R (replace), U (unnecessary).
+#   We map by CAT+SUBCAT (ignoring OP) since OP doesn't change the error category.
+
+# Direct mappings — by full ERRANT tag (OP-agnostic, written with R: prefix for readability)
+# Script strips OP when looking up.
+mappings:
+  # ══ Verb (12 ERRANT tags) ══
+  "VERB:TENSE":   { academie_code: "V:TENSE",      family: "verb_tense" }
+  "VERB:FORM":    { academie_code: "V:FORM",       family: "verb_tense" }
+  "VERB:INFL":    { academie_code: "V:INFL",       family: "verb_tense" }
+  "VERB:SVA":     { academie_code: "V:SVA",        family: "verb_tense" }
+  "VERB":         { academie_code: "V:CHOICE",     family: "verb_usage" }  # bare VERB = word choice
+
+  # ══ Noun (4 ERRANT tags) ══
+  "NOUN:NUM":     { academie_code: "N:COUNT",      family: "noun_det" }
+  "NOUN:POSS":    { academie_code: "N:POSS",       family: "noun_det" }
+  "NOUN:INFL":    { academie_code: "N:INFL",       family: "noun_det" }
+  "NOUN":         { academie_code: "N:CHOICE",     family: "noun_det" }
+
+  # ══ Determiner / Article ══
+  "DET":          { academie_code: "DET",          family: "noun_det" }
+
+  # ══ Pronoun ══
+  "PRON":         { academie_code: "PRON:FORM",    family: "pronoun" }  # coarse PRON → FORM most common
+
+  # ══ Preposition ══
+  "PREP":         { academie_code: "PREP",         family: "preposition" }
+
+  # ══ Word Order ══
+  "WO":           { academie_code: "WO",           family: "word_order" }
+
+  # ══ Adjective ══
+  "ADJ:FORM":     { academie_code: "ADJ:FORM",     family: "morphology" }
+  "ADJ":          { academie_code: "ADJ:CHOICE",   family: "morphology" }
+
+  # ══ Adverb ══
+  "ADV":          { academie_code: "ADV:CHOICE",   family: "morphology" }
+
+  # ══ Morphology ══
+  "MORPH":        { academie_code: "MORPH:WORDCLASS", family: "morphology" }
+
+  # ══ Surface — Spelling ══
+  "SPELL":        { academie_code: "SPELL",        family: "surface" }
+
+  # ══ Surface — Orthography ══
+  "ORTH":         { academie_code: "ORTH:CASE",    family: "surface" }  # ERRANT ORTH = capitalization/spacing
+
+  # ══ Surface — Punctuation ══
+  "PUNCT":        { academie_code: "PUNCT",        family: "surface" }
+
+  # ══ Surface — Contractions ══
+  "CONTR":        { academie_code: "CONTR",        family: "surface" }
+
+  # ══ Conjunction → Sentence (connectors / run-on proxy) ══
+  "CONJ":         { academie_code: "SENT:RUNON",   family: "sentence" }
+
+  # ══ Particle → Phrasal ══
+  "PART":         { academie_code: "V:PHRASAL",    family: "verb_usage" }
+
+# Unmappable tags — kept separate, counted but not used in GLMM for family calibration
+unmappable:
+  "OTHER":        { reason: "ERRANT catchall; too heterogeneous to assign a family" }
+  "UNK":          { reason: "Annotator could not categorize; exclude from analysis" }
+  "noop":         { reason: "ERRANT placeholder for no-error sentences; exclude from analysis" }
+
+# AcademIA codes NOT covered by ERRANT (priors preserved until dedicated annotation)
+# These are listed for transparency and to exclude from calibration updates.
+academie_codes_no_errant_source:
+  verb_usage:
+    - V:MODAL      # modals handled by V:CHOICE at best — too coarse
+    - V:COND       # conditional structure — not distinguished in ERRANT
+    - V:ASPECT
+    - V:AUX
+    - V:PASS
+    - V:EXIST
+  noun_det:
+    - ART          # ERRANT DET conflates articles + determiners
+    - ART:GENERIC
+  morphology:
+    - MORPH:DERIV  # derivational morphology — partial via R:MORPH + R:SPELL
+    - ADJ:ORDER
+  vocabulary:
+    - LEX:CHOICE   # general word choice — ERRANT R:OTHER catches some
+    - LEX:COLLOC   # collocations — requires dedicated corpus
+    - LEX:FALSE    # false friends — L1-dependent
+    - LEX:IDIOM
+    - LEX:ARGSTRUCT
+  calque:
+    - LEX:CALQUE   # L1 transfer — requires L1 annotation
+    - PREP:CALQUE
+  surface:
+    - SPELL:COGNATE  # L1-transfer spelling — requires L1 info
+    - PUNCT:COMMA    # would need per-punctuation-type ERRANT refinement
+    - PUNCT:APOST
+    - ORTH:SPACE     # ERRANT ORTH conflates case + spacing
+    - REDUND
+  sentence:
+    - SENT:FRAG
+    - SENT:NEG
+    - SENT:MOD
+    - SENT:PARALLEL
+    - SENT:SUBORD
+  discourse:
+    - DISC:TRANS
+    - DISC:COHER
+  register:
+    - REG:LEVEL
+    - REG:PRAGMA
+  pronoun:
+    - PRON:CHOICE  # ERRANT PRON too coarse
+    - PRON:REF
+
+# Expected outcome Sprint 1:
+#   - 8/12 AcademIA families have empirically calibrated weights
+#   - 4/12 families (verb_usage, discourse, calque, vocabulary) keep prior weights
+#   - Sprint 1.5 or Sprint 6 to refine via dedicated L1-transfer corpus + collocation lists
