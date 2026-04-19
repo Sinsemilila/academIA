@@ -16,7 +16,12 @@ Outputs :
   - Exit code 0 if pass rate ≥ 95%, else 1
 
 Usage :
-  python3 scripts/sprint3/eval_live_battery.py [--skip-cleanup] [--no-edge-cases]
+  python3 scripts/sprint3/eval_live_battery.py [--lang en|es|it|de|jp|ru]
+                                               [--skip-cleanup] [--no-edge-cases]
+
+Phase 0.5 — `--lang` dispatch. `en` uses the in-code PERSONAS dict
+(sprint3.eval_personas). Other langs load
+`data/battery/{lang}_personas.yaml` (required, else error).
 """
 from __future__ import annotations
 
@@ -34,6 +39,7 @@ from pathlib import Path
 
 import httpx
 import psycopg2
+import yaml
 from passlib.context import CryptContext
 
 _BACKEND = "/opt/academie/webapp/backend"
@@ -49,19 +55,62 @@ from academie_core.pedagogy.teacher_prompt import (  # noqa: E402
     should_inject_level_reminder,
     should_request_drift_check,
 )
-from sprint3.eval_personas import PERSONAS  # noqa: E402
 
-# Phase 6 — families whose FR→EN transfer the L1_WATCH block highlights.
-# Map: planted error family (from eval_personas.py) → L1_TRANSFER_SEED family.
-L1_PLANTED_FAMILIES_FR_EN = {
-    "preposition": "prepositions",
-    "noun_det": "articles",
-    "vocabulary": "false_friends",
+# Per-lang agent dispatch (maps to chat_router _DOMAIN_REGISTRY agent names).
+# Used to send chat requests against the right Dify app.
+_AGENT_BY_LANG: dict[str, str] = {
+    "en": "teacher",
+    "es": "maestro",
+    "it": "professore",
+    "de": "lehrer",
+    "jp": "sensei",
+    "ja": "sensei",
+    "ru": "uchitel",
 }
-_L1_MENTION_RE = re.compile(
-    r"\b(french|fran[çc]ais|articles?|prepositions?|false[ -]?friend)\b",
-    re.IGNORECASE,
-)
+
+# Per-lang L1-transfer family map + regex. EN baseline preserves Phase 6
+# behavior. Other langs can register their own set via YAML; if empty,
+# L1 contrast mentions are skipped silently.
+_L1_CONFIG_BY_LANG: dict[str, dict] = {
+    "en": {
+        "families": {
+            "preposition": "prepositions",
+            "noun_det": "articles",
+            "vocabulary": "false_friends",
+        },
+        "regex": r"\b(french|fran[çc]ais|articles?|prepositions?|false[ -]?friend)\b",
+    },
+    "es": {
+        "families": {
+            "preposition": "preposiciones",
+            "noun_det": "artículos",
+            "vocabulary": "falsos_amigos",
+        },
+        "regex": r"\b(francés|franc[eé]s|artículo(s)?|preposici(ón|ones)|falso(s)?\s+amigo(s)?)\b",
+    },
+}
+
+
+def _load_personas(lang: str) -> dict:
+    """Return a `{level: persona_dict}` map for the given lang.
+
+    EN uses the in-code PERSONAS dict (Sprint 3 baseline). Other langs load
+    `data/battery/{lang}_personas.yaml`. Raises if not found.
+    """
+    if lang == "en":
+        from sprint3.eval_personas import PERSONAS  # noqa: PLC0415
+        return PERSONAS
+    yaml_path = (
+        Path("/opt/academie/data/battery") / f"{lang}_personas.yaml"
+    )
+    if not yaml_path.exists():
+        raise SystemExit(
+            f"ERROR: persona YAML missing for lang={lang!r}: {yaml_path}\n"
+            f"Create it before running the battery."
+        )
+    with open(yaml_path) as f:
+        data = yaml.safe_load(f)
+    return data.get("personas") or data
 
 API_BASE = os.environ.get("API_BASE", "http://127.0.0.1:8000")
 TEST_USERNAME = "test-v2-battery"
@@ -119,13 +168,14 @@ def create_test_user() -> None:
         _db_exec("UPDATE users SET eleve_id = %s WHERE username = %s", (row[0], TEST_USERNAME))
 
 
-def seed_profile(level: str) -> None:
+def seed_profile(level: str, domain: str = "en") -> None:
     """Seed profils_eleves with a complete onboarded profile at the given level.
 
-    Forces Dify Teacher chatflow to skip ONBOARDING and enter SESSION (V2 prompt) —
-    required so the battery tests the V2 output schema, not the V1 onboarding prompt.
+    Forces Dify chatflow to skip ONBOARDING and enter SESSION — required so
+    the battery tests the V2 output schema, not the V1 onboarding prompt.
     Phase 6 — explicitly set l1='fr' + watch enabled so the L1_WATCH block is
     deterministically injected regardless of DB default drift.
+    Phase 0.5 — `domain` param lets the battery target ES, IT, DE... profiles.
     """
     e = _db_query_one("SELECT id FROM eleves WHERE username = %s", (TEST_USERNAME,))
     if not e:
@@ -135,14 +185,14 @@ def seed_profile(level: str) -> None:
         """INSERT INTO profils_eleves
            (eleve_id, domain, niveau_global, personnalite, scores_confiance,
             mode_apprentissage, onboarding_completed_at, l1, l1_watch_enabled, updated_at)
-           VALUES (%s, 'en', %s, %s::jsonb, %s::jsonb, 'libre', NOW(), 'fr', TRUE, NOW())
+           VALUES (%s, %s, %s, %s::jsonb, %s::jsonb, 'libre', NOW(), 'fr', TRUE, NOW())
            ON CONFLICT (eleve_id, domain) DO UPDATE SET
              niveau_global = EXCLUDED.niveau_global,
              l1 = 'fr',
              l1_watch_enabled = TRUE,
              onboarding_completed_at = COALESCE(profils_eleves.onboarding_completed_at, NOW()),
              updated_at = NOW()""",
-        (eid, level,
+        (eid, domain, level,
          '{"style": "direct", "interets": ["tech","voyage","cuisine"]}',
          '{"present_simple": 50, "past_simple": 40, "present_perfect": 30}'),
     )
@@ -259,7 +309,8 @@ class TurnRecord:
 
 
 def assert_persona_turn(persona: dict, turn_idx: int, battery_seq: int,
-                        result: ChatResult, planted: list[dict]) -> list[Check]:
+                        result: ChatResult, planted: list[dict],
+                        lang: str = "en") -> list[Check]:
     checks: list[Check] = []
     checks.append(Check("http_200", result.status == 200, f"status={result.status} err={result.error or ''}"))
     checks.append(Check("latency_under_15s", result.latency_ms < 15_000, f"{result.latency_ms}ms"))
@@ -299,15 +350,19 @@ def assert_persona_turn(persona: dict, turn_idx: int, battery_seq: int,
         # (mentions French, or names the transfer family). Model-honesty varies,
         # so we log the rate without enforcing it. The rate should trend up once
         # the feature is mature; if it stays flat, tune build_l1_watch.
-        planted_l1 = [e for e in planted
-                      if e.get("family") in L1_PLANTED_FAMILIES_FR_EN
-                      and e.get("tier") in ("T3", "T4")]
-        if planted_l1:
-            combined = f"{parsed.feedback}\n{parsed.reasoning}"
-            mentioned = bool(_L1_MENTION_RE.search(combined))
-            fams = ",".join(sorted({L1_PLANTED_FAMILIES_FR_EN[e["family"]] for e in planted_l1}))
-            checks.append(Check("l1_contrast_mention_rate", True,
-                                f"mentioned={mentioned} l1_families={fams}"))
+        l1_cfg = _L1_CONFIG_BY_LANG.get(lang)
+        if l1_cfg:
+            families_map = l1_cfg["families"]
+            mention_re = re.compile(l1_cfg["regex"], re.IGNORECASE)
+            planted_l1 = [e for e in planted
+                          if e.get("family") in families_map
+                          and e.get("tier") in ("T3", "T4")]
+            if planted_l1:
+                combined = f"{parsed.feedback}\n{parsed.reasoning}"
+                mentioned = bool(mention_re.search(combined))
+                fams = ",".join(sorted({families_map[e["family"]] for e in planted_l1}))
+                checks.append(Check("l1_contrast_mention_rate", True,
+                                    f"mentioned={mentioned} l1_families={fams}"))
     return checks
 
 
@@ -331,22 +386,24 @@ def assert_edge(name: str, result: ChatResult) -> list[Check]:
 # ── Battery execution ──────────────────────────────────────────────────
 
 
-async def run_battery(skip_edges: bool = False) -> list[TurnRecord]:
+async def run_battery(skip_edges: bool = False, lang: str = "en") -> list[TurnRecord]:
     records: list[TurnRecord] = []
     battery_seq = 0
+    personas = _load_personas(lang)
+    agent = _AGENT_BY_LANG.get(lang, "teacher")
     async with httpx.AsyncClient(timeout=CHAT_TIMEOUT) as client:
         token = await login(client)
         for level in ("A1", "A2", "B1", "B2"):
-            persona = PERSONAS[level]
-            seed_profile(level)  # force session flow at the right CEFR level
+            persona = personas[level]
+            seed_profile(level, domain=lang)  # force session flow at right CEFR level + domain
             conv_id: str | None = None
             for turn_idx, (learner_msg, planted) in enumerate(persona["turns"]):
                 battery_seq += 1
                 print(f"  [{battery_seq}] {level} turn {turn_idx + 1}/10: {learner_msg[:60]}...", flush=True)
-                result = await send_chat(client, token, conv_id, learner_msg)
+                result = await send_chat(client, token, conv_id, learner_msg, agent=agent)
                 if result.conversation_id and not conv_id:
                     conv_id = result.conversation_id
-                checks = assert_persona_turn(persona, turn_idx, battery_seq, result, planted)
+                checks = assert_persona_turn(persona, turn_idx, battery_seq, result, planted, lang=lang)
                 rec = TurnRecord(
                     persona=level, turn_idx=turn_idx, battery_seq=battery_seq,
                     learner_msg_preview=learner_msg[:80], checks=checks,
@@ -375,7 +432,7 @@ async def run_battery(skip_edges: bool = False) -> list[TurnRecord]:
                 conv = None
                 last_result: ChatResult | None = None
                 for i in range(depth):
-                    r = await send_chat(client, token, conv, f"Practicing English, turn {i + 1} please.")
+                    r = await send_chat(client, token, conv, f"Practicing English, turn {i + 1} please.", agent=agent)
                     if r.conversation_id and not conv:
                         conv = r.conversation_id
                     last_result = r
@@ -406,7 +463,7 @@ async def run_battery(skip_edges: bool = False) -> list[TurnRecord]:
                 records.append(rec)
             else:
                 print(f"  [{battery_seq}] edge:{name}", flush=True)
-                result = await send_chat(client, token, None, msg or "")
+                result = await send_chat(client, token, None, msg or "", agent=agent)
                 checks = assert_edge(name, result)
                 rec = TurnRecord(
                     persona=f"edge_{name}", turn_idx=0, battery_seq=battery_seq,
@@ -498,9 +555,10 @@ async def _amain(args: argparse.Namespace) -> int:
     print(f"▸ Creating test user '{TEST_USERNAME}' ...", flush=True)
     create_test_user()
     try:
-        print(f"▸ Running battery (4 personas × 10 turns{'' if args.no_edge_cases else ' + 6 edge cases'})", flush=True)
+        print(f"▸ Running battery lang={args.lang} (4 personas × 10 turns"
+              f"{'' if args.no_edge_cases else ' + 6 edge cases'})", flush=True)
         t0 = time.monotonic()
-        records = await run_battery(skip_edges=args.no_edge_cases)
+        records = await run_battery(skip_edges=args.no_edge_cases, lang=args.lang)
         elapsed = time.monotonic() - t0
         print(f"▸ Battery done in {elapsed:.1f}s — rendering report ...", flush=True)
         md, summary = render_report(records)
@@ -515,7 +573,11 @@ async def _amain(args: argparse.Namespace) -> int:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Phase 5 live battery for Teacher V2.")
+    parser = argparse.ArgumentParser(description="Live battery for the multilang Teacher.")
+    parser.add_argument("--lang", default="en",
+                        choices=["en", "es", "it", "de", "jp", "ja", "ru"],
+                        help="Target language (default: en). Non-en requires "
+                             "data/battery/{lang}_personas.yaml.")
     parser.add_argument("--skip-cleanup", action="store_true", help="Keep test user + data after run (for debug).")
     parser.add_argument("--no-edge-cases", action="store_true", help="Run only 40 persona turns.")
     parser.add_argument("--cleanup-only", action="store_true", help="Only run cleanup, then exit.")

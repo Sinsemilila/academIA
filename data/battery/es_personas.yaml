@@ -1,0 +1,53 @@
+---
+# Spanish battery personas — Wave 1 Maestro alpha.
+# STUB : 3 turns per level for Phase 0 extensibility proof.
+# Expand to 10 turns at Wave 1 kickoff using PCIC + CEDEL2 FR subcorpus patterns.
+#
+# Planted error tiers: T1 ignored, T2 noted, T3 penalized, T4 regressive.
+# Families: noun_det, verb_tense, preposition, vocabulary, word_order,
+# orthography, agreement, ser_estar, subjuntivo.
+
+personas:
+  A1:
+    level: "A1"
+    profile: "Débutant absolu, 10h d'espagnol, apprend les bases."
+    turns:
+      - - "Hola, yo soy francés y me gusta estudiar español."
+        - []
+      - - "Yo soy médico y yo trabajo en el hospital."
+        - [{family: "noun_det", tier: "T3"}]   # planted: article before profession
+      - - "Manana voy a comer con mi amigo."
+        - [{family: "orthography", tier: "T2"}]  # planted: missing ñ
+
+  A2:
+    level: "A2"
+    profile: "A1 consolidé, travaille les temps du passé simples."
+    turns:
+      - - "Ayer yo he ido al cine con mi hermana."
+        - [{family: "verb_tense", tier: "T3"}]
+      - - "Soy cansado porque trabajé mucho."
+        - [{family: "ser_estar", tier: "T4"}]
+      - - "Quiero para comprar un libro nuevo."
+        - [{family: "preposition", tier: "T3"}]
+
+  B1:
+    level: "B1"
+    profile: "Conversation courante, découvre le subjonctif."
+    turns:
+      - - "Pienso que es importante que nosotros estudiamos cada día."
+        - [{family: "subjuntivo", tier: "T4"}]  # indicativo vs subj
+      - - "Estoy embarazada de no encontrar mis llaves."
+        - [{family: "vocabulary", tier: "T4"}]  # false friend embarazada
+      - - "Mañana voy a casa de mis padres para celebrar."
+        - []
+
+  B2:
+    level: "B2"
+    profile: "Autonome quotidien, travaille nuances aspectuelles."
+    turns:
+      - - "Cuando era pequeño, siempre iba a la playa cada verano."
+        - []
+      - - "Si tuviera más tiempo, iría a Madrid este fin de semana."
+        - []
+      - - "Le dije que él venga a la fiesta pero no pudo."
+        - [{family: "subjuntivo", tier: "T4"}]
