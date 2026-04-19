@@ -245,6 +245,18 @@ def detect_errors(text: str, lang: str = "en") -> list[RuleDetection]:
     if lang == "es":
         from .rules_es import detect_errors_es
         return detect_errors_es(text)
+    if lang == "it":
+        from .rules_it import detect_errors_it
+        return detect_errors_it(text)
+    if lang == "de":
+        from .rules_de import detect_errors_de
+        return detect_errors_de(text)
+    if lang in ("jp", "ja"):
+        from .rules_jp import detect_errors_jp
+        return detect_errors_jp(text)
+    if lang == "ru":
+        from .rules_ru import detect_errors_ru
+        return detect_errors_ru(text)
     if lang != "en":
         return []
     results = []
