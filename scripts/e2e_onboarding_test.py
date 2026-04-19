@@ -40,6 +40,7 @@ DIFY_KEY = os.environ.get("DIFY_KEY_TEACHER", _read_secret("dify-teacher-key"))
 TEST_USER = "test-e2e-onboarding"
 
 LITELLM_URL = "http://localhost:4000/chat/completions"
+LITELLM_MASTER_KEY = os.environ.get("LITELLM_MASTER_KEY") or _read_secret("litellm-master-key")
 
 passed = 0
 failed = 0
@@ -168,7 +169,7 @@ def generate_en_answer(question, level="B1"):
     )
     try:
         r = requests.post(LITELLM_URL, headers={
-            "Authorization": "Bearer REDACTED_LITELLM_MASTER_KEY_PLACEHOLDER",
+            "Authorization": f"Bearer {LITELLM_MASTER_KEY}",
             "Content-Type": "application/json"
         }, json={
             "model": "mistral-small",

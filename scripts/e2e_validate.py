@@ -16,7 +16,7 @@ from pathlib import Path
 
 # ─── CONFIG ───────────────────────────────────────────────
 API = "http://127.0.0.1:8000"
-INTERNAL_TOKEN = os.environ.get("INTERNAL_API_TOKEN", "REDACTED_INTERNAL_API_TOKEN")
+INTERNAL_TOKEN = os.environ["INTERNAL_API_TOKEN"]  # fail-fast, no guessable default
 TEST_USER = "test-e2e-validate"
 TEST_PASS = "TestE2E-2026!"
 

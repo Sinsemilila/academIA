@@ -33,7 +33,7 @@ DIFY_KEY = os.environ.get("DIFY_KEY_TEACHER", _read_secret("dify-teacher-key"))
 TEST_USER = "test-e2e-promo"  # username = sys.user_id dans Teacher
 
 LITELLM_URL = "http://localhost:4000/chat/completions"
-LITELLM_KEY = "REDACTED_LITELLM_MASTER_KEY_PLACEHOLDER"
+LITELLM_KEY = os.environ.get("LITELLM_MASTER_KEY") or _read_secret("litellm-master-key")
 
 B1_CONCEPTS = [
     "present_perfect_simple", "present_perfect_vs_past_simple",

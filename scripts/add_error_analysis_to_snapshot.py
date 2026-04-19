@@ -10,10 +10,13 @@ If the error analysis fails, the snapshot workflow continues normally.
 """
 
 import json
+import os
 import subprocess
 
 WORKFLOW_ID = "tVfLg92ijYUvBc94"
 VERSION_ID = "fb0f3b42-e2f8-4607-929f-d0ef008e5437"
+# Fail-fast: no guessable fallback for the internal-API token.
+INTERNAL_TOKEN = os.environ["INTERNAL_API_TOKEN"]
 
 # ── Step 1: Read current workflow from DB ──
 read_sql = f"""SELECT nodes::text, connections::text FROM workflow_entity WHERE id = '{WORKFLOW_ID}';"""
@@ -86,7 +89,7 @@ call_error_analysis_node = {
         "headerParameters": {
             "parameters": [
                 {"name": "Content-Type", "value": "application/json"},
-                {"name": "X-Internal-Token", "value": "REDACTED_INTERNAL_API_TOKEN"}
+                {"name": "X-Internal-Token", "value": INTERNAL_TOKEN}
             ]
         },
         "options": {
