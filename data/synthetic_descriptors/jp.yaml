@@ -1,0 +1,61 @@
+---
+# JP synthetic error descriptors — Wave 3 seed (7 descriptors)
+# CRITICAL PATH : JP has no GLMM anchor corpus (Session 29 decision).
+# Synthetic is the primary training signal. Expand aggressively at Wave 3.
+#
+# Level labels follow internal CEFR (a1..c2) — mapped to JLPT N5-N1 via
+# academie_core.levels.display_level() for user-facing display.
+#
+# Empirical error distribution (Oyama, Polyglossia vol. 18) :
+#   particles 33% · kana-writing 20% · special-phonemes/long-vowels 13% ·
+#   sentence-structure 11% · verb-conjugation 8% · adj/affix 3%
+# The descriptor count per category roughly reflects this prior.
+#
+# Grammar points sourced from :
+# - Tanos JLPT lists : http://www.tanos.co.uk/jlpt/
+# - JLPT Sensei : https://jlptsensei.com/complete-jlpt-grammar-list/
+# - Bunpro grammar library : https://bunpro.jp/grammar_points
+# - Tae Kim's Guide (CC BY-NC-SA) : https://guidetojapanese.org
+# - Imabi : https://imabi.org
+
+descriptors:
+  # ══ Particles — biggest bucket (33% of errors) ══
+  - code: "JP:PARTICLE_WA_GA"
+    family: "particle"
+    level: "a1"        # ~N5
+    description: "は vs が confusion — topic vs subject marker. FR learners default to は everywhere or reach for が at random."
+    examples_hint: "私が学生です → 私は学生です ; 誰は来ましたか → 誰が来ましたか"
+
+  - code: "JP:PARTICLE_WO_NI"
+    family: "particle"
+    level: "a2"        # ~N4
+    description: "を vs に — direct object vs target/location of action (食べる takes を, 会う takes に)"
+
+  - code: "JP:PARTICLE_DE_NI"
+    family: "particle"
+    level: "a2"        # ~N4
+    description: "で vs に — location of action (で) vs location of existence (に). 学校にいます vs 学校で勉強します"
+
+  # ══ Kana-writing (20%) ══
+  - code: "JP:KANA_CHOICE"
+    family: "surface"
+    level: "a1"        # ~N5
+    description: "hiragana vs katakana misused — native words should be hiragana, loanwords katakana. Learners often mix or use rōmaji."
+
+  - code: "JP:LONG_VOWEL"
+    family: "surface"
+    level: "a1"        # ~N5
+    description: "long-vowel notation missing or wrong (おかあさん without う, 東京 typed toukyou instead of tōkyō)"
+
+  # ══ Verb conjugation (8%) ══
+  - code: "JP:VERB_CONJ"
+    family: "verb_usage"
+    level: "a2"        # ~N4
+    description: "verb conjugation (te-form, past, negative) — learners misapply godan vs ichidan rules"
+    examples_hint: "食べって → 食べて ; 飲みない → 飲まない ; 行きった → 行った"
+
+  - code: "JP:KEIGO"
+    family: "register"
+    level: "b2"        # ~N2
+    description: "keigo register errors — teineigo (desu/masu) vs sonkeigo (honorific) vs kenjōgo (humble). FR learners usually stop at teineigo."
+    examples_hint: "いらっしゃる vs 来る, なさる vs する, おっしゃる vs 言う"

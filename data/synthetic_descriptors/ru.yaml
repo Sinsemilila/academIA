@@ -1,0 +1,39 @@
+---
+# RU synthetic error descriptors — Wave 4 placeholder
+# Expand at Wave 4 RU kickoff using Gosstandart ТРКИ descriptors (TEU-IV) +
+# Lexical/Grammatical Minimum + Guiraud-Weber aspect contrastive work.
+#
+# Level labels follow internal CEFR (a1..c2) — mapped to TORFL TEU/TBU/I-IV
+# via academie_core.levels.display_level().
+
+descriptors:
+  - code: "RU:CASE_ACC"
+    family: "morphology"
+    level: "a1"       # ~TEU
+    description: "accusative case ending on direct objects (я читаю книга → книгу)"
+
+  - code: "RU:CASE_GEN"
+    family: "morphology"
+    level: "a2"       # ~TBU
+    description: "genitive after negation, of quantity, possessive (нет книга → нет книги, много студент → студентов)"
+
+  - code: "RU:ASPECT"
+    family: "verb_usage"
+    level: "b1"       # ~TORFL-I
+    description: "perfective vs imperfective aspect — FR learners default to whichever they met first"
+    examples_hint: "я читал/прочитал, я писал/написал, я изучал/изучил"
+
+  - code: "RU:GENDER"
+    family: "morphology"
+    level: "a1"       # ~TEU
+    description: "wrong grammatical gender agreement (моя книга vs мой книга — irregular masc/fem rules)"
+
+  - code: "RU:MOTION"
+    family: "verb_usage"
+    level: "b1"       # ~TORFL-I
+    description: "directional verbs of motion (идти/ходить, ехать/ездить, плыть/плавать) — determinate vs indeterminate"
+
+  - code: "RU:AGREEMENT"
+    family: "morphology"
+    level: "a2"       # ~TBU
+    description: "adjective-noun gender/case agreement (красивый девушка → красивая, новый книги → новые)"

@@ -1,0 +1,48 @@
+---
+# ES synthetic error descriptors — Wave 1 seed (8 descriptors)
+# Derived from PCIC priorities for FR→ES learners + rules_es.py coverage.
+
+descriptors:
+  - code: "V:SER_ESTAR"
+    family: "verb_usage"
+    level: "a2"
+    description: "confusion ser/estar — FR learners extend 'ser' to transitory states (soy cansado → estoy cansado)"
+    examples_hint: "cansado, contento, aburrido, ocupado, enfermo"
+
+  - code: "ART:PROF"
+    family: "noun_det"
+    level: "a1"
+    description: "article before profession after ser/estar (soy un médico → soy médico)"
+    examples_hint: "médico, profesor, abogado, estudiante, ingeniero"
+
+  - code: "PREP:POR_PARA"
+    family: "preposition"
+    level: "b1"
+    description: "por/para confusion — FR has one 'pour'; Spanish distinguishes cause (por) vs purpose (para)"
+    examples_hint: "gracias para → gracias por ; trabajar para una empresa OK"
+
+  - code: "ORTH:NY"
+    family: "surface"
+    level: "a1"
+    description: "missing ñ in common words (manana → mañana, espanol → español)"
+
+  - code: "PUNCT:INTERROG"
+    family: "surface"
+    level: "a1"
+    description: "missing inverted ¿ at start of question or ¡ at start of exclamation"
+
+  - code: "LEX:FALSE"
+    family: "vocabulary"
+    level: "b1"
+    description: "false friend used with French meaning (embarazada, largo, éxito/exit, constipado)"
+
+  - code: "PREP:CALQUE"
+    family: "preposition"
+    level: "b1"
+    description: "French preposition calque with verbs (soñar de → con, depender a → de, casarse a → con)"
+
+  - code: "V:SUBJ"
+    family: "verb_usage"
+    level: "b2"
+    description: "subjunctive mood after trigger verbs (espero que vienes → vengas, quiero que estás → estés)"
+    examples_hint: "espero que, quiero que, no creo que, dudo que"

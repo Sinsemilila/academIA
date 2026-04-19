@@ -1,0 +1,37 @@
+---
+# DE synthetic error descriptors — Wave 2 placeholder
+# Expand at Wave 2 DE kickoff using Profile Deutsch (Sinse-sourced 40€) +
+# Pienemann Processability Theory + Falko contrastive findings.
+
+descriptors:
+  - code: "DE:UMLAUT"
+    family: "surface"
+    level: "a1"
+    description: "missing umlaut on common words (mussen → müssen, uber → über, fur → für)"
+
+  - code: "DE:CASE"
+    family: "morphology"
+    level: "b1"
+    description: "nominative/accusative/dative mix — FR has no morphological case; learners default to Nominativ"
+    examples_hint: "mit dem/den/der Auto, für das/dem Kind, ohne den/dem Mann"
+
+  - code: "DE:GENDER"
+    family: "morphology"
+    level: "a2"
+    description: "wrong grammatical gender (French and German genders often don't align: der Mond FR la lune, die Sonne FR le soleil)"
+
+  - code: "DE:V2"
+    family: "word_order"
+    level: "a2"
+    description: "verb-second position violated in main clause — learners leave FR SVO order when adverb fronted"
+    examples_hint: "Heute ich gehe zur Schule → Heute gehe ich zur Schule"
+
+  - code: "DE:COMPOUND_SPACE"
+    family: "surface"
+    level: "a1"
+    description: "compound written as separate words (haus aufgabe → Hausaufgabe, haupt bahnhof → Hauptbahnhof)"
+
+  - code: "DE:FALSE_FRIEND"
+    family: "vocabulary"
+    level: "b1"
+    description: "false friend FR→DE (Gymnasium = lycée, Chef = patron, Regal = étagère, Pension = retraite)"

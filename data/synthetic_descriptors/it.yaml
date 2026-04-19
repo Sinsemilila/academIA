@@ -1,0 +1,31 @@
+---
+# IT synthetic error descriptors — Wave 2 placeholder
+# Expand at Wave 2 kickoff using Profilo della lingua italiana (Univ Perugia)
+# + Sillabi CILS + Bettoni & Giacalone Ramat contrastive work.
+
+descriptors:
+  - code: "IT:AUX"
+    family: "verb_usage"
+    level: "a2"
+    description: "essere vs avere auxiliary — FR uses avoir for most verbs; IT requires essere for movement/state-change (ho andato → sono andato)"
+    examples_hint: "andato/a, venuto/a, arrivato/a, partito/a, uscito/a, tornato/a, caduto/a, nato/a, morto/a"
+
+  - code: "IT:ART_CONTRACT"
+    family: "noun_det"
+    level: "a1"
+    description: "missing preposition+article contraction (a il → al, di il → del, in il → nel)"
+
+  - code: "IT:SUBJ"
+    family: "verb_usage"
+    level: "b1"
+    description: "subjunctive after penso che / credo che / è necessario che — learners extend indicative"
+
+  - code: "IT:FALSE_FRIEND"
+    family: "vocabulary"
+    level: "b1"
+    description: "false friend FR→IT (libreria = bookshop not library, fattoria = farm not factory, camera = bedroom)"
+
+  - code: "IT:CLITIC"
+    family: "pronoun"
+    level: "b1"
+    description: "clitic placement (glielo dico / ce l'ho) — learners struggle with double clitic combinations"
