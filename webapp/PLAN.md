@@ -175,10 +175,6 @@
 - Rangs: Debutant(0), Explorateur(200), Apprenti(500), Praticien(1500), Expert(5000), Maitre(15000)
 
 ### Dify API reference
-- App key Teacher: REDACTED_DIFY_TEACHER_KEY
-- Endpoint: http://dify-api:5001/v1/chat-messages
-- Auth: Authorization: Bearer {app_key}
-- Body: { inputs: {}, query: "...", user: "user_{id}", response_mode: "streaming", conversation_id: "" }
-- Response: SSE stream (event: message/message_end, answer: token delta)
-- Conversations: GET /v1/conversations?user=user_{id}
-- Messages: GET /v1/messages?user=user_{id}&conversation_id=X
+Credentials managed via SOPS (see `webapp/.env.sops` — `DIFY_KEY_TEACHER` /
+`DIFY_KEY_MAESTRO`). Endpoint + schema documented internally; not duplicated
+here to avoid re-leaking.

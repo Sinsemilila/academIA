@@ -93,7 +93,7 @@
 
 **Session 19**: 6th user account created. Platform stable with daily active usage.
 
-**Users onboarded**: sinse (admin), nico, julien, noz_project, waigosan, 0tha.
+**Users onboarded**: 6 users including admin.
 
 ---
 
