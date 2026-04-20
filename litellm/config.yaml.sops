@@ -1,5 +1,5 @@
 general_settings:
-    database_url: ENC[AES256_GCM,data:5dmXB+k0J/ai9pziTJM18OxrT691cT12FFKiTaz+ohB25yHAQOJumLq8DZOkPbf6U6L9OkN3pUV9sIgBybce1UgHxkaFCxY5hxov3xWeyDcP/isk/w==,iv:EO6fSUoraN+h7Uk2s06OqUjAwTrzWgLTbFTA/Y1/fBs=,tag:V24BTB7F8+Rmprfirj/MBg==,type:str]
+    database_url: ENC[AES256_GCM,data:UeBPWDnXZstltPYUeFri85Y12QHRWuBuuZudrT5vk7M1ZifI7g+qo13DB1vLRdTNTwsNHXHTcA8YAE3dJNV2o6HHfWzyAjM+T/9DalI7BElXHA==,iv:el95RA00q3YKdazOZlPcC1ZfJL22avHHQb0jGgfOTq4=,tag:pexDGAwaUQDEpuTcFf3q+w==,type:str]
     disable_spend_logs: false
     disable_spend_updates: false
     # économie disque, on n'a pas besoin du contenu
@@ -34,7 +34,7 @@ model_list:
     - model_name: gpt-4o-mini
       litellm_params:
         model: openai/gpt-4o-mini
-        api_key: ENC[AES256_GCM,data:FPF0FHIQ91hI7AvZp8AbtUoJTvik6tVH2uREM4E8JjEPDAkgmiu32t7NIaxb1e5wq2TnTX7fjrIPI+6qKYm+J6eU/mH27AQi7un1nERLI4qF0wwdBHZnBMUWMD43CpiMVqAJlp9a1qEY62QP/TFhZjfQGTxt4dX0rWBCwcmuSs0tUsroN5x4EONzDrJpxASmx0CI9fTX46tEoRF+Zmqq5RkUvec=,iv:lHfvv86SP7tg2lYHjfDOmpE/Ue26DkDTm46riyYNn/4=,tag:7NcTpb66+r210vPYUoS1eA==,type:str]
+        api_key: ENC[AES256_GCM,data:vhJwNpUe3rRElvU6OdGCrVeIIR0tstQtM0Xd9RzQt0G/kMdekWAcuWM4dUTQajlcHCVexcX5Ltc9i7TqfTey/QAIRUfkcqNBBBJZazsfuawADvsDIfsXp9W8FgmovvSe9yNWEvmO0PAL/98pBfIDeNgCJYcjz3O68SXTXns52w7zYXYLwDGxGfez0fXlXm1bZ0CRV7p/lmygu6WEUu0/9rNIzHE=,iv:yPdEiDqPzMwEUghIAuxhdzwy20FE1aLklUd6ajAa3BQ=,tag:0wMDLB/wlXVmZXUdmL62PQ==,type:str]
       model_info:
         owner: sinse
         tier: free
@@ -42,7 +42,7 @@ model_list:
     - model_name: ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v2:DTurinhs
       litellm_params:
         model: openai/ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v2:DTurinhs
-        api_key: ENC[AES256_GCM,data:gFDZaHsEwWLXr1TQQjI4RqO3mLO/ACC/RDzb6B/vkki4hHu/fFZA0Hr7q63czeRc2FXNxNIi6hxG3VKk8wbMNF5zkWwQGKwAFtyTfMtyhRHUnUe54FjG2cAH+VKCjg70b5OWef0BgKYi4pOn1DzWKdncmOXks9+ZRCQ8oltZaKsgdrAQ2UlcfNatvWqOOHg+5Om4rhvMKMHHJroa2jbhJWgXrBY=,iv:CN+7RxcpY3Du9GhYvktxh4+GXD8CXMKNjn28SzqFb3g=,tag:sJcFRcdKHTH7EJzA+H9XeA==,type:str]
+        api_key: ENC[AES256_GCM,data:vhJwNpUe3rRElvU6OdGCrVeIIR0tstQtM0Xd9RzQt0G/kMdekWAcuWM4dUTQajlcHCVexcX5Ltc9i7TqfTey/QAIRUfkcqNBBBJZazsfuawADvsDIfsXp9W8FgmovvSe9yNWEvmO0PAL/98pBfIDeNgCJYcjz3O68SXTXns52w7zYXYLwDGxGfez0fXlXm1bZ0CRV7p/lmygu6WEUu0/9rNIzHE=,iv:yPdEiDqPzMwEUghIAuxhdzwy20FE1aLklUd6ajAa3BQ=,tag:0wMDLB/wlXVmZXUdmL62PQ==,type:str]
       model_info:
         owner: sinse
         tier: paid
@@ -64,7 +64,7 @@ model_list:
     - model_name: groq-standard
       litellm_params:
         model: groq/llama-3.3-70b-versatile
-        api_key: ENC[AES256_GCM,data:rwok2/ZdTlVQgqZeHj5oCAYpn24pvk5WDbet/0sYcas0kUeOfB1R1BkmYo83qo1t0Pz9Cmav3sE=,iv:rSrCHKfua+9MJqGfB9S4BtgKiaVnajlxmSKLxs3/A8w=,tag:6phvWKTNMG39VrdRCMKoJg==,type:str]
+        api_key: ENC[AES256_GCM,data:cg3feg6ibwy+3Re5qoT9wgxKDQaK5oxjN3kMmheBSdtLPikRkW48a0yM3IE4PevWDFTSeqk1HgA=,iv:pHmU34LbQi0EIG/XBTwgJfq+955lmqHhVpY/13k258M=,tag:eV/uTSwIuCGgeuPgNc6SuA==,type:str]
         # throttle à 83% du max (12K) → bounce avant saturation
         tpm: 10000
         # throttle à 83% du max (30)
@@ -75,7 +75,7 @@ model_list:
     - model_name: groq-standard
       litellm_params:
         model: groq/llama-3.3-70b-versatile
-        api_key: ENC[AES256_GCM,data:F0E8rfVEW/KP1a55vO+XOI+Ca4KrvkZvw4xh3ZqQbkjcnAiHMubLw5SXmYkPyDDxy/SZxrYcICI=,iv:zYlWuIQCtdc8dj0FuOycwXksi6udOkVDS1ajm9IAU1g=,tag:iQTsFrFTLV1thHNSuh2Jpw==,type:str]
+        api_key: ENC[AES256_GCM,data:cnVcPNLNy7qLJWboJ6+BMwAuj4XizQhkk1hIPYx666EDoieTBUN2rakOmtHUtZjZj518C3Q3k+o=,iv:4Ht/Xjl5MP/DE+5kChSJU1G9rSMM3LhrcbmzxIqSKqc=,tag:xbWZOenML4VnqtP3Vlo1Zg==,type:str]
         tpm: 10000
         rpm: 25
       model_info:
@@ -112,7 +112,7 @@ model_list:
     - model_name: groq-snapshot
       litellm_params:
         model: groq/llama-3.1-8b-instant
-        api_key: ENC[AES256_GCM,data:m5NwRDwIpNnZ1knWyF7TduVU/62OoZjtfL5/+2MknVlEdGx0noENx7Y20Bjw5girNs1m+xLfk/Y=,iv:eCjKgaWUaakEa4wekYK16d3jXWMDCWmRX5jBtSkJI/0=,tag:5CrMhI2r0r+FoHIPqOoGiQ==,type:str]
+        api_key: ENC[AES256_GCM,data:cg3feg6ibwy+3Re5qoT9wgxKDQaK5oxjN3kMmheBSdtLPikRkW48a0yM3IE4PevWDFTSeqk1HgA=,iv:pHmU34LbQi0EIG/XBTwgJfq+955lmqHhVpY/13k258M=,tag:eV/uTSwIuCGgeuPgNc6SuA==,type:str]
         tpm: 5000
         rpm: 25
       model_info:
@@ -256,7 +256,7 @@ sops:
             aFJ6Tkw3TXdBZ1lLaWp4Z2FkaFBEQkUKJgjVU+gDFzjziYpxDBHo5KJ3Blu1Tjb6
             BV3YMyJLks8DaAQnIK5l0+Sak5JMrD/LybjmwVedzvzasZN1Nb4ubg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-04-15T20:02:41Z"
-    mac: ENC[AES256_GCM,data:sXODz+pjCT+mIsnitsrn4kLmnHQ+wZDo88JjTvDT1pHgQ259fACgIqdFVeRIVyHb/LIFMM+SGm1++/G86fEsS61+J1oVBLpiKNinqLnLRdfI1s17h1uXIXotdKX04xdYcjSExD/Ri5cIdD6rWff4f7y5GtjIZsXPfBzewjeE32k=,iv:9sSHWjqB8ZCS742bEWVDGQHGApUnZ5lbMGUB5xb4Lq0=,tag:gX5a69oNoPvVKUB3k7dJow==,type:str]
+    lastmodified: "2026-04-20T08:56:38Z"
+    mac: ENC[AES256_GCM,data:+agCyoqJnv+vkD9dqMGJ2TTz46lT0Rpei4JjMzREyHDljv0zzs/PqfcAB2GcUb4XlQPG9SjdHABx75OIKIizBJvYO9VV14n1TyhBUJuTJkNSGT8gNxtO8aJHqOIFjiDglsbPxLEKdl5xc/HQUEsWuz1HLbizNrXtVV56ME37jWA=,iv:zFbKvVRRTmxJ+e5GFK7teVXjDQOB6gb5G5ZwqZfrg7M=,tag:Rm7XTjzUHS6L+omMW+IOWA==,type:str]
     encrypted_regex: ^(api_key|database_url|master_key|salt_key)$
     version: 3.12.2
