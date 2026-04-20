@@ -108,15 +108,19 @@ CEFR level: {desc.level.upper()}{hint}
 Context: French native speaker learning {target_name}. Sentences should be realistic,
 varied topics, level-appropriate.
 
-RULES:
-- Each sentence must contain EXACTLY one {desc.code} error
-- Do NOT mix with other error types
-- Vary sentence length and topic
+STRICT RULES:
+- Each sentence MUST contain the erroneous form (not the correct one)
+- The error MUST be of type {desc.code} — no other error types
+- The `original` span MUST be a substring of `sentence` (exact match, including punctuation)
+- The `correction` MUST differ from `original` (non-null fix)
+- If you CANNOT produce a natural sentence containing this specific error, SKIP it and produce fewer examples — better fewer good ones than hallucinated errors
+- Vary sentence length (5-20 words) and topic (family, work, food, travel, study…)
 - Make errors natural (what a FR→{target_name} learner would actually produce)
 - Do NOT include translations or explanations inside the sentence field
+- Do NOT label already-correct sentences as having errors
 
 Output as a JSON array. Each item:
-{{"sentence": "the erroneous {target_name} sentence", "original": "the error span", "correction": "the fix", "reasoning": "brief explanation (1 sentence)"}}
+{{"sentence": "the erroneous {target_name} sentence", "original": "the error span", "correction": "the fix", "reasoning": "brief explanation in {target_name} (1 sentence)"}}
 
 Output ONLY the JSON array, no other text."""
 
@@ -125,7 +129,7 @@ Output ONLY the JSON array, no other text."""
 
 def call_generator(lang: str, desc: Descriptor, n_examples: int,
                    model: str = DEFAULT_MODEL,
-                   temperature: float = 0.9) -> list[dict]:
+                   temperature: float = 0.6) -> list[dict]:
     """Call LiteLLM proxy to generate a batch of examples. Live call."""
     payload = {
         "model": model,
@@ -137,9 +141,13 @@ def call_generator(lang: str, desc: Descriptor, n_examples: int,
         "max_tokens": 8000,
         "response_format": {"type": "json_object"},
     }
-    with httpx.Client(timeout=60) as client:
-        resp = client.post(LITELLM_URL, json=payload)
-        resp.raise_for_status()
+    with httpx.Client(timeout=180) as client:
+        try:
+            resp = client.post(LITELLM_URL, json=payload)
+            resp.raise_for_status()
+        except (httpx.ReadTimeout, httpx.HTTPStatusError) as e:
+            print(f"[{desc.code}] API call failed: {type(e).__name__}", file=sys.stderr)
+            return []
     content = resp.json()["choices"][0]["message"]["content"]
     try:
         parsed = json.loads(content)
@@ -157,14 +165,59 @@ def call_generator(lang: str, desc: Descriptor, n_examples: int,
         return []
 
 
+def validate_example(lang: str, desc: Descriptor, example: dict) -> tuple[bool, str]:
+    """Post-filter: reject hallucinated/malformed examples.
+
+    Returns (is_valid, reason_if_not).
+    """
+    sentence = (example.get("sentence") or "").strip()
+    original = (example.get("original") or "").strip()
+    correction = (example.get("correction") or "").strip()
+
+    # Basic field presence
+    if not sentence or not original:
+        return False, "missing sentence or original"
+    if not correction:
+        return False, "missing correction"
+    if original == correction:
+        return False, "original == correction (no error)"
+    # `original` must be a substring of `sentence` (exact, case-insensitive)
+    if original.lower() not in sentence.lower():
+        return False, f"original {original!r} not in sentence"
+
+    # Rules-layer validation: if we have a mechanical detector for this code,
+    # verify it fires. Catches the most blatant hallucinations (e.g. claiming
+    # QUANT:MUY_MUCHO on a correct 'me gusta mucho' sentence).
+    if lang == "es":
+        try:
+            from academie_core.taxonomy.rules_es import detect_errors_es
+            detected = detect_errors_es(sentence)
+            detected_codes = {d.error_code for d in detected}
+            # For codes covered by rules_es, require a matching detection.
+            RULES_ES_CODES = {
+                "PUNCT:INTERROG", "ORTH:NY", "ART:PROF", "LEX:FALSE",
+                "PREP:CALQUE", "V:SER_ESTAR", "PREP:POR_PARA",
+                "V:GUSTAR_SUBJECT", "IDIOM:HACE_AGO", "QUANT:MUY_MUCHO",
+                "PREP:MOVEMENT", "LEX:FR_RESIDUE", "ASPECT:PERF_OVERUSE",
+            }
+            if desc.code in RULES_ES_CODES and desc.code not in detected_codes:
+                return False, f"rules_es.py does not detect {desc.code} in sentence — likely hallucination"
+        except Exception:
+            # If rules_es import fails, fall through (don't block generation)
+            pass
+
+    return True, "ok"
+
+
 def to_finetune_format(lang: str, desc: Descriptor, example: dict) -> dict | None:
     """Convert a generated example to OpenAI fine-tune JSONL format."""
-    sentence = example.get("sentence", "")
-    original = example.get("original", "")
-    correction = example.get("correction", "")
-    reasoning = example.get("reasoning", "")
-    if not sentence or not original:
+    ok, reason = validate_example(lang, desc, example)
+    if not ok:
         return None
+    sentence = example["sentence"].strip()
+    original = example["original"].strip()
+    correction = example["correction"].strip()
+    reasoning = (example.get("reasoning") or "").strip()
     user_content = f"Analyze errors:\n--- Turn 1 ---\nUSER: {sentence}\nTEACHER: Good try!"
     assistant_content = json.dumps({
         "errors": [{
@@ -213,6 +266,7 @@ def generate_synthetic_errors(
         )
     random.seed(seed)
     random.shuffle(descs)
+    stats = {"generated": 0, "kept": 0, "rejected": 0}
     for desc in descs:
         if dry_run:
             prompt = build_user_prompt(lang, desc, n_examples_per_descriptor)
@@ -221,11 +275,24 @@ def generate_synthetic_errors(
             print()
             continue
         examples = call_generator(lang, desc, n_examples_per_descriptor)
+        stats["generated"] += len(examples)
+        kept_here = 0
         for ex in examples:
             ft = to_finetune_format(lang, desc, ex)
             if ft is not None:
+                stats["kept"] += 1
+                kept_here += 1
                 yield ft
+            else:
+                stats["rejected"] += 1
+        print(f"[{desc.code}] gen={len(examples)} kept={kept_here}/{len(examples)}",
+              file=sys.stderr)
         time.sleep(sleep_between)
+    if not dry_run:
+        print(f"\n=== SUMMARY === generated={stats['generated']} "
+              f"kept={stats['kept']} rejected={stats['rejected']} "
+              f"filter_rate={stats['rejected']/max(1,stats['generated']):.1%}",
+              file=sys.stderr)
 
 
 # ── CLI ─────────────────────────────────────────────────────────────
