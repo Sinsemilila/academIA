@@ -1,13 +1,12 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { api } from '$lib/api';
+  import { domainLabel } from '$lib/config';
 
-  let recap = $state<any>(null);
-  let loading = $state(true);
+  let { domain = 'en' } = $props<{ domain?: string }>();
   let isMonday = $state(new Date().getDay() === 1);
 </script>
 
-{#await api.getWeeklyRecap() then recap}
+{#await api.getWeeklyRecap(domain) then recap}
   {#if recap}
     <div class="bg-surface border border-border-subtle rounded-xl p-5 relative overflow-hidden">
       <!-- Accent bar — brighter on Monday -->
@@ -15,7 +14,7 @@
 
       <div class="flex items-center gap-2 mb-3">
         <span class="text-lg">&#x1F4C5;</span>
-        <h3 class="text-sm font-medium">R&#233;cap de la semaine</h3>
+        <h3 class="text-sm font-medium">R&#233;cap de la semaine &mdash; {domainLabel(domain)}</h3>
         {#if isMonday}
           <span class="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-teacher/20 text-teacher">Nouveau</span>
         {/if}

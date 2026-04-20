@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
   import { get } from 'svelte/store';
   import { api } from '$lib/api';
   import { agents } from '$lib/config';
   import { currentAgent, currentDomain } from '$lib/stores/navigation';
   import AgentFlag from '$lib/components/AgentFlag.svelte';
+  import AgentsOverviewRow from '$lib/components/AgentsOverviewRow.svelte';
   import Tooltip from '$lib/components/Tooltip.svelte';
   import WeeklyRecap from '$lib/components/WeeklyRecap.svelte';
 
@@ -12,6 +12,7 @@
   let stats = $state({ sessions: 0, concepts: 0, minutes: 0 });
   let username = $state('');
   let loading = $state(true);
+  let dashboardAgents = $state<any[]>([]);
 
   // Concept popover state
   let showConceptPopover = $state(false);
@@ -71,23 +72,42 @@
     }
   }
 
+  // Format minutes → "Xh YYmin" or "X min" for compact display.
+  function formatMinutes(m: number): string {
+    if (m < 60) return `${m}min`;
+    const h = Math.floor(m / 60);
+    const rem = m % 60;
+    return rem > 0 ? `${h}h${rem.toString().padStart(2, '0')}` : `${h}h`;
+  }
+
   // Agent groups for display
   const agentGroups = [
     { label: 'Langues', items: agents.filter(a => ['teacher','maestro','sensei','lehrer','professore'].includes(a.slug)) },
     { label: 'Tech', items: agents.filter(a => ['pymentor','cybermentor'].includes(a.slug)) },
   ];
 
-  onMount(async () => {
-    const domain = get(currentDomain);
-    const [me, prof, st] = await Promise.all([
+  async function loadForDomain(domain: string) {
+    loading = true;
+    const [me, prof, st, dash] = await Promise.all([
       api.me(),
       api.getProfile(domain),
       api.getWeeklyStats(domain),
+      api.getDashboard(),
     ]);
     username = me.display_name || me.username;
     profile = prof;
     stats = st;
+    dashboardAgents = dash.agents || [];
+    // Reset popover data so it re-fetches for the new domain on next open.
+    conceptData = null;
+    showConceptPopover = false;
     loading = false;
+  }
+
+  // Sprint 5 Phase 5 follow-up — reload on agent/domain switch (via sidebar).
+  $effect(() => {
+    const d = $currentDomain;
+    loadForDomain(d);
   });
 </script>
 
@@ -115,7 +135,10 @@
     Salut {username} &#x1F44B;
   </h1>
 
-  <!-- Teacher card with concept popover -->
+  <!-- Multi-agent overview (all available agents at a glance) -->
+  <AgentsOverviewRow agentsData={dashboardAgents} />
+
+  <!-- Current agent card with concept popover -->
   {#if profile?.niveau}
     <div class="relative" bind:this={popoverRef}>
       <div
@@ -224,7 +247,7 @@
 
             <!-- Link to full concepts page -->
             <a
-              href="/stats/concepts?domain=anglais"
+              href="/stats/concepts?domain={$currentDomain}"
               class="block px-4 py-3 text-center text-sm font-medium text-teacher
                      hover:bg-elevated transition-colors border-t border-border-subtle"
               onclick={(e) => e.stopPropagation()}
@@ -284,37 +307,40 @@
     <div class="bg-surface border border-border-subtle rounded-xl p-8 text-center">
       <p class="text-4xl mb-3">&#x1F393;</p>
       <h2 class="font-semibold text-lg mb-2">Bienvenue sur Acad&#233;mie-IA !</h2>
-      <p class="text-sm text-text-secondary mb-4">En quelques minutes, Teacher va &#233;valuer ton niveau d'anglais et cr&#233;er ton programme personnalis&#233;.</p>
+      <p class="text-sm text-text-secondary mb-4">
+        En quelques minutes, {currentAgentObj.name} va &#233;valuer ton niveau
+        {currentAgentObj.langGenitive} et cr&#233;er ton programme personnalis&#233;.
+      </p>
       <a href="/chat/{$currentAgent}" class="inline-block px-5 py-2.5 bg-teacher text-white text-sm font-medium rounded-lg hover:brightness-110 transition-all">
         Commencer &#x2192;
       </a>
     </div>
   {/if}
 
-  <!-- Weekly stats -->
+  <!-- Weekly stats — scoped to current agent -->
   <div class="grid grid-cols-3 gap-3 sm:gap-4">
-    <Tooltip text="Sessions cette semaine">
+    <Tooltip text="Sessions avec {currentAgentObj.name} sur les 7 derniers jours">
       <div class="bg-surface border border-border-subtle rounded-xl p-3 sm:p-4 text-center w-full">
         <p class="text-xl sm:text-2xl font-mono font-semibold">{stats.sessions}</p>
-        <p class="text-[10px] sm:text-xs text-text-secondary mt-1">sessions</p>
+        <p class="text-[10px] sm:text-xs text-text-secondary mt-1">sessions ({currentAgentObj.lang})</p>
       </div>
     </Tooltip>
-    <Tooltip text="Concepts vus cette semaine (score &gt; 0)">
+    <Tooltip text="Concepts actifs (score &gt; 0) pour {currentAgentObj.lang}">
       <div class="bg-surface border border-border-subtle rounded-xl p-3 sm:p-4 text-center w-full">
         <p class="text-xl sm:text-2xl font-mono font-semibold">{stats.concepts}<span class="text-sm text-text-muted font-normal">/{profile?.total_expected ?? 0}</span></p>
-        <p class="text-[10px] sm:text-xs text-text-secondary mt-1">concepts vus</p>
+        <p class="text-[10px] sm:text-xs text-text-secondary mt-1">concepts ({currentAgentObj.lang})</p>
       </div>
     </Tooltip>
-    <Tooltip text="Temps estim&#233; de pratique">
+    <Tooltip text="Temps de pratique avec {currentAgentObj.name} (7 derniers jours). Brut : {stats.minutes} min.">
       <div class="bg-surface border border-border-subtle rounded-xl p-3 sm:p-4 text-center w-full">
-        <p class="text-xl sm:text-2xl font-mono font-semibold">{stats.minutes}</p>
-        <p class="text-[10px] sm:text-xs text-text-secondary mt-1">minutes</p>
+        <p class="text-xl sm:text-2xl font-mono font-semibold">{formatMinutes(stats.minutes)}</p>
+        <p class="text-[10px] sm:text-xs text-text-secondary mt-1">temps ({currentAgentObj.lang})</p>
       </div>
     </Tooltip>
   </div>
 
   <!-- Weekly recap -->
-  <WeeklyRecap />
+  <WeeklyRecap domain={$currentDomain} />
 
   <!-- Agents by group -->
   <div class="space-y-6">

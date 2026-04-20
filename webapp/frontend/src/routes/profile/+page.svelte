@@ -1,8 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { api } from '$lib/api';
+  import { agents } from '$lib/config';
+  import { currentAgent } from '$lib/stores/navigation';
   import { setTheme, getTheme } from '$lib/stores/theme';
   import { addToast } from '$lib/stores/toasts';
+
+  let currentAgentObj = $derived(agents.find(a => a.slug === $currentAgent) ?? agents[0]);
 
   const AVATAR_COLORS = [
     '#3b82f6', '#ef4444', '#a855f7', '#f59e0b',
@@ -205,7 +209,7 @@
         class="w-full px-3 py-2 bg-elevated border border-border-subtle rounded-lg text-text-primary text-sm
                focus:outline-none focus:border-teacher transition-colors"
         placeholder="musique, cuisine, tech, cin&#233;ma..." />
-      <p class="text-xs text-text-muted mt-1">Teacher utilisera tes centres d'int&#233;r&#234;t pour contextualiser les exercices.</p>
+      <p class="text-xs text-text-muted mt-1">{currentAgentObj.name} utilisera tes centres d'int&#233;r&#234;t pour contextualiser les exercices.</p>
     </div>
 
     <!-- Style de correction -->
@@ -222,7 +226,7 @@
           </button>
         {/each}
       </div>
-      <p class="text-xs text-text-muted mt-1">Teacher adaptera son ton et sa fa&#231;on de te corriger.</p>
+      <p class="text-xs text-text-muted mt-1">{currentAgentObj.name} adaptera son ton et sa fa&#231;on de te corriger.</p>
     </div>
 
     <button

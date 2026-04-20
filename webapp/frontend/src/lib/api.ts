@@ -127,6 +127,13 @@ class ApiClient {
     return await res.json();
   }
 
+  // ── Dashboard (multi-agent overview) ──────
+  async getDashboard() {
+    const res = await this.fetch('/me/dashboard');
+    if (!res.ok) return { agents: [] };
+    return await res.json();
+  }
+
   // ── Onboarding QCM (Sprint 5 Phase 5) ────
   async getOnboardingContent(domain: string) {
     const res = await this.fetch(`/onboarding/content/${domain}`);

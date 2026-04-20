@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { get } from 'svelte/store';
   import { api } from '$lib/api';
   import { currentAgent, currentDomain } from '$lib/stores/navigation';
   import { domainLabel } from '$lib/config';
+  import AgentsOverviewRow from '$lib/components/AgentsOverviewRow.svelte';
   import ProgressionGraph from '$lib/components/ProgressionGraph.svelte';
 
   const levelLabels: Record<string, string> = {
@@ -24,6 +23,7 @@
   let xpData = $state<any>(null);
   let xpHistory = $state<{ date: string; value: number }[]>([]);
   let badgeData = $state<any>(null);
+  let dashboardAgents = $state<any[]>([]);
   let loading = $state(true);
 
   let niveau = $derived(concepts?.niveau);
@@ -41,21 +41,28 @@
     return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
   }
 
-  onMount(async () => {
-    const domain = get(currentDomain);
-    const [c, e, x, b, xh] = await Promise.all([
+  async function loadForDomain(domain: string) {
+    loading = true;
+    const [c, e, x, b, xh, dash] = await Promise.all([
       api.getConcepts(domain),
       api.getExams(domain),
       api.getXp(),
       api.getBadges(domain),
       api.getXpHistory(),
+      api.getDashboard(),
     ]);
     concepts = c;
     exams = e;
     xpData = x;
     badgeData = b;
     xpHistory = xh.data || [];
+    dashboardAgents = dash.agents || [];
     loading = false;
+  }
+
+  // Reactively reload on agent/domain switch (via sidebar).
+  $effect(() => {
+    loadForDomain($currentDomain);
   });
 </script>
 
@@ -74,10 +81,12 @@
 <div class="max-w-4xl mx-auto space-y-8">
   <h1 class="text-2xl font-semibold">Ma progression</h1>
 
-  <!-- Level card — clickable → concepts detail -->
+  <!-- Multi-agent overview (all available agents) -->
+  <AgentsOverviewRow agentsData={dashboardAgents} />
+
+  <!-- Level card — clickable → concepts detail + Reprendre button -->
   {#if niveau}
-    <a href="/stats/concepts?domain={$currentDomain}"
-       class="block bg-surface border border-border-subtle rounded-xl p-6 hover:border-teacher/50 transition-all group">
+    <div class="bg-surface border border-border-subtle rounded-xl p-6">
       <div class="flex items-center gap-4 mb-4">
         <div class="w-16 h-16 rounded-2xl bg-teacher/15 flex items-center justify-center text-2xl font-bold text-teacher">
           {niveau}
@@ -94,9 +103,10 @@
               Pr&#234;t pour l'examen {nextLevel}
             </span>
           {/if}
-          <svg class="w-5 h-5 text-text-muted group-hover:text-teacher transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-          </svg>
+          <a href="/chat/{$currentAgent}"
+             class="px-4 py-2 bg-teacher text-white text-sm font-medium rounded-lg hover:brightness-110 transition-all shrink-0">
+            Reprendre &#x2192;
+          </a>
         </div>
       </div>
       <div class="w-full h-3 bg-elevated rounded-full overflow-hidden">
@@ -105,8 +115,14 @@
           style="width: {progressPct}%"
         ></div>
       </div>
-      <p class="text-xs text-text-muted mt-2">{progressPct}% vers {nextLevel || 'la perfection'}</p>
-    </a>
+      <div class="flex justify-between items-center mt-2">
+        <p class="text-xs text-text-muted">{progressPct}% vers {nextLevel || 'la perfection'}</p>
+        <a href="/stats/concepts?domain={$currentDomain}"
+           class="text-xs text-teacher hover:underline">
+          Voir les concepts &#x2192;
+        </a>
+      </div>
+    </div>
   {:else}
     <div class="bg-surface border border-border-subtle rounded-xl p-6 text-center">
       <p class="text-text-secondary">Pas encore de niveau. Lance ta premi&#232;re session !</p>

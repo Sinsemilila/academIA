@@ -1,6 +1,5 @@
 <script lang="ts">
   import { page } from '$app/state';
-  import { onMount } from 'svelte';
   import { api } from '$lib/api';
   import { domainLabel as getDomainLabel } from '$lib/config';
 
@@ -64,9 +63,14 @@
     return `il y a ${days}j`;
   }
 
-  onMount(async () => {
-    concepts = await api.getConcepts(domain);
-    loading = false;
+  $effect(() => {
+    // Reactively reload when domain changes (URL param switch)
+    const d = domain;
+    loading = true;
+    api.getConcepts(d).then((c) => {
+      concepts = c;
+      loading = false;
+    });
   });
 </script>
 

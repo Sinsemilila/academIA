@@ -196,6 +196,107 @@ async def get_profile(domain: str, user: dict = Depends(get_current_user)):
     }
 
 
+@router.get("/api/me/dashboard")
+async def get_dashboard(user: dict = Depends(get_current_user)):
+    """Return a compact per-domain summary for the multi-agent overview.
+
+    Combines `profils_eleves` (source of truth : real diagnostic + sessions) with a
+    fallback on `learner_profiles.derived_tutor_hints.cefr_placement` (provisional
+    QCM estimate) when `profils_eleves` is absent for a domain. Used by home + stats
+    pages to show all active agents at a glance.
+    """
+    eleve_id = user.get("eleve_id")
+    if not eleve_id:
+        return {"agents": []}
+
+    async with db.pool.acquire() as conn:
+        pe_rows = await conn.fetch(
+            """SELECT domain, niveau_global, derniere_session,
+                      onboarding_completed_at
+               FROM profils_eleves WHERE eleve_id = $1""",
+            eleve_id,
+        )
+        lp_rows = await conn.fetch(
+            """SELECT domain, derived_tutor_hints, completed_at
+               FROM learner_profiles WHERE eleve_id = $1""",
+            eleve_id,
+        )
+        # Sessions & minutes this week, grouped by agent_name (chat_router maps agent → domain)
+        week_rows = await conn.fetch(
+            """SELECT agent_name,
+                      COUNT(*) AS sessions,
+                      COALESCE(SUM(EXTRACT(EPOCH FROM (last_message_at - started_at))::int), 0) / 60 AS minutes
+               FROM user_sessions
+               WHERE user_id = $1 AND started_at >= NOW() - INTERVAL '7 days'
+               GROUP BY agent_name""",
+            user["id"],
+        )
+    agent_to_domain = {
+        "teacher": "en", "maestro": "es", "professore": "it",
+        "lehrer": "de", "sensei": "ja",
+        # Post-langues agents (not yet domain-mapped in registry) skip silently.
+    }
+    week_by_domain: dict[str, dict] = {}
+    for r in week_rows:
+        d = agent_to_domain.get(r["agent_name"])
+        if d:
+            week_by_domain[d] = {"sessions": r["sessions"] or 0, "minutes": r["minutes"] or 0}
+
+    by_domain: dict[str, dict] = {}
+    for r in pe_rows:
+        by_domain[r["domain"]] = {
+            "domain": r["domain"],
+            "niveau": r["niveau_global"],
+            "provisional": False,
+            "source": "profils_eleves",
+            "derniere_session": str(r["derniere_session"]) if r["derniere_session"] else None,
+            "onboarding_completed_at": r["onboarding_completed_at"].isoformat() if r["onboarding_completed_at"] else None,
+        }
+    for r in lp_rows:
+        d = r["domain"]
+        hints = r["derived_tutor_hints"]
+        if isinstance(hints, str):
+            hints = json.loads(hints)
+        cefr = (hints or {}).get("cefr_placement")
+        if d not in by_domain and cefr:
+            # No real profile yet — fall back to QCM estimate (provisional).
+            by_domain[d] = {
+                "domain": d,
+                "niveau": cefr,
+                "provisional": True,
+                "source": "learner_profiles",
+                "derniere_session": None,
+                "onboarding_completed_at": r["completed_at"].isoformat(),
+            }
+
+    # Compute progress_pct per domain using the same formula as /api/profile/{domain}.
+    for d, info in by_domain.items():
+        niveau = info["niveau"]
+        if not niveau or info["provisional"]:
+            info["progress_pct"] = 0
+            info["mastered"] = 0
+            info["total_expected"] = 0
+        else:
+            scores = await _derive_concept_scores(eleve_id, d, niveau)
+            async with db.pool.acquire() as conn:
+                ck_row = await conn.fetchval(
+                    "SELECT concept_keys FROM curriculums WHERE domain = $1 AND niveau = $2",
+                    d, niveau,
+                )
+            all_keys = ck_row if isinstance(ck_row, list) else (json.loads(ck_row) if ck_row else [])
+            total = len(all_keys) or 1
+            avg = sum(scores.get(k, 0) for k in all_keys) / total
+            info["progress_pct"] = round(avg)
+            info["mastered"] = sum(1 for k in all_keys if scores.get(k, 0) >= 80)
+            info["total_expected"] = len(all_keys)
+        # Weekly activity per agent (always attached, even if 0)
+        week = week_by_domain.get(d, {"sessions": 0, "minutes": 0})
+        info["sessions_this_week"] = int(week["sessions"])
+        info["minutes_this_week"] = int(week["minutes"])
+
+    return {"agents": list(by_domain.values())}
+
+
 async def _derive_concept_scores(eleve_id: int, domain: str, niveau: str) -> dict:
     """Per-concept scores: scores_confiance (n8n LLM) primary, error-profile family fallback."""
     import json as _json
@@ -238,28 +339,39 @@ async def get_streak(user: dict = Depends(get_current_user)):
     }
 
 
+_DOMAIN_TO_AGENT = {
+    "en": "teacher", "es": "maestro", "it": "professore",
+    "de": "lehrer", "ja": "sensei",
+}
+
+
 @router.get("/api/stats/weekly")
 async def get_weekly_stats(domain: str = "en", user: dict = Depends(get_current_user)):
+    """Sessions + minutes + concepts stats for the last 7 days, scoped to the
+    agent matching `domain` (so switching agent in the sidebar refreshes the row)."""
     eleve_id = user.get("eleve_id")
     if not eleve_id:
         return {"sessions": 0, "concepts": 0, "minutes": 0}
 
     user_id = user["id"]
+    agent_name = _DOMAIN_TO_AGENT.get(domain)
     async with db.pool.acquire() as conn:
-        # Count actual sessions this week
-        sessions = await conn.fetchval(
-            """SELECT COUNT(*) FROM user_sessions
-               WHERE user_id = $1
-               AND started_at >= NOW() - INTERVAL '7 days'""",
-            user_id,
-        )
-        # Real minutes from session duration (started_at → last_message_at)
-        minutes_val = await conn.fetchval(
-            """SELECT COALESCE(SUM(EXTRACT(EPOCH FROM (last_message_at - started_at))::int), 0) / 60
-               FROM user_sessions WHERE user_id = $1
-               AND started_at >= NOW() - INTERVAL '7 days'""",
-            user_id,
-        )
+        if agent_name:
+            sessions = await conn.fetchval(
+                """SELECT COUNT(*) FROM user_sessions
+                   WHERE user_id = $1 AND agent_name = $2
+                     AND started_at >= NOW() - INTERVAL '7 days'""",
+                user_id, agent_name,
+            )
+            minutes_val = await conn.fetchval(
+                """SELECT COALESCE(SUM(EXTRACT(EPOCH FROM (last_message_at - started_at))::int), 0) / 60
+                   FROM user_sessions WHERE user_id = $1 AND agent_name = $2
+                     AND started_at >= NOW() - INTERVAL '7 days'""",
+                user_id, agent_name,
+            )
+        else:
+            sessions = 0
+            minutes_val = 0
         minutes = minutes_val or 0
 
         # Count concepts with score > 0 (worked on) — scoped to domain
