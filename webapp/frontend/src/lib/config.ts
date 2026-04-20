@@ -14,7 +14,7 @@ export interface Agent {
 
 export const agents: Agent[] = [
   { slug: 'teacher',     name: 'Teacher',     lang: 'Anglais',    domain: 'en',       flagSrc: '/flags/gb.png',     color: 'text-teacher',     colorHex: '#3b82f6', available: true  },
-  { slug: 'maestro',     name: 'Maestro',     lang: 'Espagnol',   domain: 'es',       flagSrc: '/flags/es.png',     color: 'text-maestro',     colorHex: '#ef4444', available: false },
+  { slug: 'maestro',     name: 'Maestro',     lang: 'Espagnol',   domain: 'es',       flagSrc: '/flags/es.png',     color: 'text-maestro',     colorHex: '#ef4444', available: true  },
   { slug: 'sensei',      name: 'Sensei',      lang: 'Japonais',   domain: 'ja',       flagSrc: '/flags/jp.png',     color: 'text-sensei',      colorHex: '#a855f7', available: false },
   { slug: 'lehrer',      name: 'Lehrer',      lang: 'Allemand',   domain: 'de',       flagSrc: '/flags/de.png',     color: 'text-lehrer',      colorHex: '#f59e0b', available: false },
   { slug: 'professore',  name: 'Professore',  lang: 'Italien',    domain: 'it',       flagSrc: '/flags/it.png',     color: 'text-professore',  colorHex: '#22c55e', available: false },
