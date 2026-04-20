@@ -1,0 +1,9 @@
+#!/bin/bash
+# Pre-commit: block secrets via gitleaks
+# Installed repo-tracked. Enable via: git config core.hooksPath .githooks
+gitleaks protect --staged --verbose || {
+  echo ""
+  echo "❌ gitleaks detected potential secret in staged changes."
+  echo "   Review findings above. To bypass (NOT RECOMMENDED), use 'git commit --no-verify'."
+  exit 1
+}
