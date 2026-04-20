@@ -26,3 +26,7 @@ export const agents: Agent[] = [
 export function domainLabel(domain: string): string {
   return agents.find((a) => a.domain === domain)?.lang ?? domain;
 }
+
+// Sprint 5 Phase 5 — feature flag for QCM onboarding refonte.
+// Activated 2026-04-20. Rollback : flip to `false` + rebuild academie-frontend (5 min).
+export const QCM_ONBOARDING_ENABLED = true;

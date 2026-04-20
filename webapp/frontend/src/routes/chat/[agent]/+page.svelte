@@ -2,11 +2,12 @@
   import { page } from '$app/state';
   import { onMount, tick } from 'svelte';
   import { api } from '$lib/api';
-  import { agents } from '$lib/config';
+  import { agents, QCM_ONBOARDING_ENABLED } from '$lib/config';
   import AgentFlag from '$lib/components/AgentFlag.svelte';
   import ChatBubble from '$lib/components/chat/ChatBubble.svelte';
   import ChatInput from '$lib/components/chat/ChatInput.svelte';
   import TypingIndicator from '$lib/components/chat/TypingIndicator.svelte';
+  import OnboardingModal from '$lib/components/onboarding/OnboardingModal.svelte';
   import { toastXP, toastError, toastSuccess } from '$lib/stores/toasts';
 
   interface Message {
@@ -47,16 +48,16 @@
   // Extra inputs to send with next message
   let pendingInputs = $state<Record<string, string>>({});
 
-  onMount(async () => {
-    if (!agent?.available) { loadingHistory = false; return; }
+  // QCM onboarding gate (Sprint 5 Phase 5) — blocks chat on 1st visit per domain.
+  let showOnboardingModal = $state(false);
+
+  async function loadChatState() {
     try {
-      // Load profile to get current mode
-      const profile = await api.getProfile(agent.domain);
+      const profile = await api.getProfile(agent?.domain ?? 'en');
       if (profile?.mode_apprentissage) {
         currentMode = profile.mode_apprentissage;
       }
-
-      const convos = await api.getConversations(agent.slug);
+      const convos = await api.getConversations(agent!.slug);
       if (convos?.data?.length > 0) {
         const latest = convos.data[0];
         conversationId = latest.id;
@@ -68,12 +69,38 @@
     loadingHistory = false;
     await tick();
     await scrollToBottom();
-
     timerInterval = setInterval(updateTimer, 1000);
-    return () => {
-      if (timerInterval) clearInterval(timerInterval);
-    };
+  }
+
+  onMount(async () => {
+    if (!agent?.available) { loadingHistory = false; return; }
+
+    // QCM gate: if flag ON and no learner_profile yet → open modal, skip chat init.
+    let gateSkipChat = false;
+    if (QCM_ONBOARDING_ENABLED) {
+      try {
+        const lp = await api.getLearnerProfile(agent.domain);
+        if (!lp) {
+          showOnboardingModal = true;
+          loadingHistory = false;
+          gateSkipChat = true;
+        }
+      } catch (e) {
+        console.warn('Could not check learner profile:', e);
+        // Fail-open: if the endpoint is down, don't block chat.
+      }
+    }
+
+    if (!gateSkipChat) {
+      await loadChatState();
+    }
   });
+
+  async function onOnboardingComplete() {
+    showOnboardingModal = false;
+    loadingHistory = true;
+    await loadChatState();
+  }
 
   function updateTimer() {
     if (!sessionStartTime) return;
@@ -348,6 +375,12 @@
   <div class="flex items-center justify-center h-[calc(100dvh-3.5rem)] -m-4 md:-m-6">
     <p class="text-text-muted">Cet agent n'est pas encore disponible.</p>
   </div>
+{:else if showOnboardingModal}
+  <OnboardingModal
+    domain={agent.domain}
+    agentName={agent.name}
+    onComplete={onOnboardingComplete}
+  />
 {:else}
   <div class="flex flex-col h-[calc(100dvh-3.5rem)] -m-4 md:-m-6">
     <!-- Chat header -->

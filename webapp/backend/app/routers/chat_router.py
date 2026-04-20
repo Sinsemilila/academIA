@@ -484,6 +484,39 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         except Exception:
             pass
 
+    # Sprint 5 Phase 5 — QCM learner profile injection (Karpathy-style curated context).
+    # Non-fatal: if table missing or row absent, fall back to empty strings so Dify
+    # chatflow sees no-op <learner_profile></learner_profile> block.
+    dify_inputs["learner_profile_json"] = "{}"
+    dify_inputs["learner_profile_summary"] = ""
+    if eleve_id:
+        try:
+            async with db.pool.acquire() as conn:
+                lp_row = await conn.fetchrow(
+                    """SELECT universal_block, domain_level, domain_motivation,
+                              derived_tutor_hints
+                       FROM learner_profiles
+                       WHERE eleve_id = $1 AND domain = $2
+                       ORDER BY completed_at DESC LIMIT 1""",
+                    eleve_id, domain,
+                )
+            if lp_row:
+                import json as _json
+                def _as_dict(v):
+                    return _json.loads(v) if isinstance(v, str) else (v or {})
+                compact = {
+                    "universal": _as_dict(lp_row["universal_block"]),
+                    "level": _as_dict(lp_row["domain_level"]),
+                    "motivation": _as_dict(lp_row["domain_motivation"]),
+                    "hints": _as_dict(lp_row["derived_tutor_hints"]),
+                }
+                dify_inputs["learner_profile_json"] = _json.dumps(compact, ensure_ascii=False)
+                hints = compact["hints"]
+                dify_inputs["learner_profile_summary"] = hints.get("nl_summary", "") or ""
+        except Exception as _e:
+            import logging
+            logging.getLogger("chat").warning("learner_profiles fetch failed: %s", _e)
+
     if detections:
         lines = []
         for d in detections:

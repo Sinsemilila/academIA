@@ -1,0 +1,201 @@
+# data/onboarding/domains/language.yaml
+# Bloc B (level) + Bloc C (motivation) — tronc commun pour toutes langues
+# Overlays dans overlays/{en,es,it,de,jp,ru}.yaml injectent LANGUE_CIBLE
+# Design doc : docs/00-project/onboarding-research-2026-04-20/vague2-qcm-design.md §3.2-3.3
+
+version: "1.0.0"
+domain: language
+requires_variable: target_language    # injecté par l'overlay : en, es, …
+locale_default: fr
+
+items:
+
+  # ---------- Bloc B — Domain Level ----------
+  - id: lang_cando_comprehension_1
+    block: level
+    order: 6
+    construct: cefr_comprehension
+    source: "CECRL 2001/2020 — self-assessment grid"
+    format: choice_single_rich
+    required: true
+    prompt:
+      fr: >-
+        En {{language_display_fr}}, à l'écrit comme à l'oral, je peux…
+        (choisis la description qui te correspond le mieux actuellement)
+    options:
+      - id: A1
+        label_fr: >-
+          Je comprends des mots familiers et des expressions très simples quand
+          on me parle lentement et clairement.
+      - id: A2
+        label_fr: >-
+          Je comprends des phrases et un vocabulaire très fréquent (infos
+          personnelles, achats, travail). Je saisis l'essentiel d'annonces simples.
+      - id: B1
+        label_fr: >-
+          Je comprends les points essentiels quand un langage clair et standard
+          est utilisé, sur des sujets familiers (travail, école, loisirs).
+      - id: B2
+        label_fr: >-
+          Je comprends des émissions TV et films en langue standard, et
+          l'essentiel de textes complexes sur des sujets concrets ou abstraits.
+      - id: C1
+        label_fr: >-
+          Je comprends un discours long même non clairement structuré, et des
+          textes longs et exigeants. Je saisis les sous-entendus.
+      - id: C2
+        label_fr: >-
+          Je comprends sans effort pratiquement tout ce que je lis ou entends,
+          y compris dans un débat rapide entre natifs.
+    db_variable: cefr_comprehension
+    db_type: "ENUM('A1','A2','B1','B2','C1','C2')"
+    scoring:
+      type: direct
+
+  - id: lang_cando_production_1
+    block: level
+    order: 7
+    construct: cefr_production
+    source: "CECRL 2001/2020 — spoken/written production grids"
+    format: choice_single_rich
+    required: true
+    prompt:
+      fr: >-
+        Et quand il s'agit de t'exprimer en {{language_display_fr}}, à
+        l'oral ou à l'écrit…
+    options:
+      - id: A1
+        label_fr: >-
+          Je peux utiliser des expressions simples pour me décrire et poser
+          des questions très basiques, si on m'aide.
+      - id: A2
+        label_fr: >-
+          Je peux décrire en termes simples ma famille, mon travail, mes
+          habitudes, et échanger sur des sujets familiers.
+      - id: B1
+        label_fr: >-
+          Je peux raconter une expérience, donner mon opinion brièvement, et
+          me débrouiller dans la plupart des situations courantes en voyage.
+      - id: B2
+        label_fr: >-
+          Je peux argumenter de façon claire et détaillée sur des sujets
+          variés, et communiquer avec aisance avec des locuteurs natifs.
+      - id: C1
+        label_fr: >-
+          Je m'exprime spontanément et couramment, je formule mes idées avec
+          précision et j'utilise la langue de façon flexible dans la vie
+          sociale et pro.
+      - id: C2
+        label_fr: >-
+          Je m'exprime avec précision et nuance, même sur des sujets
+          complexes, dans un registre adapté à chaque contexte.
+    db_variable: cefr_production
+    db_type: "ENUM('A1','A2','B1','B2','C1','C2')"
+    scoring:
+      type: direct
+
+  # ---------- Mini-probe conditionnel ----------
+  - id: lang_probe_discriminant_1
+    block: level
+    order: 7.5
+    construct: probe_discriminant
+    source: "C-Test (Klein-Braley 1985) ; Purpura 2004 grammar placement"
+    format: text_short
+    required: false
+    conditional:
+      rule: "max(cefr_comprehension, cefr_production) >= B1"
+      feature_flag: onboarding_probe_enabled
+    min_chars: 0
+    max_chars: 200
+    prompt:
+      fr: >-
+        Une dernière question rapide pour bien calibrer : traduis cette phrase
+        en {{language_display_fr}}. Ne cherche pas la perfection, fais de ton
+        mieux.
+    sentence_to_translate:
+      fr: "Si j'avais su que tu venais, j'aurais préparé un repas."
+    skip_label_fr: "Je ne sais pas"
+    placeholder_fr: "Écris ta traduction ici…"
+    db_variable: probe_answer
+    db_type: TEXT
+    scoring:
+      type: hybrid
+      algorithm: probe_scorer_v1
+      range: [0, 3]
+      derived:
+        probe_flag:
+          rule: "self_assessment_max >= B2 AND probe_score <= 1"
+
+  # ---------- Bloc C — Domain Motivation ----------
+  - id: lang_ideal_l2_self_1
+    block: motivation
+    order: 8
+    construct: ideal_l2_self
+    source: "Dörnyei 2005 ; Taguchi, Magid & Papi 2009"
+    format: choice_multi
+    required: true
+    min_selected: 1
+    max_selected: 2
+    prompt:
+      fr: >-
+        Imagine-toi dans 2 ans, parlant couramment {{language_display_fr}}.
+        Qu'est-ce qui te tient le plus à cœur dans cette image ?
+    options:
+      - id: daily_communication
+        label_fr: "Être compris·e sans effort dans des conversations quotidiennes"
+      - id: authentic_content
+        label_fr: >-
+          Pouvoir lire / regarder / écouter du contenu natif (livres, films,
+          podcasts)
+      - id: professional_academic
+        label_fr: "Travailler ou étudier dans un pays où cette langue est parlée"
+      - id: relationships
+        label_fr: "Construire des relations personnelles (amis, famille, partenaire)"
+      - id: confidence_expression
+        label_fr: >-
+          Me sentir à l'aise et confiant·e quand je m'exprime, sans peur de l'erreur
+    db_variable: ideal_l2_self_tags
+    db_type: "JSONB"
+    scoring:
+      type: tags_array
+
+  - id: lang_fla_short_1
+    block: motivation
+    order: 9
+    construct: foreign_language_anxiety
+    source: "Teimouri et al. 2019 ; Horwitz et al. 1986 FLCAS ; MacIntyre-Gardner 1994"
+    format: likert_group_3
+    required: true
+    prompt_group:
+      fr: >-
+        Quand tu imagines parler {{language_display_fr}} à voix haute avec
+        quelqu'un, voici trois situations. Dis-nous à quel point tu es
+        d'accord avec chacune :
+    sub_items:
+      - id: fla_a
+        prompt_fr: "Je me sens stressé·e à l'idée de parler sans préparation."
+      - id: fla_b
+        prompt_fr: "J'ai peur qu'on se moque de mes erreurs ou de mon accent."
+      - id: fla_c
+        prompt_fr: "Même quand je connais les mots, j'ai peur de bloquer au moment de parler."
+    scale:
+      labels_fr:
+        - "Pas du tout d'accord"
+        - "Plutôt pas d'accord"
+        - "Ni d'accord ni pas d'accord"
+        - "Plutôt d'accord"
+        - "Tout à fait d'accord"
+      values: [1, 2, 3, 4, 5]
+    db_variable: fla_items_raw
+    db_type: JSONB
+    scoring:
+      type: likert_mean
+      derived:
+        fla_score:
+          formula: "mean(fla_a, fla_b, fla_c)"
+          range: [1.0, 5.0]
+        fla_category:
+          bins:
+            low:      [1.0, 2.33]
+            moderate: [2.34, 3.66]
+            high:     [3.67, 5.0]

@@ -1,0 +1,10 @@
+# data/onboarding/domains/pymentor.yaml
+# STUB — activé quand PyMentor sera priorisé (règle de 3, cf vague2-cross-domain-vision.md)
+# Structure validée par schema.json mais items=[] en v1.
+
+version: "0.0.1"
+domain: pymentor
+status: stub
+requires_variable: null
+locale_default: fr
+items: []

@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AcademIA onboarding content",
+  "type": "object",
+  "required": ["version", "locale_default"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "block": { "type": "string", "enum": ["core"] },
+    "domain": { "type": "string" },
+    "status": { "type": "string", "enum": ["stub", "active"] },
+    "requires_variable": { "type": ["string", "null"] },
+    "locale_default": { "type": "string", "pattern": "^[a-z]{2}$" },
+    "extends": { "type": "string" },
+    "language_code": { "type": "string", "pattern": "^[a-z]{2}$" },
+    "language_display_fr": { "type": "string" },
+    "probe": {
+      "type": "object",
+      "properties": {
+        "item_id": { "type": "string" },
+        "source_sentence_fr": { "type": "string" },
+        "target_gold": { "type": "array", "items": { "type": "string" } },
+        "target_structure": { "type": "string" },
+        "discriminant_cefr": { "type": "string" },
+        "accepted_variants_regex": {
+          "type": "object",
+          "properties": {
+            "strong": { "type": "string" },
+            "medium": { "type": "string" },
+            "weak": { "type": "string" }
+          }
+        },
+        "fallback_judge": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "model": { "type": "string" },
+            "prompt_template": { "type": "string" }
+          }
+        }
+      }
+    },
+    "tutor_overrides": { "type": "object" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "order", "construct", "source", "format", "required", "db_variable", "scoring"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z_]+(_\\d+(\\.\\d+)?)?$" },
+          "order": { "type": "number" },
+          "block": { "type": "string", "enum": ["level", "motivation"] },
+          "construct": { "type": "string" },
+          "source": { "type": "string" },
+          "format": {
+            "type": "string",
+            "enum": [
+              "likert_5", "likert_group_3",
+              "choice_single", "choice_single_rich", "choice_multi",
+              "text_short"
+            ]
+          },
+          "required": { "type": "boolean" },
+          "conditional": {
+            "type": "object",
+            "properties": {
+              "rule": { "type": "string" },
+              "feature_flag": { "type": "string" }
+            }
+          },
+          "min_chars": { "type": "integer", "minimum": 0 },
+          "max_chars": { "type": "integer", "minimum": 1 },
+          "min_selected": { "type": "integer", "minimum": 0 },
+          "max_selected": { "type": "integer", "minimum": 1 },
+          "prompt": {
+            "type": "object",
+            "properties": { "fr": { "type": "string" } }
+          },
+          "prompt_group": {
+            "type": "object",
+            "properties": { "fr": { "type": "string" } }
+          },
+          "placeholder_fr": { "type": "string" },
+          "skip_label_fr": { "type": "string" },
+          "scale": {
+            "type": "object",
+            "properties": {
+              "labels_fr": { "type": "array", "items": { "type": "string" } },
+              "values": { "type": "array", "items": { "type": "number" } }
+            }
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id"],
+              "properties": {
+                "id": { "type": "string" },
+                "label_fr": { "type": "string" }
+              }
+            }
+          },
+          "sub_items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "prompt_fr"],
+              "properties": {
+                "id": { "type": "string" },
+                "prompt_fr": { "type": "string" }
+              }
+            }
+          },
+          "sentence_to_translate": {
+            "type": "object",
+            "properties": { "fr": { "type": "string" } }
+          },
+          "db_variable": { "type": "string" },
+          "db_type": { "type": "string" },
+          "scoring": {
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "raw", "map", "direct", "tags_array",
+                  "likert_mean", "text_passthrough", "hybrid"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -5,7 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from .database import init_pool, close_pool
 from .rate_limit import limiter
-from .routers import auth_router, profile_router, chat_router, settings_router, error_analysis_router, admin_router
+from .routers import auth_router, profile_router, chat_router, settings_router, error_analysis_router, admin_router, onboarding_router
 
 # ── Structured logging ────────────────────────────
 logging.basicConfig(
@@ -57,6 +57,7 @@ app.include_router(chat_router.router)
 app.include_router(settings_router.router)
 app.include_router(error_analysis_router.router)
 app.include_router(admin_router.router)
+app.include_router(onboarding_router.router)
 
 
 # ── Request logging middleware ────────────────────

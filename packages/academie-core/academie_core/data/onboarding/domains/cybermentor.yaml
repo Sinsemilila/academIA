@@ -1,0 +1,9 @@
+# data/onboarding/domains/cybermentor.yaml
+# STUB — activé quand CyberMentor sera priorisé (règle de 3).
+
+version: "0.0.1"
+domain: cybermentor
+status: stub
+requires_variable: null
+locale_default: fr
+items: []

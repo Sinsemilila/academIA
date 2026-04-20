@@ -1,0 +1,28 @@
+# data/onboarding/overlays/es.yaml
+# Overlay spécifique pour apprenants d'espagnol (Maestro)
+
+version: "1.0.0"
+extends: domains/language.yaml
+language_code: es
+language_display_fr: "espagnol"
+language_display_es: "español"
+
+probe:
+  item_id: lang_probe_discriminant_1
+  source_sentence_fr: "Si j'avais su que tu venais, j'aurais préparé un repas."
+  target_gold:
+    - "Si hubiera sabido que venías, habría preparado una comida."
+    - "Si hubiese sabido que venías, habría preparado una comida."
+    - "De haber sabido que venías, habría preparado una comida."
+  target_structure: "Pluscuamperfecto de subjuntivo + condicional compuesto"
+  discriminant_cefr: "B2+"
+  accepted_variants_regex:
+    strong: '(?i)(si (hubiera|hubiese) sabido|de haber sabido).*(venías|ibas a venir|vendrías).*(habría|hubiera) (preparado|hecho|cocinado)'
+    medium: '(?i)(si (supiera|supiese|sabía)).*(venías|vienes).*(preparar(ía|ía)|har(ía|ía))'
+    weak: '(?i)(si (sé|sabía)).*(vienes|venías).*(preparo|hago|cocino)'
+  fallback_judge:
+    enabled: true
+    model: "gpt-4.1-mini"
+    prompt_template: probe_judge_es_v1
+
+tutor_overrides: {}

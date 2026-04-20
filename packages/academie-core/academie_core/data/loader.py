@@ -159,3 +159,99 @@ def get_persona_label(lang: str, field: str = "target_prof", default: str = "") 
     data = load_cefr_diagnostics(lang)
     persona = data.get("persona", {}) if data else {}
     return persona.get(field, default)
+
+
+# ── Onboarding QCM content (Sprint 5 Phase 5) ────────────────────────
+# Compiles core.yaml + domains/{kind}.yaml + overlays/{lang}.yaml into a
+# single dict the frontend can render directly. See
+# docs/00-project/onboarding-research-2026-04-20/vague2-qcm-design.md §4.
+
+@lru_cache(maxsize=16)
+def _load_onboarding_core() -> dict:
+    path = _DATA_DIR / "onboarding" / "core.yaml"
+    if not path.exists():
+        return {}
+    with open(path) as f:
+        return yaml.safe_load(f) or {}
+
+
+@lru_cache(maxsize=16)
+def _load_onboarding_domain(domain_kind: str) -> dict:
+    path = _DATA_DIR / "onboarding" / "domains" / f"{domain_kind}.yaml"
+    if not path.exists():
+        return {}
+    with open(path) as f:
+        return yaml.safe_load(f) or {}
+
+
+@lru_cache(maxsize=16)
+def _load_onboarding_overlay(lang: str) -> dict:
+    path = _DATA_DIR / "onboarding" / "overlays" / f"{lang}.yaml"
+    if not path.exists():
+        return {}
+    with open(path) as f:
+        return yaml.safe_load(f) or {}
+
+
+# Map domain code → which domains/*.yaml applies.
+# Every language code maps to "language"; non-langue domains (pymentor, …)
+# map to themselves.
+_LANGUAGE_CODES = {"en", "es", "it", "de", "ja", "ru"}
+
+
+def load_onboarding_content(domain: str) -> dict:
+    """Compile onboarding YAML for a domain code (e.g., "en", "es", "pymentor").
+
+    Returns:
+        {
+          "version": str,
+          "domain": str,
+          "target_language": str | None,
+          "language_display_fr": str | None,
+          "probe": dict | None,
+          "items": [<core items>, <domain items>],
+        }
+
+    The items list is the ordered union of core + domain items (order field
+    respected). Overlay probe is merged into the probe item if present.
+    Returns {"items": []} if domain unknown.
+    """
+    core = _load_onboarding_core()
+    if domain in _LANGUAGE_CODES:
+        overlay = _load_onboarding_overlay(domain)
+        domain_kind = overlay.get("domain") or "language"
+        dom = _load_onboarding_domain(domain_kind)
+        target_language = overlay.get("language_code", domain)
+        language_display_fr = overlay.get("language_display_fr")
+        probe = overlay.get("probe")
+    else:
+        overlay = {}
+        dom = _load_onboarding_domain(domain)
+        target_language = None
+        language_display_fr = None
+        probe = None
+
+    core_items = list(core.get("items", []))
+    domain_items = list(dom.get("items", []))
+    all_items = sorted(core_items + domain_items, key=lambda it: it.get("order", 0))
+
+    # Inject language_display_fr placeholder rendering for language items
+    if language_display_fr:
+        for it in all_items:
+            if "prompt" in it and isinstance(it["prompt"].get("fr"), str):
+                it["prompt"]["fr"] = it["prompt"]["fr"].replace(
+                    "{{language_display_fr}}", language_display_fr
+                )
+            if "prompt_group" in it and isinstance(it["prompt_group"].get("fr"), str):
+                it["prompt_group"]["fr"] = it["prompt_group"]["fr"].replace(
+                    "{{language_display_fr}}", language_display_fr
+                )
+
+    return {
+        "version": core.get("version", "1.0.0"),
+        "domain": domain,
+        "target_language": target_language,
+        "language_display_fr": language_display_fr,
+        "probe": probe,
+        "items": all_items,
+    }

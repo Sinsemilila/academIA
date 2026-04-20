@@ -127,6 +127,41 @@ class ApiClient {
     return await res.json();
   }
 
+  // ── Onboarding QCM (Sprint 5 Phase 5) ────
+  async getOnboardingContent(domain: string) {
+    const res = await this.fetch(`/onboarding/content/${domain}`);
+    if (!res.ok) throw new Error('onboarding content unavailable');
+    return await res.json();
+  }
+
+  async getLearnerProfile(domain: string) {
+    const res = await this.fetch(`/learner-profile/${domain}`);
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error('learner profile fetch failed');
+    return await res.json();
+  }
+
+  async submitLearnerProfile(domain: string, payload: any) {
+    const res = await this.fetch(`/learner-profile/${domain}`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.detail || 'submit failed');
+    }
+    return await res.json();
+  }
+
+  async patchLearnerProfile(domain: string, patch: any) {
+    const res = await this.fetch(`/learner-profile/${domain}`, {
+      method: 'PATCH',
+      body: JSON.stringify(patch),
+    });
+    if (!res.ok) throw new Error('patch failed');
+    return await res.json();
+  }
+
   // ── Error Profile ─────────────────────────
   async getErrorProfile(domain: string = 'en') {
     const res = await this.fetch(`/error-profile/${domain}`);

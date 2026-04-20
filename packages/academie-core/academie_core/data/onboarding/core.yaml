@@ -1,0 +1,138 @@
+# data/onboarding/core.yaml
+# Bloc A — Universal Core (5 items)
+# Réutilisable pour tous domaines (langues, pymentor, maths, …)
+# Sources : Bandura 1997, Dweck 2006, Lou & Noels 2019, Locke-Latham 2002,
+#           Deci-Ryan 2000, Dörnyei 2005
+# Design doc : docs/00-project/onboarding-research-2026-04-20/vague2-qcm-design.md §3.1
+
+version: "1.0.0"
+block: core
+locale_default: fr
+items:
+
+  - id: core_self_efficacy_1
+    order: 1
+    construct: self_efficacy
+    source: "Bandura 1997 — GSE short form"
+    format: likert_5
+    required: true
+    prompt:
+      fr: >-
+        Quand je me fixe un objectif d'apprentissage, je suis généralement
+        capable de l'atteindre, même si ça demande des efforts.
+    scale:
+      labels_fr:
+        - "Pas du tout d'accord"
+        - "Plutôt pas d'accord"
+        - "Ni d'accord ni pas d'accord"
+        - "Plutôt d'accord"
+        - "Tout à fait d'accord"
+      values: [1, 2, 3, 4, 5]
+    db_variable: self_efficacy
+    db_type: INT
+    scoring:
+      type: raw
+      derived_category:
+        low: [1, 2]
+        medium: [3]
+        high: [4, 5]
+
+  - id: core_mindset_1
+    order: 2
+    construct: mindset
+    source: "Dweck 2006 ; Lou & Noels 2019 — forced-choice adapted"
+    format: choice_single
+    required: true
+    prompt:
+      fr: >-
+        Selon toi, la capacité à apprendre une nouvelle compétence, c'est plutôt…
+    options:
+      - id: fixed
+        label_fr: >-
+          Un talent qu'on a ou qu'on n'a pas, et qui change peu avec la pratique.
+      - id: growth
+        label_fr: >-
+          Une aptitude qui se développe avec l'effort et les bonnes méthodes.
+    db_variable: mindset
+    db_type: "ENUM('fixed','growth')"
+    scoring:
+      type: map
+      map: { fixed: fixed, growth: growth }
+
+  - id: core_goal_specificity_1
+    order: 3
+    construct: goal_specificity
+    source: "Locke & Latham 2002 — specific goals"
+    format: text_short
+    required: true
+    min_chars: 10
+    max_chars: 200
+    prompt:
+      fr: >-
+        Pourquoi veux-tu progresser en {{language_display_fr}} ? Décris en une
+        phrase concrète (ex : comprendre les films sans sous-titres, échanger
+        avec des collègues ou amis, passer un examen pour le boulot).
+    placeholder_fr: "Ex : comprendre les podcasts en VO, parler au boulot…"
+    db_variable: goal_text
+    db_type: TEXT
+    scoring:
+      type: text_passthrough
+      derived:
+        goal_specificity_score:
+          type: heuristic
+          algorithm: goal_nlp_v1
+          range: [0, 3]
+
+  - id: core_autonomy_1
+    order: 4
+    construct: autonomy_pref
+    source: "Deci & Ryan 2000 ; Dörnyei 2005"
+    format: choice_single
+    required: true
+    prompt:
+      fr: >-
+        Quand tu apprends quelque chose de nouveau, tu préfères…
+    options:
+      - id: guided
+        label_fr: "Qu'on me donne un plan précis étape par étape."
+      - id: semi_autonomous
+        label_fr: >-
+          Qu'on me propose un cadre, mais que je choisisse le rythme et les sujets.
+      - id: autonomous
+        label_fr: >-
+          Que je définisse moi-même mes objectifs et que le tuteur s'adapte.
+    db_variable: autonomy_pref
+    db_type: "ENUM('guided','semi_autonomous','autonomous')"
+    scoring:
+      type: map
+      map:
+        guided: guided
+        semi_autonomous: semi_autonomous
+        autonomous: autonomous
+
+  - id: core_engagement_1
+    order: 5
+    construct: engagement_pattern
+    source: "Ajzen TPB intention ; spaced repetition (Cepeda 2006)"
+    format: choice_single
+    required: true
+    prompt:
+      fr: "Tu comptes t'entraîner à quelle fréquence ?"
+    options:
+      - id: daily_short
+        label_fr: "Quelques minutes par jour (5-15 min)"
+      - id: weekly_long
+        label_fr: "Une session plus longue 2-3 fois par semaine (30-45 min)"
+      - id: opportunistic
+        label_fr: "Plutôt 1-2 fois par semaine, quand j'ai le temps"
+      - id: daily_intense
+        label_fr: "Très intensif, tous les jours 30+ min"
+    db_variable: engagement_pattern
+    db_type: "ENUM('daily_short','weekly_long','opportunistic','daily_intense')"
+    scoring:
+      type: map
+      map:
+        daily_short: daily_short
+        weekly_long: weekly_long
+        opportunistic: opportunistic
+        daily_intense: daily_intense

@@ -1,0 +1,27 @@
+# data/onboarding/overlays/en.yaml
+# Overlay spécifique pour apprenants d'anglais (Teacher)
+
+version: "1.0.0"
+extends: domains/language.yaml
+language_code: en
+language_display_fr: "anglais"
+language_display_en: "English"
+
+probe:
+  item_id: lang_probe_discriminant_1
+  source_sentence_fr: "Si j'avais su que tu venais, j'aurais préparé un repas."
+  target_gold:
+    - "If I had known you were coming, I would have prepared a meal."
+    - "Had I known you were coming, I would have prepared a meal."
+  target_structure: "3rd conditional (past perfect + would have + past participle)"
+  discriminant_cefr: "B2+"
+  accepted_variants_regex:
+    strong: '(?i)(if i had known|had i known).*(you were coming|you (were|''d) come).*(would(n''t)? have (prepared|made|cooked))'
+    medium: '(?i)(if i (knew|had known)).*(coming|come).*(would (have )?(prepared|made|cooked))'
+    weak: '(?i)(if i know|knew).*(come|coming).*(prepare|make|cook)'
+  fallback_judge:
+    enabled: true
+    model: "gpt-4.1-mini"
+    prompt_template: probe_judge_en_v1
+
+tutor_overrides: {}
