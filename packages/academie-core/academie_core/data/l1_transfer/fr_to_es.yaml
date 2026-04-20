@@ -1,28 +1,65 @@
 # L1 transfer patterns: French → Spanish.
-# DRAFT — requires FR-native + ES-native cross-check before prod.
+# Source : PCIC A1-A2 inventory + Bruhn de Garavito 1996/2002 + Collentine & Asención-Delaney
+# + Montrul 2004/2022 + Geeslin (ser/estar) + Paquet 2018 + CEDEL2 FR L1 subcorpus design.
 # Prioritized by multiplier (higher = show first to LLM in L1 watch block).
-# Based on typological distance FR-ES (close) + most frequent transfer errors.
+# Based on typological distance FR-ES (close) + most frequent transfer errors at A1-B1.
 l1: fr
 target: es
 transfers:
-  - family: por_para
+  - family: gustar_inversion
     multiplier: 1.6
-    description: "'Pour' français ambigu : 'gracias por' (cause/échange) vs 'para ti' (destinataire/but). Calque 'para' où 'por' requis : 'camino para Madrid' → 'camino por Madrid' (transit)."
+    description: "Structure dative inversée ES : 'yo gusto la música' (calque FR 'j'aime') → 'me gusta la música'. Verbes d'affection : gustar, encantar, doler, faltar, interesar. Très fréquent A1."
+  - family: preterito_perfecto_overuse
+    multiplier: 1.6
+    description: "Calque FR passé composé → ES pretérito perfecto avec marqueurs du passé : 'he comido ayer' → 'comí ayer'. ES perfecto requiert marqueurs présent (hoy, esta semana, ya). Peninsular ES strict ; LatAm plus tolérant. Très fréquent A2."
   - family: ser_estar
     multiplier: 1.5
-    description: "'Être' FR recouvre ser (identité/caractéristique essentielle) + estar (état/localisation). Calque 'soy cansado' (suis fatigué) → 'estoy cansado'. 'está médico' → 'es médico'."
+    description: "'Être' FR recouvre ser (identité/caractéristique essentielle) + estar (état/localisation). Deux sous-patterns : (1) 'soy cansado/en Madrid' → 'estoy' ; (2) adjectifs à double sens : 'soy listo' (intelligent) vs 'estoy listo' (prêt), idem rico/malo/aburrido/verde. A1-A2 très fréquent."
+  - family: por_para
+    multiplier: 1.5
+    description: "'Pour' français ambigu : para (destinataire/but/direction future), por (cause/échange/moyen/durée/transit). Calques typiques : 'gracias para ti' → 'gracias por ti' ; 'camino para Madrid' (transit) → 'por Madrid' ; 'lo hago por ti' (beneficiary) → 'para ti'. A2 fréquent."
+  - family: personal_a
+    multiplier: 1.5
+    description: "A personal obligatoire devant OD humain/animal personnifié : 'veo Juan' → 'veo a Juan' ; 'busco mi hermano' → 'a mi hermano'. Pas d'équivalent FR (voir Jean). A2 fréquent."
   - family: gender_mismatch
     multiplier: 1.4
-    description: "Genre différent FR/ES : 'la leche' (FR 'le lait' masc) ; 'el problema' (FR 'le problème' masc, MAIS FR devrait aider ici — erreur par hypercorrection) ; 'la nariz' (FR 'le nez'). Liste top 30 : leche, nariz, sangre, sal, miel (fém ES ↔ masc FR)."
+    description: "Genre différent FR/ES, cognats trompeurs : 'la leche' (FR 'le lait' masc) ; 'la sangre' (FR 'le sang') ; 'la sal' (FR 'le sel') ; 'la miel' (FR 'le miel') ; 'la nariz' (FR 'le nez'). Inverse : 'el problema/sistema/idioma' (FR 'le problème' masc → OK mais 'la méthode' fém → 'el método' masc)."
+  - family: pro_drop
+    multiplier: 1.4
+    description: "ES drop le sujet par défaut (pro-drop) ; FR non. 'Yo soy francés, yo tengo 25 años, yo vivo en París' → 'Soy francés, tengo 25 años, vivo en París'. Sur-usage = discours marqué/contrastif en ES. A1 fréquent."
+  - family: muy_mucho
+    multiplier: 1.4
+    description: "FR 'très/beaucoup' partage imparfaitement ES muy (+adj/adv) / mucho (+verbe). 'Muy gusta' → 'me gusta mucho' ; 'mucho grande' → 'muy grande' (sauf mucho más/mejor/peor). A1 fréquent."
+  - family: prep_movement
+    multiplier: 1.4
+    description: "Verbes de déplacement : ir + a (direction), pas en. 'voy en Madrid' → 'voy a Madrid' ; 'voy en el cine' → 'voy al cine'. Exception légitime : moyen de transport 'voy en tren/coche/avión'. A1 fréquent."
   - family: false_friends
     multiplier: 1.3
-    description: "embarazada ≠ embarrassée (= enceinte) ; éxito ≠ exit (= succès) ; largo ≠ large (= long) ; realizar ≠ réaliser dans sens 'se rendre compte' (=effectuer) ; constipado = rhume (pas constipation)."
+    description: "embarazada ≠ embarrassée (= enceinte) ; éxito ≠ exit (= succès) ; largo ≠ large (= long) ; realizar ≠ réaliser 'se rendre compte' (= effectuer) ; constipado = rhume ; sensible ≠ sensible FR (= sensato : raisonnable) ; atender ≠ attendre (= s'occuper de) ; demandar ≠ demander poliment (= poursuivre en justice)."
+  - family: apocope
+    multiplier: 1.3
+    description: "Apocope adjectif devant nom masc sing : 'un bueno amigo' → 'un buen amigo' ; 'el primero día' → 'el primer día' ; 'un grande hombre' → 'un gran hombre' ; 'el tercero piso' → 'el tercer piso'. Pas d'équivalent FR. A2 fréquent."
+  - family: interrogative_syntax
+    multiplier: 1.2
+    description: "Interrogatives ES : (1) toujours ¿…? d'ouverture ; (2) inversion sujet-verbe plutôt que 'est-ce que' FR. '¿Tú qué quieres?' → '¿Qué quieres (tú)?'. Marqueur ¿ manquant systématique. A1 fréquent."
   - family: subjuntivo_ausente
     multiplier: 1.2
-    description: "FR subjonctif plus faible qu'ES. Calque indicatif après 'quiero que tienes' → 'quiero que tengas' (subj). 'cuando vengo mañana' (ind) → 'cuando venga mañana' (subj avec valeur future)."
+    description: "FR subjonctif plus faible qu'ES. Calque indicatif après déclencheurs obligatoires : 'quiero que tienes' → 'tengas' ; 'cuando vengo mañana' (ind) → 'cuando venga mañana' (subj valeur future) ; 'para que puedo' → 'pueda'. B1 fréquent."
+  - family: hace_ago
+    multiplier: 1.2
+    description: "Calque idiome FR 'il y a deux ans' : 'antes dos años' ou 'hay dos años' → 'hace dos años'. Structure 'hace + durée' absente FR. A2 modéré."
   - family: article_profession
     multiplier: 1.1
-    description: "FR 'je suis un médecin' → ES 'soy médico' (sans article après ser + profession/nationalité non-modifiée)."
+    description: "FR 'je suis un médecin' → ES 'soy médico' (sans article après ser + profession/nationalité/religion non-modifiée). Avec modif : 'soy un buen médico' (OK, re-article)."
+  - family: clitic_infinitive
+    multiplier: 1.0
+    description: "Clitiques FR toujours proclitiques ('je veux l'acheter') ; ES autorise proclise sur verbe principal OU enclise sur infinitif : 'quiero comprarlo' / 'lo quiero comprar'. Calque hybride fréquent : 'quiero lo comprar' (agrammatical). B1 modéré."
   - family: pronombres_dobles
     multiplier: 1.0
-    description: "ES requiert réorganisation objet direct+indirect : 'se lo doy' (le le donne) — ordre OI+OD inversé par rapport au FR 'je le lui donne'. Le → se quand suivi de lo/la (se lo, pas le lo)."
+    description: "ES requiert réorganisation OD+OI : 'se lo doy' — ordre OI+OD inversé par rapport au FR 'je le lui donne'. Règle le → se quand suivi de lo/la (se lo, pas le lo). B1 modéré."
+  - family: aux_ser_haber
+    multiplier: 1.0
+    description: "Verbes FR à auxiliaire être (aller, venir, partir, devenir) vs ES toujours haber. Calque 'soy ido/soy venido' → 'he ido/he venido'. A2 modéré."
+  - family: ne_pas_residue
+    multiplier: 1.0
+    description: "Résidus FR 'ne…pas' en ES : 'no como no nada' (double négation artificielle) ou traces 'pas'. ES a simple 'no' + négatifs postverbaux (no…nada, no…nadie, no…nunca). A1 faible mais signal clair d'interférence."

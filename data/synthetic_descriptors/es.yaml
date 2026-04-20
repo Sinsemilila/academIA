@@ -1,48 +1,234 @@
 ---
-# ES synthetic error descriptors — Wave 1 seed (8 descriptors)
-# Derived from PCIC priorities for FR→ES learners + rules_es.py coverage.
+# ES synthetic error descriptors — Wave 1 enriched (20 descriptors)
+# Source: PCIC + Agent 1 research (Bruhn de Garavito + Collentine + Montrul + Geeslin + Paquet 2018)
+# Feeds scripts/synthetic/generate_errors.py --lang es
+# Each descriptor maps to rules_es.py detector (if mechanical) or LLM layer (if semantic).
 
 descriptors:
-  - code: "V:SER_ESTAR"
-    family: "verb_usage"
-    level: "a2"
-    description: "confusion ser/estar — FR learners extend 'ser' to transitory states (soy cansado → estoy cansado)"
-    examples_hint: "cansado, contento, aburrido, ocupado, enfermo"
-
-  - code: "ART:PROF"
-    family: "noun_det"
-    level: "a1"
-    description: "article before profession after ser/estar (soy un médico → soy médico)"
-    examples_hint: "médico, profesor, abogado, estudiante, ingeniero"
-
-  - code: "PREP:POR_PARA"
-    family: "preposition"
-    level: "b1"
-    description: "por/para confusion — FR has one 'pour'; Spanish distinguishes cause (por) vs purpose (para)"
-    examples_hint: "gracias para → gracias por ; trabajar para una empresa OK"
-
+  # ── Surface / ortho (A1) ─────────────────────────────────────
   - code: "ORTH:NY"
     family: "surface"
     level: "a1"
-    description: "missing ñ in common words (manana → mañana, espanol → español)"
+    description: "missing ñ in common words (manana → mañana, espanol → español, ano → año)"
+    examples_hint: "manana, espanol, nino, pequeno, senor, ano"
 
   - code: "PUNCT:INTERROG"
     family: "surface"
     level: "a1"
-    description: "missing inverted ¿ at start of question or ¡ at start of exclamation"
+    description: "missing inverted ¿ at question start or ¡ at exclamation start"
+    examples_hint: "Cuanto cuesta? → ¿Cuánto cuesta? ; Que bueno! → ¡Qué bueno!"
 
-  - code: "LEX:FALSE"
-    family: "vocabulary"
-    level: "b1"
-    description: "false friend used with French meaning (embarazada, largo, éxito/exit, constipado)"
+  # ── Ser / estar (A1-A2) ──────────────────────────────────────
+  - code: "V:SER_ESTAR"
+    family: "verb_usage"
+    level: "a1"
+    description: "ser/estar confusion state — FR learners extend 'ser' to transitory states"
+    examples_hint: "soy cansado/triste/enfermo/ocupado/contento → estoy ; soy en Madrid → estoy en"
+
+  - code: "V:SER_ESTAR:LEXICAL"
+    family: "verb_usage"
+    level: "a2"
+    description: "ser/estar shifts adjective meaning — soy listo (intelligent) vs estoy listo (ready), idem rico/malo/aburrido/verde"
+    examples_hint: "listo, rico, malo, aburrido, verde, bueno"
+
+  # ── Articles / apocope (A1-A2) ──────────────────────────────
+  - code: "ART:PROF"
+    family: "noun_det"
+    level: "a1"
+    description: "article before unmodified profession/nationality after ser (soy un médico → soy médico)"
+    examples_hint: "médico, profesor, abogado, estudiante, ingeniero, francés"
+
+  - code: "APOCOPE"
+    family: "noun_det"
+    level: "a2"
+    description: "adjective apocope missing before masc sing noun (un bueno amigo → un buen amigo)"
+    examples_hint: "bueno→buen, malo→mal, grande→gran, primero→primer, tercero→tercer"
+
+  # ── Gender (A1) ──────────────────────────────────────────────
+  - code: "N:GEN"
+    family: "noun_det"
+    level: "a1"
+    description: "FR/ES gender mismatch via cognate transfer (la leche, la sangre, la sal, la miel, la nariz; el problema, el sistema, el método)"
+    examples_hint: "leche, sangre, sal, miel, nariz, problema, sistema, idioma, método"
+
+  # ── Prepositions / movement (A1) ────────────────────────────
+  - code: "PREP:MOVEMENT"
+    family: "preposition"
+    level: "a1"
+    description: "ir + en vs a — FR calque 'voy en Madrid/cine' → 'voy a Madrid / al cine' (transport en OK)"
+    examples_hint: "voy en el cine → al cine ; voy en Madrid → a Madrid ; voy en tren = OK"
+
+  - code: "PREP:POR_PARA"
+    family: "preposition"
+    level: "a2"
+    description: "por/para split — FR 'pour' merges both; por=cause/exchange/transit, para=purpose/destination"
+    examples_hint: "gracias para → por ; camino para Madrid (transit) → por ; lo hago por ti (beneficiary) → para"
 
   - code: "PREP:CALQUE"
     family: "preposition"
     level: "b1"
-    description: "French preposition calque with verbs (soñar de → con, depender a → de, casarse a → con)"
+    description: "French preposition calque with specific verbs (soñar de → con, depender a → de, casarse a → con, pensar de/en ambig)"
+    examples_hint: "soñar con, depender de, casarse con, pensar en (réfléchir) vs pensar de (opinion)"
 
+  # ── Personal a (A2) ──────────────────────────────────────────
+  - code: "PREP:PERSONAL_A"
+    family: "preposition"
+    level: "a2"
+    description: "personal 'a' obligatory before human/personified-animal direct object (veo Juan → veo a Juan)"
+    examples_hint: "veo a Juan, busco a mi hermano, invito a María, quiero a mi perro"
+
+  # ── Gustar / dative (A1) ─────────────────────────────────────
+  - code: "V:GUSTAR_SUBJECT"
+    family: "verb_usage"
+    level: "a1"
+    description: "dative inversion — FR 'je gusto' → 'me gusta X'; verbs of affection: gustar, encantar, doler, faltar, interesar"
+    examples_hint: "yo gusto → me gusta ; tú encanta → te encanta ; duele mi cabeza → me duele la cabeza"
+
+  # ── Aspect / past tenses (A2) ───────────────────────────────
+  - code: "ASPECT:PERF_OVERUSE"
+    family: "verb_usage"
+    level: "a2"
+    description: "pretérito perfecto with closed past marker (peninsular ES) — FR passé composé transfer"
+    examples_hint: "he comido ayer → comí ayer ; he viajado la semana pasada → viajé"
+
+  # ── Quantifiers (A1) ─────────────────────────────────────────
+  - code: "QUANT:MUY_MUCHO"
+    family: "quantifier"
+    level: "a1"
+    description: "muy (+adj/adv) vs mucho (+verb or noun) — common swap with FR 'très/beaucoup'"
+    examples_hint: "muy me gusta → me gusta mucho ; mucho grande → muy grande ; mucho más = OK"
+
+  # ── Pro-drop + interference (A1) ────────────────────────────
+  - code: "PRO_DROP_OVERUSE"
+    family: "syntax"
+    level: "a1"
+    description: "overuse subject pronouns where ES defaults to null (Yo soy X, yo tengo Y, yo voy Z → drop yo)"
+    examples_hint: "Yo soy francés → Soy francés ; Yo vivo aquí → Vivo aquí (sauf contraste/emphase)"
+
+  - code: "LEX:FR_RESIDUE"
+    family: "interference"
+    level: "a1"
+    description: "residual French tokens (ne, pas) in Spanish output"
+    examples_hint: "yo ne como pas → no como ; il ne es bueno → no es bueno"
+
+  # ── Idioms / hace-ago (A2) ──────────────────────────────────
+  - code: "IDIOM:HACE_AGO"
+    family: "idiom"
+    level: "a2"
+    description: "FR 'il y a X temps' calque (antes/hay X años) → 'hace X años/meses/semanas'"
+    examples_hint: "antes dos años → hace dos años ; hay cinco meses → hace cinco meses"
+
+  # ── False friends (A1-B1) ────────────────────────────────────
+  - code: "LEX:FALSE"
+    family: "vocabulary"
+    level: "b1"
+    description: "false friend used with French meaning (embarazada, largo, éxito, constipado, sensible, atender, demandar)"
+    examples_hint: "embarazada=enceinte; largo=long; éxito=succès; constipado=rhume; sensible (FR)=sensato"
+
+  # ── Subjuntivo (B1-B2) ───────────────────────────────────────
   - code: "V:SUBJ"
     family: "verb_usage"
+    level: "b1"
+    description: "subjunctive after trigger verbs/conjunctions (espero que vienes → vengas, cuando puedes → puedas, para que sabes → sepas)"
+    examples_hint: "espero que, quiero que, cuando (futur), para que, aunque (hypothetical), antes de que"
+
+  # ── Clitics (B1) ─────────────────────────────────────────────
+  - code: "PRON:CLITIC"
+    family: "pronoun"
+    level: "b1"
+    description: "clitic position with infinitive — FR proclisis ('le acheter') → ES proclisis on main verb OR enclisis on infinitive (quiero comprarlo / lo quiero comprar, NOT quiero lo comprar)"
+    examples_hint: "quiero lo comprar → quiero comprarlo ; puedo te ayudar → puedo ayudarte"
+
+  # ── Auxiliary transfer (A2-B1) ──────────────────────────────
+  - code: "V:AUX_HABER"
+    family: "verb_usage"
+    level: "a2"
+    description: "FR être-auxiliary verbs (aller, venir, partir, devenir) all use haber in ES — soy ido → he ido"
+    examples_hint: "soy ido → he ido ; soy venido → he venido ; soy salido → he salido"
+
+  # ── B2 — Subjonctif complexe, passive, connecteurs ──────────
+  - code: "V:SUBJ:IMPERFECT"
+    family: "verb_usage"
     level: "b2"
-    description: "subjunctive mood after trigger verbs (espero que vienes → vengas, quiero que estás → estés)"
-    examples_hint: "espero que, quiero que, no creo que, dudo que"
+    description: "subjuntivo imperfecto in past subordinate contexts (quería que vienes → vinieras ; si puedo → si pudiera)"
+    examples_hint: "quería/deseaba/esperaba/pedí que + imperf subj ; si + imperf subj → condicional"
+
+  - code: "V:COND:COMPOUND"
+    family: "verb_usage"
+    level: "b2"
+    description: "condicional compuesto for counterfactual past (si hubiera sabido, habría venido ; overuse/underuse)"
+    examples_hint: "habría + participio, si hubiera + participio, sequence of tenses"
+
+  - code: "V:PASIVA_REFLEJA"
+    family: "verb_usage"
+    level: "b2"
+    description: "impersonal / pasiva refleja with se — FR learners default to 'on' calques (on vende → se vende, no 'uno vende')"
+    examples_hint: "se vende casa ; se habla español ; se dice que…"
+
+  - code: "CONNECT:DISCOURSE"
+    family: "discourse"
+    level: "b2"
+    description: "sophisticated connectors: sin embargo, no obstante, a pesar de, aunque (ind vs subj), mientras que"
+    examples_hint: "aunque+ind (fait reconnu) vs aunque+subj (hypothèse) ; por lo tanto, así que, de modo que"
+
+  - code: "LEX:COLLOCATION:B2"
+    family: "vocabulary"
+    level: "b2"
+    description: "verb+noun collocations (dar pena, hacer falta, poner de manifiesto, tomar en cuenta)"
+    examples_hint: "dar pena/risa/miedo ; hacer falta ; tomar en serio ; tener en cuenta"
+
+  # ── C1 — Précision, registres, inversion ────────────────────
+  - code: "V:SUBJ:PLUSCUAMPERFECTO"
+    family: "verb_usage"
+    level: "c1"
+    description: "pluscuamperfecto de subjuntivo (hubiera/hubiese + participio) in counterfactual + concessive chains"
+    examples_hint: "si hubiera/hubiese llegado antes ; aunque hubiera estudiado más"
+
+  - code: "REGISTER:FORMAL"
+    family: "discourse"
+    level: "c1"
+    description: "register mixing — culto/formal vs coloquial; FR speakers often over-formalize via cognates"
+    examples_hint: "acaso (literary) vs quizá ; acontecer vs pasar ; realizar vs hacer"
+
+  - code: "LEX:IDIOM:TRANSPARENT"
+    family: "vocabulary"
+    level: "c1"
+    description: "transparent idioms (costar un ojo de la cara, estar en las nubes, meter la pata)"
+    examples_hint: "costar un ojo de la cara, tirar la toalla, estar hasta las narices"
+
+  - code: "SYNTAX:INVERSION"
+    family: "syntax"
+    level: "c1"
+    description: "emphatic inversion / cleft (Raro es que…, Fue Juan quien…, No por eso…)"
+    examples_hint: "fue/es… quien/el que/lo que ; raro/difícil/importante es que + subj"
+
+  - code: "PREP:VERB_ADVANCED"
+    family: "preposition"
+    level: "c1"
+    description: "verb-preposition patterns: soñar con, consistir en, confiar en, enterarse de, darse cuenta de"
+    examples_hint: "consistir en, darse cuenta de, enterarse de, prescindir de, atreverse a"
+
+  # ── C2 — Pragmatique, nuance, créativité ────────────────────
+  - code: "PRAGMATIC:HEDGING"
+    family: "pragmatic"
+    level: "c2"
+    description: "hedging markers (pues, hombre, oye, vale, digamos, por así decirlo) + native fluency tics"
+    examples_hint: "pues, mira, oye, vale, hombre, a ver, digamos, por así decirlo"
+
+  - code: "LEX:IDIOM:OPAQUE"
+    family: "vocabulary"
+    level: "c2"
+    description: "opaque idioms / cultural references (tomar el pelo, hablar por los codos, ponerse las pilas)"
+    examples_hint: "tomar el pelo, hablar por los codos, ponerse las pilas, no tener pelos en la lengua"
+
+  - code: "IRONY_SARCASM"
+    family: "pragmatic"
+    level: "c2"
+    description: "ironic/sarcastic register mismatch — FR learners flatten ES pragmatic layering"
+    examples_hint: "¡Qué bien!/¡Vaya!/¡Anda! context-dependent meaning ; rhetorical ¿qué tal…?"
+
+  - code: "STYLE:CULTO_LITERARIO"
+    family: "register"
+    level: "c2"
+    description: "literary register (inversiones, léxico culto) vs forced classicism by FR learners"
+    examples_hint: "verbigracia, a saber, cabe destacar, a todas luces, en aras de"

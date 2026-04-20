@@ -104,6 +104,63 @@ def test_rules_es_detects_core_errors():
     assert any(x.error_code == "LEX:FALSE" for x in r)
 
 
+def test_rules_es_wave1_detectors():
+    """Wave 1 — 8 new detectors from Agent 1 research (PCIC + SLA)."""
+    from academie_core.taxonomy.rules_es import detect_errors_es
+
+    # ser + locative → estar
+    r = detect_errors_es("Soy en Madrid hoy")
+    assert any(x.error_code == "V:SER_ESTAR" for x in r)
+
+    # ser + locative cleft OK (legitimate): "es en Madrid donde vivo"
+    r = detect_errors_es("Es en Madrid donde vivo")
+    assert not any(x.error_code == "V:SER_ESTAR" and "en Madrid" in x.original_text for x in r)
+
+    # gustar with nominative subject
+    r = detect_errors_es("Yo gusto mucho la música")
+    assert any(x.error_code == "V:GUSTAR_SUBJECT" for x in r)
+
+    # hace ago calque
+    r = detect_errors_es("Llegué antes dos años a España")
+    assert any(x.error_code == "IDIOM:HACE_AGO" for x in r)
+
+    # hace legitimate "hay dos años de diferencia" — not matched
+    r = detect_errors_es("Hay dos años de diferencia entre nosotros")
+    assert not any(x.error_code == "IDIOM:HACE_AGO" for x in r)
+
+    # muy + verb
+    r = detect_errors_es("Muy me gusta el chocolate")
+    assert any(x.error_code == "QUANT:MUY_MUCHO" for x in r)
+
+    # mucho + adj
+    r = detect_errors_es("Es mucho grande")
+    assert any(x.error_code == "QUANT:MUY_MUCHO" for x in r)
+
+    # mucho mejor whitelist — not matched
+    r = detect_errors_es("Esto es mucho mejor")
+    assert not any(x.error_code == "QUANT:MUY_MUCHO" for x in r)
+
+    # ir + en + place → a
+    r = detect_errors_es("Voy en el cine con ellos")
+    assert any(x.error_code == "PREP:MOVEMENT" for x in r)
+
+    # ir + en + transport — legitimate
+    r = detect_errors_es("Voy en tren a Barcelona")
+    assert not any(x.error_code == "PREP:MOVEMENT" for x in r)
+
+    # FR residue
+    r = detect_errors_es("Yo ne como pas")
+    assert sum(1 for x in r if x.error_code == "LEX:FR_RESIDUE") >= 2
+
+    # Perfecto + past marker
+    r = detect_errors_es("He comido paella ayer")
+    assert any(x.error_code == "ASPECT:PERF_OVERUSE" for x in r)
+
+    # Clean text — no false positives
+    r = detect_errors_es("Estoy en Madrid y me gusta mucho la música")
+    assert len(r) == 0, f"false positives on clean text: {[x.error_code for x in r]}"
+
+
 def test_language_domain_es_instantiates():
     from academie_core.domain.language import LanguageDomain
     d = LanguageDomain("es")

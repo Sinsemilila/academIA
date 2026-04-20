@@ -1,53 +1,165 @@
 ---
 # Spanish battery personas — Wave 1 Maestro alpha.
-# STUB : 3 turns per level for Phase 0 extensibility proof.
-# Expand to 10 turns at Wave 1 kickoff using PCIC + CEDEL2 FR subcorpus patterns.
+# 6 personas × 10 turns = 60 total turns. Covers A1-C2 full range.
+# Planted errors calibrated to level tolerance tier (per rubrics_es.yaml).
 #
-# Planted error tiers: T1 ignored, T2 noted, T3 penalized, T4 regressive.
-# Families: noun_det, verb_tense, preposition, vocabulary, word_order,
-# orthography, agreement, ser_estar, subjuntivo.
+# Error tiers (rubrics_es.yaml alignment):
+#   T1 ignored  — surface, should NOT trigger correction
+#   T2 noted    — light recast, optional correction
+#   T3 penalized — explicit elicit/metalinguistic correction expected
+#   T4 regressive — immediate correction + L1 contrast (high priority)
+#
+# Families: noun_det, verb_tense, verb_usage, preposition, vocabulary,
+# word_order, orthography, agreement, ser_estar, subjuntivo, gustar_dative,
+# pro_drop, quantifier, discourse, pragmatic, register.
 
 personas:
   A1:
     level: "A1"
-    profile: "Débutant absolu, 10h d'espagnol, apprend les bases."
+    profile: "Débutant absolu FR-natif, ~10h d'espagnol. Apprend les bases, besoin de recast chaleureux."
     turns:
       - - "Hola, yo soy francés y me gusta estudiar español."
-        - []
-      - - "Yo soy médico y yo trabajo en el hospital."
-        - [{family: "noun_det", tier: "T3"}]   # planted: article before profession
+        - [{family: "pro_drop", tier: "T1"}]  # yo redondant, ignoré A1
+      - - "Yo soy un médico y yo trabajo en el hospital."
+        - [{family: "noun_det", tier: "T3"}]  # article + profession
       - - "Manana voy a comer con mi amigo."
-        - [{family: "orthography", tier: "T2"}]  # planted: missing ñ
+        - [{family: "orthography", tier: "T2"}]  # missing ñ
+      - - "Soy muy cansado porque trabajo mucho hoy."
+        - [{family: "ser_estar", tier: "T4"}]  # ser+cansado
+      - - "Voy en el cine esta noche con Juan."
+        - [{family: "preposition", tier: "T3"}]  # ir+en
+      - - "Yo gusto mucho la música de España."
+        - [{family: "gustar_dative", tier: "T4"}]  # gustar subject nominative
+      - - "Mi casa es grande y tiene tres dormitorios."
+        - []
+      - - "Cuanto cuesta este libro? No veo el precio."
+        - [{family: "orthography", tier: "T2"}]  # missing ¿
+      - - "Muy me gusta beber café por la mañana."
+        - [{family: "quantifier", tier: "T3"}]  # muy + verbe
+      - - "Hoy como paella con mi familia en Madrid."
+        - []
 
   A2:
     level: "A2"
-    profile: "A1 consolidé, travaille les temps du passé simples."
+    profile: "A1 consolidé, travaille narratif passé + perífrasis. Besoin de calibration perfecto/indefinido."
     turns:
-      - - "Ayer yo he ido al cine con mi hermana."
-        - [{family: "verb_tense", tier: "T3"}]
-      - - "Soy cansado porque trabajé mucho."
-        - [{family: "ser_estar", tier: "T4"}]
-      - - "Quiero para comprar un libro nuevo."
-        - [{family: "preposition", tier: "T3"}]
+      - - "El fin de semana pasado fui a la playa con mis amigos."
+        - []
+      - - "He comido una paella deliciosa ayer en el restaurante."
+        - [{family: "verb_tense", tier: "T3"}]  # perfecto+marcador
+      - - "Ayer por la noche vi Juan en la fiesta de Ana."
+        - [{family: "preposition", tier: "T3"}]  # personal a manquant
+      - - "Es un bueno amigo desde hace muchos años."
+        - [{family: "word_order", tier: "T3"}]  # apocope bueno→buen
+      - - "Estoy embarazada porque olvidé mi bolso en el tren."
+        - [{family: "vocabulary", tier: "T4"}]  # false friend embarazada
+      - - "Llegué a España antes dos años y me encanta vivir aquí."
+        - [{family: "preposition", tier: "T3"}]  # antes → hace
+      - - "Quiero comprar un libro nuevo para aprender más gramática."
+        - []
+      - - "Soy ido al mercado esta mañana para comprar fruta."
+        - [{family: "verb_tense", tier: "T3"}]  # aux soy→he
+      - - "A mí me gustan las películas de Almodóvar."
+        - []  # duplication OI correcte
+      - - "Tengo que estudiar mucho porque mañana tengo un examen."
+        - []
 
   B1:
     level: "B1"
-    profile: "Conversation courante, découvre le subjonctif."
+    profile: "Conversation courante, découvre subjonctif présent + contraste imperfecto/indefinido. Prêt aux prompts."
     turns:
       - - "Pienso que es importante que nosotros estudiamos cada día."
-        - [{family: "subjuntivo", tier: "T4"}]  # indicativo vs subj
-      - - "Estoy embarazada de no encontrar mis llaves."
-        - [{family: "vocabulary", tier: "T4"}]  # false friend embarazada
-      - - "Mañana voy a casa de mis padres para celebrar."
+        - [{family: "subjuntivo", tier: "T4"}]  # subj après trigger
+      - - "Cuando llegue a casa ayer, mi madre estaba cocinando la cena."
+        - [{family: "verb_tense", tier: "T3"}]  # llegue→llegué
+      - - "Quiero lo comprar porque me parece muy interesante."
+        - [{family: "word_order", tier: "T3"}]  # clitic position
+      - - "Sueño de viajar a Latinoamérica el próximo verano."
+        - [{family: "preposition", tier: "T3"}]  # soñar con
+      - - "Es una persona muy sensible, nunca se enfada por cosas pequeñas."
+        - [{family: "vocabulary", tier: "T4"}]  # false friend sensible
+      - - "Si tengo tiempo el sábado, voy a visitarte en Barcelona."
+        - [{family: "subjuntivo", tier: "T3"}]  # si+subj/cond
+      - - "Me levanto temprano para que no perder el autobús."
+        - [{family: "subjuntivo", tier: "T4"}]  # para que + subj
+      - - "He vivido en Madrid durante cinco años antes de mudarme a Sevilla."
+        - []
+      - - "Aunque llueve, vamos a salir de paseo por el parque."
+        - [{family: "subjuntivo", tier: "T3"}]  # aunque hypothétique
+      - - "Me preocupa la situación política en mi país actualmente."
         - []
 
   B2:
     level: "B2"
-    profile: "Autonome quotidien, travaille nuances aspectuelles."
+    profile: "Autonome quotidien, argumente. Travaille subjonctifs composés, pasiva refleja, conectores."
     turns:
-      - - "Cuando era pequeño, siempre iba a la playa cada verano."
+      - - "Si hubiera sabido que venías, habría preparado algo especial."
         - []
-      - - "Si tuviera más tiempo, iría a Madrid este fin de semana."
+      - - "Quería que mi hijo viene conmigo pero estaba muy ocupado con sus estudios."
+        - [{family: "subjuntivo", tier: "T4"}]  # subj imperf
+      - - "En España se habla mucho de política pero uno no llega a conclusiones claras."
+        - [{family: "verb_usage", tier: "T3"}]  # uno→se
+      - - "Aunque tiene talento, no ha sabido aprovechar las oportunidades que se le presentaron."
         - []
-      - - "Le dije que él venga a la fiesta pero no pudo."
-        - [{family: "subjuntivo", tier: "T4"}]
+      - - "Por lo tanto, considero que esta decisión fue la más acertada en aquel momento."
+        - []
+      - - "Mis padres me hicieron daño al no comprenderme durante mi adolescencia."
+        - [{family: "verb_usage", tier: "T3"}]  # colloc daño→hacerme daño forme
+      - - "Antes de que podamos avanzar, debemos resolver este asunto pendiente."
+        - []
+      - - "Lo habría llamado por teléfono si hubiera tenido su número en mi agenda."
+        - []
+      - - "Tomo en cuenta tu opinión pero no puedo estar completamente de acuerdo contigo."
+        - [{family: "verb_usage", tier: "T2"}]  # colloc "tener en cuenta" not "tomar"
+      - - "El contrato será firmado la próxima semana por ambas partes interesadas."
+        - []
+
+  C1:
+    level: "C1"
+    profile: "Précision fine, conscience registre, débat académique. Travaille nuances stylistiques + collocations atypiques."
+    turns:
+      - - "Cabe destacar que la situación actual requiere un análisis pormenorizado antes de emitir cualquier juicio."
+        - []
+      - - "Realizo que mi posición inicial era demasiado simplista y merece reconsideración."
+        - [{family: "vocabulary", tier: "T3"}]  # realizo=effectue, pas "se rendre compte" → me doy cuenta
+      - - "Si hubiera sabido antes lo que sé ahora, hubiera tomado otro camino profesional."
+        - [{family: "verb_usage", tier: "T3"}]  # 2e hubiera → habría (style)
+      - - "El gobierno tiró la toalla frente a la crisis económica, como sospechábamos."
+        - []
+      - - "Es precisamente ahí donde reside el problema que nadie ha sabido abordar."
+        - []
+      - - "Quizá acaso convendría revisar los presupuestos antes del cierre fiscal."
+        - [{family: "register", tier: "T3"}]  # quizá+acaso redondant stylistique
+      - - "Me atrevo a afirmar que esta política no ha arrojado los resultados esperados."
+        - []
+      - - "Dependo en mi equipo para terminar el proyecto antes del plazo establecido."
+        - [{family: "preposition", tier: "T3"}]  # depender de
+      - - "Aun cuando el contexto no fuera favorable, consiguió imponer su visión."
+        - []
+      - - "Su discurso, por así decirlo, rozaba la demagogia sin llegar a cruzar esa línea."
+        - []
+
+  C2:
+    level: "C2"
+    profile: "Quasi-natif, nuances pragmatiques, créativité linguistique. Erreurs résiduelles = marqueurs fluidité."
+    turns:
+      - - "Pues mira, no es que esté en desacuerdo, es que sencillamente no lo veo viable."
+        - []
+      - - "Verbigracia, consideremos el caso del mercado energético como paradigma del conflicto."
+        - [{family: "register", tier: "T3"}]  # verbigracia = trop archaïque hors écrit formel
+      - - "Oye, ¿tú te has enterado de lo que le ha pasado a Marta? No me lo puedo creer."
+        - []
+      - - "Habla por los codos pero cuando llega el momento de decidir, no abre la boca."
+        - []
+      - - "¡Qué bien que hayas venido! — (dicho con sarcasmo tras esperar una hora)."
+        - [{family: "pragmatic", tier: "T2"}]  # context-dep irony ok
+      - - "A saber, el asunto se remonta a decisiones tomadas hace más de una década."
+        - []
+      - - "Me he puesto las pilas este semestre, ya no puedo permitirme más descuidos."
+        - []
+      - - "En aras de la transparencia, debemos divulgar hasta el último detalle del proceso."
+        - []
+      - - "No tiene pelos en la lengua, lo cual le ha granjeado tanto amigos como enemigos."
+        - []
+      - - "Cabe destacar, a todas luces, que sin su intervención nada de esto hubiera sido posible."
+        - []

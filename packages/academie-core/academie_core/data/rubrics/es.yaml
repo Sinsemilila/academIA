@@ -11,8 +11,11 @@ rubrics:
     - T1/T2 ortografía (acentos, ñ, tilde diacrítica), morfología (concordancia simple): omnipresentes, no corregir.
     - T3 género/número adj-sust incorrecto que rompe concordancia: corregir 1× máx. por turno.
     - T4 confusión ser/estar en identidad vs estado: corregir inmediatamente con contraste L1 (FR: être couvre les deux).
+    - T3 'muy'/'mucho' mal elegido ('muy gusta', 'mucho grande'): recast ligero 1× máx.
+    - T3 calque FR 'voy en Madrid' → 'voy a Madrid': recast implícito.
+    - T1 exceso pronombre sujeto (yo, tú, él…): silencio — menciones metalingüísticas sobre pro-drop reservadas para A2+.
     Feedback T2 preferido: recast implícito en respuesta + pregunta seguimiento. NO elicitar nunca en A1.
-    Estructuras objetivo: presente de indicativo regular, ser/estar básico (identidad/estado/ubicación), género masc/fem, artículos el/la/los/las + un/una, pronombres personales sujeto.
+    Estructuras objetivo: presente de indicativo regular, ser/estar básico (identidad/estado/ubicación), género masc/fem, artículos el/la/los/las + un/una, pronombres personales sujeto, verbos de afección (gustar, encantar, doler) con estructura dativa básica 'me gusta X', interrogativos con ¿…? obligatorio, negación preverbal 'no', contraste 'muy'/'mucho'.
     ANTI-PATTERNS: términos metalingüísticos (prohibidos), >2 correcciones/turno, léxico avanzado, frases >12 palabras.
   A2: |-
     RUBRIC A2 — Plataforma (PCIC A2)
@@ -22,8 +25,12 @@ rubrics:
     - T2 formas verbales irregulares (dije/dijo), concordancia gustar-indirecto: recast ligero.
     - T3 en estructura target de sesión: elicitación, alternar con metalingüístico ligero ('¿Pasado o presente?').
     - T4 en estructura A1 supuestamente adquirida: prompt + remediación, flag spaced retrieval.
+    - T3 'a personal' omitida ante OD humano/animal personificado ('veo Juan' → 'veo a Juan'): recast inline, clave para FR-nativos (sin equivalente).
+    - T3 apócope ausente ('un bueno amigo' → 'un buen amigo', 'el primero día' → 'primer'): recast inline 1× máx.
+    - T3 calque 'antes/hay + duración' en lugar de 'hace + duración' ('antes dos años' → 'hace dos años'): recast con contraste FR 'il y a'.
+    - T3 perfecto con marcador clausurado ('he comido ayer' → 'comí ayer'): elicit simple, contraste marcadores (hoy/esta semana → perfecto; ayer/la semana pasada → indefinido).
     Feedback preferido: T2 recast inline ('Ah, fuiste a Madrid! ¿Y qué comiste?'), T3 elicit simple ('Casi — pretérito indefinido de ir?').
-    Estructuras objetivo: pretérito indefinido regular+irregular (top 30), pretérito perfecto, imperativo afirmativo tú, gustar-type verbs, comparativos (más/menos…que).
+    Estructuras objetivo: pretérito indefinido regular+irregular (top 30), pretérito perfecto + marcadores (hoy, esta semana, ya, todavía no) vs indefinido + marcadores cerrados (ayer, la semana pasada), imperativo afirmativo tú, gustar-type verbs con duplicación dativa ('a mí me gusta'), comparativos (más/menos…que) + irregulares (mejor/peor/mayor/menor), perífrasis 'ir a + inf', 'acabar de + inf', 'volver a + inf', 'tener que + inf', 'hay que + inf', apócope adjetivos (buen/gran/primer/tercer), 'a personal' ante OD humano/mascota, omisión pronombre sujeto como norma discursiva.
   B1: |-
     RUBRIC B1 — Umbral (PCIC B1)
     Objetivo comunicativo: mantener conversación sobre temas familiares, narrar acontecimientos, dar opinión+razón, gestionar viajes. Contraste indefinido/imperfecto + subjuntivo básico + condicional.
