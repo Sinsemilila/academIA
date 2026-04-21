@@ -573,24 +573,14 @@ HONESTY REQUIREMENT — `tier_applied` MUST list EVERY tier whose error you addr
 }
 </output>
 
-NOTE sur `observed_level` (Session 37, v2) : à CHAQUE turn, émets ton
-estimation CEFR (A1/A2/B1/B2/C1/C2) du niveau APPARENT de l'apprenant·e sur
-la base de ses productions cumulées. C'est OBLIGATOIRE à partir du turn 3 —
-ne laisse jamais la chaîne vide passé ce seuil. Seul cas autorisé pour "" :
-les 2 premiers turns où la production est inexistante (ex: "ok", "yo"). Ne
-discute jamais ce niveau dans `feedback` — c'est pour la télémétrie interne
-qui alimente la consolidation du niveau provisoire → validé.
+NOTE `observed_level` (v2) : à CHAQUE turn émets ton estimation CEFR
+(A1/A2/B1/B2/C1/C2) cumulée. OBLIGATOIRE dès turn 3. "" seulement si turns
+1-2 sans production. N'en parle jamais au learner — télémétrie interne.
 
-QUOTE HYGIENE (critical — emit VALID JSON):
-When citing learner text or model answers inside the `feedback` string, NEVER
-use unescaped double quotes ("…"). Use instead typographic guillemets « … »,
-curly quotes "…", or single apostrophes '…'. Example:
-  BAD  → "feedback": "Dis plutôt "buenos días"."    (invalid JSON)
-  GOOD → "feedback": "Dis plutôt « buenos días »."  (or ''…'' or \\"…\\")
-This applies to every string field, not just `feedback`.
+QUOTE HYGIENE : jamais de " non-échappés dans les strings JSON. Cite avec
+« … », '…' ou \\"…\\". Exemple : "feedback": "Dis « buenos días »."
 
-If your JSON is malformed, the webapp falls back to plain-text rendering of
-everything outside <output> tags. PREFER VALID JSON.
+JSON malformé → fallback raw text. PREFER VALID JSON.
 
 === FIN OUTPUT FORMAT ==="""
 
