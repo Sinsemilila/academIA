@@ -536,6 +536,42 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             import logging
             logging.getLogger("chat").warning("learner_profiles fetch failed: %s", _e)
 
+    # Session 37 — proactive concept coverage (Ebbinghaus forgetting curve).
+    # Reads scores_confiance (n8n dify-snapshot output) + curriculums
+    # (concept_keys + concept_weights) and produces top-3 concepts the tutor
+    # should re-surface this turn. Best-effort : graceful empty fallback on
+    # any error or missing data.
+    priority_concepts: list[dict] = []
+    if eleve_id and niveau:
+        try:
+            from academie_core.pedagogy.priority_loop import compute_priority_concepts
+            from datetime import date as _date
+            import json as _json
+            async with db.pool.acquire() as conn:
+                sc_row = await conn.fetchrow(
+                    "SELECT scores_confiance FROM profils_eleves WHERE eleve_id=$1 AND domain=$2",
+                    eleve_id, domain,
+                )
+                cur_row = await conn.fetchrow(
+                    "SELECT concept_keys, concept_weights FROM curriculums WHERE domain=$1 AND niveau=$2",
+                    domain, niveau,
+                )
+            if cur_row:
+                sc = (sc_row and sc_row["scores_confiance"]) or {}
+                if isinstance(sc, str): sc = _json.loads(sc or "{}")
+                ck = cur_row["concept_keys"] or []
+                if isinstance(ck, str): ck = _json.loads(ck or "[]")
+                cw = cur_row["concept_weights"] or {}
+                if isinstance(cw, str): cw = _json.loads(cw or "{}")
+                # Strip _note annotations from weights before passing
+                cw_clean = {k: v for k, v in cw.items() if not k.endswith("_note")}
+                priority_concepts = compute_priority_concepts(
+                    sc, ck, cw_clean, _date.today(),
+                )
+        except Exception as _e:
+            import logging
+            logging.getLogger("chat").warning("priority_concepts compute failed: %s", _e)
+
     if detections:
         lines = []
         for d in detections:
@@ -642,6 +678,8 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             # at least once ; turn_count==1 gate inside build_scaffolding_block
             # ensures the welcome fires only on the very first chat turn.
             post_qcm_welcome=(turn_count == 1 and has_qcm_profile),
+            # Session 37 — top-3 concepts to re-surface (proactive coverage)
+            priority_concepts=priority_concepts,
         )
         sections = lang.build_dynamic_sections(ctx)
         for key, val in sections.items():
@@ -654,6 +692,19 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         import os as _os
         if _os.environ.get("SCAFFOLDING_BLOCK_ENABLED", "true").lower() != "true":
             dify_inputs["scaffolding_block"] = ""
+
+        # Session 37 — kill switch for priority_concepts. Default OFF so shipping
+        # this doesn't change behavior until validated via dogfood.
+        if _os.environ.get("PRIORITY_CONCEPTS_ENABLED", "false").lower() in ("1", "true", "yes"):
+            _pcb = dify_inputs.get("priority_concepts_block", "") or ""
+            if _pcb:
+                _sb_raw = dify_inputs.get("scaffolding_block", "")
+                dify_inputs["scaffolding_block"] = (
+                    f"{_sb_raw}\n\n{_pcb}" if _sb_raw else _pcb
+                )
+        # priority_concepts_block is not a wired Dify input — clean it up so the
+        # Start node doesn't receive an unused key (belt-and-suspenders).
+        dify_inputs.pop("priority_concepts_block", None)
 
         # Session 35 MVP — append scaffolding_block to learner_profile_summary so it
         # reaches both llm_onboarding and llm_session through the already-wired

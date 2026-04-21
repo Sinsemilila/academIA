@@ -441,6 +441,38 @@ def build_spaced_retrieval_block(items_due: list[dict]) -> str:
     )
 
 
+def build_priority_concepts_block(items: list[dict]) -> str:
+    """Session 37 — proactive coverage block complementing spaced_retrieval.
+
+    Where `build_spaced_retrieval_block` is error-driven (J+1 after a mistake),
+    this block is coverage-driven : concepts that went stale without being
+    errored still resurface via the Ebbinghaus forgetting curve (see
+    `pedagogy/priority_loop.compute_priority_concepts`).
+
+    Items are pre-scored dicts from `compute_priority_concepts()` with keys :
+      concept_key, priority_score, score, days_since_last_seen, weight, reason.
+    """
+    if not items:
+        return ""
+    bullets = "\n".join(
+        f"  - **{it['concept_key']}** — {it['reason']} "
+        f"(priority {it['priority_score']:.2f})"
+        for it in items[:3]
+    )
+    return (
+        "=== CONCEPTS PRIORITAIRES CE TOUR ===\n"
+        "Les concepts ci-dessous gagnent en priorité selon 3 signaux combinés\n"
+        "(faiblesse × temps depuis la dernière revue × poids pédagogique) :\n"
+        f"{bullets}\n\n"
+        "Directive : dans tes 2-3 prochains tours, ramène UN de ces concepts\n"
+        "de manière organique (une question, un exemple, un recast ciblé).\n"
+        "Ne force pas — si la conversation part naturellement ailleurs, note\n"
+        "pour plus tard. Ne mentionne JAMAIS cette liste au learner : c'est\n"
+        "une directive interne de couverture.\n"
+        "=== END CONCEPTS PRIORITAIRES ==="
+    )
+
+
 # ── Few-shots selection (synthetic) ─────────────────────────────────
 
 
@@ -681,6 +713,8 @@ class PromptContext:
     autonomy_pref: str | None = None          # "guided" | "semi_autonomous" | "autonomous"
     # Session 37 — post-QCM welcome flag (True only on turn 1 with fresh QCM profile)
     post_qcm_welcome: bool = False
+    # Session 37 — proactive concept coverage (Ebbinghaus forgetting curve)
+    priority_concepts: list[dict] | None = None
 
 
 def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = None) -> dict:
@@ -761,6 +795,9 @@ def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = 
         "=== END DOSAGE ==="
     )
 
+    # Session 37 Fix C — proactive concept coverage block
+    priority_concepts_block = build_priority_concepts_block(ctx.priority_concepts or [])
+
     return {
         "rubric_for_level": rubric,
         "fewshots_block": fewshots,
@@ -771,6 +808,7 @@ def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = 
         "spaced_retrieval_today": spaced_retrieval,
         "output_schema_block": OUTPUT_SCHEMA_BLOCK,
         "scaffolding_block": scaffolding_block,
+        "priority_concepts_block": priority_concepts_block,
         # Metadata for chat_router.py to log
         "_dosage_decision": dosage,
         "_scaffolding_cell": f"{ctx.level}|{distance}|{fla_band}",

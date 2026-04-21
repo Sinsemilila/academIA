@@ -39,13 +39,26 @@ AGENT_DOMAIN = {
     "cybermentor": "cybersec",
 }
 
+# Session 37 — Dify app-scoped keys per agent for public API calls.
+# Workflow reads `dify_app_key` from webhook body. Populated from env at cron
+# launch time so rotation is transparent (just update webapp/.env).
+AGENT_TO_KEY_ENV = {
+    "teacher": "DIFY_KEY_TEACHER",
+    "maestro": "DIFY_KEY_MAESTRO",
+    # Wave 2+ : add sensei / lehrer / professore when activated
+}
+
 
 async def run():
     conn = await asyncpg.connect(DB_DSN)
     try:
+        # Session 37 — add u.dify_user_id for public-API `user=` param.
+        # Coalesce with legacy `user_{id}` pattern for rows where dify_user_id
+        # hasn't been set yet (pre-Sprint-5 accounts).
         rows = await conn.fetch("""
             SELECT us.id, us.dify_conversation_id, us.agent_name,
-                   us.message_count, u.username
+                   us.message_count, u.username,
+                   COALESCE(u.dify_user_id, 'user_' || u.id::text) AS dify_user_id
             FROM user_sessions us
             JOIN users u ON u.id = us.user_id
             WHERE us.last_message_at > COALESCE(us.last_snapshot_at, '1970-01-01'::timestamptz)
@@ -63,10 +76,19 @@ async def run():
         async with httpx.AsyncClient(timeout=120.0) as client:
             for row in rows:
                 domain = AGENT_DOMAIN.get(row["agent_name"], "en")
+                # Session 37 — resolve app-scoped Dify key per agent
+                app_key_env = AGENT_TO_KEY_ENV.get(row["agent_name"])
+                dify_app_key = os.environ.get(app_key_env, "") if app_key_env else ""
+                if not dify_app_key:
+                    log.warning(f"  SKIP {row['username']}/{row['agent_name']}: no app key in env ({app_key_env})")
+                    continue
                 payload = {
                     "username": row["username"],
                     "domain": domain,
                     "conversation_id": row["dify_conversation_id"],
+                    # Session 37 — Dify public API auth + user param
+                    "dify_user_id": row["dify_user_id"],
+                    "dify_app_key": dify_app_key,
                 }
                 label = f"{row['username']}/{row['agent_name']} ({row['message_count']} msgs)"
 
