@@ -32,8 +32,17 @@
   let conceptKeys = $derived(concepts?.concept_keys || []);
   let mastered = $derived(conceptKeys.filter((k: string) => (scores[k]?.score || 0) >= 80).length);
   let totalExpected = $derived(conceptKeys.length || 1);
+  // Session 37 fix: guard against score=0 coercing `||` chain to return the
+  // enclosing object (producing NaN% on fresh ES profiles where scores[k] is
+  // {score: 0, last_seen: null}).
   let progressPct = $derived(Math.round(
-    conceptKeys.reduce((sum: number, k: string) => sum + (scores[k]?.score || scores[k] || 0), 0) / totalExpected
+    conceptKeys.reduce((sum: number, k: string) => {
+      const s = scores[k];
+      const val = typeof s === 'object' && s !== null
+        ? (typeof s.score === 'number' ? s.score : 0)
+        : (typeof s === 'number' ? s : 0);
+      return sum + val;
+    }, 0) / totalExpected
   ));
   let nextLevel = $derived(niveau ? levelOrder[levelOrder.indexOf(niveau) + 1] || null : null);
   // Session 36 — consolidation status for current domain
