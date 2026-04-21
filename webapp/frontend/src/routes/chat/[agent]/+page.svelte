@@ -324,6 +324,14 @@
       if (quizActive && quizQuestionNum > 0 && quizQuestionNum <= quizTotalQuestions) {
         quizWaitingForNext = true;
       }
+
+      // Session 37 — re-poll consolidation state after each turn. The backend
+      // `_consolidation_post_turn` hook may have flipped niveau_status →
+      // `calibration_en_cours` on turn N≥8 ; without this, the MiniExamModal
+      // only appears on next page mount/refresh.
+      if (!showMiniExamModal && !showDecisionModal) {
+        checkConsolidationState().catch(() => {}); // best-effort, never blocks
+      }
     }
   }
 
