@@ -2,6 +2,23 @@
 """
 Injection du curriculum Anglais A1→C2 — version complète et affinée
 Généré par Claude Code / Claude Sonnet — 2026-04-05
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DEPRECATED (Session 37, 2026-04-21) — use scripts/inject_curriculum.py
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+This script hardcodes the EN curriculum as a 600-line Python dict, writes to
+legacy `points_cles` column only, and doesn't populate the normalized
+concept_keys/weights/groups. Session 37 introduced a YAML-driven replacement:
+
+    python3 scripts/inject_curriculum.py --domain en --force
+
+The `--force` flag is required because curriculum_en.yaml (53 concepts) may
+drift from the current DB state (18+ concept_keys per level after Sprint 2-3
++ inject_concept_keys.py augmentation). Manually reconcile before re-running.
+
+This file is KEPT for historical reference and as a fallback should the YAML
+migration go wrong. Do NOT run it as part of normal operations — it will
+silently overwrite `points_cles` with legacy data.
 """
 
 import os
