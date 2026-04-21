@@ -1,0 +1,52 @@
+level: A1
+lang: es
+description: "Mini-examen de consolidation A1 Acceso (PCIC A1) — 8 items, ~5-7 min."
+items:
+  - id: es_a1_01
+    type: fill
+    prompt: "Complète : Yo ___ (ser) estudiante."
+    expected_regex: "^soy$"
+    llm_judge_hint: "1ère personne présent du verbe 'ser'"
+    concept_code: "V:SER:PRES:1S"
+  - id: es_a1_02
+    type: fill
+    prompt: "Complète : ¿Cómo te ___? — Me llamo Ana."
+    expected_regex: "^llamas$"
+    llm_judge_hint: "Verbe réfléchi 'llamarse' à la 2e personne singulier"
+    concept_code: "V:REFL:PRES:2S"
+  - id: es_a1_03
+    type: choice
+    prompt: "Choisis l'article correct : ___ casa es grande."
+    options: ["El", "La", "Los", "Las"]
+    expected_regex: "^La$"
+    concept_code: "ART:DEF:FSG"
+  - id: es_a1_04
+    type: transform
+    prompt: "Mets au pluriel : 'el libro rojo'."
+    expected_regex: "^los libros rojos$"
+    llm_judge_hint: "Accord pluriel article + nom + adjectif"
+    concept_code: "NUM:PLURAL"
+  - id: es_a1_05
+    type: fill
+    prompt: "Complète avec le bon nombre : Tengo ___ años (25)."
+    expected_regex: "^veinticinco$"
+    llm_judge_hint: "Numéral cardinal 25 en espagnol"
+    concept_code: "LEX:NUMS"
+  - id: es_a1_06
+    type: choice
+    prompt: "Quelle forme est correcte pour 'vivir' (nous) ?"
+    options: ["vivimos", "vivemos", "vivamos", "viven"]
+    expected_regex: "^vivimos$"
+    concept_code: "V:IR:PRES:1P"
+  - id: es_a1_07
+    type: produce_short
+    prompt: "Présente-toi en 1-2 phrases (nom, âge, nationalité)."
+    expected_regex: ".*"  # free-form, judged by LLM
+    llm_judge_hint: "Production A1 attendue : utilise 'me llamo', 'tengo X años', 'soy [nationalité]'. Valide si au moins 2 de ces 3 éléments corrects."
+    concept_code: "FUNC:SELF_INTRO"
+  - id: es_a1_08
+    type: fill
+    prompt: "Complète : ¿___ está el baño? (mot interrogatif)"
+    expected_regex: "^dónde$"
+    llm_judge_hint: "Interrogatif de lieu avec accent"
+    concept_code: "INT:WH"

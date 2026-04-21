@@ -1,0 +1,48 @@
+level: A2
+lang: en
+description: "Mini-exam A2 Waystage (CEFR) — 8 items."
+items:
+  - id: en_a2_01
+    type: fill
+    prompt: "Past simple: Yesterday I ___ (go) to the market."
+    expected_regex: "^went$"
+    concept_code: "V:PAST:IRREG:1S"
+  - id: en_a2_02
+    type: transform
+    prompt: "Make a past simple question: 'She saw him' →"
+    expected_regex: "^did she see him\\??$"
+    concept_code: "V:PAST_QUES"
+  - id: en_a2_03
+    type: choice
+    prompt: "'I have ___ London twice.' Choose the correct form."
+    options: ["gone to", "been to", "been in", "went to"]
+    expected_regex: "^been to$"
+    concept_code: "V:PRES_PERF:EXP"
+  - id: en_a2_04
+    type: fill
+    prompt: "Complete with 'for' or 'since': I have lived here ___ 2020."
+    expected_regex: "^since$"
+    concept_code: "PREP:SINCE_FOR"
+  - id: en_a2_05
+    type: transform
+    prompt: "Make comparative: 'Paris is (big) than Lyon.' →"
+    expected_regex: "^paris is bigger than lyon\\.?$"
+    concept_code: "ADJ:COMP"
+  - id: en_a2_06
+    type: fill
+    prompt: "Future plan: I ___ ___ (travel) to Spain next month."
+    expected_regex: "^(am going to travel|'m going to travel|will travel)$"
+    llm_judge_hint: "'going to' preferred for plans ; 'will' also accepted"
+    concept_code: "V:FUTURE:PLAN"
+  - id: en_a2_07
+    type: produce_short
+    prompt: "Describe your last weekend in 2-3 sentences (use past simple)."
+    expected_regex: ".*"
+    llm_judge_hint: "A2 production: ≥2 past simple verbs correctly conjugated, coherent sequence. Valid if no gross tense error."
+    concept_code: "FUNC:PAST_NARR"
+  - id: en_a2_08
+    type: choice
+    prompt: "'You ___ smoke here.' (prohibition)"
+    options: ["don't have to", "mustn't", "needn't", "aren't"]
+    expected_regex: "^mustn't$"
+    concept_code: "V:MODAL:PROHIBITION"

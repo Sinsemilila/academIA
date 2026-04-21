@@ -4,6 +4,7 @@
   import { domainLabel } from '$lib/config';
   import AgentsOverviewRow from '$lib/components/AgentsOverviewRow.svelte';
   import ProgressionGraph from '$lib/components/ProgressionGraph.svelte';
+  import LevelBadge from '$lib/components/LevelBadge.svelte';
 
   const levelLabels: Record<string, string> = {
     A1: 'Survie', A2: 'Quotidien', B1: 'Autonomie',
@@ -35,6 +36,10 @@
     conceptKeys.reduce((sum: number, k: string) => sum + (scores[k]?.score || scores[k] || 0), 0) / totalExpected
   ));
   let nextLevel = $derived(niveau ? levelOrder[levelOrder.indexOf(niveau) + 1] || null : null);
+  // Session 36 — consolidation status for current domain
+  let niveauStatus = $derived(
+    dashboardAgents.find((a: any) => a.domain === $currentDomain)?.niveau_status ?? 'provisoire'
+  );
 
   function formatDate(iso: string): string {
     const d = new Date(iso);
@@ -92,7 +97,10 @@
           {niveau}
         </div>
         <div class="flex-1">
-          <h2 class="font-semibold text-lg">{domainLabel($currentDomain)} — {levelLabels[niveau] || niveau}</h2>
+          <div class="flex items-center gap-2">
+            <h2 class="font-semibold text-lg">{domainLabel($currentDomain)} — {levelLabels[niveau] || niveau}</h2>
+            <LevelBadge niveau={null} status={niveauStatus} size="sm" />
+          </div>
           <p class="text-sm text-text-secondary">
             {mastered}/{totalExpected} concepts ma&#238;tris&#233;s
           </p>

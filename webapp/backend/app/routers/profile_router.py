@@ -212,7 +212,9 @@ async def get_dashboard(user: dict = Depends(get_current_user)):
     async with db.pool.acquire() as conn:
         pe_rows = await conn.fetch(
             """SELECT domain, niveau_global, derniere_session,
-                      onboarding_completed_at
+                      onboarding_completed_at,
+                      niveau_status, niveau_validated_at,
+                      consolidation_decision_pending
                FROM profils_eleves WHERE eleve_id = $1""",
             eleve_id,
         )
@@ -244,6 +246,12 @@ async def get_dashboard(user: dict = Depends(get_current_user)):
 
     by_domain: dict[str, dict] = {}
     for r in pe_rows:
+        pending = r["consolidation_decision_pending"]
+        if isinstance(pending, str):
+            try:
+                pending = json.loads(pending) if pending else None
+            except Exception:
+                pending = None
         by_domain[r["domain"]] = {
             "domain": r["domain"],
             "niveau": r["niveau_global"],
@@ -251,6 +259,9 @@ async def get_dashboard(user: dict = Depends(get_current_user)):
             "source": "profils_eleves",
             "derniere_session": str(r["derniere_session"]) if r["derniere_session"] else None,
             "onboarding_completed_at": r["onboarding_completed_at"].isoformat() if r["onboarding_completed_at"] else None,
+            "niveau_status": r["niveau_status"] or "provisoire",
+            "niveau_validated_at": r["niveau_validated_at"].isoformat() if r["niveau_validated_at"] else None,
+            "consolidation_decision_pending": pending,
         }
     for r in lp_rows:
         d = r["domain"]
@@ -267,6 +278,9 @@ async def get_dashboard(user: dict = Depends(get_current_user)):
                 "source": "learner_profiles",
                 "derniere_session": None,
                 "onboarding_completed_at": r["completed_at"].isoformat(),
+                "niveau_status": "provisoire",
+                "niveau_validated_at": None,
+                "consolidation_decision_pending": None,
             }
 
     # Compute progress_pct per domain using the same formula as /api/profile/{domain}.

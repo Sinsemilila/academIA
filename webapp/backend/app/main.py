@@ -58,6 +58,8 @@ app.include_router(settings_router.router)
 app.include_router(error_analysis_router.router)
 app.include_router(admin_router.router)
 app.include_router(onboarding_router.router)
+from .routers import consolidation_router  # noqa: E402
+app.include_router(consolidation_router.router)
 
 
 # ── Request logging middleware ────────────────────

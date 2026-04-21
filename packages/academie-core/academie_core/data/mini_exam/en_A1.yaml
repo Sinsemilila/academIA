@@ -1,0 +1,48 @@
+level: A1
+lang: en
+description: "Mini-exam A1 Breakthrough (CEFR) — 8 items, 5-7 min."
+items:
+  - id: en_a1_01
+    type: fill
+    prompt: "Complete: I ___ (be) a student."
+    expected_regex: "^am$"
+    concept_code: "V:BE:PRES:1S"
+  - id: en_a1_02
+    type: fill
+    prompt: "Complete: She ___ coffee every morning. (drink)"
+    expected_regex: "^drinks$"
+    llm_judge_hint: "3rd person -s"
+    concept_code: "V:SVA:3S"
+  - id: en_a1_03
+    type: choice
+    prompt: "Choose the correct article: I saw ___ elephant at the zoo."
+    options: ["a", "an", "the", "—"]
+    expected_regex: "^an$"
+    concept_code: "ART:INDEF"
+  - id: en_a1_04
+    type: transform
+    prompt: "Make negative: 'She likes tea.' →"
+    expected_regex: "^she does(?:n't| not) like tea\\.?$"
+    concept_code: "V:PRES_NEG:3S"
+  - id: en_a1_05
+    type: fill
+    prompt: "Complete: There ___ three books on the table."
+    expected_regex: "^are$"
+    concept_code: "V:BE:PRES:3P:THERE"
+  - id: en_a1_06
+    type: choice
+    prompt: "Which pronoun is correct? '___ is my sister.'"
+    options: ["She", "Her", "Hers", "She's"]
+    expected_regex: "^She$"
+    concept_code: "PRON:SUBJ:3SF"
+  - id: en_a1_07
+    type: produce_short
+    prompt: "Introduce yourself in 1-2 sentences (name, age, nationality)."
+    expected_regex: ".*"
+    llm_judge_hint: "A1 production: uses 'my name is', 'I am X years old', 'I am [nationality]'. Valid if 2/3 elements correctly present."
+    concept_code: "FUNC:SELF_INTRO"
+  - id: en_a1_08
+    type: fill
+    prompt: "Complete: What ___ your name? (be)"
+    expected_regex: "^is$"
+    concept_code: "V:BE:PRES:3S:INT"

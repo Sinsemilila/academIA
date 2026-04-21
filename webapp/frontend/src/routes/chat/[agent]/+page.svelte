@@ -8,6 +8,8 @@
   import ChatInput from '$lib/components/chat/ChatInput.svelte';
   import TypingIndicator from '$lib/components/chat/TypingIndicator.svelte';
   import OnboardingModal from '$lib/components/onboarding/OnboardingModal.svelte';
+  import MiniExamModal from '$lib/components/MiniExamModal.svelte';
+  import ConsolidationDecisionModal from '$lib/components/ConsolidationDecisionModal.svelte';
   import { toastXP, toastError, toastSuccess } from '$lib/stores/toasts';
 
   interface Message {
@@ -51,6 +53,69 @@
   // QCM onboarding gate (Sprint 5 Phase 5) — blocks chat on 1st visit per domain.
   let showOnboardingModal = $state(false);
 
+  // Session 36 — Consolidation modals (mini-exam + decision).
+  let showMiniExamModal = $state(false);
+  let showDecisionModal = $state(false);
+  let decisionKind = $state<'upgrade' | 'downgrade' | 'validation'>('validation');
+  let decisionMessage = $state('');
+  let decisionQcmLevel = $state('');
+  let decisionProposedLevel = $state('');
+
+  async function checkConsolidationState() {
+    if (!agent?.domain) return;
+    try {
+      const r = await fetch(`/api/consolidation/state/${agent.domain}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      if (!r.ok) return;
+      const data = await r.json();
+      if (data.niveau_status === 'calibration_en_cours' && data.pending) {
+        // Open mini-exam if awaiting_user not yet set; else directly show decision
+        if (data.pending.awaiting_user) {
+          // Mini-exam already done, user has decision pending
+          openDecisionFromPending(data.pending);
+        } else {
+          showMiniExamModal = true;
+        }
+      }
+    } catch (e) {
+      console.warn('Could not check consolidation:', e);
+    }
+  }
+
+  function openDecisionFromPending(pending: any) {
+    decisionQcmLevel = pending.qcm;
+    decisionProposedLevel = pending.observed;
+    const qi = ['A1','A2','B1','B2','C1','C2'].indexOf(pending.qcm);
+    const oi = ['A1','A2','B1','B2','C1','C2'].indexOf(pending.observed);
+    decisionKind = oi > qi ? 'upgrade' : 'downgrade';
+    decisionMessage = pending.message ?? '';
+    showDecisionModal = true;
+  }
+
+  function onMiniExamDone(data: any) {
+    showMiniExamModal = false;
+    if (data.outcome === 'awaiting_user_decision') {
+      decisionQcmLevel = data.qcm_level;
+      decisionProposedLevel = data.observed_level;
+      const qi = ['A1','A2','B1','B2','C1','C2'].indexOf(data.qcm_level);
+      const oi = ['A1','A2','B1','B2','C1','C2'].indexOf(data.observed_level);
+      decisionKind = oi > qi ? 'upgrade' : 'downgrade';
+      decisionMessage = data.message ?? '';
+      showDecisionModal = true;
+    } else if (data.outcome === 'auto_validate') {
+      decisionKind = 'validation';
+      decisionMessage = data.message ?? '';
+      decisionQcmLevel = data.final_level;
+      decisionProposedLevel = data.final_level;
+      showDecisionModal = true;
+    }
+  }
+
+  function onDecisionDecided() {
+    showDecisionModal = false;
+  }
+
   async function loadChatState() {
     try {
       const profile = await api.getProfile(agent?.domain ?? 'en');
@@ -93,6 +158,7 @@
 
     if (!gateSkipChat) {
       await loadChatState();
+      await checkConsolidationState();
     }
   });
 
@@ -382,6 +448,15 @@
     onComplete={onOnboardingComplete}
   />
 {:else}
+  <MiniExamModal open={showMiniExamModal} domain={agent.domain} onDone={onMiniExamDone} />
+  <ConsolidationDecisionModal
+    open={showDecisionModal}
+    domain={agent.domain}
+    message={decisionMessage}
+    qcmLevel={decisionQcmLevel}
+    proposedLevel={decisionProposedLevel}
+    kind={decisionKind}
+    onDecided={onDecisionDecided} />
   <div class="flex flex-col h-[calc(100dvh-3.5rem)] -m-4 md:-m-6">
     <!-- Chat header -->
     <div class="h-12 bg-surface border-b border-border-subtle flex items-center justify-between px-4">

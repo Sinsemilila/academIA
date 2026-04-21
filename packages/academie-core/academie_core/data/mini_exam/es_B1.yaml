@@ -1,0 +1,52 @@
+level: B1
+lang: es
+description: "Mini-examen de consolidation B1 Umbral (PCIC B1) — 8 items."
+items:
+  - id: es_b1_01
+    type: fill
+    prompt: "Complète avec le subjonctif : Espero que ___ (venir, tú) mañana."
+    expected_regex: "^vengas$"
+    llm_judge_hint: "Subjuntivo presente 2S après 'esperar que'"
+    concept_code: "V:SUBJ:PRES:2S"
+  - id: es_b1_02
+    type: transform
+    prompt: "Mets au conditionnel : 'Me gusta viajar' → 'Me ___ viajar por Japón'."
+    expected_regex: "^gustaría$"
+    llm_judge_hint: "Condicional simple 3S de 'gustar'"
+    concept_code: "V:COND:3S"
+  - id: es_b1_03
+    type: choice
+    prompt: "Contraste pretérito/imperfecto : 'Cuando ___ por la calle, ___ un accidente.' (caminar / ver)"
+    options: ["caminaba / vi", "caminé / veía", "caminé / vi", "caminaba / veía"]
+    expected_regex: "^caminaba / vi$"
+    concept_code: "V:PRETIND_IMP_CONTRAST"
+  - id: es_b1_04
+    type: fill
+    prompt: "Complète avec ser/estar : Este problema ___ muy difícil de resolver."
+    expected_regex: "^es$"
+    llm_judge_hint: "Ser = caractéristique inhérente"
+    concept_code: "V:SER_ESTAR:ADV"
+  - id: es_b1_05
+    type: transform
+    prompt: "Passe au style indirect passé : María dijo : 'Voy a estudiar' → María dijo que ___."
+    expected_regex: "^iba a estudiar$"
+    llm_judge_hint: "Concordance des temps : ir à l'imparfait + a + infinitif"
+    concept_code: "DISCOURS:CONCORDANCE"
+  - id: es_b1_06
+    type: fill
+    prompt: "Depuis → Complète : Trabajo aquí ___ cinco años."
+    expected_regex: "^(desde hace|hace)$"
+    llm_judge_hint: "Expression de durée ; 'desde hace' ou 'hace' acceptés"
+    concept_code: "LEX:TIME:SINCE"
+  - id: es_b1_07
+    type: produce_short
+    prompt: "Exprime ton opinion en 2-3 phrases sur le télétravail (utilise au moins un subjonctif)."
+    expected_regex: ".*"
+    llm_judge_hint: "Production B1 : opinion articulée avec connecteur + au moins un subjonctif après 'creo que no', 'es importante que', etc. Valide si ≥2 phrases cohérentes avec morpho correcte."
+    concept_code: "FUNC:OPINION"
+  - id: es_b1_08
+    type: choice
+    prompt: "Choisis la forme correcte : Si tuviera tiempo, ___ más deporte."
+    options: ["haría", "hago", "haría", "haga"]
+    expected_regex: "^haría$"
+    concept_code: "V:COND:IF_IMPF_SUBJ"

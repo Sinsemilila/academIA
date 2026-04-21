@@ -750,17 +750,36 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         await _track_gpt4o_tokens(0, output_tokens)
         # Phase 7 — parse Teacher JSON, enqueue silenced + complete addressed.
         # Flag-gated (no-op when off). Best-effort: never crash the stream on parse error.
-        if SPACED_RETRIEVAL_ENABLED and eleve_id:
+        # Parse once, reuse for multiple post-turn hooks (Phase 7 spaced + Session 36 consolidation)
+        parsed = None
+        if eleve_id:
             try:
                 parsed = lang.parse_response(full_answer)
-                if parsed.parse_ok:
-                    await _persist_spaced_retrieval(
-                        eleve_id, domain,
-                        parsed.silenced_for_spaced_retrieval,
-                        parsed.spaced_retrieval_addressed,
-                    )
+            except Exception as _e:
+                logger.warning("parse_response failed: %s", _e)
+        # Phase 7 — parse Teacher JSON, enqueue silenced + complete addressed.
+        # Flag-gated (no-op when off). Best-effort: never crash the stream on parse error.
+        if SPACED_RETRIEVAL_ENABLED and parsed and parsed.parse_ok:
+            try:
+                await _persist_spaced_retrieval(
+                    eleve_id, domain,
+                    parsed.silenced_for_spaced_retrieval,
+                    parsed.spaced_retrieval_addressed,
+                )
             except Exception as e:
                 logger.warning("spaced_retrieval post-turn persist skipped: %s", e)
+        # Session 36 — consolidation post-turn hook (flag-gated, best-effort)
+        if os.environ.get("CONSOLIDATION_ENABLED", "true").lower() in ("1", "true", "yes") \
+                and parsed and eleve_id:
+            try:
+                await _consolidation_post_turn(
+                    eleve_id=eleve_id, domain=domain,
+                    user_id=user["id"], agent=req.agent,
+                    conversation_id=req.conversation_id,
+                    observed_level=parsed.observed_level or "",
+                )
+            except Exception as e:
+                logger.warning("consolidation post-turn hook skipped: %s", e)
         if xp_earned > 0:
             xp_event = json.dumps({"event": "xp_earned", "amount": xp_earned, "reason": "session"})
             yield f"data: {xp_event}\n\n"
@@ -904,3 +923,153 @@ async def _update_session(user_id: int, agent: str, conversation_id: str) -> int
                 user_id, agent, conversation_id,
             )
     return xp_earned
+
+
+# ── Session 36 — consolidation post-turn hook ─────────────────────────
+
+async def _consolidation_post_turn(
+    eleve_id: int, domain: str, user_id: int, agent: str,
+    conversation_id: str, observed_level: str,
+) -> None:
+    """Append LLM observed_level to session buffer, evaluate trigger, run decision.
+
+    Best-effort: any exception is caught by caller.
+    Writes to profils_eleves.consolidation_decision_pending if mismatch found
+    (frontend detects via dashboard and opens MiniExamModal).
+    """
+    from academie_core.pedagogy.consolidation import (
+        ObservationHint, ErrorDistribution,
+        evaluate_trigger, decide_consolidation, pick_message,
+        N_TURNS_CONSOLIDATION, CONSOLIDATION_COOLDOWN_TURNS,
+    )
+    import json as _json
+
+    async with db.pool.acquire() as conn:
+        # 1. Fetch session + message_count
+        sess = await conn.fetchrow(
+            """SELECT id, message_count, observations_json
+               FROM user_sessions
+               WHERE user_id = $1 AND agent_name = $2 AND dify_conversation_id = $3""",
+            user_id, agent, conversation_id,
+        )
+        if not sess:
+            return
+        message_count = int(sess["message_count"] or 0)
+
+        # 2. Append observed_level to buffer (keep last N*3 entries)
+        raw_obs = sess["observations_json"] or []
+        if isinstance(raw_obs, str):
+            raw_obs = _json.loads(raw_obs)
+        if observed_level:
+            raw_obs.append({"turn": message_count, "observed_level": observed_level})
+            raw_obs = raw_obs[-(N_TURNS_CONSOLIDATION * 3):]
+            await conn.execute(
+                "UPDATE user_sessions SET observations_json = $1::jsonb WHERE id = $2",
+                _json.dumps(raw_obs), sess["id"],
+            )
+
+        # 3. Fetch consolidation state
+        pe = await conn.fetchrow(
+            """SELECT niveau_status, last_consolidation_turn,
+                      regression_watch_active, regression_watch_started_turn
+               FROM profils_eleves
+               WHERE eleve_id = $1 AND domain = $2""",
+            eleve_id, domain,
+        )
+        niveau_status = (pe and pe["niveau_status"]) or "provisoire"
+        last_consolidation_turn = (pe and pe["last_consolidation_turn"]) or 0
+        regression_active = bool(pe and pe["regression_watch_active"])
+        regression_start = pe and pe["regression_watch_started_turn"]
+
+        # 4. Fetch error_log count for this learner+domain
+        err_count = await conn.fetchval(
+            "SELECT COUNT(*) FROM error_log WHERE eleve_id = $1 AND domain = $2",
+            eleve_id, domain,
+        ) or 0
+
+    decision = evaluate_trigger(
+        message_count=message_count, error_log_count=int(err_count),
+        niveau_status=niveau_status,
+        last_consolidation_turn=last_consolidation_turn,
+        regression_watch_active=regression_active,
+        regression_watch_started_turn=regression_start,
+    )
+    if not decision.should_trigger:
+        return
+
+    # 5. Fetch QCM level
+    async with db.pool.acquire() as conn:
+        lp_row = await conn.fetchrow(
+            """SELECT domain_level FROM learner_profiles
+               WHERE eleve_id = $1 AND domain = $2
+               ORDER BY completed_at DESC LIMIT 1""",
+            eleve_id, domain,
+        )
+    if not lp_row:
+        return
+    lvl = lp_row["domain_level"]
+    if isinstance(lvl, str):
+        lvl = _json.loads(lvl)
+    qcm_level = (lvl or {}).get("cefr_placement", "")
+    if not qcm_level:
+        return
+
+    # 6. Aggregate error distribution by criterial level
+    async with db.pool.acquire() as conn:
+        err_rows = await conn.fetch(
+            """SELECT criterial_level_emergence, COUNT(*) AS n
+               FROM error_log
+               WHERE eleve_id = $1 AND domain = $2
+                 AND criterial_level_emergence IS NOT NULL
+               GROUP BY criterial_level_emergence""",
+            eleve_id, domain,
+        )
+    dist = {r["criterial_level_emergence"]: int(r["n"]) for r in err_rows}
+
+    hints = [ObservationHint(turn=int(e["turn"]), observed_level=str(e["observed_level"]))
+             for e in raw_obs]
+
+    outcome = decide_consolidation(
+        qcm_level=qcm_level,
+        observation_hints=hints,
+        error_distribution=ErrorDistribution(per_level=dist),
+        message_count=message_count,
+        trigger_reason=decision.reason or "n_turns",
+    )
+
+    async with db.pool.acquire() as conn:
+        if outcome.kind == "auto_validate":
+            await conn.execute(
+                """INSERT INTO profils_eleves (eleve_id, domain, niveau_global, niveau_status, niveau_validated_at, last_consolidation_turn)
+                   VALUES ($1,$2,$3,'validé',NOW(),$4)
+                   ON CONFLICT (eleve_id, domain) DO UPDATE
+                   SET niveau_global = EXCLUDED.niveau_global,
+                       niveau_status = 'validé',
+                       niveau_validated_at = NOW(),
+                       last_consolidation_turn = EXCLUDED.last_consolidation_turn""",
+                eleve_id, domain, outcome.qcm_level, message_count,
+            )
+            await conn.execute(
+                """INSERT INTO consolidation_events
+                   (eleve_id, domain, trigger_reason, qcm_level, observed_level,
+                    mini_exam_triggered, user_decision, final_level)
+                   VALUES ($1,$2,$3,$4,$5,false,'auto_validate',$4)""",
+                eleve_id, domain, decision.reason, outcome.qcm_level, outcome.observed_level,
+            )
+        elif outcome.kind == "propose_mini_exam":
+            await conn.execute(
+                """INSERT INTO profils_eleves (eleve_id, domain, niveau_status, consolidation_decision_pending, last_consolidation_turn)
+                   VALUES ($1,$2,'calibration_en_cours',$3::jsonb,$4)
+                   ON CONFLICT (eleve_id, domain) DO UPDATE
+                   SET niveau_status = 'calibration_en_cours',
+                       consolidation_decision_pending = EXCLUDED.consolidation_decision_pending,
+                       last_consolidation_turn = EXCLUDED.last_consolidation_turn""",
+                eleve_id, domain, _json.dumps(outcome.decision_payload), message_count,
+            )
+            await conn.execute(
+                """INSERT INTO consolidation_events
+                   (eleve_id, domain, trigger_reason, qcm_level, observed_level,
+                    mini_exam_triggered, user_decision)
+                   VALUES ($1,$2,$3,$4,$5,true,'pending')""",
+                eleve_id, domain, decision.reason, outcome.qcm_level, outcome.observed_level,
+            )

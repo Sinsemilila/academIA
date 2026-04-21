@@ -1,0 +1,48 @@
+level: B1
+lang: en
+description: "Mini-exam B1 Threshold (CEFR) — 8 items."
+items:
+  - id: en_b1_01
+    type: fill
+    prompt: "First conditional: If it ___ (rain), we ___ (stay) home."
+    expected_regex: "^rains , will stay$"
+    llm_judge_hint: "Zero/first conditional: present + will+base"
+    concept_code: "V:COND:1ST"
+  - id: en_b1_02
+    type: transform
+    prompt: "Passive voice: 'They built the bridge in 1990.' →"
+    expected_regex: "^the bridge was built (?:by them )?in 1990\\.?$"
+    concept_code: "V:PASSIVE:PAST"
+  - id: en_b1_03
+    type: choice
+    prompt: "Present perfect continuous: 'I ___ for 2 hours.'"
+    options: ["wait", "am waiting", "have been waiting", "waited"]
+    expected_regex: "^have been waiting$"
+    concept_code: "V:PRES_PERF_CONT"
+  - id: en_b1_04
+    type: transform
+    prompt: "Reported speech: Maria said: 'I am tired.' → Maria said (that) ___."
+    expected_regex: "^she was tired\\.?$"
+    concept_code: "DISCOURS:REPORTED"
+  - id: en_b1_05
+    type: fill
+    prompt: "Used to for past habit: When I was a child, I ___ ___ play outside every day."
+    expected_regex: "^used to$"
+    concept_code: "V:USED_TO"
+  - id: en_b1_06
+    type: choice
+    prompt: "'I wish I ___ more time.' (regret present)"
+    options: ["have", "had", "will have", "would have"]
+    expected_regex: "^had$"
+    concept_code: "V:WISH:PRES"
+  - id: en_b1_07
+    type: produce_short
+    prompt: "Write 2-3 sentences expressing your opinion about remote work (use at least one modal: should/could/might)."
+    expected_regex: ".*"
+    llm_judge_hint: "B1 production: articulated opinion with connector + at least one modal verb (should/could/might). Valid if ≥2 coherent sentences with acceptable morphology."
+    concept_code: "FUNC:OPINION"
+  - id: en_b1_08
+    type: fill
+    prompt: "Relative clause: The man ___ (who/which) lives next door is a doctor."
+    expected_regex: "^who$"
+    concept_code: "PRON:REL:PERSON"

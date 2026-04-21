@@ -1,0 +1,52 @@
+level: A2
+lang: es
+description: "Mini-examen de consolidation A2 Plataforma (PCIC A2) — 8 items."
+items:
+  - id: es_a2_01
+    type: fill
+    prompt: "Hier je suis allé au cinéma : Ayer ___ (ir) al cine."
+    expected_regex: "^fui$"
+    llm_judge_hint: "Pretérito indefinido 'ir', 1ère personne"
+    concept_code: "V:IR:PRETIND:1S"
+  - id: es_a2_02
+    type: transform
+    prompt: "Mets au passé composé (pretérito perfecto) : 'Como una manzana' → 'Hoy ___'."
+    expected_regex: "^he comido una manzana$"
+    llm_judge_hint: "Pretérito perfecto = haber + participe"
+    concept_code: "V:PRETPERF:1S"
+  - id: es_a2_03
+    type: choice
+    prompt: "Je vais voyager en été : Voy a ___ en verano."
+    options: ["viajo", "viajar", "viajando", "viajé"]
+    expected_regex: "^viajar$"
+    concept_code: "PERIPHRASIS:IR_A_INF"
+  - id: es_a2_04
+    type: fill
+    prompt: "Complète avec l'imparfait : Cuando era niño, ___ (jugar) al fútbol."
+    expected_regex: "^jugaba$"
+    llm_judge_hint: "Imparfait habitude"
+    concept_code: "V:IMP:1S"
+  - id: es_a2_05
+    type: transform
+    prompt: "Passe au discours indirect : Ana dice : 'Estoy cansada' → Ana dice que ___."
+    expected_regex: "^está cansada$"
+    llm_judge_hint: "Discours indirect présent → présent"
+    concept_code: "DISCOURS:INDIRECT"
+  - id: es_a2_06
+    type: choice
+    prompt: "Choisis la bonne préposition : Voy ___ Madrid mañana."
+    options: ["a", "en", "para", "de"]
+    expected_regex: "^a$"
+    concept_code: "PREP:A"
+  - id: es_a2_07
+    type: produce_short
+    prompt: "Raconte en 2-3 phrases ce que tu as fait ce weekend (pretérito)."
+    expected_regex: ".*"
+    llm_judge_hint: "Production A2 : au moins 2 verbes correctement conjugués au pretérito indefinido ou perfecto. Valide si cohérence + absence de faute grossière."
+    concept_code: "FUNC:PAST_NARRATIVE"
+  - id: es_a2_08
+    type: fill
+    prompt: "Complète avec ser ou estar : La sopa ___ muy caliente."
+    expected_regex: "^está$"
+    llm_judge_hint: "Estar + état temporaire"
+    concept_code: "V:SER_ESTAR"

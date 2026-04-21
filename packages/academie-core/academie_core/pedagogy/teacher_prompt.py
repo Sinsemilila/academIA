@@ -568,9 +568,16 @@ HONESTY REQUIREMENT — `tier_applied` MUST list EVERY tier whose error you addr
   "silenced_for_spaced_retrieval": [],
   "spaced_retrieval_addressed": [],
   "drift_self_grade": "compliant",
-  "level_reinjected": false
+  "level_reinjected": false,
+  "observed_level": ""
 }
 </output>
+
+NOTE sur `observed_level` (Session 36) : à partir du turn 4, si tu as assez
+de signal pour estimer le niveau CEFR apparent de l'apprenant·e sur la base
+de ses productions récentes (A1/A2/B1/B2/C1/C2), renseigne-le ici. Sinon,
+laisse la chaîne vide. Cette estimation alimente la consolidation du niveau
+provisoire → validé (pas visible par l'apprenant·e directement).
 
 If your JSON is malformed, the webapp falls back to plain-text rendering of
 everything outside <output> tags. PREFER VALID JSON.
@@ -593,6 +600,7 @@ class TeacherResponse:
     spaced_retrieval_addressed: list[str] = field(default_factory=list)
     drift_self_grade: Literal["compliant", "drift_detected", "not_checked"] = "not_checked"
     level_reinjected: bool = False
+    observed_level: str = ""  # Session 36 — CEFR estimate ("" if uncertain)
     parse_ok: bool = True
     raw_text: str = ""
 
@@ -621,6 +629,7 @@ def parse_teacher_response(raw_text: str) -> TeacherResponse:
         spaced_retrieval_addressed=list(data.get("spaced_retrieval_addressed") or []),
         drift_self_grade=data.get("drift_self_grade") or "not_checked",
         level_reinjected=bool(data.get("level_reinjected") or False),
+        observed_level=str(data.get("observed_level") or "").strip().upper(),
         parse_ok=True,
         raw_text=raw_text,
     )
