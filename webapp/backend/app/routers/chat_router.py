@@ -467,6 +467,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
     niveau = ""
     profile_l1: str | None = "fr"  # default familial (Phase 6)
     l1_watch_on: bool = True
+    fla_category: str | None = None  # Session 35 — scaffolding policy signal
     eleve_id = user.get("eleve_id")
     if eleve_id:
         try:
@@ -513,6 +514,13 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
                 dify_inputs["learner_profile_json"] = _json.dumps(compact, ensure_ascii=False)
                 hints = compact["hints"]
                 dify_inputs["learner_profile_summary"] = hints.get("nl_summary", "") or ""
+                # Session 35 fix: QCM placement prend priorité sur profils_eleves.niveau_global
+                # (auto-report récent, plus précis que legacy niveau_global souvent vide/stale).
+                qcm_level = (compact.get("level") or {}).get("cefr_placement", "")
+                if qcm_level:
+                    niveau = qcm_level
+                # Session 35 — extract FLA for scaffolding policy
+                fla_category = (compact.get("motivation") or {}).get("fla_category")
         except Exception as _e:
             import logging
             logging.getLogger("chat").warning("learner_profiles fetch failed: %s", _e)
@@ -590,6 +598,16 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
 
         # Phase 7 — query items due for spaced retrieval (flag-gated, empty when OFF)
         spaced_due = await _fetch_due_retrieval_items(eleve_id, domain) if eleve_id else []
+        # Session 35 — target_lang_name & l1_name for scaffolding_block rendering
+        try:
+            from academie_core.data.loader import get_persona_label as _persona
+            _target_name = _persona(lang.lang_target, "target_name", lang.lang_target.upper())
+        except Exception:
+            _target_name = lang.lang_target.upper()
+        _L1_NAMES = {"fr": "français", "en": "English", "es": "español", "it": "italiano",
+                     "de": "Deutsch", "ja": "日本語", "ru": "русский"}
+        _l1_display = _L1_NAMES.get((profile_l1 or "fr").lower(), "français")
+
         ctx = PromptContext(
             level=niveau or "B1",
             turn_count=turn_count,
@@ -600,6 +618,10 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             l1=profile_l1 if l1_watch_on else None,
             spaced_retrieval_due=spaced_due,
             target_lang=lang.lang_target,
+            # Session 35 — L1/L2 scaffolding policy inputs
+            fla_category=fla_category,
+            target_lang_name=_target_name,
+            l1_name=_l1_display,
         )
         sections = lang.build_dynamic_sections(ctx)
         for key, val in sections.items():
@@ -607,6 +629,23 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
                 continue
             if isinstance(val, str):
                 dify_inputs[key] = val
+
+        # Session 35 — kill switch for scaffolding_block (rollback without migration)
+        import os as _os
+        if _os.environ.get("SCAFFOLDING_BLOCK_ENABLED", "true").lower() != "true":
+            dify_inputs["scaffolding_block"] = ""
+
+        # Session 35 MVP — append scaffolding_block to learner_profile_summary so it
+        # reaches both llm_onboarding and llm_session through the already-wired
+        # <learner_profile> channel, without touching Dify workflow JSON (which would
+        # require patching Start + code_profil_check + code_turn_check + 3 LLM nodes
+        # × 4 slots = 24 surgical edits). Phase 2 may split to a dedicated Start input.
+        _sb = dify_inputs.get("scaffolding_block", "")
+        if _sb:
+            _lps = dify_inputs.get("learner_profile_summary", "")
+            dify_inputs["learner_profile_summary"] = (
+                f"{_lps}\n\n{_sb}" if _lps else _sb
+            )
 
         # Sprint 5 Phase 3 — lang-specific inputs for the unified language-tutor chatflow.
         # Replaces hardcoded EN dicts (concept_hint_map + CEFR diagnostic examples) that
@@ -641,6 +680,8 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             # Sprint 5 Phase 3 — unified language-tutor inputs
             "concept_hints_json", "cefr_diagnostics_block",
             "lang_target_name", "lang_target_prof",
+            # Session 35 — L1/L2 scaffolding
+            "scaffolding_block",
         ):
             dify_inputs.setdefault(key, "")
 

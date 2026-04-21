@@ -662,6 +662,10 @@ class PromptContext:
     l1: str | None = None
     spaced_retrieval_due: list[dict] = field(default_factory=list)
     target_lang: str = "en"
+    # Session 35 — L1/L2 scaffolding policy signals
+    fla_category: str | None = None   # "low" | "medium" | "high" — from learner_profiles.domain_motivation
+    target_lang_name: str = ""        # Human name e.g. "Español", "English" (optional display override)
+    l1_name: str = "français"         # Human name of L1 used in the scaffolding block
 
 
 def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = None) -> dict:
@@ -688,6 +692,22 @@ def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = 
 
     l1_watch = build_l1_watch(ctx.l1, ctx.target_lang, lang_data=lang_data)
     spaced_retrieval = build_spaced_retrieval_block(ctx.spaced_retrieval_due)
+
+    # Session 35 — L1/L2 scaffolding policy (level × typological-distance × FLA).
+    # See docs/01-pedagogy/l1-l2-scaffolding-policy.md.
+    from .typological_distance import get_distance
+    from .scaffolding_policy import build_scaffolding_block, _normalize_fla
+    distance = get_distance(ctx.l1 or "", ctx.target_lang)
+    fla_band = _normalize_fla(ctx.fla_category)
+    target_display = ctx.target_lang_name or ctx.target_lang
+    scaffolding_block = build_scaffolding_block(
+        cefr_placement=ctx.level,
+        distance=distance,
+        fla=fla_band,
+        target_lang_name=target_display,
+        l1_name=ctx.l1_name or "français",
+        turn_count=ctx.turn_count,
+    )
 
     # tier_summary describes what the LLM will see for arbitration
     tier_summary_lines = []
@@ -730,6 +750,8 @@ def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = 
         "l1_watch": l1_watch,
         "spaced_retrieval_today": spaced_retrieval,
         "output_schema_block": OUTPUT_SCHEMA_BLOCK,
+        "scaffolding_block": scaffolding_block,
         # Metadata for chat_router.py to log
         "_dosage_decision": dosage,
+        "_scaffolding_cell": f"{ctx.level}|{distance}|{fla_band}",
     }
