@@ -1,0 +1,24 @@
+# L1 transfer patterns: French → German.
+# Prioritized by multiplier (higher = show first to LLM in L1 watch block).
+# STATUS: STUB Wave 2 — expand before production activation.
+# Sources placeholder: MERLIN L2 learner corpus (FR L1 subcorpus), Falko corpus,
+#   DISKO (Bethune 2017), Profile Deutsch for CEFR-DE alignment. Wave 2 will add
+#   ~20 entries validated against MERLIN error codes.
+l1: fr
+target: de
+transfers:
+  - family: case_acc_dat
+    multiplier: 1.6
+    description: "Allemand a 4 cas (Nom, Akk, Dat, Gen) vs FR 0 cas. Transfer systémique : 'ich sehe der Mann' (Nom) → 'den Mann' (Akk OD) ; 'ich helfe mein Freund' (Akk) → 'meinem Freund' (Dat — helfen régit dat). Prépositions wechsel (in/an/auf/…) : Akk=direction, Dat=location. Tout A1-B2 fréquent."
+  - family: article_gender_arbitrary
+    multiplier: 1.5
+    description: "Genre DE arbitraire et diverge de FR : das Mädchen (neutre, fille), die Sonne (fém, soleil masc FR), der Mond (masc, lune fém FR), das Auto. Apprenant·e transfère systématiquement le genre FR → erreurs massives déclinaison des articles/adjectifs. A1-A2 très fréquent."
+  - family: verb_final_v2
+    multiplier: 1.5
+    description: "Syntaxe DE : V2 en principale (verbe en 2e position), verbe FINAL en subordonnée. 'Ich denke, dass er ist müde' (calque FR ordre SVO) → 'Ich denke, dass er müde ist' (verbe final). Idem Perfekt : 'Ich habe gegessen' (main) / 'weil ich gegessen habe' (sub). A2-B1 fréquent."
+  - family: compound_nouns_split
+    multiplier: 1.3
+    description: "DE compose les noms en 1 mot : 'Mittagessen' (repas de midi), 'Hausaufgabe' (devoir de maison), 'Straßenbahnhaltestelle' (arrêt de tramway). FR décompose via de/du. Calque fréquent : écriture avec espaces 'Mittag essen' ou tirets 'Mittag-essen' — agrammatical. A2 fréquent."
+  - family: false_friends
+    multiplier: 1.2
+    description: "Chef = patron (pas cuisinier = Koch) ; Gymnasium = lycée (pas gym = Turnhalle) ; Handy = portable (téléphone) ; Bekommen = recevoir (pas 'devenir' FR 'become' = werden) ; also = donc (pas also anglais = auch) ; sensibel = sensible affectif (pas sensé = vernünftig)."

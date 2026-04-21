@@ -3,6 +3,9 @@
   import { goto } from '$app/navigation';
   import { api } from '$lib/api';
   import { addToast, toastError } from '$lib/stores/toasts';
+  import { agents, domainLabel } from '$lib/config';
+  import { currentDomain } from '$lib/stores/navigation';
+  import { get } from 'svelte/store';
 
   type AdminUser = {
     id: number;
@@ -30,6 +33,11 @@
   let creating = $state(false);
   let confirmDelete = $state<number | null>(null);
   let confirmReset = $state<string | null>(null);
+  // Session 37 — per-username reset-domain selection (null = global wipe).
+  // Default to current navigation domain for safety (admin usually resetting
+  // the domain they're looking at).
+  let resetDomain = $state<string | null>(get(currentDomain));
+  const availableAgents = $derived(agents.filter(a => a.available));
   let tokenUsage = $state<any>(null);
 
   async function loadTokenUsage() {
@@ -68,8 +76,11 @@
 
   async function resetProfile(username: string) {
     try {
-      await api.adminResetProfile(username);
-      addToast(`Profil ${username} reinitialise (A1)`, 'success');
+      await api.adminResetProfile(username, resetDomain);
+      const scopeLabel = resetDomain
+        ? `${domainLabel(resetDomain)} uniquement`
+        : 'tous domaines + historique';
+      addToast(`Profil ${username} réinitialisé (${scopeLabel})`, 'success');
       confirmReset = null;
       await loadUsers();
     } catch (e: any) {
@@ -234,9 +245,17 @@
               </td>
               <td class="px-4 py-3 text-right space-x-1">
                 {#if confirmReset === user.username}
+                  <select bind:value={resetDomain}
+                    class="px-1 py-1 text-xs rounded bg-elevated border border-border-subtle text-text-primary"
+                    title="Domaine à réinitialiser">
+                    {#each availableAgents as a (a.domain)}
+                      <option value={a.domain}>{a.lang}</option>
+                    {/each}
+                    <option value={null}>Tous (+ historique)</option>
+                  </select>
                   <button onclick={() => resetProfile(user.username)}
                     class="px-2 py-1 text-xs rounded bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30">
-                    Confirmer reset
+                    Confirmer
                   </button>
                   <button onclick={() => confirmReset = null}
                     class="px-2 py-1 text-xs rounded text-text-muted hover:text-text-secondary">
@@ -252,8 +271,8 @@
                     Annuler
                   </button>
                 {:else}
-                  <button onclick={() => confirmReset = user.username}
-                    title="Reset profil A1"
+                  <button onclick={() => { resetDomain = get(currentDomain); confirmReset = user.username; }}
+                    title="Réinitialiser le profil (choix du domaine à l'étape suivante)"
                     class="px-2 py-1 text-xs rounded text-text-muted hover:text-yellow-400 hover:bg-yellow-500/10 transition">
                     Reset
                   </button>

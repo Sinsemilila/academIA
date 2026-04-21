@@ -1,0 +1,22 @@
+# L1 transfer patterns: French → Russian.
+# Prioritized by multiplier (higher = show first to LLM in L1 watch block).
+# STATUS: STUB Wave 4 — expand before production activation.
+# Sources placeholder: RLC (Russian Learner Corpus) FR L1 subcorpus,
+#   Gosstandart ТРКИ lexical/grammatical minimums for TEU-IV, "Дорога в Россию"
+#   method alignment. Wave 4 will add ~18 entries with RLC-validated frequencies.
+# Note: typological distance FR-RU = distant → scaffolding doit être systématique.
+l1: fr
+target: ru
+transfers:
+  - family: cases_6
+    multiplier: 1.6
+    description: "Russe a 6 cas (именительный/nom, родительный/gen, дательный/dat, винительный/acc, творительный/inst, предложный/prep) vs FR 0 cas. Transfer systémique à chaque déclinaison de nom, adjectif, pronom. Apprenant·e FR utilise par défaut la forme de dictionnaire (nom) partout → phrase agrammaticale. A1-C1 persistant."
+  - family: aspect_perfective_imperfective
+    multiplier: 1.6
+    description: "Chaque verbe russe a 2 aspects (perfectif писать/написать, imperfectif говорить/сказать). Choix aspectuel gouverne le sens (action complétée vs en cours). FR n'a pas cette distinction systémique — calque imperfectif → erreurs graves de narration. 'Вчера я писал письмо' (j'écrivais, activité) vs 'Вчера я написал письмо' (j'ai écrit, achevé)."
+  - family: no_articles
+    multiplier: 1.3
+    description: "Russe n'a pas d'articles (le/la/un/une). 'Я купил книгу' (j'ai acheté livre) sans aucun article. Apprenant·e FR peut tenter d'insérer 'один/одна' (un/une) systématiquement ou de marquer la définitude par l'ordre des mots — inapproprié hors insistance. Aussi : pas d'article partitif (de la/du)."
+  - family: word_order_free_but_marked
+    multiplier: 1.2
+    description: "Ordre des mots libre grammaticalement mais pragmatiquement marqué (thème-rhème). 'Я читаю книгу' (neutre) / 'Книгу я читаю' (emphase sur livre) / 'Читаю я книгу' (registre oral/insistance). Apprenant·e FR impose SVO rigide → phrases monotones mais grammaticalement OK. Erreur subtile B1+."

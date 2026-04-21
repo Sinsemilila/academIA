@@ -77,8 +77,10 @@ async def analyze_errors(req: AnalyzeRequest, x_internal_token: str = Header(Non
     all_errors: list[dict] = []
 
     # ── Layer 1: Rules (deterministic, surface errors) ──
+    # Session 37 — lang dispatch: route to rules_es/_it/_de/_jp/_ru per domain.
+    # Before: detect_errors(text) always ran rules_en → false detections in non-EN chat.
     for turn_num, text in user_turns:
-        for det in detect_errors(text):
+        for det in detect_errors(text, lang=req.domain):
             all_errors.append({
                 "eleve_id": eleve_id,
                 "session_id": req.session_id,

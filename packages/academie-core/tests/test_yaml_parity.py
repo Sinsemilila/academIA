@@ -99,6 +99,111 @@ def test_l1_transfer_missing_pair_returns_empty():
     assert transfers == []
 
 
+# ── Session 37 — Wave 2-4 L1 transfer stubs ──────────────────────────
+
+
+import pytest
+
+
+@pytest.mark.parametrize("target,min_count,wave", [
+    ("it", 3, "Wave 2"),
+    ("de", 3, "Wave 2"),
+    ("ja", 3, "Wave 3"),
+    ("ru", 3, "Wave 4"),
+])
+def test_l1_transfer_stub_loads_with_min_entries(target, min_count, wave):
+    transfers = load_l1_transfers("fr", target)
+    assert len(transfers) >= min_count, (
+        f"fr_to_{target} ({wave}) has only {len(transfers)} entries (min {min_count})"
+    )
+
+
+@pytest.mark.parametrize("target", ["it", "de", "ja", "ru"])
+def test_l1_transfer_stub_schema_valid(target):
+    transfers = load_l1_transfers("fr", target)
+    for fam, mult, desc in transfers:
+        assert isinstance(fam, str) and fam, f"empty family in fr_to_{target}"
+        assert isinstance(mult, (int, float)) and 1.0 <= mult <= 2.0, (
+            f"multiplier out of range in fr_to_{target}: {fam}={mult}"
+        )
+        assert isinstance(desc, str) and len(desc) > 50, (
+            f"description too short in fr_to_{target}: {fam}"
+        )
+
+
+@pytest.mark.parametrize("target", ["it", "de", "ja", "ru"])
+def test_l1_transfer_stub_multipliers_descending(target):
+    transfers = load_l1_transfers("fr", target)
+    mults = [m for _, m, _ in transfers]
+    assert mults == sorted(mults, reverse=True), (
+        f"fr_to_{target} multipliers not descending: {mults}"
+    )
+
+
+# ── Session 37 — curriculum_en.yaml parity with curriculum_es.yaml ──
+
+import yaml as _yaml
+from pathlib import Path as _Path
+import academie_core as _ac
+
+# Resolve via installed package so tests work from any CWD (host or container).
+_CURR_DIR = _Path(_ac.__file__).resolve().parent / "data"
+
+
+def _load_curriculum(lang: str) -> dict:
+    path = _CURR_DIR / f"curriculum_{lang}.yaml"
+    return _yaml.safe_load(path.read_text())
+
+
+def test_curriculum_en_yaml_exists_and_loads():
+    curr = _load_curriculum("en")
+    assert curr is not None
+    assert curr.get("domain") == "en"
+
+
+@pytest.mark.parametrize("lang", ["en", "es"])
+@pytest.mark.parametrize("level", ["A1", "A2", "B1", "B2", "C1", "C2"])
+def test_curriculum_level_has_required_sections(lang, level):
+    curr = _load_curriculum(lang)
+    assert level in curr, f"{lang} missing {level}"
+    block = curr[level]
+    assert block.get("concept_keys"), f"{lang}/{level} empty concept_keys"
+    assert block.get("concept_weights"), f"{lang}/{level} empty concept_weights"
+    assert block.get("concept_groups"), f"{lang}/{level} empty concept_groups"
+
+
+@pytest.mark.parametrize("lang", ["en", "es"])
+@pytest.mark.parametrize("level", ["A1", "A2", "B1", "B2", "C1", "C2"])
+def test_curriculum_weights_refer_valid_keys(lang, level):
+    curr = _load_curriculum(lang)
+    keys = set(curr[level]["concept_keys"])
+    weights = curr[level]["concept_weights"]
+    for k in weights:
+        if k.endswith("_note"):
+            continue  # free-form annotation allowed
+        assert k in keys, f"{lang}/{level}: weight key {k!r} not in concept_keys"
+
+
+@pytest.mark.parametrize("lang", ["en", "es"])
+@pytest.mark.parametrize("level", ["A1", "A2", "B1", "B2", "C1", "C2"])
+def test_curriculum_all_concepts_grouped(lang, level):
+    curr = _load_curriculum(lang)
+    keys = set(curr[level]["concept_keys"])
+    grouped = set()
+    for g in curr[level]["concept_groups"].values():
+        if isinstance(g, list):
+            grouped.update(g)
+    orphans = keys - grouped
+    assert not orphans, f"{lang}/{level}: ungrouped concepts {orphans}"
+
+
+def test_curriculum_en_total_concepts_reasonable():
+    """Session 37 sanity: EN should have ~45-60 concepts (ES has 52)."""
+    curr = _load_curriculum("en")
+    total = sum(len(curr[lvl]["concept_keys"]) for lvl in ["A1","A2","B1","B2","C1","C2"])
+    assert 45 <= total <= 65, f"curriculum_en total concepts out of range: {total}"
+
+
 # ── LanguageData ─────────────────────────────────────────────────────
 
 

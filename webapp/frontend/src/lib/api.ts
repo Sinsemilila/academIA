@@ -338,8 +338,13 @@ class ApiClient {
     return await res.json();
   }
 
-  async adminResetProfile(username: string) {
-    const res = await this.fetch(`/admin/reset-profile/${username}`, { method: 'POST' });
+  async adminResetProfile(username: string, domain?: string | null) {
+    // Session 37: domain-scoped reset. When domain is null/undefined → legacy
+    // global wipe. When set → scope DELETE to that domain on per-domain tables
+    // (profils_eleves, error_log, snapshots_session, learner_profiles,
+    // consolidation_events, spaced_retrieval_queue).
+    const qs = domain ? `?domain=${encodeURIComponent(domain)}` : '';
+    const res = await this.fetch(`/admin/reset-profile/${username}${qs}`, { method: 'POST' });
     if (!res.ok) throw new Error('Reset failed');
     return await res.json();
   }

@@ -106,9 +106,38 @@ async def list_users(domain: str = "en", admin: dict = Depends(require_admin)):
     ]
 
 
+# ── Per-domain tables (must ALL be DELETE-scoped when `domain` is specified) ──
+# When adding a new table with a `domain` column, extend this list + the
+# per-domain DELETE block below. Also mirror it in delete_user() for consistency.
+#   profils_eleves (Sprint 5)
+#   error_log (Sprint 5)
+#   snapshots_session (Sprint 5)
+#   learner_profiles (Sprint 5 Phase 5 QCM)
+#   consolidation_events (Sprint 6 Session 36)
+#   spaced_retrieval_queue (Sprint 5)
+# User-global tables (never scoped by domain — reset globally):
+#   xp_log, streaks, user_sessions
+
+
 @router.post("/api/admin/reset-profile/{username}")
-async def reset_profile(username: str, admin: dict = Depends(require_admin)):
-    """Reset a student — full wipe. Works even if no eleve record exists."""
+async def reset_profile(
+    username: str,
+    domain: str | None = None,
+    admin: dict = Depends(require_admin),
+):
+    """Reset a student profile.
+
+    - `?domain=en` (or es/…) → scope DELETE to that domain only on per-domain
+      tables. User-global tables (xp_log, streaks, user_sessions) are LEFT
+      INTACT so the learner keeps their activity history cross-domains.
+    - No `domain` query param → legacy global wipe: every per-domain table
+      purged for all domains + user-global tables reset.
+
+    Works even if no eleve record exists.
+    """
+    if domain is not None and not domain.isalpha():
+        raise HTTPException(status_code=422, detail="invalid domain code")
+
     async with db.pool.acquire() as conn:
         user_row = await conn.fetchrow("SELECT id FROM users WHERE username = $1", username)
         if not user_row:
@@ -118,19 +147,57 @@ async def reset_profile(username: str, admin: dict = Depends(require_admin)):
         async with conn.transaction():
             eleve = await conn.fetchrow("SELECT id FROM eleves WHERE username = $1", username)
             if eleve:
-                await conn.execute("DELETE FROM profils_eleves WHERE eleve_id = $1", eleve["id"])
-                await conn.execute("DELETE FROM error_log WHERE eleve_id = $1", eleve["id"])
-                await conn.execute("DELETE FROM snapshots_session WHERE eleve_id = $1", eleve["id"])
+                eid = eleve["id"]
+                if domain:
+                    # Per-domain wipe
+                    await conn.execute(
+                        "DELETE FROM profils_eleves WHERE eleve_id = $1 AND domain = $2",
+                        eid, domain)
+                    await conn.execute(
+                        "DELETE FROM error_log WHERE eleve_id = $1 AND domain = $2",
+                        eid, domain)
+                    await conn.execute(
+                        "DELETE FROM snapshots_session WHERE eleve_id = $1 AND domain = $2",
+                        eid, domain)
+                    await conn.execute(
+                        "DELETE FROM learner_profiles WHERE eleve_id = $1 AND domain = $2",
+                        eid, domain)
+                    await conn.execute(
+                        "DELETE FROM consolidation_events WHERE eleve_id = $1 AND domain = $2",
+                        eid, domain)
+                    await conn.execute(
+                        "DELETE FROM spaced_retrieval_queue WHERE eleve_id = $1 AND domain = $2",
+                        eid, domain)
+                    # User-global tables untouched when domain specified
+                else:
+                    # Global wipe: all domains on per-domain tables + user-global tables
+                    await conn.execute("DELETE FROM profils_eleves WHERE eleve_id = $1", eid)
+                    await conn.execute("DELETE FROM error_log WHERE eleve_id = $1", eid)
+                    await conn.execute("DELETE FROM snapshots_session WHERE eleve_id = $1", eid)
+                    await conn.execute("DELETE FROM learner_profiles WHERE eleve_id = $1", eid)
+                    await conn.execute("DELETE FROM consolidation_events WHERE eleve_id = $1", eid)
+                    await conn.execute("DELETE FROM spaced_retrieval_queue WHERE eleve_id = $1", eid)
 
-            await conn.execute("DELETE FROM xp_log WHERE user_id = $1", user_row["id"])
-            await conn.execute("DELETE FROM streaks WHERE user_id = $1", user_row["id"])
-            await conn.execute("DELETE FROM user_sessions WHERE user_id = $1", user_row["id"])
-            await conn.execute(
-                "UPDATE users SET dify_user_id = $1 WHERE username = $2",
-                new_dify_id, username)
+            if not domain:
+                # Only reset user-global tables on global wipe
+                await conn.execute("DELETE FROM xp_log WHERE user_id = $1", user_row["id"])
+                await conn.execute("DELETE FROM streaks WHERE user_id = $1", user_row["id"])
+                await conn.execute("DELETE FROM user_sessions WHERE user_id = $1", user_row["id"])
+                await conn.execute(
+                    "UPDATE users SET dify_user_id = $1 WHERE username = $2",
+                    new_dify_id, username)
 
-    logger.info("Profile reset for %s by admin %s (new dify_id=%s)", username, admin["username"], new_dify_id)
-    return {"ok": True, "message": f"Profile reset for {username}"}
+    scope_label = f"domain={domain}" if domain else "global (all domains + user data)"
+    logger.info(
+        "Profile reset for %s by admin %s (%s%s)",
+        username, admin["username"], scope_label,
+        f", new dify_id={new_dify_id}" if not domain else "",
+    )
+    return {
+        "ok": True,
+        "domain": domain,
+        "message": f"Profile reset for {username} ({scope_label})",
+    }
 
 
 @router.delete("/api/admin/users/{user_id}")

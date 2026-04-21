@@ -1,0 +1,188 @@
+# English curriculum — CEFR concepts + weights + groups per level.
+# Sourced from: CEFR 2020 Companion Volume, Cambridge English Profile (EVP),
+#   Hughes & Reed B2-C2 grammars, concept_hints/en.yaml (20 concepts) +
+#   rubrics/en.yaml "Target structures" sections per level.
+# Format mirrors curriculum_es.yaml (used by Dify chatflow Teacher + error_analysis_router).
+# Keys MUST match concept_hints/en.yaml where present (additional structural keys
+# introduced here are documented in comments).
+#
+# weight = minutes estimées par concept (3 = léger, 5 = moyen, 8 = lourd)
+# group = thème fonctionnel pour les examens (regroupe concepts reliés)
+
+domain: en
+
+A1:
+  description: "Survival — greet, introduce, request basic info (time, price, name, place). Present simple + can/want. Concrete vocab (~500 words BNC)."
+  concept_keys:
+    - present_simple_basic
+    - articles_a_an_the
+    - prepositions_place
+    - personal_pronouns
+    - possessive_s
+    - can_could_basic
+    - there_is_there_are
+    - numbers_dates_times
+    - plural_nouns
+    - greetings_introductions
+  concept_weights:
+    present_simple_basic: 5
+    articles_a_an_the: 5
+    prepositions_place: 3
+    personal_pronouns: 3
+    possessive_s: 3
+    can_could_basic: 3
+    there_is_there_are: 3
+    numbers_dates_times: 3
+    plural_nouns: 3
+    greetings_introductions: 3
+  concept_groups:
+    grammar: [present_simple_basic, articles_a_an_the, plural_nouns, possessive_s]
+    structures: [there_is_there_are, can_could_basic]
+    syntax: [prepositions_place, personal_pronouns]
+    vocab: [numbers_dates_times, greetings_introductions]
+
+A2:
+  description: "Waystage — tell recent experience, express likes, simple comparisons, shopping. Past simple + going-to + would like."
+  concept_keys:
+    - past_simple_regular_irregular
+    - going_to_future
+    - comparatives_superlatives
+    - will_would_basic
+    - present_continuous
+    - countable_uncountable
+    - adverbs_frequency
+    - object_pronouns
+    - basic_connectors
+  concept_weights:
+    past_simple_regular_irregular: 8
+    going_to_future: 5
+    comparatives_superlatives: 5
+    will_would_basic: 3
+    present_continuous: 5
+    countable_uncountable: 5
+    adverbs_frequency: 3
+    object_pronouns: 3
+    basic_connectors: 3
+  concept_weights_note: "past_simple is the heaviest A2 concept (dual regular+irregular system)."
+  concept_groups:
+    past_tenses: [past_simple_regular_irregular]
+    future: [going_to_future, will_would_basic]
+    aspect: [present_continuous]
+    comparison: [comparatives_superlatives]
+    quantifiers: [countable_uncountable]
+    discourse: [adverbs_frequency, basic_connectors]
+    pronouns: [object_pronouns]
+
+B1:
+  description: "Threshold — hold conversation on familiar topics, narrate events, give opinion+reason, manage travel. Present perfect + first conditional + reported speech basic."
+  concept_keys:
+    - present_perfect_simple
+    - present_perfect_vs_past_simple
+    - conditional_1
+    - reported_speech
+    - used_to
+    - modal_deduction
+    - phrasal_verbs
+    - relative_clauses
+    - gerund_vs_infinitive
+    - adj_prepositions
+  concept_weights:
+    present_perfect_simple: 8
+    present_perfect_vs_past_simple: 8
+    conditional_1: 5
+    reported_speech: 5
+    used_to: 3
+    modal_deduction: 5
+    phrasal_verbs: 8
+    relative_clauses: 5
+    gerund_vs_infinitive: 5
+    adj_prepositions: 3
+  concept_groups:
+    perfect_aspect: [present_perfect_simple, present_perfect_vs_past_simple]
+    conditionals: [conditional_1]
+    reported_speech: [reported_speech]
+    past_habit: [used_to]
+    modals: [modal_deduction]
+    lexicon: [phrasal_verbs, adj_prepositions]
+    complex_syntax: [relative_clauses, gerund_vs_infinitive]
+
+B2:
+  description: "Vantage — argue, nuance position, cultural comparison, debate. Conditional 2+3, subjunctive (wish/if only), linking words, lexical precision."
+  concept_keys:
+    - conditional_2
+    - conditional_3_mixed
+    - present_perfect_continuous
+    - past_perfect
+    - passive_voice
+    - subjunctive_wish_ifonly
+    - indirect_questions
+    - connectors
+    - so_such_that
+    - would_habitual
+  concept_weights:
+    conditional_2: 5
+    conditional_3_mixed: 8
+    present_perfect_continuous: 5
+    past_perfect: 5
+    passive_voice: 8
+    subjunctive_wish_ifonly: 5
+    indirect_questions: 5
+    connectors: 5
+    so_such_that: 3
+    would_habitual: 3
+  concept_groups:
+    conditionals_advanced: [conditional_2, conditional_3_mixed]
+    perfect_aspect_advanced: [present_perfect_continuous, past_perfect]
+    voice: [passive_voice]
+    mood: [subjunctive_wish_ifonly]
+    syntax: [indirect_questions, so_such_that]
+    discourse: [connectors]
+    past_habit: [would_habitual]
+
+C1:
+  description: "Effective Operational Proficiency — register-aware, academic debate, structured writing. Stylistic subtleties + idioms + inversion."
+  concept_keys:
+    - inversion_negative_adverbial
+    - cleft_sentences
+    - advanced_collocations
+    - idioms_transparent
+    - adverbs_degree
+    - register_formal_informal
+    - both_either_neither
+    - causative_have
+    - emphatic_do
+  concept_weights:
+    inversion_negative_adverbial: 5
+    cleft_sentences: 5
+    advanced_collocations: 8
+    idioms_transparent: 8
+    adverbs_degree: 3
+    register_formal_informal: 5
+    both_either_neither: 3
+    causative_have: 5
+    emphatic_do: 3
+  concept_groups:
+    advanced_syntax: [inversion_negative_adverbial, cleft_sentences, emphatic_do]
+    lexicon_advanced: [advanced_collocations, idioms_transparent, adverbs_degree]
+    register: [register_formal_informal]
+    structures: [both_either_neither, causative_have]
+
+C2:
+  description: "Mastery — near-native, pragmatic nuance, linguistic creativity. Residual errors = fluency markers, not competence gaps."
+  concept_keys:
+    - idioms_opaque
+    - literary_inversion
+    - pragmatic_nuance
+    - cultural_references
+    - discourse_markers_c2
+  concept_weights:
+    idioms_opaque: 8
+    literary_inversion: 5
+    pragmatic_nuance: 8
+    cultural_references: 5
+    discourse_markers_c2: 3
+  concept_groups:
+    lexicon_native: [idioms_opaque, pragmatic_nuance]
+    advanced_syntax: [literary_inversion]
+    cultural: [cultural_references]
+    discourse: [discourse_markers_c2]

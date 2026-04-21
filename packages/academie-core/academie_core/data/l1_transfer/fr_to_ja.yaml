@@ -1,0 +1,22 @@
+# L1 transfer patterns: French → Japanese.
+# Prioritized by multiplier (higher = show first to LLM in L1 watch block).
+# STATUS: STUB Wave 3 — expand before production activation.
+# Sources placeholder: I-JAS L2 learner corpus, Lang-8 FR→JA subcorpus,
+#   Japan Foundation JF Standard for JLPT-CEFR mapping, Tae Kim. Wave 3 will
+#   add ~15 entries validated against I-JAS error tags + Bunpro progression.
+# Note: typological distance FR-JA = distant → scaffolding doit être systématique.
+l1: fr
+target: ja
+transfers:
+  - family: particle_wa_ga
+    multiplier: 1.6
+    description: "Particules topic (は wa) vs sujet (が ga) inexistantes en FR, distinction cruciale en JA. 'Watashi wa gakusei desu' (topic : 'quant à moi, étudiant') vs 'Watashi ga kita' (sujet marqué : 'c'est moi qui suis venu'). Apprenant·e FR par défaut utilise wa partout ou laisse nu → erreur majeure A1-B1. Cf Tae Kim §3, Bunpro N5."
+  - family: sov_word_order
+    multiplier: 1.5
+    description: "Ordre SOV en JA (sujet-objet-verbe) vs SVO en FR. 'Je mange une pomme' → 'Watashi wa ringo wo tabemasu' (私はりんごを食べます — litt. 'moi quant à pomme manger'). Calque SVO systématique en A1. Verbe TOUJOURS final — les modifications, négations, temps, politesse s'empilent après le radical verbal."
+  - family: keigo_formality
+    multiplier: 1.5
+    description: "JA a 3+ niveaux de formalité obligatoires (sonkeigo respectueux, kenjougo humble, teineigo poli -masu). FR n'a que tu/vous. Apprenant·e mélange contextes pro/amical → impolitesse involontaire. N4+ critique. Registre par défaut en apprentissage = teineigo (-masu forms) mais colloquial (普通形) requis avec pairs."
+  - family: no_articles_no_plural
+    multiplier: 1.3
+    description: "JA n'a ni articles (le/la/un/une) ni marque systématique du pluriel. 'J'ai acheté une voiture' → 'Kuruma wo kaimashita' (車を買いました — litt. 'voiture ai-acheté'). Apprenant·e FR tente de traduire 'un/une' via numéraux (hitotsu/ichidai) — souvent inapproprié hors insistance quantitative. Aussi : pas de genre grammatical."
