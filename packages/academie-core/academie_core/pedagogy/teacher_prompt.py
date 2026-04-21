@@ -569,15 +569,17 @@ HONESTY REQUIREMENT — `tier_applied` MUST list EVERY tier whose error you addr
   "spaced_retrieval_addressed": [],
   "drift_self_grade": "compliant",
   "level_reinjected": false,
-  "observed_level": ""
+  "observed_level": "A2"
 }
 </output>
 
-NOTE sur `observed_level` (Session 36) : à partir du turn 4, si tu as assez
-de signal pour estimer le niveau CEFR apparent de l'apprenant·e sur la base
-de ses productions récentes (A1/A2/B1/B2/C1/C2), renseigne-le ici. Sinon,
-laisse la chaîne vide. Cette estimation alimente la consolidation du niveau
-provisoire → validé (pas visible par l'apprenant·e directement).
+NOTE sur `observed_level` (Session 37, v2) : à CHAQUE turn, émets ton
+estimation CEFR (A1/A2/B1/B2/C1/C2) du niveau APPARENT de l'apprenant·e sur
+la base de ses productions cumulées. C'est OBLIGATOIRE à partir du turn 3 —
+ne laisse jamais la chaîne vide passé ce seuil. Seul cas autorisé pour "" :
+les 2 premiers turns où la production est inexistante (ex: "ok", "yo"). Ne
+discute jamais ce niveau dans `feedback` — c'est pour la télémétrie interne
+qui alimente la consolidation du niveau provisoire → validé.
 
 If your JSON is malformed, the webapp falls back to plain-text rendering of
 everything outside <output> tags. PREFER VALID JSON.
