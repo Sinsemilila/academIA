@@ -1,0 +1,52 @@
+level: B2
+lang: es
+description: "Mini-examen de consolidation B2 Avanzado (PCIC B2) — 8 items."
+items:
+  - id: es_b2_01
+    type: fill
+    prompt: "Complète avec le subjonctif imparfait : Si ___ (tener, yo) más tiempo, viajaría más."
+    expected_regex: "^(tuviera|tuviese)$"
+    llm_judge_hint: "Subjuntivo imperfecto 1S après 'si' hypothétique — tuviera ou tuviese acceptés"
+    concept_code: "V:SUBJ:IMPF:1S"
+  - id: es_b2_02
+    type: transform
+    prompt: "Mets au subjonctif passé : 'Es extraño que haya llegado tarde.' → Era extraño que ___ tarde."
+    expected_regex: "^(hubiera|hubiese) llegado$"
+    llm_judge_hint: "Concordance : subjonctif plus-que-parfait après passé"
+    concept_code: "V:SUBJ:PLUSQP"
+  - id: es_b2_03
+    type: choice
+    prompt: "Voix passive réflexe : '___ mucho café en España.'"
+    options: ["Se bebe", "Se beben", "Se bebió", "Es bebido"]
+    expected_regex: "^Se bebe$"
+    concept_code: "V:PASIVA:REFLEJA"
+  - id: es_b2_04
+    type: fill
+    prompt: "Complète avec por/para : Este regalo es ___ ti, lo compré ___ tu cumpleaños."
+    expected_regex: "^para , para$"
+    llm_judge_hint: "Para = destinataire + para = finalité/occasion"
+    concept_code: "PREP:POR_PARA:ADV"
+  - id: es_b2_05
+    type: transform
+    prompt: "Style indirect au passé : 'Juan dijo: ¡Ojalá pueda venir mañana!' → Juan dijo que ojalá ___ venir al día siguiente."
+    expected_regex: "^(pudiera|pudiese)$"
+    llm_judge_hint: "Subjonctif imparfait après ojalá dans discours rapporté passé"
+    concept_code: "DISCOURS:CONCORDANCE:SUBJ"
+  - id: es_b2_06
+    type: choice
+    prompt: "Connecteur de concession : '___ llovía mucho, decidimos salir.'"
+    options: ["Aunque", "Porque", "Mientras", "Como"]
+    expected_regex: "^Aunque$"
+    concept_code: "DISCOURS:CONCESSION"
+  - id: es_b2_07
+    type: produce_short
+    prompt: "Exprime ton opinion en 2-3 phrases sur l'impact des réseaux sociaux (utilise au moins un subjonctif et un connecteur de concession comme 'aunque', 'a pesar de que')."
+    expected_regex: ".*"
+    llm_judge_hint: "Production B2 : opinion nuancée avec connecteur concessif (aunque/a pesar de/si bien) + au moins un subjonctif. Valide si ≥2 phrases cohérentes avec morpho B2 correcte."
+    concept_code: "FUNC:OPINION:NUANCED"
+  - id: es_b2_08
+    type: fill
+    prompt: "Périphrase verbale : 'Llevo ___ (estudiar) español tres años.'"
+    expected_regex: "^estudiando$"
+    llm_judge_hint: "Llevar + gerundio pour exprimer la durée en cours"
+    concept_code: "V:PERIFRASIS:LLEVAR:GER"

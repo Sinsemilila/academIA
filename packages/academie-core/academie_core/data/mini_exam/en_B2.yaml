@@ -1,0 +1,50 @@
+level: B2
+lang: en
+description: "Mini-exam B2 Vantage (CEFR) — 8 items."
+items:
+  - id: en_b2_01
+    type: fill
+    prompt: "Third conditional: If I ___ (know) earlier, I ___ (help) you."
+    expected_regex: "^had known , would have helped$"
+    llm_judge_hint: "Third conditional: past perfect + would have + past participle"
+    concept_code: "V:COND:3RD"
+  - id: en_b2_02
+    type: transform
+    prompt: "Passive with modal: 'Someone should fix this bug.' →"
+    expected_regex: "^this bug should be fixed( by someone)?\\.?$"
+    concept_code: "V:PASSIVE:MODAL"
+  - id: en_b2_03
+    type: choice
+    prompt: "Mixed conditional: 'If I ___ harder in school, I ___ a better job now.'"
+    options: ["studied / had", "had studied / would have", "had studied / would have had", "would study / had"]
+    expected_regex: "^had studied / would have had$"
+    concept_code: "V:COND:MIXED"
+  - id: en_b2_04
+    type: transform
+    prompt: "Reported question: She asked: 'Where did you go?' → She asked ___."
+    expected_regex: "^where (i|he|she|they) had gone\\.?$"
+    concept_code: "DISCOURS:REPORTED:QUESTION"
+  - id: en_b2_05
+    type: fill
+    prompt: "Inversion after negative adverbial: Never ___ (I / see) such a beautiful sunset."
+    expected_regex: "^have i seen$"
+    llm_judge_hint: "Negative adverbial inversion: Never + aux + subject + past participle"
+    concept_code: "SYNTAX:INVERSION:NEG"
+  - id: en_b2_06
+    type: choice
+    prompt: "Concession connector: '___ the weather was terrible, we enjoyed the trip.'"
+    options: ["Although", "Despite", "However", "Because"]
+    expected_regex: "^Although$"
+    concept_code: "DISCOURS:CONCESSION"
+  - id: en_b2_07
+    type: produce_short
+    prompt: "Write 2-3 sentences discussing the impact of artificial intelligence on employment (use at least one passive form and one concession connector like 'although' or 'despite')."
+    expected_regex: ".*"
+    llm_judge_hint: "B2 production: nuanced argument with connector (although/despite/however/nevertheless) + at least one passive form. Valid if ≥2 coherent sentences with correct morphology and clear discourse marker."
+    concept_code: "FUNC:ARGUMENT"
+  - id: en_b2_08
+    type: fill
+    prompt: "Causative have: I need ___ ___ (my car / repair) before Friday."
+    expected_regex: "^my car repaired$"
+    llm_judge_hint: "Causative 'have something done' — possessive + past participle"
+    concept_code: "V:CAUSATIVE:HAVE"
