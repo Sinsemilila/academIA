@@ -28,13 +28,48 @@
   // Configure marked
   marked.setOptions({ breaks: true, gfm: true });
 
+  // Session 37 fix — extract `feedback` from <output>{JSON}</output> for display.
+  // Teacher & Maestro always wrap their response in this envelope per
+  // OUTPUT_SCHEMA_BLOCK (teacher_prompt.py). Without extraction, marked strips
+  // the <output> tags but keeps the raw JSON text, exposing `reasoning`,
+  // `tier_applied`, `error_codes` etc. to the learner — breaking the tutor UX.
+  //
+  // During streaming the closing tag may not have arrived yet; show an empty
+  // bubble rather than exposing partial JSON. Once complete, extract feedback.
+  // On malformed JSON or missing tags, fall back to the raw content.
+  function extractFeedback(raw: string, isStreaming: boolean): string {
+    if (!raw) return '';
+    const openIdx = raw.indexOf('<output>');
+    if (openIdx < 0) return raw; // plain text response (legacy or fallback)
+    const closeIdx = raw.indexOf('</output>', openIdx);
+    if (closeIdx < 0) {
+      // Still streaming the JSON — hide partial until complete.
+      if (isStreaming) return raw.slice(0, openIdx); // anything before <output> (usually empty)
+      return raw; // stream ended with unclosed tag → show raw for debugging
+    }
+    const inner = raw.slice(openIdx + '<output>'.length, closeIdx).trim();
+    try {
+      const parsed = JSON.parse(inner);
+      const fb = (parsed.feedback ?? '').toString();
+      // If feedback is empty but content exists after </output>, append it
+      const trailing = raw.slice(closeIdx + '</output>'.length).trim();
+      return (fb + (trailing ? '\n' + trailing : '')).trim() || raw;
+    } catch {
+      return raw;
+    }
+  }
+
+  let displayContent = $derived(
+    role === 'assistant' ? extractFeedback(content || '', streaming) : content
+  );
+
   let htmlContent = $derived(
-    role === 'assistant' ? DOMPurify.sanitize(marked.parse(content || '') as string) : ''
+    role === 'assistant' ? DOMPurify.sanitize(marked.parse(displayContent) as string) : ''
   );
 
   async function copyMessage() {
     try {
-      await navigator.clipboard.writeText(content);
+      await navigator.clipboard.writeText(role === 'assistant' ? displayContent : content);
       addToast({ type: 'info', message: 'Copi\u00E9 !' });
     } catch {
       addToast({ type: 'info', message: 'Copi\u00E9 !' });
