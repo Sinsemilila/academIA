@@ -405,6 +405,17 @@ class ApiClient {
     return await res.json();
   }
 
+  async consolidationEvents(domain: string): Promise<Array<{
+    triggered_at: string;
+    final_level: string;
+    user_decision: string;
+    bubble_message: string;
+  }>> {
+    const res = await this.fetch(`/consolidation/events/${domain}`);
+    if (!res.ok) return [];
+    return await res.json();
+  }
+
   logout() {
     this.setToken(null);
     this.setRefreshToken(null);

@@ -494,6 +494,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
     # chatflow sees no-op <learner_profile></learner_profile> block.
     dify_inputs["learner_profile_json"] = "{}"
     dify_inputs["learner_profile_summary"] = ""
+    has_qcm_profile = False  # Session 37 — gate post_qcm_welcome render
     if eleve_id:
         try:
             async with db.pool.acquire() as conn:
@@ -506,6 +507,7 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
                     eleve_id, domain,
                 )
             if lp_row:
+                has_qcm_profile = True
                 import json as _json
                 def _as_dict(v):
                     return _json.loads(v) if isinstance(v, str) else (v or {})
@@ -635,6 +637,11 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             fla_items=fla_items,
             self_efficacy=self_efficacy,
             autonomy_pref=autonomy_pref,
+            # Session 37 Fix A — post-QCM welcome: first turn + fresh QCM profile.
+            # has_qcm_profile indicates the learner completed the onboarding QCM
+            # at least once ; turn_count==1 gate inside build_scaffolding_block
+            # ensures the welcome fires only on the very first chat turn.
+            post_qcm_welcome=(turn_count == 1 and has_qcm_profile),
         )
         sections = lang.build_dynamic_sections(ctx)
         for key, val in sections.items():
@@ -1052,6 +1059,14 @@ async def _consolidation_post_turn(
 
     async with db.pool.acquire() as conn:
         if outcome.kind == "auto_validate":
+            # Session 37 — fetch L1 to localize bubble_message
+            from academie_core.pedagogy.consolidation import bubble_template
+            l1 = await conn.fetchval(
+                "SELECT l1 FROM eleves WHERE id = $1", eleve_id,
+            ) or "fr"
+            bubble_msg = bubble_template(
+                "auto_validate_match", l1, level=outcome.qcm_level,
+            )
             await conn.execute(
                 """INSERT INTO profils_eleves (eleve_id, domain, niveau_global, niveau_status, niveau_validated_at, last_consolidation_turn)
                    VALUES ($1,$2,$3,'validé',NOW(),$4)
@@ -1065,9 +1080,10 @@ async def _consolidation_post_turn(
             await conn.execute(
                 """INSERT INTO consolidation_events
                    (eleve_id, domain, trigger_reason, qcm_level, observed_level,
-                    mini_exam_triggered, user_decision, final_level)
-                   VALUES ($1,$2,$3,$4,$5,false,'auto_validate',$4)""",
+                    mini_exam_triggered, user_decision, final_level, notes)
+                   VALUES ($1,$2,$3,$4,$5,false,'auto_validate',$4,$6)""",
                 eleve_id, domain, decision.reason, outcome.qcm_level, outcome.observed_level,
+                bubble_msg,
             )
         elif outcome.kind == "propose_mini_exam":
             await conn.execute(

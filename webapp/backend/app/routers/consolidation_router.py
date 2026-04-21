@@ -215,6 +215,18 @@ async def mini_exam_submit(
 
     # If exam fails → drop proposal, stay at QCM (auto-validate QCM since observation didn't confirm)
     if not passed:
+        from academie_core.pedagogy.consolidation import (
+            msg_validation_after_failed_exam, bubble_template,
+        )
+        # Session 37 — fetch L1 for bubble template localization
+        async with db.pool.acquire() as conn:
+            l1 = await conn.fetchval(
+                "SELECT l1 FROM eleves WHERE id = $1", eleve_id,
+            ) or "fr"
+        bubble_msg = bubble_template(
+            "auto_validate_after_failed_exam", l1,
+            level=qcm, tested_level=body.target_level,
+        )
         async with db.pool.acquire() as conn:
             await conn.execute(
                 """UPDATE profils_eleves
@@ -232,13 +244,14 @@ async def mini_exam_submit(
                     user_decision, final_level, notes)
                    VALUES ($1,$2,'mini_exam_failed',$3,$4,true,$5,$6,'auto_validate',$3,$7)""",
                 eleve_id, domain, qcm, observed, score_pct, body.target_level,
-                f"Exam did not confirm observed level ({correct}/{total}). Validated QCM.",
+                bubble_msg,
             )
-        from academie_core.pedagogy.consolidation import msg_validation
         return {
             "passed": False, "score_pct": score_pct, "correct": correct, "total": total,
             "outcome": "auto_validate", "final_level": qcm,
-            "message": msg_validation(n_turns, qcm),
+            # Session 37 Fix B — distinct "failed exam" message replaces the
+            # misleading "tes auto-évaluations étaient justes" msg_validation.
+            "message": msg_validation_after_failed_exam(n_turns, qcm, body.target_level),
             "details": details,
         }
 
@@ -291,6 +304,20 @@ async def consolidation_decide(
         final_level = qcm
         new_status = "stabilisation_volontaire"
 
+    # Session 37 — resolve L1-indexed bubble kind based on direction + choice
+    from academie_core.pedagogy.consolidation import bubble_template, CEFR_INDEX
+    async with db.pool.acquire() as conn:
+        l1 = await conn.fetchval(
+            "SELECT l1 FROM eleves WHERE id = $1", eleve_id,
+        ) or "fr"
+
+    if body.choice == "accept_new":
+        is_upgrade = CEFR_INDEX.get(observed, 0) > CEFR_INDEX.get(qcm, 0)
+        bubble_kind = "upgrade_accepted" if is_upgrade else "downgrade_accepted"
+    else:
+        bubble_kind = "stay_current"
+    bubble_msg = bubble_template(bubble_kind, l1, level=final_level)
+
     async with db.pool.acquire() as conn:
         await conn.execute(
             """UPDATE profils_eleves
@@ -305,7 +332,43 @@ async def consolidation_decide(
             """INSERT INTO consolidation_events
                (eleve_id, domain, trigger_reason, qcm_level, observed_level,
                 mini_exam_triggered, user_decision, final_level, notes)
-               VALUES ($1,$2,'user_decided',$3,$4,true,$5,$6,NULL)""",
-            eleve_id, domain, qcm, observed, body.choice, final_level,
+               VALUES ($1,$2,'user_decided',$3,$4,true,$5,$6,$7)""",
+            eleve_id, domain, qcm, observed, body.choice, final_level, bubble_msg,
         )
     return {"ok": True, "final_level": final_level, "niveau_status": new_status}
+
+
+# ── GET /events/{domain} ──────────────────────────────────────────────
+
+@router.get("/api/consolidation/events/{domain}")
+async def get_consolidation_events(
+    domain: str, user: dict = Depends(get_current_user),
+) -> list[dict]:
+    """Return closed consolidation events with bubble messages for this user+domain.
+
+    Session 37 — feeds the frontend "system bubble" rendering in the chat thread.
+    Filters out 'pending' rows (no decision yet) and rows without a bubble_message.
+    Ordered ASC by triggered_at for easy interleaving with Dify messages.
+    """
+    eleve_id = user.get("eleve_id")
+    if not eleve_id:
+        return []
+    async with db.pool.acquire() as conn:
+        rows = await conn.fetch(
+            """SELECT triggered_at, final_level, user_decision, notes
+               FROM consolidation_events
+               WHERE eleve_id = $1 AND domain = $2
+                 AND user_decision != 'pending'
+                 AND notes IS NOT NULL
+               ORDER BY triggered_at ASC""",
+            eleve_id, domain,
+        )
+    return [
+        {
+            "triggered_at": r["triggered_at"].isoformat(),
+            "final_level": r["final_level"],
+            "user_decision": r["user_decision"],
+            "bubble_message": r["notes"],
+        }
+        for r in rows
+    ]

@@ -150,6 +150,7 @@ def build_scaffolding_block(
     self_efficacy: int | None = None,
     autonomy_pref: str | None = None,
     fla_items_raw: dict[str, int] | None = None,
+    post_qcm_welcome: bool = False,
 ) -> str:
     """Render the L1/L2 + anxiety-routing policy directive.
 
@@ -169,18 +170,44 @@ def build_scaffolding_block(
     except KeyError:
         return ""
 
-    # Pure no-op: 100% L2 + no L1 uses + no anxiety flags
+    # Pure no-op: 100% L2 + no L1 uses + no anxiety flags + no post-QCM welcome
     anxiety_flags = (policy.prefer_written_first or policy.no_explicit_correction
                      or policy.provide_chunks_ahead)
-    if policy.l2_ratio_pct >= 100 and not policy.l1_uses and not anxiety_flags:
+    cefr_band_eval = _band_cefr(cefr_placement)
+    welcome_active = (
+        post_qcm_welcome and turn_count <= 1 and cefr_band_eval in ("A1", "A2")
+    )
+    if (policy.l2_ratio_pct >= 100 and not policy.l1_uses
+            and not anxiety_flags and not welcome_active):
         return ""
 
-    lines = [
+    lines: list[str] = []
+
+    # Session 37 Fix A — Post-QCM welcome: prescriptive opening for beginners who
+    # just finished the onboarding questionnaire. Prepended to the L1/L2 block so
+    # the LLM sees the narrative framing BEFORE the immersion rules.
+    if welcome_active:
+        lines.extend([
+            "=== POST-QCM WELCOME (turn 1 only) ===",
+            f"C'est la toute première interaction après le QCM d'onboarding.",
+            f"Ouvre par 1-2 phrases courtes en {l1_name} pour poser le cadre :",
+            f"  • Accueille chaleureusement l'apprenant·e.",
+            f"  • Explique brièvement que tu vas engager la conversation en "
+            f"{target_lang_name} pour sentir son niveau naturellement (pas un "
+            f"test formel — juste une discussion pour bien calibrer).",
+            f"Puis bascule vers {target_lang_name} pour poser une question "
+            f"d'ouverture adaptée au palier {cefr_placement} (simple, "
+            f"concrète, invitante). Ne refais pas ce welcome turn 2+.",
+            "=== END POST-QCM WELCOME ===",
+            "",
+        ])
+
+    lines.extend([
         "=== L1/L2 MIX POLICY (this turn) ===",
         f"Target output ratio: ~{policy.l2_ratio_pct}% {target_lang_name}"
         f" / ~{100 - policy.l2_ratio_pct}% {l1_name}.",
         f"Scaffolding intensity: {policy.scaffolding_intensity}.",
-    ]
+    ])
 
     if policy.l1_uses:
         lines.append(f"Use {l1_name} ONLY for:")

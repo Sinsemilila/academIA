@@ -679,6 +679,8 @@ class PromptContext:
     fla_items: dict[str, int] | None = None  # {"fla_a": 1-5, "fla_b": 1-5, "fla_c": 1-5}
     self_efficacy: int | None = None          # 1-5 Likert
     autonomy_pref: str | None = None          # "guided" | "semi_autonomous" | "autonomous"
+    # Session 37 — post-QCM welcome flag (True only on turn 1 with fresh QCM profile)
+    post_qcm_welcome: bool = False
 
 
 def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = None) -> dict:
@@ -724,6 +726,7 @@ def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = 
         self_efficacy=ctx.self_efficacy,
         autonomy_pref=ctx.autonomy_pref,
         fla_items_raw=ctx.fla_items,
+        post_qcm_welcome=ctx.post_qcm_welcome,
     )
 
     # tier_summary describes what the LLM will see for arbitration

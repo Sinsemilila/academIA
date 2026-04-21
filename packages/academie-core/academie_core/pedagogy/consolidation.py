@@ -271,6 +271,26 @@ def msg_downgrade(n_turns: int, qcm_level: str, observed_level: str) -> str:
     )
 
 
+def msg_validation_after_failed_exam(
+    n_turns: int, qcm_level: str, tested_level: str
+) -> str:
+    """Session 37 Fix B : distinct message for auto_validate path following
+    a failed mini-exam.
+
+    Session 36 reused `msg_validation` here, congratulating the learner on
+    "accurate self-assessment" — inappropriate when they were actually
+    observed higher, tested, and failed. This message instead acknowledges
+    the test + reassures about staying at QCM level.
+    """
+    return (
+        f"Après ces {n_turns} échanges, j'ai proposé un petit test "
+        f"{tested_level} pour voir si tu étais prêt·e à passer. Les structures "
+        f"de ce niveau ne sont pas tout à fait stables — c'est normal, ça se "
+        f"consolide avec la pratique. On reste en {qcm_level} sans pression, "
+        f"les bases bien installées, le reste viendra naturellement."
+    )
+
+
 def pick_message(outcome: ConsolidationOutcome, n_turns: int) -> str:
     """Dispatch to the right bienveillant message based on outcome."""
     if outcome.kind == "auto_validate":
@@ -282,3 +302,72 @@ def pick_message(outcome: ConsolidationOutcome, n_turns: int) -> str:
             return msg_upgrade(n_turns, outcome.qcm_level, outcome.observed_level)
         return msg_downgrade(n_turns, outcome.qcm_level, outcome.observed_level)
     return ""
+
+
+# ── Session 37 Fix C — L1-indexed bubble templates for persistent thread UX ──
+# Outcome kinds for the chat thread system bubbles (persisted via
+# consolidation_events.notes) :
+#   auto_validate_match            — QCM matched observations, no exam
+#   auto_validate_after_failed_exam — mini-exam failed, stay at QCM
+#   upgrade_accepted               — user accepted observed > qcm
+#   downgrade_accepted             — user accepted observed < qcm
+#   stay_current                   — user refused proposed change
+#
+# Templates are L1-indexed (read in learner's native language, regardless of
+# target). FR is the baseline — all other L1s fall back to FR until explicit
+# translations are added. Wave 2+: when EN/IT/DE-native learners appear, add
+# a new top-level key to _BUBBLE_TEMPLATES_BY_L1 with the 5 kinds translated.
+
+BubbleKind = Literal[
+    "auto_validate_match",
+    "auto_validate_after_failed_exam",
+    "upgrade_accepted",
+    "downgrade_accepted",
+    "stay_current",
+]
+
+# Each template callable takes keyword args; all unused kwargs ignored via **_.
+_BUBBLE_TEMPLATES_BY_L1: dict[str, dict[BubbleKind, callable]] = {
+    "fr": {
+        "auto_validate_match": lambda *, level, **_: (
+            f"✓ Niveau **{level}** confirmé. On continue sur cette lancée."
+        ),
+        "auto_validate_after_failed_exam": lambda *, level, tested_level, **_: (
+            f"✓ On reste en **{level}** pour installer tranquillement les bases "
+            f"de {tested_level}. Pas de pression."
+        ),
+        "upgrade_accepted": lambda *, level, **_: (
+            f"✓ On passe en **{level}** — je vais intégrer progressivement des "
+            f"structures plus riches."
+        ),
+        "downgrade_accepted": lambda *, level, **_: (
+            f"✓ On se pose en **{level}** pour renforcer les fondations. Les "
+            f"bases d'abord, le reste viendra."
+        ),
+        "stay_current": lambda *, level, **_: (
+            f"✓ On consolide **{level}** encore un peu. Tu retentes l'ascension "
+            f"quand tu veux."
+        ),
+    },
+    # Wave 2+: add "en": {...}, "it": {...}, ... when non-FR learners arrive.
+}
+
+
+def bubble_template(
+    kind: BubbleKind,
+    l1: str | None,
+    *,
+    level: str,
+    tested_level: str = "",
+    **_: object,
+) -> str:
+    """Return the short system-bubble message for the chat thread, in the
+    learner's L1. Falls back to FR for any L1 not in `_BUBBLE_TEMPLATES_BY_L1`.
+    `tested_level` is only used by `auto_validate_after_failed_exam`.
+    """
+    l1_key = (l1 or "fr").lower()
+    templates = _BUBBLE_TEMPLATES_BY_L1.get(l1_key) or _BUBBLE_TEMPLATES_BY_L1["fr"]
+    fn = templates.get(kind)
+    if fn is None:
+        return ""
+    return fn(level=level, tested_level=tested_level)

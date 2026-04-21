@@ -7,7 +7,7 @@
 
   let { role, content, accentColor = '#3b82f6', streaming = false,
         agentFlag = '', agentName = '' } = $props<{
-    role: 'user' | 'assistant';
+    role: 'user' | 'assistant' | 'system_consolidation';
     content: string;
     accentColor?: string;
     streaming?: boolean;
@@ -92,6 +92,17 @@
   }
 </script>
 
+{#if role === 'system_consolidation'}
+  <!-- Session 37 — persistent consolidation event bubble. Styled as a
+       horizontal timeline marker, centered, subtle green accent. -->
+  <div class="flex justify-center" class:bubble-enter={!mounted}>
+    <div class="px-3 py-1.5 text-xs italic text-text-secondary bg-surface/60
+                border-l-2 border-green-500/70 rounded-md max-w-[92%]
+                markdown-body">
+      {@html DOMPurify.sanitize(marked.parse(content || '') as string)}
+    </div>
+  </div>
+{:else}
 <div
   class="flex {role === 'user' ? 'justify-end' : 'justify-start'} gap-2.5"
   class:bubble-enter={!mounted}
@@ -156,6 +167,7 @@
     </div>
   {/if}
 </div>
+{/if}
 
 <style>
   .bubble-enter {

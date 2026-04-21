@@ -12,9 +12,12 @@
   import ConsolidationDecisionModal from '$lib/components/ConsolidationDecisionModal.svelte';
   import { toastXP, toastError, toastSuccess } from '$lib/stores/toasts';
 
+  // Session 37 — extended role vocabulary to support persistent consolidation
+  // system bubbles interleaved with Dify messages by timestamp.
   interface Message {
-    role: 'user' | 'assistant';
+    role: 'user' | 'assistant' | 'system_consolidation';
     content: string;
+    timestamp?: string;  // ISO8601 — set on consolidation events for merge ordering
   }
 
   const agent = $derived(agents.find(a => a.slug === page.params.agent));
@@ -105,11 +108,17 @@
       decisionQcmLevel = data.final_level;
       decisionProposedLevel = data.final_level;
       showDecisionModal = true;
+      // Session 37 — backend already wrote the system bubble ; refresh thread
+      // so it appears right after the decision modal acknowledges the outcome.
+      if (conversationId) loadMessages(conversationId).catch(() => {});
     }
   }
 
   function onDecisionDecided() {
     showDecisionModal = false;
+    // Session 37 — after decision closes, re-fetch messages + events so the
+    // persistent system bubble appears immediately in the thread.
+    if (conversationId) loadMessages(conversationId).catch(() => {});
   }
 
   async function loadChatState() {
@@ -177,13 +186,46 @@
   async function loadMessages(convoId: string) {
     if (!agent) return;
     try {
-      const data = await api.getChatMessages(convoId, agent.slug);
+      // Session 37 — fetch Dify messages + consolidation events in parallel,
+      // then interleave by timestamp for a coherent chronological thread.
+      const [data, events] = await Promise.all([
+        api.getChatMessages(convoId, agent.slug),
+        api.consolidationEvents(agent.domain).catch(() => []),
+      ]);
+
+      const threadEntries: Array<Message & { _ts: number }> = [];
+
       if (data?.data) {
-        messages = data.data.map((m: any) => ([
-          { role: 'user' as const, content: m.query },
-          { role: 'assistant' as const, content: m.answer },
-        ])).flat();
+        for (const m of data.data) {
+          // Dify returns messages as {query, answer, created_at (epoch seconds)}.
+          const ts = typeof m.created_at === 'number'
+            ? m.created_at * 1000
+            : Date.parse(m.created_at || '') || 0;
+          threadEntries.push({
+            role: 'user', content: m.query,
+            timestamp: new Date(ts).toISOString(), _ts: ts,
+          });
+          // Assistant answer is emitted just after the user query ; nudge by 1ms
+          // so it sorts after the user turn even on identical timestamps.
+          threadEntries.push({
+            role: 'assistant', content: m.answer,
+            timestamp: new Date(ts + 1).toISOString(), _ts: ts + 1,
+          });
+        }
       }
+
+      for (const ev of events) {
+        const ts = Date.parse(ev.triggered_at) || 0;
+        threadEntries.push({
+          role: 'system_consolidation',
+          content: ev.bubble_message,
+          timestamp: ev.triggered_at,
+          _ts: ts,
+        });
+      }
+
+      threadEntries.sort((a, b) => a._ts - b._ts);
+      messages = threadEntries.map(({ _ts, ...rest }) => rest);
     } catch (e) {
       console.warn('Could not load messages:', e);
     }

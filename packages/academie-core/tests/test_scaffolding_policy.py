@@ -195,3 +195,60 @@ def test_backward_compat_no_kwargs():
     assert p.l2_ratio_pct == 90
     assert p.prefer_written_first is False
     assert p.scaffolding_intensity == "high"
+
+
+# ── Session 37 Fix A — post-QCM welcome ─────────────────────────────
+
+
+def test_post_qcm_welcome_renders_for_a1_turn1():
+    block = build_scaffolding_block(
+        "A1", "close", "low", "Español",
+        turn_count=1, post_qcm_welcome=True,
+    )
+    assert "POST-QCM WELCOME" in block
+    assert "français" in block  # reference to L1 for opening
+    assert "Español" in block   # target for pivot
+
+
+def test_post_qcm_welcome_skipped_for_turn2():
+    block = build_scaffolding_block(
+        "A1", "close", "low", "Español",
+        turn_count=2, post_qcm_welcome=True,
+    )
+    assert "POST-QCM WELCOME" not in block
+
+
+def test_post_qcm_welcome_skipped_for_b1():
+    # B1+ learners have the resources to jump into L2 directly — no welcome.
+    block = build_scaffolding_block(
+        "B1", "close", "low", "Español",
+        turn_count=1, post_qcm_welcome=True,
+    )
+    assert "POST-QCM WELCOME" not in block
+
+
+def test_post_qcm_welcome_renders_for_a2_turn1():
+    block = build_scaffolding_block(
+        "A2", "close", "low", "Español",
+        turn_count=1, post_qcm_welcome=True,
+    )
+    assert "POST-QCM WELCOME" in block
+
+
+def test_post_qcm_welcome_skipped_when_flag_off():
+    block = build_scaffolding_block(
+        "A1", "close", "low", "Español",
+        turn_count=1, post_qcm_welcome=False,
+    )
+    assert "POST-QCM WELCOME" not in block
+
+
+def test_post_qcm_welcome_forces_block_on_B1_close_pure_noop():
+    # Normally B1+/close/low returns "" (pure no-op) — but with post_qcm_welcome
+    # on A1 turn 1 it should never reach the noop branch anyway. Sanity: B1
+    # stays noop even with the flag (since welcome is A1/A2 only).
+    block = build_scaffolding_block(
+        "B1", "close", "low", "Español",
+        turn_count=1, post_qcm_welcome=True,
+    )
+    assert block == ""
