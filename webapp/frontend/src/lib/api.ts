@@ -332,8 +332,9 @@ class ApiClient {
   }
 
   // ── Admin ──────────────────────────────
-  async adminGetUsers() {
-    const res = await this.fetch('/admin/users');
+  async adminGetUsers(domain?: string) {
+    const qs = domain ? `?domain=${encodeURIComponent(domain)}` : '';
+    const res = await this.fetch(`/admin/users${qs}`);
     if (!res.ok) throw new Error('Admin access denied');
     return await res.json();
   }

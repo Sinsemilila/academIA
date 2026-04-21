@@ -33,9 +33,11 @@
   let creating = $state(false);
   let confirmDelete = $state<number | null>(null);
   let confirmReset = $state<string | null>(null);
-  // Session 37 — per-username reset-domain selection (null = global wipe).
-  // Default to current navigation domain for safety (admin usually resetting
-  // the domain they're looking at).
+  // Session 37 — admin-wide domain filter. Drives both the "niveau" column
+  // query (backend returns profils_eleves.niveau_global scoped to this domain)
+  // AND the default of the per-user reset <select> when admin clicks Reset.
+  let adminDomain = $state<string>(get(currentDomain));
+  // resetDomain is initialized to adminDomain on Reset click (see button handler).
   let resetDomain = $state<string | null>(get(currentDomain));
   const availableAgents = $derived(agents.filter(a => a.available));
   let tokenUsage = $state<any>(null);
@@ -48,13 +50,19 @@
 
   async function loadUsers() {
     try {
-      users = await api.adminGetUsers();
+      users = await api.adminGetUsers(adminDomain);
     } catch {
       toastError('Acces admin requis');
       goto('/');
     } finally {
       loading = false;
     }
+  }
+
+  async function switchAdminDomain(d: string) {
+    adminDomain = d;
+    loading = true;
+    await loadUsers();
   }
 
   async function createUser() {
@@ -118,14 +126,27 @@
 </svelte:head>
 
 <div class="max-w-5xl mx-auto space-y-6">
-  <div class="flex items-center justify-between">
+  <div class="flex items-center justify-between flex-wrap gap-3">
     <h1 class="text-xl font-bold text-text-primary">Administration</h1>
-    <button
-      onclick={() => showCreateForm = !showCreateForm}
-      class="px-4 py-2 text-sm font-medium rounded-lg bg-accent text-white hover:opacity-90 transition"
-    >
-      + Nouvel utilisateur
-    </button>
+    <div class="flex items-center gap-2">
+      <label class="text-xs text-text-muted">Domaine affiché :</label>
+      <select
+        value={adminDomain}
+        onchange={(e) => switchAdminDomain((e.target as HTMLSelectElement).value)}
+        class="px-2 py-1 text-sm rounded bg-elevated border border-border-subtle text-text-primary"
+        title="Filtre la colonne niveau + défaut du Reset"
+      >
+        {#each availableAgents as a (a.domain)}
+          <option value={a.domain}>{a.lang}</option>
+        {/each}
+      </select>
+      <button
+        onclick={() => showCreateForm = !showCreateForm}
+        class="px-4 py-2 text-sm font-medium rounded-lg bg-accent text-white hover:opacity-90 transition"
+      >
+        + Nouvel utilisateur
+      </button>
+    </div>
   </div>
 
   <!-- Token Usage -->
@@ -207,7 +228,7 @@
         <thead>
           <tr class="border-b border-border-subtle text-text-secondary text-left">
             <th class="px-4 py-3 font-medium">Utilisateur</th>
-            <th class="px-4 py-3 font-medium hidden sm:table-cell">Niveau</th>
+            <th class="px-4 py-3 font-medium hidden sm:table-cell">Niveau <span class="text-xs text-text-muted font-normal">({domainLabel(adminDomain)})</span></th>
             <th class="px-4 py-3 font-medium hidden md:table-cell">Sessions</th>
             <th class="px-4 py-3 font-medium hidden md:table-cell">Streak</th>
             <th class="px-4 py-3 font-medium hidden lg:table-cell">XP</th>
@@ -271,7 +292,7 @@
                     Annuler
                   </button>
                 {:else}
-                  <button onclick={() => { resetDomain = get(currentDomain); confirmReset = user.username; }}
+                  <button onclick={() => { resetDomain = adminDomain; confirmReset = user.username; }}
                     title="Réinitialiser le profil (choix du domaine à l'étape suivante)"
                     class="px-2 py-1 text-xs rounded text-text-muted hover:text-yellow-400 hover:bg-yellow-500/10 transition">
                     Reset
