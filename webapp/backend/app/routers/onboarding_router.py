@@ -233,26 +233,38 @@ def _compute_derivations(
     }
 
 
-def _compute_tutor_hints(submit: LearnerProfileSubmit, derived: dict) -> dict[str, Any]:
-    """Compute the 'derived_tutor_hints' used by the LLM to adapt its style."""
+def _compute_tutor_hints(
+    submit: LearnerProfileSubmit,
+    derived: dict,
+    distance: str = "medium",
+) -> dict[str, Any]:
+    """Compute the 'derived_tutor_hints' used by the LLM to adapt its style.
+
+    Session 37 (Fix 3): scaffolding is now derived from the single source of
+    truth — `scaffolding_policy.resolve_policy` — combining CEFR × distance ×
+    FLA × self_efficacy × autonomy_pref. The Session 35 local dict is gone.
+
+    `distance` defaults to "medium" when the caller hasn't resolved L1→L2
+    typological distance yet; real submissions pass it from eleves.l1.
+    """
+    from academie_core.pedagogy.scaffolding_policy import resolve_policy, _normalize_fla
+
     ub = submit.universal_block
+    dm = submit.domain_motivation
     fla_cat = derived["domain_motivation"]["fla_category"]
     cefr_placement = derived["domain_level"]["cefr_placement"]
 
-    scaffolding_level = {
-        (1, 2): "high",
-        (3,): "medium",
-        (4, 5): "low",
-    }
-    scaffolding = next(
-        v for k, v in scaffolding_level.items() if ub.self_efficacy in k
+    policy = resolve_policy(
+        cefr_placement=cefr_placement,
+        distance=distance,  # type: ignore[arg-type]
+        fla=_normalize_fla(fla_cat),
+        self_efficacy=ub.self_efficacy,
+        autonomy_pref=ub.autonomy_pref,
+        fla_items_raw=dm.fla_items_raw,
     )
-    if fla_cat == "high":
-        # Boost scaffold one step up if anxious
-        scaffolding = {"low": "medium", "medium": "high", "high": "high"}[scaffolding]
 
     feedback_framing = "growth" if ub.mindset == "growth" else "gentle"
-    if fla_cat == "high":
+    if fla_cat == "high" or policy.no_explicit_correction:
         feedback_framing = "gentle"
 
     session_length_target_min = {
@@ -268,16 +280,20 @@ def _compute_tutor_hints(submit: LearnerProfileSubmit, derived: dict) -> dict[st
         "autonomous": "adaptive",
     }[ub.autonomy_pref]
 
-    allow_speaking_day1 = fla_cat != "high"
+    allow_speaking_day1 = fla_cat != "high" and not policy.prefer_written_first
 
     return {
-        "scaffolding_level": scaffolding,
+        "scaffolding_intensity": policy.scaffolding_intensity,
         "feedback_framing": feedback_framing,
         "session_length_target_min": session_length_target_min,
         "tutor_style": tutor_style,
         "allow_speaking_day1": allow_speaking_day1,
         "cefr_placement": cefr_placement,
         "fla_category": fla_cat,
+        # Fix 2B — per-item routing flags surfaced for downstream consumers
+        "prefer_written_first": policy.prefer_written_first,
+        "no_explicit_correction": policy.no_explicit_correction,
+        "provide_chunks_ahead": policy.provide_chunks_ahead,
     }
 
 
@@ -286,8 +302,14 @@ def _render_nl_summary(
     derived: dict,
     hints: dict,
     target_language_fr: str | None,
+    overlay_probe: dict | None = None,
 ) -> str:
-    """≤ 200 words FR summary for LLM system prompt injection."""
+    """≤ 250 words FR summary for LLM system prompt injection.
+
+    Session 37: re-surfaces probe_answer (Fix 1), per-item FLA granularity
+    (Fix 2A), and drops the redundant `scaffolding_level` line (Fix 3C —
+    covered by the turn-level scaffolding_block with full policy matrix).
+    """
     ub = submit.universal_block
     dl = submit.domain_level
     dm = submit.domain_motivation
@@ -308,18 +330,59 @@ def _render_nl_summary(
     fla_cat = derived["domain_motivation"]["fla_category"]
     cefr_placement = derived["domain_level"]["cefr_placement"]
 
-    return (
+    parts = [
         f"Profil apprenant ({lang}) : niveau placement {cefr_placement} "
-        f"(auto-éval compréhension {dl.cefr_comprehension}, production {dl.cefr_production}). "
-        f"Objectif : {ub.goal_text!r}. "
-        f"Mindset {mindset_fr}, self-efficacy {ub.self_efficacy}/5, {autonomy_fr}. "
-        f"S'entraîne {engagement_fr}. "
-        f"Motivation dominante : {tags_fr}. "
-        f"Anxiété langagière (FLA) : {fla_cat}. "
-        f"Style tuteur recommandé : scaffold={hints['scaffolding_level']}, "
-        f"framing={hints['feedback_framing']}, "
+        f"(auto-éval compréhension {dl.cefr_comprehension}, production {dl.cefr_production}).",
+        f"Objectif : {ub.goal_text!r}.",
+        f"Mindset {mindset_fr}, self-efficacy {ub.self_efficacy}/5, {autonomy_fr}.",
+        f"S'entraîne {engagement_fr}.",
+        f"Motivation dominante : {tags_fr}.",
+    ]
+
+    # Fix 2A — FLA granularité (3 items individuels en plus de l'agrégat)
+    fla_a = dm.fla_items_raw.get("fla_a", 0)
+    fla_b = dm.fla_items_raw.get("fla_b", 0)
+    fla_c = dm.fla_items_raw.get("fla_c", 0)
+    parts.append(
+        f"Anxiété langagière (FLA, 1–5) : global {fla_cat} "
+        f"(speaking à froid {fla_a}, peur des corrections publiques {fla_b}, "
+        f"freeze mémoriel sous pression {fla_c})."
+    )
+
+    # Fix 1 — probe_answer reinjection (B1+ diagnostic test)
+    if dl.probe_answer is not None:
+        probe_score = int(derived["domain_level"].get("probe_score", 0) or 0)
+        probe_hit = bool(derived["domain_level"].get("probe_regex_hit", False))
+        probe_flag = bool(derived["domain_level"].get("probe_flag", False))
+        probe_prompt = (overlay_probe or {}).get("prompt", "")
+        hit_tag = (
+            "match fort" if probe_score >= 3 else
+            "match partiel" if probe_score >= 1 else
+            "pas de match"
+        )
+        raw = dl.probe_answer.strip().replace('"', "'")
+        if len(raw) > 150:
+            raw = raw[:147] + "…"
+        probe_line = (
+            f"Probe diagnostique (test B1+) — consigne \"{probe_prompt}\". "
+            f"Réponse apprenant·e : \"{raw}\". Score : {probe_score}/3 ({hit_tag}, "
+            f"regex_hit={probe_hit})."
+        )
+        if probe_flag:
+            probe_line += (
+                " Signal Dunning-Kruger : sous-performance probe vs auto-évaluation"
+                " élevée — reste attentif·ve aux productions réelles au lieu de se"
+                " fier au niveau déclaré."
+            )
+        parts.append(probe_line)
+
+    # Style tuteur (sans scaffolding_level — redondant avec scaffolding_block)
+    parts.append(
+        f"Style tuteur : framing={hints['feedback_framing']}, "
         f"speaking jour 1={'OK' if hints['allow_speaking_day1'] else 'à éviter'}."
     )
+
+    return " ".join(parts)
 
 
 # ── Endpoints ────────────────────────────────────────────────────────
@@ -394,14 +457,26 @@ async def submit_learner_profile(
         raise HTTPException(status_code=400, detail="No learner bound to user")
 
     from academie_core.data.loader import load_onboarding_content
+    from academie_core.pedagogy.typological_distance import get_distance
     content = load_onboarding_content(domain)
     overlay_probe = content.get("probe")
     target_language = content.get("target_language")
     target_language_fr = content.get("language_display_fr")
 
+    # Session 37 (Fix 3D) — resolve L1→L2 typological distance for scaffolding
+    async with db.pool.acquire() as conn:
+        l1 = await conn.fetchval(
+            "SELECT l1 FROM eleves WHERE id = $1", eleve_id,
+        )
+    l1 = (l1 or "fr").lower()
+    try:
+        distance = get_distance(l1, (target_language or domain).lower())
+    except Exception:
+        distance = "medium"
+
     derived = _compute_derivations(payload, overlay_probe)
-    hints = _compute_tutor_hints(payload, derived)
-    nl_summary = _render_nl_summary(payload, derived, hints, target_language_fr)
+    hints = _compute_tutor_hints(payload, derived, distance=distance)
+    nl_summary = _render_nl_summary(payload, derived, hints, target_language_fr, overlay_probe)
 
     universal_block = payload.universal_block.model_dump()
     universal_block.update(derived["universal"])

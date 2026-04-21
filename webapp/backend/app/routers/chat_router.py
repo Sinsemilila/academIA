@@ -468,6 +468,10 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
     profile_l1: str | None = "fr"  # default familial (Phase 6)
     l1_watch_on: bool = True
     fla_category: str | None = None  # Session 35 — scaffolding policy signal
+    # Session 37 — per-item FLA + self_efficacy/autonomy for intensity shift
+    fla_items: dict | None = None
+    self_efficacy: int | None = None
+    autonomy_pref: str | None = None
     eleve_id = user.get("eleve_id")
     if eleve_id:
         try:
@@ -521,6 +525,11 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
                     niveau = qcm_level
                 # Session 35 — extract FLA for scaffolding policy
                 fla_category = (compact.get("motivation") or {}).get("fla_category")
+                # Session 37 — extract per-item FLA + self_efficacy + autonomy_pref
+                fla_items = (compact.get("motivation") or {}).get("fla_items_raw")
+                _ub = compact.get("universal") or {}
+                self_efficacy = _ub.get("self_efficacy")
+                autonomy_pref = _ub.get("autonomy_pref")
         except Exception as _e:
             import logging
             logging.getLogger("chat").warning("learner_profiles fetch failed: %s", _e)
@@ -622,6 +631,10 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             fla_category=fla_category,
             target_lang_name=_target_name,
             l1_name=_l1_display,
+            # Session 37 — per-item FLA routing + intensity shift inputs
+            fla_items=fla_items,
+            self_efficacy=self_efficacy,
+            autonomy_pref=autonomy_pref,
         )
         sections = lang.build_dynamic_sections(ctx)
         for key, val in sections.items():

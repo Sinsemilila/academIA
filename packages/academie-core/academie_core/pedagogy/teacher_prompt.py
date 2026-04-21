@@ -677,6 +677,10 @@ class PromptContext:
     fla_category: str | None = None   # "low" | "medium" | "high" — from learner_profiles.domain_motivation
     target_lang_name: str = ""        # Human name e.g. "Español", "English" (optional display override)
     l1_name: str = "français"         # Human name of L1 used in the scaffolding block
+    # Session 37 — per-item FLA routing + self-efficacy/autonomy for intensity shift
+    fla_items: dict[str, int] | None = None  # {"fla_a": 1-5, "fla_b": 1-5, "fla_c": 1-5}
+    self_efficacy: int | None = None          # 1-5 Likert
+    autonomy_pref: str | None = None          # "guided" | "semi_autonomous" | "autonomous"
 
 
 def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = None) -> dict:
@@ -718,6 +722,10 @@ def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = 
         target_lang_name=target_display,
         l1_name=ctx.l1_name or "français",
         turn_count=ctx.turn_count,
+        # Session 37 — anxiety routing + intensity shift
+        self_efficacy=ctx.self_efficacy,
+        autonomy_pref=ctx.autonomy_pref,
+        fla_items_raw=ctx.fla_items,
     )
 
     # tier_summary describes what the LLM will see for arbitration

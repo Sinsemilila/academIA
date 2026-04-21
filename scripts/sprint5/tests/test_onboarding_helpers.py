@@ -146,14 +146,45 @@ def test_fla_category_bins():
             f"{fla_a},{fla_b},{fla_c} → {d['domain_motivation']['fla_category']} vs {expected}"
 
 
-def test_tutor_hints_high_anxiety_boosts_scaffold():
-    s = _make_submit(self_eff=5, fla={"fla_a": 5, "fla_b": 5, "fla_c": 5})
+def test_tutor_hints_high_anxiety_full_flags():
+    # Session 37: fla_a/b/c ≥ 4 must surface the 3 per-item flags.
+    # cefr=A2 self-report → placement=A1 (conservative -1). A1/distant/high_fla
+    # base = high. self_eff=5+semi_autonomous → no shift. Final: high.
+    s = _make_submit(self_eff=5, autonomy="semi_autonomous",
+                     fla={"fla_a": 5, "fla_b": 5, "fla_c": 5})
     d = _compute_derivations(s, None)
     hints = _compute_tutor_hints(s, d)
-    # self_eff=5 normally → low scaffold ; high FLA bumps to medium
-    assert hints["scaffolding_level"] == "medium"
+    assert hints["scaffolding_intensity"] == "high"
     assert hints["allow_speaking_day1"] is False
     assert hints["feedback_framing"] == "gentle"
+    # Session 37 — per-item routing flags surfaced
+    assert hints["prefer_written_first"] is True
+    assert hints["no_explicit_correction"] is True
+    assert hints["provide_chunks_ahead"] is True
+
+
+def test_tutor_hints_autonomous_experienced_learner_downshift():
+    # Session 37: self_eff=5 + autonomy=autonomous shifts intensity -1.
+    # cefr=A2 → placement=A1. A1/close/low = high. Shift -1 → medium.
+    s = _make_submit(cefr_comp="A2", cefr_prod="A2",
+                     self_eff=5, autonomy="autonomous",
+                     fla={"fla_a": 1, "fla_b": 1, "fla_c": 1})
+    d = _compute_derivations(s, None)
+    hints = _compute_tutor_hints(s, d, distance="close")
+    assert hints["scaffolding_intensity"] == "medium", hints
+    assert all(hints[k] is False for k in
+               ["prefer_written_first", "no_explicit_correction", "provide_chunks_ahead"])
+
+
+def test_tutor_hints_low_selfeff_upshift():
+    # self_eff=1 → +1 intensity shift. cefr=B2 self-report → placement=B1 (B1+
+    # band). B1+/close/low = low. Shift +1 → medium.
+    s = _make_submit(cefr_comp="B2", cefr_prod="B2", self_eff=1,
+                     autonomy="semi_autonomous",
+                     fla={"fla_a": 2, "fla_b": 2, "fla_c": 2})
+    d = _compute_derivations(s, None)
+    hints = _compute_tutor_hints(s, d, distance="close")
+    assert hints["scaffolding_intensity"] == "medium", hints
 
 
 def test_tutor_hints_autonomy_to_style():
@@ -184,6 +215,81 @@ def test_nl_summary_deterministic():
     s1 = _render_nl_summary(s, d, hints, "anglais")
     s2 = _render_nl_summary(s, d, hints, "anglais")
     assert s1 == s2
+
+
+# ── Session 37 — QCM debts fixes ──────────────────────────────
+
+def test_nl_summary_includes_probe_answer_when_present():
+    """Fix 1 — probe_answer, score, and regex hit must appear in summary."""
+    overlay = {
+        "prompt": "Traduis : J'aurais aimé te voir hier",
+        "accepted_variants_regex": {
+            "strong": r"(?i)me gustaría haberte visto ayer",
+            "medium": r"(?i)me gustaría.*(ver|visto).*ayer",
+            "weak": r"(?i)gustar.*ver.*ayer",
+        },
+    }
+    raw = "Me gustaría haberte visto ayer"
+    s = _make_submit(cefr_comp="B2", cefr_prod="B2", probe=raw)
+    d = _compute_derivations(s, overlay)
+    hints = _compute_tutor_hints(s, d)
+    summary = _render_nl_summary(s, d, hints, "espagnol", overlay)
+    assert "Probe diagnostique" in summary, summary
+    assert raw in summary
+    assert "3/3" in summary
+
+
+def test_nl_summary_omits_probe_block_when_null():
+    """Regression: user who skipped probe → no probe line, no crash."""
+    s = _make_submit(cefr_comp="A1", cefr_prod="A1", probe=None)
+    d = _compute_derivations(s, None)
+    hints = _compute_tutor_hints(s, d)
+    summary = _render_nl_summary(s, d, hints, "anglais", None)
+    assert "Probe diagnostique" not in summary
+
+
+def test_nl_summary_surfaces_per_item_fla_granularity():
+    """Fix 2A — individual fla_a/b/c values must appear distinctly."""
+    s_hot_speaking = _make_submit(fla={"fla_a": 5, "fla_b": 1, "fla_c": 1})
+    s_hot_mockery  = _make_submit(fla={"fla_a": 1, "fla_b": 5, "fla_c": 1})
+    for s, expected_high_label in [
+        (s_hot_speaking, "speaking à froid 5"),
+        (s_hot_mockery,  "peur des corrections publiques 5"),
+    ]:
+        d = _compute_derivations(s, None)
+        hints = _compute_tutor_hints(s, d)
+        summary = _render_nl_summary(s, d, hints, "anglais")
+        assert expected_high_label in summary, summary
+
+
+def test_nl_summary_no_longer_has_redundant_scaffolding_level():
+    """Fix 3C — `scaffold=` line removed (redundant with turn-level block)."""
+    s = _make_submit()
+    d = _compute_derivations(s, None)
+    hints = _compute_tutor_hints(s, d)
+    summary = _render_nl_summary(s, d, hints, "anglais")
+    assert "scaffold=" not in summary
+    # feedback_framing + speaking day 1 still there
+    assert "framing=" in summary
+    assert "speaking jour 1" in summary
+
+
+def test_probe_flag_surfaces_dunning_kruger_warning():
+    """probe_flag=True must produce the anti-overestimation warning."""
+    overlay = {
+        "prompt": "Traduis : ...",
+        "accepted_variants_regex": {
+            "strong": r"(?i)never_will_match_xxx",
+            "medium": r"(?i)never_will_match_xxx",
+            "weak": r"(?i)never_will_match_xxx",
+        },
+    }
+    s = _make_submit(cefr_comp="B2", cefr_prod="B2", probe="je ne sais pas")
+    d = _compute_derivations(s, overlay)
+    assert d["domain_level"]["probe_flag"] is True  # B2 self-report + 0 score
+    hints = _compute_tutor_hints(s, d)
+    summary = _render_nl_summary(s, d, hints, "espagnol", overlay)
+    assert "Dunning-Kruger" in summary
 
 
 # ── Runner ────────────────────────────────────────────────

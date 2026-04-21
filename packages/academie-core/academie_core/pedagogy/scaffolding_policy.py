@@ -27,6 +27,11 @@ class PolicyRow:
     l1_uses: tuple[str, ...]   # permitted L1 functions (empty = L2 only)
     sandwich: bool             # use Butzkamm sandwich on new items
     reassurance_l1: bool       # allow 1 L1 reassurance sentence turn 1
+    # Session 37 extensions (default values = no-op for backward compat)
+    scaffolding_intensity: Literal["low", "medium", "high"] = "medium"
+    prefer_written_first: bool = False     # fla_a (speaking) high → prefer written tasks
+    no_explicit_correction: bool = False   # fla_b (mockery) high → recast only, no "wrong"
+    provide_chunks_ahead: bool = False     # fla_c (freeze) high → pre-chunk memorable forms
 
 
 # Base matrix — (cefr_band, distance) → PolicyRow. FLA=low baseline.
@@ -38,19 +43,28 @@ _L1_USES_FULL = ("meta_instructions", "brief_gloss_new_item",
                  "grammar_explanation", "reassurance", "cultural_note")
 
 POLICY_MATRIX: dict[tuple[CefrBand, Distance], PolicyRow] = {
-    # A1 strict — L1 scaffolding increases with distance
-    ("A1", "close"):   PolicyRow(90, _L1_USES_MINIMAL, sandwich=True,  reassurance_l1=False),
-    ("A1", "medium"):  PolicyRow(85, _L1_USES_MEDIUM,  sandwich=True,  reassurance_l1=False),
-    ("A1", "distant"): PolicyRow(55, _L1_USES_FULL,    sandwich=True,  reassurance_l1=True),
-    # A2 — lighter scaffolding
-    ("A2", "close"):   PolicyRow(95, (),                           sandwich=False, reassurance_l1=False),
-    ("A2", "medium"):  PolicyRow(90, _L1_USES_MINIMAL,            sandwich=True,  reassurance_l1=False),
-    ("A2", "distant"): PolicyRow(80, _L1_USES_MEDIUM,             sandwich=True,  reassurance_l1=False),
-    # B1+ — essentially L2-only, except JP/RU/AR still need occasional gloss
-    ("B1+", "close"):   PolicyRow(100, (),                sandwich=False, reassurance_l1=False),
-    ("B1+", "medium"):  PolicyRow(100, (),                sandwich=False, reassurance_l1=False),
-    ("B1+", "distant"): PolicyRow(95, _L1_USES_MINIMAL,  sandwich=False, reassurance_l1=False),
+    # A1 strict — L1 scaffolding increases with distance (intensity high)
+    ("A1", "close"):   PolicyRow(90, _L1_USES_MINIMAL, sandwich=True,  reassurance_l1=False, scaffolding_intensity="high"),
+    ("A1", "medium"):  PolicyRow(85, _L1_USES_MEDIUM,  sandwich=True,  reassurance_l1=False, scaffolding_intensity="high"),
+    ("A1", "distant"): PolicyRow(55, _L1_USES_FULL,    sandwich=True,  reassurance_l1=True,  scaffolding_intensity="high"),
+    # A2 — lighter scaffolding (intensity medium)
+    ("A2", "close"):   PolicyRow(95, (),               sandwich=False, reassurance_l1=False, scaffolding_intensity="medium"),
+    ("A2", "medium"):  PolicyRow(90, _L1_USES_MINIMAL, sandwich=True,  reassurance_l1=False, scaffolding_intensity="medium"),
+    ("A2", "distant"): PolicyRow(80, _L1_USES_MEDIUM,  sandwich=True,  reassurance_l1=False, scaffolding_intensity="medium"),
+    # B1+ — essentially L2-only (intensity low)
+    ("B1+", "close"):   PolicyRow(100, (),               sandwich=False, reassurance_l1=False, scaffolding_intensity="low"),
+    ("B1+", "medium"):  PolicyRow(100, (),               sandwich=False, reassurance_l1=False, scaffolding_intensity="low"),
+    ("B1+", "distant"): PolicyRow(95, _L1_USES_MINIMAL, sandwich=False, reassurance_l1=False, scaffolding_intensity="low"),
 }
+
+# Intensity ladder for shift operations (Fix 3A)
+_INTENSITY_LADDER = ["low", "medium", "high"]
+
+
+def _shift_intensity(current: str, delta: int) -> str:
+    idx = _INTENSITY_LADDER.index(current) if current in _INTENSITY_LADDER else 1
+    idx = max(0, min(len(_INTENSITY_LADDER) - 1, idx + delta))
+    return _INTENSITY_LADDER[idx]
 
 
 def _band_cefr(cefr_placement: str) -> CefrBand:
@@ -70,10 +84,49 @@ def _shift_distance_for_fla(distance: Distance, fla: FlaBand) -> Distance:
     return {"close": "medium", "medium": "distant", "distant": "distant"}[distance]
 
 
-def resolve_policy(cefr_placement: str, distance: Distance, fla: FlaBand) -> PolicyRow:
+def resolve_policy(
+    cefr_placement: str,
+    distance: Distance,
+    fla: FlaBand,
+    *,
+    self_efficacy: int | None = None,
+    autonomy_pref: str | None = None,
+    fla_items_raw: dict[str, int] | None = None,
+) -> PolicyRow:
+    """Resolve policy cell. Session 37 extends with self_efficacy + autonomy_pref
+    (for intensity shift) and fla_items_raw (for granular pedagogical flags).
+
+    Backward-compatible: all new kwargs are optional. Called without them,
+    returns the pure CEFR × distance × FLA policy as before.
+    """
     band = _band_cefr(cefr_placement)
     effective_distance = _shift_distance_for_fla(distance, fla)
-    return POLICY_MATRIX[(band, effective_distance)]
+    base = POLICY_MATRIX[(band, effective_distance)]
+
+    # Intensity shift from self_efficacy + autonomy_pref
+    intensity = base.scaffolding_intensity
+    if self_efficacy is not None:
+        if self_efficacy <= 2:
+            intensity = _shift_intensity(intensity, +1)
+        elif self_efficacy >= 4 and autonomy_pref == "autonomous":
+            intensity = _shift_intensity(intensity, -1)
+
+    # Granular FLA item flags
+    items = fla_items_raw or {}
+    prefer_written  = int(items.get("fla_a", 0) or 0) >= 4
+    no_correction   = int(items.get("fla_b", 0) or 0) >= 4
+    provide_chunks  = int(items.get("fla_c", 0) or 0) >= 4
+
+    return PolicyRow(
+        l2_ratio_pct=base.l2_ratio_pct,
+        l1_uses=base.l1_uses,
+        sandwich=base.sandwich,
+        reassurance_l1=base.reassurance_l1,
+        scaffolding_intensity=intensity,
+        prefer_written_first=prefer_written,
+        no_explicit_correction=no_correction,
+        provide_chunks_ahead=provide_chunks,
+    )
 
 
 # Human-readable L1 use descriptions (rendered into the prompt block)
@@ -93,32 +146,47 @@ def build_scaffolding_block(
     target_lang_name: str,
     l1_name: str = "français",
     turn_count: int = 1,
+    *,
+    self_efficacy: int | None = None,
+    autonomy_pref: str | None = None,
+    fla_items_raw: dict[str, int] | None = None,
 ) -> str:
-    """Render the L1/L2 policy directive injected into the LLM prompt.
+    """Render the L1/L2 + anxiety-routing policy directive.
 
-    Empty string when the effective policy is 100% L2 (no-op block).
-    Falls back to an empty string defensively on unknown inputs.
+    Session 37: accepts self_efficacy/autonomy_pref/fla_items_raw for fine-grained
+    intensity shifts and per-item pedagogical flags. All optional — called without
+    them, behavior is identical to Session 35.
+
+    Returns empty string when policy is a pure 100%-L2 no-op AND no anxiety flags.
     """
     try:
-        policy = resolve_policy(cefr_placement, distance, fla)
+        policy = resolve_policy(
+            cefr_placement, distance, fla,
+            self_efficacy=self_efficacy,
+            autonomy_pref=autonomy_pref,
+            fla_items_raw=fla_items_raw,
+        )
     except KeyError:
         return ""
 
-    # 100% L2 no-op
-    if policy.l2_ratio_pct >= 100 and not policy.l1_uses:
+    # Pure no-op: 100% L2 + no L1 uses + no anxiety flags
+    anxiety_flags = (policy.prefer_written_first or policy.no_explicit_correction
+                     or policy.provide_chunks_ahead)
+    if policy.l2_ratio_pct >= 100 and not policy.l1_uses and not anxiety_flags:
         return ""
 
     lines = [
         "=== L1/L2 MIX POLICY (this turn) ===",
         f"Target output ratio: ~{policy.l2_ratio_pct}% {target_lang_name}"
         f" / ~{100 - policy.l2_ratio_pct}% {l1_name}.",
+        f"Scaffolding intensity: {policy.scaffolding_intensity}.",
     ]
 
     if policy.l1_uses:
         lines.append(f"Use {l1_name} ONLY for:")
         for use in policy.l1_uses:
             lines.append(f"  - {_L1_USE_LABELS.get(use, use)}")
-    else:
+    elif policy.l2_ratio_pct >= 100:
         lines.append(f"Do not use {l1_name} in your reply.")
 
     if policy.sandwich and turn_count <= 6:
@@ -138,6 +206,32 @@ def build_scaffolding_block(
             f" before the first {target_lang_name} utterance.",
         ])
 
+    # Session 37 — per-item FLA pedagogical routing
+    if anxiety_flags:
+        lines.append("")
+        lines.append("=== ANXIETY ROUTING (per-item FLA signals) ===")
+        if policy.prefer_written_first:
+            lines.append(
+                "• Stress élevé sur le speaking à froid (fla_a ≥ 4) → privilégie"
+                " d'abord des tâches écrites ou des chunks préparés avant toute"
+                " production orale. Évite de demander 'dis-moi à l'oral…' les"
+                " premiers turns."
+            )
+        if policy.no_explicit_correction:
+            lines.append(
+                "• Peur forte des corrections publiques (fla_b ≥ 4) → uniquement"
+                " des recasts implicites, jamais de 'non, c'est X' ou 'tu as fait"
+                " une erreur'. Reformule l'énoncé correct sans étiqueter l'erreur."
+            )
+        if policy.provide_chunks_ahead:
+            lines.append(
+                "• Freeze mémoriel sous pression (fla_c ≥ 4) → fournis des chunks"
+                " complets utilisables tels quels (ex: 'tu peux dire : ___')"
+                " plutôt que de demander la production ex nihilo. Réduis la"
+                " charge mnésique."
+            )
+
+    lines.append("")
     lines.append(
         f"NEVER use {l1_name} for greetings, small talk, or items the learner"
         " already encountered.")

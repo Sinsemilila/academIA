@@ -97,3 +97,101 @@ def test_normalize_fla_defaults_medium():
     assert _normalize_fla("") == "medium"
     assert _normalize_fla("LOW") == "low"
     assert _normalize_fla("garbage") == "medium"
+
+
+# ── Session 37 — per-item FLA flags + intensity shift ────────────────
+
+def test_fla_items_high_speaking_sets_prefer_written():
+    p = resolve_policy("A2", "close", "low", fla_items_raw={"fla_a": 5, "fla_b": 1, "fla_c": 1})
+    assert p.prefer_written_first is True
+    assert p.no_explicit_correction is False
+    assert p.provide_chunks_ahead is False
+
+
+def test_fla_items_high_mockery_sets_no_correction():
+    p = resolve_policy("A2", "close", "low", fla_items_raw={"fla_a": 1, "fla_b": 5, "fla_c": 1})
+    assert p.no_explicit_correction is True
+    assert p.prefer_written_first is False
+
+
+def test_fla_items_high_freeze_sets_provide_chunks():
+    p = resolve_policy("A2", "close", "low", fla_items_raw={"fla_a": 1, "fla_b": 1, "fla_c": 5})
+    assert p.provide_chunks_ahead is True
+
+
+def test_fla_items_threshold_at_4():
+    # Exactly 4 triggers the flag; 3 does not
+    p4 = resolve_policy("A2", "close", "low", fla_items_raw={"fla_a": 4, "fla_b": 3, "fla_c": 3})
+    assert p4.prefer_written_first is True
+    p3 = resolve_policy("A2", "close", "low", fla_items_raw={"fla_a": 3, "fla_b": 3, "fla_c": 3})
+    assert p3.prefer_written_first is False
+
+
+def test_intensity_shift_from_low_selfeff():
+    # B1+/close base is "low" intensity. self_eff=1 → +1 → medium.
+    p = resolve_policy("B1", "close", "low", self_efficacy=1)
+    assert p.scaffolding_intensity == "medium"
+
+
+def test_intensity_shift_from_autonomous_expert():
+    # A2/close base is "medium". self_eff=5 + autonomy="autonomous" → -1 → low.
+    p = resolve_policy("A2", "close", "low",
+                      self_efficacy=5, autonomy_pref="autonomous")
+    assert p.scaffolding_intensity == "low"
+
+
+def test_intensity_no_shift_for_mid_selfeff():
+    p = resolve_policy("A2", "close", "low", self_efficacy=3)
+    assert p.scaffolding_intensity == "medium"
+
+
+def test_intensity_shift_caps_at_high():
+    # A1/close base already "high" — +1 shift must cap (no "very_high" tier).
+    p = resolve_policy("A1", "close", "low", self_efficacy=1)
+    assert p.scaffolding_intensity == "high"
+
+
+def test_intensity_shift_caps_at_low():
+    # B1+/close base "low" — -1 shift must stay "low".
+    p = resolve_policy("B1", "close", "low",
+                      self_efficacy=5, autonomy_pref="autonomous")
+    assert p.scaffolding_intensity == "low"
+
+
+def test_build_block_renders_anxiety_routing():
+    block = build_scaffolding_block(
+        "A2", "close", "low", "Español",
+        fla_items_raw={"fla_a": 5, "fla_b": 5, "fla_c": 5},
+    )
+    assert "ANXIETY ROUTING" in block
+    assert "speaking à froid" in block
+    assert "corrections publiques" in block
+    assert "Freeze mémoriel" in block
+
+
+def test_build_block_skips_anxiety_routing_when_flags_off():
+    block = build_scaffolding_block(
+        "A2", "close", "low", "Español",
+        fla_items_raw={"fla_a": 2, "fla_b": 2, "fla_c": 2},
+    )
+    assert "ANXIETY ROUTING" not in block
+
+
+def test_build_block_still_empty_when_pure_noop():
+    # B1+/close with no anxiety flags → must remain empty (no-op)
+    block = build_scaffolding_block("B1", "close", "low", "Español",
+                                     fla_items_raw={"fla_a": 1, "fla_b": 1, "fla_c": 1})
+    assert block == ""
+
+
+def test_build_block_renders_intensity_line():
+    block = build_scaffolding_block("A1", "close", "low", "Español")
+    assert "Scaffolding intensity:" in block
+
+
+def test_backward_compat_no_kwargs():
+    # Calling resolve_policy without Session 37 kwargs must not break
+    p = resolve_policy("A1", "close", "low")
+    assert p.l2_ratio_pct == 90
+    assert p.prefer_written_first is False
+    assert p.scaffolding_intensity == "high"
