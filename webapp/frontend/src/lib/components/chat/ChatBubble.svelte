@@ -48,13 +48,28 @@
       return raw; // stream ended with unclosed tag → show raw for debugging
     }
     const inner = raw.slice(openIdx + '<output>'.length, closeIdx).trim();
+    const trailing = raw.slice(closeIdx + '</output>'.length).trim();
+    // Strict JSON parse first — preferred path when LLM escapes quotes properly.
     try {
       const parsed = JSON.parse(inner);
       const fb = (parsed.feedback ?? '').toString();
-      // If feedback is empty but content exists after </output>, append it
-      const trailing = raw.slice(closeIdx + '</output>'.length).trim();
       return (fb + (trailing ? '\n' + trailing : '')).trim() || raw;
     } catch {
+      // Fallback: LLMs occasionally emit unescaped nested quotes in `feedback`,
+      // breaking strict JSON (e.g. `"feedback": "…'¿Qué decir con "X"?'…"`).
+      // Use a permissive regex that stops at the next top-level `,` followed by
+      // a known schema key — tolerates inner quotes.
+      const m = inner.match(
+        /"feedback"\s*:\s*"([\s\S]*?)"\s*,\s*"(?:tier_applied|feedback_types|error_codes|dosage_check|silenced_for_spaced_retrieval|reasoning|observed_level)"/
+      );
+      if (m && m[1]) {
+        // Decode common escapes (\n, \", \\) that JSON.parse would have handled.
+        const fb = m[1]
+          .replace(/\\n/g, '\n')
+          .replace(/\\"/g, '"')
+          .replace(/\\\\/g, '\\');
+        return (fb + (trailing ? '\n' + trailing : '')).trim();
+      }
       return raw;
     }
   }
