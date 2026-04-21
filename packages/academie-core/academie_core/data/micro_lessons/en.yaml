@@ -1,0 +1,177 @@
+# Micro-lesson templates for Teacher EN (Session 38).
+# Keyed by `error_family` (taxonomy/rules.py::ERROR_CODE_TO_FAMILY values).
+# Each family has 3 CEFR-banded variants :
+#   A1 = example-only, zero metalinguistic term (Lyster-compliant, rubric A1)
+#   A2 = 1 short rule sentence + 1 example
+#   B1 = full metalinguistic label + rule + example (B1, B2, C1, C2 share)
+#
+# Rendered once (one-shot) when the learner fails 3× consecutively on the
+# same family and no injection has occurred for that family in the last 3 days.
+# See docs/01-pedagogy/three-strikes-micro-lesson.md if formalised later.
+
+verb_tense:
+  A1: |-
+    Yesterday is past. In English we change the verb :
+      - I go → I **went** yesterday.
+      - She eats → She **ate** yesterday.
+  A2: |-
+    For past actions, use the past simple : regular verbs add -ed (walk → walked),
+    irregular verbs have their own form (go → went, eat → ate, see → saw).
+  B1: |-
+    Past simple marks a completed past action. Regular verbs : base + -ed
+    (work → worked). Irregular verbs : lexicalised form (go → went, take → took,
+    begin → began). In questions/negatives the tense moves to the auxiliary :
+    *Did you go?* / *I didn't go*, while the main verb reverts to base form.
+
+verb_usage:
+  A1: |-
+    Some useful small verbs in English :
+      - **can** for ability : I can swim.
+      - **want to** for desire : I want to learn.
+      - **have to** for obligation : I have to work.
+  A2: |-
+    Modal verbs (can, must, should, will) are always followed by the bare infinitive,
+    never by *to* : *I can swim* (not *I can to swim*).
+  B1: |-
+    Modals (can/must/should/will/may/might) take the bare infinitive and don't
+    conjugate for person (no -s on *he can*). The semi-modal *have to* DOES
+    conjugate (*she has to*) and behaves like a regular verb.
+
+noun_det:
+  A1: |-
+    Before a singular thing we usually need a little word :
+      - **a** / **an** for something new : I saw **a** dog.
+      - **the** for something we already know : **The** dog was big.
+  A2: |-
+    Use **a/an** when you mention something for the first time, **the** when the
+    listener already knows which one. *I bought a book. The book is about history.*
+  B1: |-
+    Article choice follows definiteness + countability : *a/an* (first mention,
+    singular countable), *the* (shared reference, any number), ∅ (plural or
+    uncountable generics). Proper nouns usually take ∅ except for rivers, seas,
+    plural country names (*the Alps, the USA*).
+
+pronoun:
+  A1: |-
+    Subject pronouns : **I, you, he, she, it, we, they**.
+    *I work. She works. They work.*
+  A2: |-
+    English distinguishes subject (I, he) from object (me, him) forms : *He saw me* /
+    *I saw him*. After prepositions, always the object form : *with me*, *to him*.
+  B1: |-
+    Pronoun case is grammatically required : subject (I/he/she/we/they), object
+    (me/him/her/us/them). After *be* in formal English the subject case is
+    preferred (*It is I*), though colloquial usage accepts *It's me*.
+
+word_order:
+  A1: |-
+    Basic English order : **subject → verb → object**.
+      - *I drink coffee.*
+      - *She reads books.*
+    In questions, add **do/does** at the front : *Do you drink coffee?*
+  A2: |-
+    Questions invert : *Do you work? Does she live here?* Adverbs of frequency
+    (always, often, never) sit between subject and main verb : *I **always** work*.
+  B1: |-
+    English is SVO. Questions require auxiliary-subject inversion
+    (*Where does she live?*). Embedded questions revert to declarative order
+    (*I don't know where she lives* — NOT *where does she live*).
+
+sentence:
+  A1: |-
+    A simple English sentence needs a subject and a verb :
+      - *I am tired.* (subject **I** + verb **am**)
+      - *She works.* (subject **she** + verb **works**)
+  A2: |-
+    Don't drop the subject in English (unlike French or Spanish) : *It is cold*
+    (not *Is cold*), *I am hungry* (not *Am hungry*).
+  B1: |-
+    English is a non-pro-drop language : every finite clause needs an explicit
+    subject, even a dummy one (*it* for weather/time, *there* for existence).
+    *It's raining*, *There are three options*.
+
+morphology:
+  A1: |-
+    Adjectives don't change form in English :
+      - a **big** house / **big** houses (same word).
+      - a **red** car / **red** cars.
+  A2: |-
+    Adjectives are invariable and go **before** the noun : *a big red car*
+    (not *a car big red*). They never agree in number or gender.
+  B1: |-
+    Attributive adjectives precede the noun and don't inflect. Comparative /
+    superlative add -er/-est for short adjectives (*tall → taller → tallest*),
+    use *more/most* for longer ones (*interesting → more interesting*).
+
+surface:
+  A1: |-
+    A few common spellings to remember :
+      - **people** (not peopol).
+      - **friend** (i before e).
+      - Capital letter at the start of a sentence, period at the end.
+  A2: |-
+    Contractions are common in informal writing : *it's* = it is, *don't* =
+    do not, *I've* = I have. The apostrophe also marks possession : *Maria's book*.
+  B1: |-
+    Apostrophes serve two functions : contraction (*it's* = it is) and
+    Saxon genitive (*the student's book*). *Its* with no apostrophe is the
+    possessive (*the dog chased its tail*). This homophone is a classic trap.
+
+preposition:
+  A1: |-
+    Three common prepositions :
+      - **in** a place : in Paris, in the room.
+      - **on** a surface : on the table, on Monday.
+      - **at** a specific point : at home, at 3 o'clock.
+  A2: |-
+    Time prepositions : **at** for clock times (*at 5*), **on** for days (*on Monday*),
+    **in** for months/years (*in July*, *in 2025*). Place : **at** point, **in** container,
+    **on** surface.
+  B1: |-
+    Prepositions in English don't follow a single rule — they're partly lexical.
+    Core patterns : *in* (enclosed/abstract spaces), *on* (surfaces, days,
+    topics), *at* (points, addresses, clock times). Verb-specific usage must
+    be memorised : *depend on*, *interested in*, *good at*.
+
+calque:
+  A1: |-
+    Some French expressions don't translate word-for-word into English :
+      - *avoir 20 ans* → **be** 20 (not **have** 20).
+      - *avoir faim* → **be** hungry.
+  A2: |-
+    Watch for "false friends" of structure : French uses *avoir* where English
+    uses *be* (*j'ai faim* → *I am hungry*, *j'ai 20 ans* → *I am 20*).
+  B1: |-
+    Structural calques from French are frequent : *depuis* → *for/since* (not
+    *since* alone), *avoir + age/hunger/cold* → *be + age/hungry/cold*, *on*
+    impersonal → *people/one/you* (never *we*). Identify and override the L1
+    pattern explicitly.
+
+vocabulary:
+  A1: |-
+    A few "false friends" between French and English :
+      - *actuellement* ≠ actually. Use **currently** or **now**.
+      - *sensible* ≠ sensible. Use **sensitive**.
+  A2: |-
+    Common false friends : *library* = bibliothèque (not librairie), *sensible*
+    = sensitive (not sensé), *eventually* = finalement (not éventuellement).
+  B1: |-
+    French-English false friends are numerous : *library* (bibliothèque),
+    *actually* (en réalité, not actuellement), *eventually* (finalement),
+    *sensible* (sensé, not sensible). Build a personal list as you hit them —
+    they re-occur.
+
+discourse:
+  A1: |-
+    To connect two ideas :
+      - **and** for adding : I like tea **and** coffee.
+      - **but** for contrast : I'm tired **but** happy.
+      - **because** for reason : I'm happy **because** it's Friday.
+  A2: |-
+    Connectors for opinion : *I think (that)…*, *In my opinion…*, *For me…*
+    Sequencing : *First, Then, Finally*. For contrast : *but*, *however*.
+  B1: |-
+    Discourse markers signal relationships : addition (*moreover*, *furthermore*),
+    contrast (*however*, *nevertheless*), cause (*therefore*, *as a result*),
+    example (*for instance*, *such as*). Written English prefers the fuller
+    connectors ; spoken English uses shorter ones (*so*, *but*, *anyway*).

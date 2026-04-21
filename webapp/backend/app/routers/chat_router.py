@@ -572,6 +572,22 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             import logging
             logging.getLogger("chat").warning("priority_concepts compute failed: %s", _e)
 
+    # ── Session 38 — three-strikes detection for one-shot micro-lesson ──
+    # Queries error_log for the most recent 10 rows; returns family name if the
+    # last 3 all share the same family AND no injection happened in last 3 days.
+    # Best-effort : graceful fallback to None on any error.
+    three_strikes_family: str | None = None
+    if eleve_id:
+        try:
+            from academie_core.pedagogy.three_strikes import detect_three_strikes_family
+            async with db.pool.acquire() as conn:
+                three_strikes_family = await detect_three_strikes_family(
+                    conn, eleve_id, domain,
+                )
+        except Exception as _e:
+            import logging
+            logging.getLogger("chat").warning("three_strikes detect failed: %s", _e)
+
     if detections:
         lines = []
         for d in detections:
@@ -680,6 +696,8 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             post_qcm_welcome=(turn_count == 1 and has_qcm_profile),
             # Session 37 — top-3 concepts to re-surface (proactive coverage)
             priority_concepts=priority_concepts,
+            # Session 38 — one-shot micro-lesson on 3-strikes (error_family or None)
+            three_strikes_family=three_strikes_family,
         )
         sections = lang.build_dynamic_sections(ctx)
         for key, val in sections.items():
@@ -705,6 +723,33 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         # priority_concepts_block is not a wired Dify input — clean it up so the
         # Start node doesn't receive an unused key (belt-and-suspenders).
         dify_inputs.pop("priority_concepts_block", None)
+
+        # Session 38 — kill switch for micro_lesson_block. Default OFF so
+        # shipping this doesn't change behavior until validated via E2E + dogfood.
+        if _os.environ.get("MICRO_LESSON_ENABLED", "false").lower() in ("1", "true", "yes"):
+            _mlb = dify_inputs.get("micro_lesson_block", "") or ""
+            if _mlb and three_strikes_family:
+                _sb_raw = dify_inputs.get("scaffolding_block", "")
+                dify_inputs["scaffolding_block"] = (
+                    f"{_sb_raw}\n\n{_mlb}" if _sb_raw else _mlb
+                )
+                # Log the injection so the 3-day dedup applies on subsequent turns
+                try:
+                    from academie_core.pedagogy.three_strikes import (
+                        log_micro_lesson_injection, cefr_band,
+                    )
+                    async with db.pool.acquire() as conn:
+                        await log_micro_lesson_injection(
+                            conn, eleve_id, domain, three_strikes_family,
+                            cefr_band(niveau or "B1"),
+                        )
+                except Exception as _e:
+                    import logging
+                    logging.getLogger("chat").warning(
+                        "micro_lesson log_injection failed: %s", _e,
+                    )
+        # micro_lesson_block is not a wired Dify input — clean up
+        dify_inputs.pop("micro_lesson_block", None)
 
         # Session 35 MVP — append scaffolding_block to learner_profile_summary so it
         # reaches both llm_onboarding and llm_session through the already-wired

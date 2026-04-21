@@ -80,6 +80,22 @@ def load_concept_hints(lang: str) -> dict[str, str]:
 
 
 @lru_cache(maxsize=16)
+def load_micro_lessons(lang: str) -> dict[str, dict[str, str]]:
+    """Load 3-strikes micro-lesson templates per error_family per CEFR band.
+
+    Returns {family: {"A1": str, "A2": str, "B1": str}}. Empty if YAML absent.
+    See `pedagogy/three_strikes.py` + docs/01-pedagogy doctrine on progressive
+    metalanguage (A1 example-only, A2 short rule, B1+ full metalinguistic).
+    """
+    path = _DATA_DIR / "micro_lessons" / f"{lang}.yaml"
+    if not path.exists():
+        return {}
+    with open(path) as f:
+        data = yaml.safe_load(f)
+    return data or {}
+
+
+@lru_cache(maxsize=16)
 def load_cefr_diagnostics(lang: str) -> dict:
     """Load CEFR diagnostic question examples (paliers + microtasks + persona labels)
     for a target language. Empty dict if no YAML."""

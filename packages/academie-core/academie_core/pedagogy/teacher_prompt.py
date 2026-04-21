@@ -441,6 +441,47 @@ def build_spaced_retrieval_block(items_due: list[dict]) -> str:
     )
 
 
+def build_micro_lesson_block(
+    family: str | None,
+    level: str,
+    lang_target: str = "en",
+) -> str:
+    """Session 38 — one-shot micro-lesson on 3-strikes detection.
+
+    When the learner fails 3× consecutively on the same `error_family`, inject
+    a short explicit explanation graded by CEFR band :
+      - A1 : example-only, zero metalinguistic term (rubric-compliant)
+      - A2 : 1-sentence rule + example
+      - B1+ : full metalinguistic + rule + example (B1, B2, C1, C2 share)
+
+    Returns "" if no family passed, if the YAML has no template for that
+    family, or if the CEFR variant is missing.
+    """
+    if not family:
+        return ""
+    from academie_core.data.loader import load_micro_lessons
+    from academie_core.pedagogy.three_strikes import cefr_band
+
+    templates = load_micro_lessons(lang_target) or {}
+    family_block = templates.get(family)
+    if not isinstance(family_block, dict):
+        return ""
+    band = cefr_band(level)
+    body = family_block.get(band) or family_block.get("B1") or ""
+    if not body:
+        return ""
+    return (
+        "=== MICRO-LEÇON CIBLÉE (3 échecs consécutifs) ===\n"
+        f"Famille : {family} | palier : {band}\n"
+        f"{body.rstrip()}\n\n"
+        "Directive tuteur : intègre cette clarification UNE fois dans ta\n"
+        "prochaine réponse, de manière naturelle (pas de 'règle de grammaire\n"
+        "ci-dessous'). Ensuite, plante une occasion de réutiliser le point\n"
+        "dans le tour suivant. Puis reviens en mode conversationnel normal.\n"
+        "=== END MICRO-LEÇON ==="
+    )
+
+
 def build_priority_concepts_block(items: list[dict]) -> str:
     """Session 37 — proactive coverage block complementing spaced_retrieval.
 
@@ -715,6 +756,8 @@ class PromptContext:
     post_qcm_welcome: bool = False
     # Session 37 — proactive concept coverage (Ebbinghaus forgetting curve)
     priority_concepts: list[dict] | None = None
+    # Session 38 — one-shot micro-lesson on 3-strikes detection (error_family name)
+    three_strikes_family: str | None = None
 
 
 def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = None) -> dict:
@@ -798,6 +841,11 @@ def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = 
     # Session 37 Fix C — proactive concept coverage block
     priority_concepts_block = build_priority_concepts_block(ctx.priority_concepts or [])
 
+    # Session 38 — one-shot micro-lesson when 3 consecutive fails on same family
+    micro_lesson_block = build_micro_lesson_block(
+        ctx.three_strikes_family, ctx.level, ctx.target_lang,
+    )
+
     return {
         "rubric_for_level": rubric,
         "fewshots_block": fewshots,
@@ -809,6 +857,7 @@ def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = 
         "output_schema_block": OUTPUT_SCHEMA_BLOCK,
         "scaffolding_block": scaffolding_block,
         "priority_concepts_block": priority_concepts_block,
+        "micro_lesson_block": micro_lesson_block,
         # Metadata for chat_router.py to log
         "_dosage_decision": dosage,
         "_scaffolding_cell": f"{ctx.level}|{distance}|{fla_band}",

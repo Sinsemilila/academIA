@@ -1,0 +1,248 @@
+# Micro-lesson templates for Maestro ES (Session 38).
+# Same structure as en.yaml : 3 CEFR bands per family. A1 = example-only
+# (zero metalinguistic term, PCIC A1 rubric compliant), A2 = short rule +
+# example, B1 = full metalinguistic for B1/B2/C1/C2.
+#
+# Families follow ERROR_CODE_TO_FAMILY from taxonomy/rules.py plus a few
+# ES-specific family codes emitted by rules_es.py.
+
+verb_tense:
+  A1: |-
+    Para hablar del pasado cambias el verbo :
+      - *Ayer* **comí** pizza (no *como*).
+      - *La semana pasada* **fui** al cine.
+  A2: |-
+    Para acciones pasadas, usa el pretérito indefinido : *comí, fui, tuve*.
+    Regulares : -é/-í (*hablé, viví*). Irregulares : *hacer→hice, ir/ser→fui*.
+  B1: |-
+    Indefinido vs imperfecto : el indefinido narra acciones pasadas terminadas
+    (*ayer comí paella*), el imperfecto describe contexto o hábito pasado
+    (*cuando era niño, comía paella los domingos*). Marcadores clave : *ayer,
+    la semana pasada → indefinido* ; *antes, siempre, todos los días → imperfecto*.
+
+verb_usage:
+  A1: |-
+    Dos verbos muy importantes :
+      - **ser** para identidad : *soy francés*, *es profesor*.
+      - **estar** para estado o lugar : *estoy cansado*, *está en casa*.
+  A2: |-
+    Ser vs estar : *ser* para identidad, origen, profesión, hora (*soy alto*,
+    *es martes*). *Estar* para estados temporales y ubicación (*estoy contento*,
+    *está en Madrid*).
+  B1: |-
+    Ser vs estar : *ser* asigna propiedades inherentes o clasificatorias
+    (*es médico, es alto, es de Francia*) ; *estar* marca estados cambiantes,
+    ubicación, y resultados de procesos (*está enfermo, está en casa, está roto*).
+    Con adjetivos, *ser* clasifica (*es aburrido* = boring), *estar* describe
+    estado puntual (*está aburrido* = bored).
+
+noun_det:
+  A1: |-
+    En español los objetos tienen género :
+      - **el** libro, **la** mesa.
+      - **un** libro, **una** mesa.
+    Aprende el artículo con la palabra.
+  A2: |-
+    Los sustantivos en español son masculinos o femeninos. Terminación típica :
+    -o masculino (*el libro*), -a femenino (*la mesa*). Excepciones frecuentes :
+    *el día, el problema, la mano, la foto*.
+  B1: |-
+    Género gramatical : la terminación es un indicio (-o/-or masc., -a/-ción/-dad
+    fem.) pero no una regla absoluta. Memoriza con el artículo las palabras que
+    contradicen el patrón (*el día, el mapa, el problema, la foto, la mano, la
+    radio*). El artículo neutro *lo* nominaliza adjetivos : *lo bueno, lo difícil*.
+
+pronoun:
+  A1: |-
+    En español el sujeto se omite a menudo :
+      - *Hablo español* (no *yo hablo español* salvo para enfatizar).
+      - *¿Trabajas?* (no *¿tú trabajas?*).
+    La terminación del verbo ya indica quién.
+  A2: |-
+    El español es "pro-drop" : el pronombre sujeto (yo, tú, él…) se omite
+    porque la desinencia verbal lo marca. Se usa solo para contraste o énfasis :
+    *Yo hablo español, él habla francés*.
+  B1: |-
+    Pro-drop del sujeto : la conjugación basta para identificarlo. Mantener
+    *yo, tú…* en cada oración suena enfático o redundante. Los pronombres
+    átonos (me, te, lo, la, le, nos, os, los, las, les) sí son obligatorios
+    y van antes del verbo conjugado (*lo veo*) o pegados al infinitivo/gerundio/
+    imperativo afirmativo (*verlo, viéndolo, míralo*).
+
+word_order:
+  A1: |-
+    Orden básico en español : **sujeto → verbo → objeto**.
+      - *Yo como pizza.*
+      - *María lee libros.*
+    Con pronombres : el pronombre va antes del verbo : *lo veo*.
+  A2: |-
+    Los pronombres átonos (me, te, lo, la, le…) preceden al verbo conjugado :
+    *Te llamo mañana*. Pero se pegan al final de infinitivos, gerundios e
+    imperativos afirmativos : *llamarte, llamándote, ¡llámame!*.
+  B1: |-
+    El español permite orden flexible por razones informativas : *Este libro
+    lo escribió García Márquez* (tematización). Preguntas parciales ponen la
+    palabra-Q al inicio (*¿Dónde vives?*). Clíticos : proclisis con formas
+    finitas (*te veo*), enclisis con infinitivo/gerundio/imperativo positivo
+    (*verte, viéndote, míralo*).
+
+sentence:
+  A1: |-
+    Preguntas en español : signos al inicio y al final :
+      - **¿Dónde vives?**
+      - **¿Hablas español?**
+    Exclamaciones : **¡Hola!** **¡Muy bien!**
+  A2: |-
+    El español usa ¿…? y ¡…! al inicio y al final, a diferencia del francés.
+    La negación va antes del verbo : *no hablo*, *no como carne*.
+  B1: |-
+    Signos de apertura obligatorios (¿ ¡) — convención ortográfica única del
+    español. La negación preverbal *no* admite acumulación con palabras
+    negativas pospuestas (*no veo nada*, *no viene nadie*) sin cambiar el
+    sentido — no es doble negación inválida como en inglés estándar.
+
+morphology:
+  A1: |-
+    Los adjetivos concuerdan con el sustantivo :
+      - *un chico **alto*** / *una chica **alta***.
+      - *los chicos **altos*** / *las chicas **altas***.
+  A2: |-
+    El adjetivo concuerda en género y número con el sustantivo : *libro rojo*,
+    *mesa roja*, *libros rojos*, *mesas rojas*. Normalmente va después
+    (*un coche rápido*), pero algunos van delante con apócope (*un buen amigo*,
+    no *bueno amigo*).
+  B1: |-
+    Concordancia adjetivo-sustantivo en género y número es obligatoria.
+    Apócope : *bueno, malo, primero, tercero, grande* pierden la vocal/sílaba
+    final ante sustantivo masculino singular (*buen día, mal día, primer día,
+    gran día*). Posición del adjetivo : posnominal clasifica (*un hombre
+    pobre* = sin dinero), prenominal valora (*un pobre hombre* = digno de
+    lástima).
+
+surface:
+  A1: |-
+    Dos letras particulares del español :
+      - **ñ** : *año, niño, España*.
+      - **ll** : *llamar, lluvia, calle*.
+    Los acentos marcan sílaba tónica : *médico, café, estación*.
+  A2: |-
+    Acentos ortográficos (tildes) marcan la sílaba tónica cuando no sigue
+    la regla general. Palabras agudas con acento : *café, estación, Madrid*
+    (no, última sílaba marcada). Llanas con acento : *lápiz, árbol*.
+  B1: |-
+    Reglas de acentuación : agudas (acento en última sílaba) llevan tilde si
+    terminan en vocal, -n o -s (*café, estación, cortés*). Llanas (penúltima)
+    llevan tilde si NO terminan en vocal, -n o -s (*lápiz, árbol*). Esdrújulas
+    y sobresdrújulas siempre (*médico, rápido, entrégamelo*). Tilde diacrítica
+    distingue homógrafos : *tú/tu, él/el, sí/si, sé/se*.
+
+preposition:
+  A1: |-
+    Preposiciones comunes :
+      - **en** para lugar : *en Madrid*, *en casa*.
+      - **a** para movimiento : *voy **a** Madrid* (no *voy en Madrid*).
+      - **de** para origen : *soy **de** Francia*.
+  A2: |-
+    Movimiento hacia un lugar = **a** (*voy a Madrid*, calco francés *je vais
+    à* incorrecto con *en*). Lugar estático = **en** (*vivo en Madrid*).
+    Origen = **de** (*vengo de París*).
+  B1: |-
+    Régimen preposicional divergente con el francés : *pensar **en*** (penser
+    à), *soñar **con*** (rêver de), *casarse **con*** (se marier avec),
+    *consistir **en*** (consister à). La "a personal" es obligatoria ante
+    objeto directo humano/animal personificado : *veo **a** Juan*, *busco
+    **a** mi hermano*.
+
+calque:
+  A1: |-
+    Ojo al francés que no traduce directo :
+      - *avoir 20 ans* → **tener** 20 años (no *haber 20 años*).
+      - *il y a* → **hay** (*hay un libro*).
+  A2: |-
+    Expresiones francesas con *avoir* pasan a *tener* en español : *tengo
+    hambre, tengo 20 años, tengo frío*. *Il y a* duración → *hace + tiempo* :
+    *hace dos años* (no *antes dos años*).
+  B1: |-
+    Calcos estructurales FR→ES frecuentes : *por/para* (FR *pour* cubre
+    ambos) — *para* finalidad/destinatario (*para ti*, *para aprender*),
+    *por* causa/medio/duración (*por el dinero*, *por internet*, *por dos
+    años*). Duración pasada-hasta-ahora : *hace + tiempo* (*hace dos años*),
+    nunca *antes* o *hay*. *Gustar* invertido : *me gusta* (no *yo gusto*).
+
+vocabulary:
+  A1: |-
+    Falsos amigos comunes :
+      - *sensible* en español = sensitive (no sensible, que sería *sensato*).
+      - *librería* = bookshop (no biblioteca, que sería *biblioteca*).
+  A2: |-
+    Falsos amigos FR↔ES : *sensible* = sensitivo (sensé = *sensato*),
+    *constipado* = resfriado (estreñido ≠ constipation francesa), *éxito*
+    = success (no exit, que sería *salida*).
+  B1: |-
+    Falsos amigos FR↔ES abundan : *sensible* (sensible vs sensato), *constipado*
+    (estreñu vs resfriado), *éxito* (sortie vs succès), *largo* (large vs long),
+    *salir* (salir vs quitter), *embarazada* (embarrassée vs enceinte),
+    *carpeta* (carpette vs classeur). Construye una lista personal — reaparecen.
+
+discourse:
+  A1: |-
+    Conectores simples :
+      - **y** para añadir : *café **y** té*.
+      - **pero** para contraste : *cansado **pero** contento*.
+      - **porque** para razón : *contento **porque** es viernes*.
+  A2: |-
+    Opinión : *creo que…*, *en mi opinión…*, *para mí…*. Secuencia : *primero,
+    luego, finalmente*. Contraste : *pero, sin embargo*.
+  B1: |-
+    Conectores discursivos : adición (*además, asimismo*), contraste (*sin
+    embargo, no obstante, en cambio*), causa (*por lo tanto, por eso, así
+    que*), ejemplo (*por ejemplo, tal como*). Registro escrito prefiere
+    conectores plenos, registro oral los reduce (*entonces, pero, o sea*).
+
+# ES-specific families (emitted by rules_es.py detectors)
+PREP:POR_PARA:
+  A1: |-
+    **por** y **para** no son iguales :
+      - *Gracias **por** tu ayuda* (gratitud).
+      - *Este regalo es **para** ti* (destinatario).
+  A2: |-
+    *Para* = destinatario, finalidad, plazo (*para ti, para aprender, para mañana*).
+    *Por* = causa, medio, duración, intercambio (*por el dinero, por internet,
+    por dos años, gracias por*).
+  B1: |-
+    *Por* expresa causa (*lo hago por ti* = à cause de toi), medio (*por email*),
+    duración/tiempo aproximado (*por dos semanas, por la mañana*), intercambio
+    (*dos por uno*), agente de pasiva (*escrito por…*). *Para* expresa destinatario
+    (*para ti*), finalidad (*para aprender*), plazo o destino (*para mañana, para
+    Madrid*). El francés *pour* cubre ambos — de ahí la calque sistemática.
+
+V:SER_ESTAR:
+  A1: |-
+    **ser** para identidad : *soy francés, es alto, es médico*.
+    **estar** para estado/lugar : *estoy cansado, está en casa*.
+  A2: |-
+    *Ser* = características inherentes y clasificación. *Estar* = estados
+    cambiantes y ubicación. *Es simpático* (carácter) vs *está contento*
+    (estado ahora).
+  B1: |-
+    Ser vs estar — contrastes clave : identidad/profesión/origen/hora/materia
+    → *ser* (*es médico, es de lana, son las tres*). Estado transitorio /
+    ubicación / resultado → *estar* (*está roto, está en Madrid*). Con
+    adjetivos, el contraste cambia el significado : *es aburrido* (boring)
+    vs *está aburrido* (bored), *es listo* (smart) vs *está listo* (ready).
+
+ART:PROF:
+  A1: |-
+    En español los títulos llevan artículo cuando hablas **de** alguien :
+      - **El** doctor García es amable.
+      - **La** profesora Pérez enseña.
+    Sin artículo cuando le hablas directamente : *Buenos días, doctor*.
+  A2: |-
+    El artículo definido acompaña los títulos profesionales cuando se habla
+    de la persona (*el doctor García, la señora López*), pero se omite al
+    dirigirse directamente (*Buenos días, doctor García*).
+  B1: |-
+    Artículo definido + título + nombre es obligatorio en 3ª persona (*el
+    señor López vino*, *la doctora Ruiz trabaja aquí*) excepto con *don/doña*
+    (*don Juan vino*) y con tratamiento directo en vocativo (*buenos días,
+    doctora*). Contrasta con el francés/inglés que suele omitirlo.
