@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { api } from '$lib/api';
   // Session 36 — 8-item mini-exam wizard.
   let {
     open = false,
@@ -37,13 +38,7 @@
     loading = true;
     errorMsg = '';
     try {
-      const tok = localStorage.getItem('token') ?? '';
-      const r = await fetch(`/api/consolidation/mini-exam/start/${domain}`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${tok}` },
-      });
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      const data = await r.json();
+      const data = await api.miniExamStart(domain);
       items = data.items;
       targetLevel = data.target_level;
       idx = 0;
@@ -63,17 +58,10 @@
     submitting = true;
     errorMsg = '';
     try {
-      const tok = localStorage.getItem('token') ?? '';
-      const r = await fetch(`/api/consolidation/mini-exam/submit/${domain}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tok}` },
-        body: JSON.stringify({
-          target_level: targetLevel,
-          answers: items.map(it => ({ id: it.id, answer: answers[it.id] ?? '' })),
-        }),
-      });
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      const data = await r.json();
+      const data = await api.miniExamSubmit(
+        domain, targetLevel,
+        items.map(it => ({ id: it.id, answer: answers[it.id] ?? '' })),
+      );
       onDone?.(data);
     } catch (e: any) {
       errorMsg = e?.message ?? "Erreur d'envoi";

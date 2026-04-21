@@ -374,6 +374,37 @@ class ApiClient {
     return await res.json();
   }
 
+  // Session 37 — consolidation endpoints (auto-refresh on 401 via this.fetch)
+  async consolidationState(domain: string) {
+    const res = await this.fetch(`/consolidation/state/${domain}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  }
+
+  async miniExamStart(domain: string) {
+    const res = await this.fetch(`/consolidation/mini-exam/start/${domain}`, { method: 'POST' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  }
+
+  async miniExamSubmit(domain: string, targetLevel: string, answers: Array<{id: string; answer: string}>) {
+    const res = await this.fetch(`/consolidation/mini-exam/submit/${domain}`, {
+      method: 'POST',
+      body: JSON.stringify({ target_level: targetLevel, answers }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  }
+
+  async consolidationDecide(domain: string, choice: 'accept_new' | 'stay_current') {
+    const res = await this.fetch(`/consolidation/decide/${domain}`, {
+      method: 'POST',
+      body: JSON.stringify({ choice }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  }
+
   logout() {
     this.setToken(null);
     this.setRefreshToken(null);

@@ -64,11 +64,7 @@
   async function checkConsolidationState() {
     if (!agent?.domain) return;
     try {
-      const r = await fetch(`/api/consolidation/state/${agent.domain}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      });
-      if (!r.ok) return;
-      const data = await r.json();
+      const data = await api.consolidationState(agent.domain);
       if (data.niveau_status === 'calibration_en_cours' && data.pending) {
         // Open mini-exam if awaiting_user not yet set; else directly show decision
         if (data.pending.awaiting_user) {

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { api } from '$lib/api';
   // Session 36 — Modal presenting the bienveillant choice after mini-exam.
   let {
     open = false,
@@ -25,13 +26,7 @@
     submitting = true;
     errorMsg = '';
     try {
-      const tok = localStorage.getItem('token') ?? '';
-      const r = await fetch(`/api/consolidation/decide/${domain}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tok}` },
-        body: JSON.stringify({ choice }),
-      });
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      await api.consolidationDecide(domain, choice);
       onDecided?.({ choice });
     } catch (e: any) {
       errorMsg = e?.message ?? 'Erreur réseau';
