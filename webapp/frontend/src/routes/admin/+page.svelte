@@ -166,8 +166,24 @@
     }
   }
 
+  // Session 42 O2 — oracle runs admin analytics
+  let oracleStats = $state<any>(null);
+  let oracleLoading = $state(false);
+  async function loadOracleStats() {
+    oracleLoading = true;
+    try {
+      const oracleAgent = adminDomain === 'es' ? 'maestro_es' : 'teacher_en';
+      oracleStats = await api.adminOracleRuns(oracleAgent, 168);
+    } catch {
+      oracleStats = null;
+    } finally {
+      oracleLoading = false;
+    }
+  }
+
   onMount(() => {
-    loadUsers(); loadTokenUsage(); loadCacheStats(); loadConsolidationStats();
+    loadUsers(); loadTokenUsage(); loadCacheStats();
+    loadConsolidationStats(); loadOracleStats();
   });
 </script>
 
@@ -393,6 +409,93 @@
             </tbody>
           </table>
         </div>
+      {/if}
+    {/if}
+  </div>
+
+  <!-- Session 42 O2 — Oracle V1 runs analytics -->
+  <div class="bg-surface border border-border-subtle rounded-xl p-4 space-y-3">
+    <div>
+      <h2 class="text-sm font-semibold text-text-primary">Oracle V1 runs</h2>
+      <p class="text-xs text-text-muted">7 derniers jours — agent {adminDomain === 'es' ? 'maestro_es' : 'teacher_en'}. oracle_run_log sidecar.</p>
+    </div>
+    {#if oracleLoading}
+      <div class="skeleton h-20 rounded-lg"></div>
+    {:else if !oracleStats || !oracleStats.summary}
+      <p class="text-xs text-text-muted italic">Aucun run persisté.</p>
+    {:else}
+      {@const os_ = oracleStats.summary}
+      <div class="grid grid-cols-3 gap-3">
+        <div class="bg-elevated rounded-lg p-3">
+          <p class="text-[10px] uppercase tracking-wider text-text-muted">Runs</p>
+          <p class="text-lg font-mono font-semibold text-text-primary">{os_.total_runs ?? 0}</p>
+          <p class="text-[10px] text-text-muted">{os_.total_rows ?? 0} rows</p>
+        </div>
+        <div class="bg-elevated rounded-lg p-3">
+          <p class="text-[10px] uppercase tracking-wider text-text-muted">Scenarios touchés</p>
+          <p class="text-lg font-mono font-semibold text-text-primary">{os_.scenarios_touched ?? 0}</p>
+        </div>
+        <div class="bg-elevated rounded-lg p-3">
+          <p class="text-[10px] uppercase tracking-wider text-text-muted">Dims actifs</p>
+          <p class="text-lg font-mono font-semibold text-text-primary">{(oracleStats.by_dim ?? []).length}</p>
+        </div>
+      </div>
+
+      {#if oracleStats.by_dim && oracleStats.by_dim.length > 0}
+        <div class="bg-elevated rounded-lg overflow-hidden">
+          <table class="w-full text-xs">
+            <thead>
+              <tr class="border-b border-border-subtle text-text-muted">
+                <th class="text-left px-3 py-2 font-normal">Dim</th>
+                <th class="text-right px-3 py-2 font-normal">Total</th>
+                <th class="text-right px-3 py-2 font-normal">Pass</th>
+                <th class="text-right px-3 py-2 font-normal">Fail</th>
+                <th class="text-right px-3 py-2 font-normal">%</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each oracleStats.by_dim as d (d.dim)}
+                <tr class="border-b border-border-subtle/50">
+                  <td class="px-3 py-2 font-mono">{d.dim}</td>
+                  <td class="px-3 py-2 text-right font-mono">{d.total}</td>
+                  <td class="px-3 py-2 text-right font-mono text-teacher">{d.pass}</td>
+                  <td class="px-3 py-2 text-right font-mono {d.fail > 0 ? 'text-maestro' : 'text-text-muted'}">{d.fail}</td>
+                  <td class="px-3 py-2 text-right font-mono {d.pass_pct >= 80 ? 'text-teacher' : d.pass_pct >= 50 ? 'text-lehrer' : 'text-maestro'}">{d.pass_pct}%</td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      {/if}
+
+      {#if oracleStats.recent_runs && oracleStats.recent_runs.length > 0}
+        <details class="bg-elevated rounded-lg">
+          <summary class="px-3 py-2 text-xs cursor-pointer text-text-muted">Recent runs ({oracleStats.recent_runs.length})</summary>
+          <table class="w-full text-xs">
+            <thead>
+              <tr class="border-b border-border-subtle text-text-muted">
+                <th class="text-left px-3 py-2 font-normal">run_hash</th>
+                <th class="text-left px-3 py-2 font-normal">When</th>
+                <th class="text-left px-3 py-2 font-normal">Mode</th>
+                <th class="text-right px-3 py-2 font-normal">✓</th>
+                <th class="text-right px-3 py-2 font-normal">✗</th>
+                <th class="text-left px-3 py-2 font-normal">sha</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each oracleStats.recent_runs as r (r.run_hash)}
+                <tr class="border-b border-border-subtle/50">
+                  <td class="px-3 py-2 font-mono">{r.run_hash.slice(0, 8)}</td>
+                  <td class="px-3 py-2 font-mono text-text-muted">{r.started_at ? r.started_at.slice(0, 16).replace('T', ' ') : '—'}</td>
+                  <td class="px-3 py-2 font-mono">{r.mode}</td>
+                  <td class="px-3 py-2 text-right font-mono text-teacher">{r.pass_count}</td>
+                  <td class="px-3 py-2 text-right font-mono {r.fail_count > 0 ? 'text-maestro' : 'text-text-muted'}">{r.fail_count}</td>
+                  <td class="px-3 py-2 font-mono text-text-muted">{r.sha || '—'}</td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </details>
       {/if}
     {/if}
   </div>

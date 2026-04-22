@@ -368,6 +368,12 @@ class ApiClient {
     return await res.json();
   }
 
+  async adminOracleRuns(agent: string = 'teacher_en', hours: number = 168) {
+    const res = await this.fetch(`/admin/oracle-runs?agent=${encodeURIComponent(agent)}&hours=${hours}`);
+    if (!res.ok) throw new Error('Oracle runs fetch failed');
+    return await res.json();
+  }
+
   async adminCreateUser(username: string, password: string) {
     const res = await this.fetch('/auth/users', {
       method: 'POST',

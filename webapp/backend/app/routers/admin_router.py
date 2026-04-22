@@ -437,3 +437,82 @@ async def consolidation_events_stats(domain: str = "en", hours: int = 168,
         ],
         "by_trigger": [dict(r) for r in by_trigger],
     }
+
+
+# ── Session 42 O2 — oracle runs analytics ─────────────────────────────
+
+@router.get("/api/admin/oracle-runs")
+async def oracle_runs_stats(agent: str = "teacher_en", hours: int = 168,
+                            admin: dict = Depends(require_admin)):
+    """Session 42 O2b — aggregate oracle_run_log for dashboard.
+
+    Returns :
+      - summary : total runs, scenarios-rows, per-mode counts
+      - recent_runs : 10 latest run_hash groups
+      - by_dim : pass/fail/unknown counts per dim (LLM + lint) over window
+      - by_verdict_day : time-series GROUP BY day for trend sparkline
+
+    Scoped by agent + window (default 168h/7d).
+    """
+    hours = max(1, min(hours, 24 * 90))
+    async with db.pool.acquire() as conn:
+        summary = await conn.fetchrow(
+            """
+            SELECT
+              COUNT(*)::int AS total_rows,
+              COUNT(DISTINCT run_hash)::int AS total_runs,
+              COUNT(DISTINCT scenario_id)::int AS scenarios_touched
+            FROM oracle_run_log
+            WHERE agent = $1
+              AND started_at > NOW() - ($2 || ' hours')::interval
+            """,
+            agent, str(hours),
+        )
+        recent_runs = await conn.fetch(
+            """
+            SELECT
+              run_hash,
+              MAX(started_at) AS started_at,
+              mode,
+              sha,
+              COUNT(*)::int AS rows,
+              COUNT(*) FILTER (WHERE verdict = 'pass')::int AS pass_count,
+              COUNT(*) FILTER (WHERE verdict = 'fail')::int AS fail_count,
+              COUNT(*) FILTER (WHERE verdict = 'unknown')::int AS unknown_count
+            FROM oracle_run_log
+            WHERE agent = $1
+              AND started_at > NOW() - ($2 || ' hours')::interval
+            GROUP BY run_hash, mode, sha
+            ORDER BY MAX(started_at) DESC
+            LIMIT 10
+            """,
+            agent, str(hours),
+        )
+        by_dim = await conn.fetch(
+            """
+            SELECT
+              dim,
+              COUNT(*)::int AS total,
+              COUNT(*) FILTER (WHERE verdict = 'pass')::int AS pass,
+              COUNT(*) FILTER (WHERE verdict = 'fail')::int AS fail,
+              COUNT(*) FILTER (WHERE verdict = 'unknown')::int AS unknown,
+              COALESCE((COUNT(*) FILTER (WHERE verdict = 'pass')::float
+                        / NULLIF(COUNT(*), 0) * 100)::int, 0) AS pass_pct
+            FROM oracle_run_log
+            WHERE agent = $1
+              AND started_at > NOW() - ($2 || ' hours')::interval
+            GROUP BY dim
+            ORDER BY total DESC
+            """,
+            agent, str(hours),
+        )
+    return {
+        "agent": agent,
+        "hours": hours,
+        "summary": dict(summary or {}),
+        "recent_runs": [
+            {**dict(r), "started_at": r["started_at"].isoformat() if r["started_at"] else None}
+            for r in recent_runs
+        ],
+        "by_dim": [dict(r) for r in by_dim],
+    }
