@@ -1,43 +1,46 @@
-"""Session 39 Block 1.2 — LiteLLM custom callback : persist cached_tokens.
+"""Session 39 Block 1.2 — LiteLLM custom callback : cached_tokens telemetry.
 
 Registered in config.yaml via :
     litellm_settings:
-      callbacks: ["cache_stats_callback.proxy_handler_instance"]
+      callbacks: ["cache_ext.cache_stats_callback.proxy_handler_instance"]
 
 LiteLLM loads custom callbacks by importing the dotted path, then calling
 `log_success_event` (sync) or `async_log_success_event` (async) on the
 handler instance with (kwargs, response_obj, start_time, end_time).
 
 We extract `response_obj.usage.prompt_tokens_details.cached_tokens` and
-INSERT one row per request into `litellm_cache_stats` in `litellm_db`.
-Failures are swallowed to never break the proxy hot path.
+POST a small JSON payload to academie-api which persists it to the
+`litellm_cache_stats` sidecar in litellm_db.
 
-Reads DATABASE_URL (or LITELLM_CACHE_STATS_DSN if set) from env — should
-be the same DSN LiteLLM already uses. No extra secret to manage.
+Why HTTP instead of direct PG write : the LiteLLM container image ships
+no Python PG driver (psycopg/asyncpg absent, Prisma is JS-based) and
+installing one at runtime is both fragile and sandbox-blocked. academie-api
+already talks to Postgres and rebuilds cleanly — the relay keeps the
+LiteLLM container image pristine.
+
+All failures are swallowed : telemetry must never break the proxy hot path.
 """
 from __future__ import annotations
 
+import json
 import logging
 import os
-from datetime import datetime
+import urllib.request
 from typing import Any
 
 from litellm.integrations.custom_logger import CustomLogger
 
 _log = logging.getLogger("litellm.cache_stats")
 
-
-def _dsn() -> str:
-    return (
-        os.environ.get("LITELLM_CACHE_STATS_DSN")
-        or os.environ.get("DATABASE_URL")
-        or ""
-    )
+# Relay endpoint on academie-api (same docker network → hostname resolves)
+RELAY_URL = os.environ.get(
+    "LITELLM_CACHE_STATS_RELAY",
+    "http://academie-api:8000/internal/cache-stats",
+)
+RELAY_TIMEOUT_S = 1.5
 
 
 def _extract_cached_tokens(response_obj: Any) -> int:
-    """Dig `usage.prompt_tokens_details.cached_tokens` out of either a dict
-    or a pydantic/openai response object. Returns 0 if absent."""
     if response_obj is None:
         return 0
     usage = getattr(response_obj, "usage", None) or (
@@ -71,64 +74,56 @@ def _extract_prompt_tokens(response_obj: Any) -> int:
 
 
 class CacheStatsLogger(CustomLogger):
-    """Persist (request_id, cached_tokens, prompt_tokens) to a sidecar
-    Postgres table. Designed so any exception path is swallowed and
-    logged — never break the proxy hot path over telemetry."""
+    """Relay cached_tokens stats to academie-api via HTTP POST.
+    Errors are logged and dropped — never propagate to the proxy."""
 
-    def _insert(self, kwargs: dict, response_obj: Any, start_time) -> None:
-        try:
-            import psycopg  # psycopg3, available in LiteLLM image
-        except Exception:
-            try:
-                import psycopg2 as psycopg  # type: ignore
-            except Exception as e:
-                _log.warning("no psycopg available: %s", e)
-                return
-        dsn = _dsn()
-        if not dsn:
-            _log.warning("no DSN for cache_stats sidecar")
-            return
-
+    def _payload(self, kwargs: dict, response_obj: Any, start_time) -> dict | None:
         request_id = kwargs.get("litellm_call_id") or kwargs.get("request_id") or ""
         if not request_id:
-            return
-        model = kwargs.get("model") or ""
+            return None
         prompt_tokens = _extract_prompt_tokens(response_obj)
         cached = _extract_cached_tokens(response_obj)
-        user_id = (
-            (kwargs.get("litellm_params") or {}).get("metadata", {}).get("user_api_key_user_id")
-            or kwargs.get("user")
-            or ""
+        # Only bother relaying if we actually have usage data
+        if prompt_tokens == 0 and cached == 0:
+            return None
+
+        started_iso = (
+            start_time.isoformat()
+            if hasattr(start_time, "isoformat") else str(start_time)
         )
-        endpoint = kwargs.get("call_type") or ""
+        return {
+            "request_id": request_id,
+            "started_at": started_iso,
+            "model": kwargs.get("model") or "",
+            "prompt_tokens": prompt_tokens,
+            "cached_tokens": cached,
+            "user_id": (
+                (kwargs.get("litellm_params") or {}).get("metadata", {}).get("user_api_key_user_id")
+                or kwargs.get("user") or ""
+            ) or None,
+            "endpoint": kwargs.get("call_type") or None,
+        }
 
-        started = start_time if isinstance(start_time, datetime) else datetime.utcnow()
-
+    def _post(self, payload: dict) -> None:
         try:
-            with psycopg.connect(dsn) as conn:  # type: ignore
-                with conn.cursor() as cur:
-                    cur.execute(
-                        """
-                        INSERT INTO litellm_cache_stats
-                          (request_id, started_at, model, prompt_tokens,
-                           cached_tokens, user_id, endpoint)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s)
-                        ON CONFLICT (request_id) DO NOTHING
-                        """,
-                        (request_id, started, model, prompt_tokens, cached,
-                         user_id or None, endpoint or None),
-                    )
-                conn.commit()
+            data = json.dumps(payload).encode("utf-8")
+            req = urllib.request.Request(
+                RELAY_URL, data=data, method="POST",
+                headers={"Content-Type": "application/json"},
+            )
+            urllib.request.urlopen(req, timeout=RELAY_TIMEOUT_S).read()
         except Exception as e:
-            _log.warning("cache_stats insert failed: %s", e)
+            _log.warning("cache_stats relay failed: %s", e)
 
-    # Sync path — LiteLLM calls this on success for non-async routes
     def log_success_event(self, kwargs, response_obj, start_time, end_time):  # noqa: D401
-        self._insert(kwargs, response_obj, start_time)
+        p = self._payload(kwargs, response_obj, start_time)
+        if p:
+            self._post(p)
 
-    # Async path — the one that fires for /v1/chat/completions
     async def async_log_success_event(self, kwargs, response_obj, start_time, end_time):  # noqa: D401
-        self._insert(kwargs, response_obj, start_time)
+        p = self._payload(kwargs, response_obj, start_time)
+        if p:
+            self._post(p)
 
 
 proxy_handler_instance = CacheStatsLogger()
