@@ -6,12 +6,33 @@
 
 Runbook actionable pour Sinse. Ce document liste TOUS les items A7, marque ceux livrés en code (CI/Dependabot) et détaille pas-à-pas ceux qui nécessitent une action manuelle (Cloudflare dashboard, Dockerfile rebuild, backup audit).
 
-## ✅ Livrés en code (Session 46)
+## ✅ Livrés en code + appliqués (Session 46)
 
-- **Dependabot** : `.github/dependabot.yml` — auto-PR hebdomadaires sur pip (backend + academie-core), npm (frontend), GitHub Actions, Docker. Groups `minor-patch` pour réduire le bruit. **Action Sinse** : activer Dependabot dans Settings → Code security → Enable Dependabot.
-- **CI security-audit** : `.github/workflows/security-audit.yml` — pip-audit (HIGH blocking), npm audit (HIGH blocking), syft SBOM (CycloneDX + SPDX, retained 90j), Trivy filesystem scan (CRITICAL+HIGH blocking, ignore-unfixed). Run on push main / PR / weekly Monday 5am UTC. **Action Sinse** : aucune, s'active dès merge sur main.
+- **Dependabot** : `.github/dependabot.yml` créé + `dependabot_security_updates` + `vulnerability_alerts` activés via API GitHub (Sinsemilila/academIA).
+- **CI security-audit** : `.github/workflows/security-audit.yml` — pip-audit (HIGH blocking), npm audit (HIGH blocking), syft SBOM (CycloneDX + SPDX, retained 90j), Trivy filesystem scan (CRITICAL+HIGH blocking, ignore-unfixed). S'active dès push origin/main.
+- **Cloudflare DNS** :
+  - SPF TXT `petit-pont.com` = `v=spf1 -all` (no mail self-hosted)
+  - DMARC TXT `_dmarc.petit-pont.com` = `v=DMARC1; p=none; rua=mailto:dmarc-reports@petit-pont.com; fo=1; adkim=s; aspf=s` (phase 1, bump à `p=quarantine` après 2 sem clean)
+- **Cloudflare SSL/TLS** :
+  - SSL mode = Full (strict)
+  - Always Use HTTPS = ON
+  - Min TLS 1.2 + TLS 1.3 ON
+  - Automatic HTTPS Rewrites = ON
+  - Opportunistic Encryption = ON
+  - HSTS : max_age 31536000 (1 an), includeSubdomains, no-preload (preload activé après A3 enforce stable)
+- **Cloudflare WAF** : Free Managed Ruleset activé (entrypoint `http_request_firewall_managed` créé pointant vers ruleset id `77454fe2d30c4220b5701f6fdfb893ba`)
+- **Cloudflare ratelimit existant** : "Leaked credential check" (rule pré-existante, conservée — bloque les requêtes avec credentials fuités)
 
-## 🟡 À faire manuellement — DNS Cloudflare (5-10 min, zéro coût)
+## 🟡 Restent à faire manuellement (perms account-level non incluses dans token zone)
+
+- **Bot Fight Mode** : Cloudflare dashboard → academie.petit-pont.com → Security → Bots → Bot Fight Mode = ON. (API requiert Account-level Bot Management edit, non inclus dans le token A7 zone-scope.)
+- **Cache Rule `/_app/immutable/*`** : dashboard → Caching → Cache Rules → créer règle. Match `(http.request.uri.path matches "^/_app/immutable/")`, Edge TTL 1 month, Browser TTL 1 month. (API a renvoyé "request is not authorized" — perm Cache Rules pas mappée à Page Rules dans le token actuel.)
+
+## ⏭️ Reporté en backend — Rate limiting `/api/*`
+
+Free tier Cloudflare = **1 seule règle ratelimit max** (déjà occupée par "Leaked credential check"). Le rate limit `/api/*` 100r/m sera implémenté en backend FastAPI via `slowapi` middleware en **Phase A5** (déjà au plan ADR-001). Cloudflare rate limit reportée si on passe en tier payant.
+
+## 📚 Référence — DNS Cloudflare (déjà appliqué, garder pour rotation/upgrade)
 
 petit-pont.com est sur Cloudflare (registrar + DNS confirmé via whois). Aucun MX record actuellement (pas de mail self-hosted), donc on configure **SPF + DKIM + DMARC** pour bloquer le spoofing du domaine. Si tu envoies des emails (auth, reset password, notifs) via un provider tiers (Resend, Mailgun, SendGrid, Postmark, etc.), adapte les valeurs ci-dessous selon ton provider.
 
@@ -209,19 +230,19 @@ Action : reporter à quand on aura un registry. Pas bloquant pour beta privée f
 ## Checklist A7 finale (pour KPI gate Phase A)
 
 - [x] Dependabot config créée
-- [ ] Dependabot activé dans Settings GitHub
+- [x] Dependabot security updates + vulnerability alerts activés (API GitHub)
 - [x] CI security-audit créé (pip-audit + npm audit + syft + Trivy)
-- [ ] CI green sur main
-- [ ] SPF record TXT ajouté
-- [ ] DMARC record TXT ajouté (phase 1 `p=none`)
+- [ ] CI green sur main (vérif après push)
+- [x] SPF record TXT ajouté (`v=spf1 -all`)
+- [x] DMARC record TXT ajouté (phase 1 `p=none`)
 - [ ] DKIM (si envoi mail tiers) record TXT ajouté
-- [ ] Cloudflare Free Managed Ruleset activé en `Block`
-- [ ] Cloudflare Bot Fight Mode ON
-- [ ] Cloudflare Rate limiting `/api/*` 100r/m IP
-- [ ] Cloudflare Cache rule `/_app/immutable/`
-- [ ] Cloudflare SSL/TLS Full (strict) + Always HTTPS + HSTS
-- [ ] SSL Labs A+
-- [ ] Mozilla Observatory A+ (peut attendre A3 CSP)
-- [ ] Docker hardening appliqué + smoke-test green
+- [x] Cloudflare Free Managed Ruleset activé
+- [ ] Cloudflare Bot Fight Mode ON (manuel dashboard, perm account-level)
+- [ ] Cloudflare Cache rule `/_app/immutable/` (manuel dashboard, perm Cache Rules)
+- [⏭️] Cloudflare Rate limiting `/api/*` (reporté → backend slowapi en A5, free tier limite à 1 règle déjà occupée par leaked-creds check)
+- [x] Cloudflare SSL/TLS Full (strict) + Always HTTPS + Min TLS 1.2 + TLS 1.3 + HSTS 1 an
+- [ ] SSL Labs A+ (vérifier post-application : ssllabs.com/ssltest/analyze.html?d=academie.petit-pont.com)
+- [ ] Mozilla Observatory A+ (peut attendre A3 CSP origin)
+- [ ] Docker hardening appliqué + smoke-test green (A7b prochaine session)
 - [ ] Restore restic testé une fois
-- [ ] DMARC bumped à `p=quarantine` après 2 semaines collecte clean
+- [ ] DMARC bumped à `p=quarantine` après 2 semaines collecte clean (jalon : 2026-05-07)
