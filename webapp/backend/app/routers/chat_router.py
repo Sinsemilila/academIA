@@ -264,21 +264,48 @@ _current_dify_model = "gpt-4o-mini"
 _current_dify_model_loaded = False  # True once reconciled against the Dify workflow graph
 
 
+TEACHER_APP_ID = "39565197-c9d1-4d5b-b66f-18925de236d9"
+
+
+async def _teacher_workflow_ids() -> list[str]:
+    """Return [published_workflow_id, draft_workflow_id] for the Teacher
+    app, read from apps.workflow_id (source of truth) + the matching
+    draft row. Never hardcode workflow UUIDs — they change on every
+    publish event and stale hardcoded values mean the model-switch
+    silently targets the wrong graph while Dify keeps executing the
+    real published one (happened Session 44, wasted ~1.8M tokens on
+    gpt-4o-mini that should have cascaded to groq)."""
+    try:
+        async with db.pool.acquire() as conn:
+            pub = await conn.fetchval(
+                "SELECT workflow_id FROM apps WHERE id = $1", TEACHER_APP_ID,
+            )
+            draft = await conn.fetchval(
+                "SELECT id FROM workflows WHERE app_id = $1 AND version = 'draft' "
+                "ORDER BY updated_at DESC LIMIT 1",
+                TEACHER_APP_ID,
+            )
+    except Exception:
+        return []
+    return [str(w) for w in (pub, draft) if w]
+
+
 async def _reconcile_current_dify_model() -> None:
     """On first call, read the published Teacher workflow graph and infer
-    the actual active model from the LLM nodes. This fixes the "after a
+    the actual active model from the LLM nodes. Fixes the "after a
     container rebuild, in-memory state loses the previous tier switch"
-    class of bugs. Idempotent : flips _current_dify_model once then
-    never touches it again (subsequent _switch_dify_model calls are the
-    source of truth)."""
+    class of bugs. Idempotent."""
     global _current_dify_model, _current_dify_model_loaded
     if _current_dify_model_loaded:
         return
     try:
+        wf_ids = await _teacher_workflow_ids()
+        if not wf_ids:
+            _current_dify_model_loaded = True
+            return
         async with db.pool.acquire() as conn:
             row = await conn.fetchrow(
-                "SELECT graph::text AS g FROM workflows "
-                "WHERE id = 'c52a451f-e381-46f1-a23a-077197b0fccb'"
+                "SELECT graph::text AS g FROM workflows WHERE id = $1", wf_ids[0],
             )
         if row and row["g"]:
             import json as _json
@@ -368,8 +395,15 @@ async def _switch_dify_model(target_model: str, reason: str | None = None):
         return
     previous = _current_dify_model
     try:
+        wf_ids = await _teacher_workflow_ids()
+        if not wf_ids:
+            import logging
+            logging.getLogger("chat").error(
+                "cannot resolve Teacher workflow ids — model switch skipped",
+            )
+            return
         async with db.pool.acquire() as conn:
-            for wf_id in ['c52a451f-e381-46f1-a23a-077197b0fccb', 'ed0d1c91-8c9a-48ad-9c3a-063981f8da87']:
+            for wf_id in wf_ids:
                 await conn.execute(
                     "UPDATE workflows SET graph = replace(graph::text, "
                     f"'\"name\": \"{_current_dify_model}\"', '\"name\": \"{target_model}\"')::json, "
