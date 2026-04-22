@@ -714,7 +714,12 @@ def render_fewshots_block(level: str, max_examples: int = 3, lang_data: Language
         lines.append("\n=== END EXAMPLES ===")
 
     level_upper = level.upper().rstrip("+")
-    if level_upper in ("A1", "A2"):
+    # Session 45 P2d — B1 also receives anti-pattern block (gpt-4o-mini
+    # defaults to explicit_correction at B1 when the scenario expects
+    # partial_recast/elicit/metalinguistic). B2-C2 stay without —
+    # learners at that level can handle direct metalinguistic/explicit
+    # framing, and the judges don't forbid those moves there.
+    if level_upper in ("A1", "A2", "B1"):
         anti = _anti_patterns_for(level_upper, lang_data)
         if anti:
             lines.append("")

@@ -1,24 +1,24 @@
 {
   "scenario_id": "el_a1_t2_misc_004",
-  "sha": "83fccdade4b0",
-  "recorded_at": "2026-04-22T20:32:55Z",
-  "response": "It should be \"for a long time.\" You use \"for\" to talk about a duration. Keep practicing! What do you want to say using this phrase?",
-  "dify_conversation_id": "88f11919-a816-42af-971a-511cf36a9d19",
-  "dify_message_id": "413814e4-3c26-43e4-99f4-d35e78ee8900",
+  "sha": "041230126a96",
+  "recorded_at": "2026-04-22T20:52:43Z",
+  "response": "It should be \"for a long time.\" Remember to use \"for\" when talking about a duration. Keep going!",
+  "dify_conversation_id": "5f979eac-ec92-42af-9e78-f65cecb48bb4",
+  "dify_message_id": "1be3c340-b2c6-40ef-90a8-7eb824d8e477",
   "usage": {
     "prompt_tokens": 1751,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 33,
+    "completion_tokens": 24,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1784,
+    "total_tokens": 1775,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.195,
-    "time_to_first_token": 1.559,
+    "latency": 1.369,
+    "time_to_first_token": 1.777,
     "time_to_generate": 0.0
   }
 }

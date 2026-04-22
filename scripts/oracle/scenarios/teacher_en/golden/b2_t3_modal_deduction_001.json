@@ -1,24 +1,24 @@
 {
   "scenario_id": "b2_t3_modal_deduction_001",
-  "sha": "83fccdade4b0",
-  "recorded_at": "2026-04-22T20:32:35Z",
-  "response": "It seems like you're trying to express that he forgot the meeting, even though he is usually responsible. A more accurate way to say this would be: \"He must have forgotten the meeting; he always is so responsible.\" \n\nRemember to use \"forgotten\" instead of \"forgot\" in this context. Keep up the good work! Do you want to try another sentence?",
-  "dify_conversation_id": "46378651-a780-47ce-9f5f-caa69a054312",
-  "dify_message_id": "9855ed55-fcab-4084-bceb-4aa2688d35b6",
+  "sha": "041230126a96",
+  "recorded_at": "2026-04-22T20:52:20Z",
+  "response": "You’re doing well, but there's a small mistake here. It should be: \"He must have forgotten the meeting; he is always so responsible.\" \n\n\"Forgot\" should be in the past participle form, \"forgotten,\" after \"have.\" Keep it up! Would you like to try another sentence?",
+  "dify_conversation_id": "5f3a2b9d-ae32-4fec-a197-9184128d66e3",
+  "dify_message_id": "90518781-e2c9-4c2e-917b-f8f923f64a22",
   "usage": {
     "prompt_tokens": 1761,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 75,
+    "completion_tokens": 63,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1836,
+    "total_tokens": 1824,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.653,
-    "time_to_first_token": 2.022,
+    "latency": 2.0,
+    "time_to_first_token": 2.37,
     "time_to_generate": 0.0
   }
 }

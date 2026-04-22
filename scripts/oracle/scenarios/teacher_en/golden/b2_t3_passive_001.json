@@ -1,24 +1,24 @@
 {
   "scenario_id": "b2_t3_passive_001",
-  "sha": "83fccdade4b0",
-  "recorded_at": "2026-04-22T20:32:37Z",
-  "response": "The sentence you wrote has a couple of errors. It should be: \"The report was finished by my colleague before the deadline expired.\" \n\nThe main corrections are:\n1. \"finish\" should be \"finished\" to use the correct past participle form.\n2. \"was expired\" should simply be \"expired,\" as the verb \"expire\" does not require the passive form here.\n\nKeep up the good work! Would you like to try another sentence?",
-  "dify_conversation_id": "83b7a219-653a-41c9-9f17-bce670f36124",
-  "dify_message_id": "ecf36ae8-9de2-47dc-97d7-e38a9147a17d",
+  "sha": "041230126a96",
+  "recorded_at": "2026-04-22T20:52:22Z",
+  "response": "The report was finished by my colleague before the deadline expired. \n\nYou're doing well with your sentence structure, but remember to use the correct form of the verb. Keep it up! Would you like to try another sentence?",
+  "dify_conversation_id": "73ed30c6-76bc-48f2-aabe-c61cf76b2139",
+  "dify_message_id": "1f7b4e48-0e6e-4d10-817f-796a64b1de01",
   "usage": {
     "prompt_tokens": 1760,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 92,
+    "completion_tokens": 44,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1852,
+    "total_tokens": 1804,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.841,
-    "time_to_first_token": 2.212,
+    "latency": 1.307,
+    "time_to_first_token": 1.67,
     "time_to_generate": 0.0
   }
 }

@@ -1,24 +1,24 @@
 {
   "scenario_id": "el_a1_t2_misc_001",
-  "sha": "83fccdade4b0",
-  "recorded_at": "2026-04-22T20:32:49Z",
-  "response": "It looks like your sentence is incomplete. You can say, \"What would you do if you were...?\" and then finish with a situation. For example, \"What would you do if you were a superhero?\" \n\nCan you give me the full question?",
-  "dify_conversation_id": "b9a62b2c-6618-43f5-98bd-d9b509433a0a",
-  "dify_message_id": "11ef1882-b96d-47d4-9c27-77d65f599be7",
+  "sha": "041230126a96",
+  "recorded_at": "2026-04-22T20:52:35Z",
+  "response": "It looks like your sentence is incomplete. You could say, \"What would you do if you were...\" and then add a situation. For example, \"What would you do if you were in a new city?\" Try to complete your thought!",
+  "dify_conversation_id": "04bf7644-83ca-452f-91dd-ad8b7f3f26e0",
+  "dify_message_id": "ab60ef09-611d-4634-9f11-7e8e4632b08a",
   "usage": {
     "prompt_tokens": 1754,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 52,
+    "completion_tokens": 49,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1806,
+    "total_tokens": 1803,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.6,
-    "time_to_first_token": 2.01,
+    "latency": 1.292,
+    "time_to_first_token": 1.652,
     "time_to_generate": 0.0
   }
 }

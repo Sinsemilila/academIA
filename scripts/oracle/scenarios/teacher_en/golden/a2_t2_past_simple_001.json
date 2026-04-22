@@ -1,24 +1,24 @@
 {
   "scenario_id": "a2_t2_past_simple_001",
-  "sha": "83fccdade4b0",
-  "recorded_at": "2026-04-22T20:32:09Z",
-  "response": "Great effort in expressing your past activities! Just a couple of corrections: it should be \"I went to the cinema\" instead of \"I goed\" and \"I took many photos\" instead of \"I taked.\" \n\nSo it would be: \"Last weekend I went to the cinema and I took many photos.\" \n\nKeep it up! What movie did you see?",
-  "dify_conversation_id": "3b36267d-fce9-4282-a542-46203ae26d0c",
-  "dify_message_id": "83168c57-dab5-49a5-bfce-31d33a7888e2",
+  "sha": "041230126a96",
+  "recorded_at": "2026-04-22T20:51:59Z",
+  "response": "Great effort! You used past actions, which is a good start. However, there are some mistakes with the verbs. It should be: \"Last weekend I went to the cinema and I took many photos.\" \n\nLet's practice! Can you tell me what movie you watched?",
+  "dify_conversation_id": "6f020d09-5a5a-4f17-872d-352f66c6c86b",
+  "dify_message_id": "5ca4fd9d-2d57-49a1-a7bf-c3d1fae1fabc",
   "usage": {
     "prompt_tokens": 2392,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 75,
+    "completion_tokens": 55,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 2467,
+    "total_tokens": 2447,
     "total_price": "0",
     "currency": "USD",
-    "latency": 2.558,
-    "time_to_first_token": 2.964,
+    "latency": 2.529,
+    "time_to_first_token": 2.941,
     "time_to_generate": 0.0
   }
 }

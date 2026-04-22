@@ -1,24 +1,24 @@
 {
   "scenario_id": "c1_t3_false_friend_assister_001",
-  "sha": "83fccdade4b0",
-  "recorded_at": "2026-04-22T20:32:43Z",
-  "response": "Great effort! Just a small correction: instead of \"assisted the presentation to the conference,\" it should be \"attended the conference\" or \"attended the presentation at the conference.\" So the sentence would be: \"I attended the conference this morning and learned a lot.\" Keep up the good work! \n\nNow, can you tell me what you learned at the conference?",
-  "dify_conversation_id": "dc6f4642-5a6e-40ee-a3a8-8b456f108154",
-  "dify_message_id": "0e4a2176-5fe1-4bd3-8599-3cdd70a29d2e",
+  "sha": "041230126a96",
+  "recorded_at": "2026-04-22T20:52:29Z",
+  "response": "Great effort! Just a small correction: it should be \"I attended the presentation at the conference this morning.\" \"Attended\" is the correct verb here, and we use \"at\" for events like conferences. Keep it up!",
+  "dify_conversation_id": "496b1b1b-690a-469d-a3e7-8673d9c215c7",
+  "dify_message_id": "f3d4eb20-a4c3-4559-a8e3-1a2c6ca2d159",
   "usage": {
     "prompt_tokens": 2424,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 76,
+    "completion_tokens": 47,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 2500,
+    "total_tokens": 2471,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.77,
-    "time_to_first_token": 2.167,
+    "latency": 3.828,
+    "time_to_first_token": 4.22,
     "time_to_generate": 0.0
   }
 }

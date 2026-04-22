@@ -1,24 +1,24 @@
 {
   "scenario_id": "multi_a2_art_uptake_001",
-  "sha": "83fccdade4b0",
-  "recorded_at": "2026-04-22T20:33:00Z",
-  "response": "Good job on using the past tense! Just a small correction: it should be \"I bought a car last week.\" You need the article \"a\" before \"car.\" Keep it up!",
-  "dify_conversation_id": "a0ab5d30-bc88-4102-bb24-df69c31c9d90",
-  "dify_message_id": "6cef67a1-9f28-4426-abb1-574410294071",
+  "sha": "041230126a96",
+  "recorded_at": "2026-04-22T20:52:47Z",
+  "response": "You should say, \"I bought a car last week.\" You need the article \"a\" before \"car.\" Keep going!",
+  "dify_conversation_id": "1f78e2c8-560e-4935-bd5d-c2c4b0894f09",
+  "dify_message_id": "8123dc1d-0116-4d91-9904-81f17d00676f",
   "usage": {
     "prompt_tokens": 1753,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 39,
+    "completion_tokens": 26,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1792,
+    "total_tokens": 1779,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.18,
-    "time_to_first_token": 1.556,
+    "latency": 0.869,
+    "time_to_first_token": 1.241,
     "time_to_generate": 0.0
   }
 }

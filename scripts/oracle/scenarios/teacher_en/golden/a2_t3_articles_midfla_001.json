@@ -1,24 +1,24 @@
 {
   "scenario_id": "a2_t3_articles_midfla_001",
-  "sha": "83fccdade4b0",
-  "recorded_at": "2026-04-22T20:32:14Z",
-  "response": "That's great that you want to buy a car for your wife! However, since your house is small, you might want to consider a compact car. It will be easier to park and fit in your space. What type of car do you have in mind?",
-  "dify_conversation_id": "3438126f-7fb9-4779-aa6c-546d5efddb81",
-  "dify_message_id": "c0ae9358-3cf4-4170-afd6-9972b42f2f58",
+  "sha": "041230126a96",
+  "recorded_at": "2026-04-22T20:52:04Z",
+  "response": "It's great that you want to buy a car for your wife! However, since your house is small, you might want to consider a compact or smaller car that can fit easily. Do you have a specific type of car in mind?",
+  "dify_conversation_id": "c4b2dbab-fbe4-42cf-bb9a-bdcb3f443431",
+  "dify_message_id": "f45569f1-2d92-438d-bdec-c3587b96d77b",
   "usage": {
     "prompt_tokens": 1765,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 52,
+    "completion_tokens": 47,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1817,
+    "total_tokens": 1812,
     "total_price": "0",
     "currency": "USD",
-    "latency": 2.289,
-    "time_to_first_token": 2.654,
+    "latency": 1.454,
+    "time_to_first_token": 1.826,
     "time_to_generate": 0.0
   }
 }

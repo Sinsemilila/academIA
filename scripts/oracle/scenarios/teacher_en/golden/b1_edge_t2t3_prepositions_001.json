@@ -1,24 +1,24 @@
 {
   "scenario_id": "b1_edge_t2t3_prepositions_001",
-  "sha": "83fccdade4b0",
-  "recorded_at": "2026-04-22T20:32:18Z",
-  "response": "She is interested in learning French and playing the piano. Remember to use \"interested in\" instead of \"interested on.\" Keep it up! What would you like to practice next?",
-  "dify_conversation_id": "f8cf53ec-ed72-4ebd-a102-e75997e9d588",
-  "dify_message_id": "45e33d87-4092-48b1-b1c7-e55e99f85a15",
+  "sha": "041230126a96",
+  "recorded_at": "2026-04-22T20:52:07Z",
+  "response": "She is interested in learning French and playing the piano. \n\nYou used \"on\" instead of \"in.\" Keep it up! Would you like to try another sentence?",
+  "dify_conversation_id": "4519cfcb-de70-4169-9af5-54db79b29ab1",
+  "dify_message_id": "7f5fb67b-af4c-4289-8aa2-0fc51ba3c2a6",
   "usage": {
     "prompt_tokens": 1758,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 38,
+    "completion_tokens": 34,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1796,
+    "total_tokens": 1792,
     "total_price": "0",
     "currency": "USD",
-    "latency": 2.401,
-    "time_to_first_token": 2.94,
+    "latency": 1.479,
+    "time_to_first_token": 1.894,
     "time_to_generate": 0.0
   }
 }

@@ -115,8 +115,10 @@ def test_a1_bans_elicit_and_metalinguistic_in_mapping():
 from academie_core.pedagogy.teacher_prompt import render_fewshots_block
 
 
-@pytest.mark.parametrize("level", ["A1", "A2"])
-def test_fewshots_includes_anti_patterns_at_a1_a2(level):
+@pytest.mark.parametrize("level", ["A1", "A2", "B1"])
+def test_fewshots_includes_anti_patterns_at_a1_a2_b1(level):
+    """Session 45 P2d — B1 also receives anti-patterns because gpt-4o-mini
+    defaults to explicit_correction even at B1."""
     block = render_fewshots_block(level)
     assert "ANTI-PATTERNS" in block
     assert "DO NOT PRODUCE" in block
@@ -124,8 +126,9 @@ def test_fewshots_includes_anti_patterns_at_a1_a2(level):
     assert "✅ CORRECT" in block
 
 
-@pytest.mark.parametrize("level", ["B1", "B2", "C1", "C2"])
-def test_fewshots_no_anti_patterns_at_b1plus(level):
-    """B1+ learners can handle metalinguistic — no need for anti-pattern shock therapy."""
+@pytest.mark.parametrize("level", ["B2", "C1", "C2"])
+def test_fewshots_no_anti_patterns_at_b2plus(level):
+    """B2+ learners can handle metalinguistic + direct correction —
+    no need for anti-pattern shock therapy."""
     block = render_fewshots_block(level)
     assert "ANTI-PATTERNS" not in block

@@ -1,24 +1,24 @@
 {
   "scenario_id": "b1_t3_conditional_midfla_001",
-  "sha": "83fccdade4b0",
-  "recorded_at": "2026-04-22T20:32:23Z",
-  "response": "Good try! It should be: \"If I had more money, I would travel to Japan.\" This is an example of the second conditional, which is used for hypothetical situations. Keep practicing!",
-  "dify_conversation_id": "c8ba91ae-e54f-4d28-a2f0-cbf74b314e9f",
-  "dify_message_id": "6ef6f5e7-24ba-4c1c-a2ca-f7145c749c7f",
+  "sha": "041230126a96",
+  "recorded_at": "2026-04-22T20:52:12Z",
+  "response": "Good effort! It should be: \"If I had more money, I would travel to Japan.\" \n\nYou need to use the past simple \"had\" for the condition and \"would\" for the result. Keep practicing!",
+  "dify_conversation_id": "c5d19c42-2f31-494b-90a2-2028e460e7b7",
+  "dify_message_id": "f8dd2a36-3d9e-46dd-b3c0-c8738e65edad",
   "usage": {
     "prompt_tokens": 1760,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 39,
+    "completion_tokens": 45,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1799,
+    "total_tokens": 1805,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.793,
-    "time_to_first_token": 2.146,
+    "latency": 1.582,
+    "time_to_first_token": 1.96,
     "time_to_generate": 0.0
   }
 }

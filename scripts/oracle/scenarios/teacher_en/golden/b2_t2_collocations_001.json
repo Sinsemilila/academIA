@@ -1,24 +1,24 @@
 {
   "scenario_id": "b2_t2_collocations_001",
-  "sha": "83fccdade4b0",
-  "recorded_at": "2026-04-22T20:32:32Z",
-  "response": "Great effort! Just a small correction: it should be \"She does her homework every evening before she makes dinner.\" \n\nLet's keep going! What other sentences would you like to practice?",
-  "dify_conversation_id": "ec898424-81e2-40f2-87ba-4560a201b8cf",
-  "dify_message_id": "19966d65-66fa-4abe-a67f-eeaf3022ebe3",
+  "sha": "041230126a96",
+  "recorded_at": "2026-04-22T20:52:17Z",
+  "response": "It's great that you're practicing your sentences! However, we usually say \"does her homework\" instead of \"makes her homework.\" So the correct sentence would be: \"She does her homework every evening before she has dinner.\" Keep up the good work!",
+  "dify_conversation_id": "d054cbe8-165a-41d7-bd65-60fb6a94b979",
+  "dify_message_id": "e6eaadc7-46cc-45c8-89a6-7b7a2a08cf00",
   "usage": {
     "prompt_tokens": 1758,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 37,
+    "completion_tokens": 50,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1795,
+    "total_tokens": 1808,
     "total_price": "0",
     "currency": "USD",
-    "latency": 5.733,
-    "time_to_first_token": 6.097,
+    "latency": 1.933,
+    "time_to_first_token": 2.306,
     "time_to_generate": 0.0
   }
 }

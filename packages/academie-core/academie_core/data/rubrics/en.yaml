@@ -27,19 +27,26 @@ rubrics:
     - T4 on supposedly-acquired A1 structure: prompt + remediation, flag spaced retrieval.
     Preferred phrasings: T2 inline recast ("Oh you went to Paris! And what did you eat?"), T3 simple elicit ("Almost — past form of go?").
     Target structures: past simple regular+irregular (top 50), going-to future, comparatives -er/more, modal will/would basic.
-    ANTI-PATTERNS (HARD BAN at A2) — keep the register supportive, never lecture:
-    - NEVER explicit correction ("It should be X", "The correct sentence is...", "You should say...").
-    - Prefer elicitation (question form) over metalinguistic rule statements. Metalinguistic is OK only as a short tag on ALTERNATE turns ("Past or present?"), never a grammar lecture.
+    ANTI-PATTERNS (HARD BAN at A2) — the learner is still fragile, keep the register supportive, NEVER lecture:
+    - NEVER explicit correction. Banned openers include: "It should be...", "The correct sentence is...", "You should say...", "Just a small correction:", "The right form is...", "Instead of X, it's Y", "You need to add...".
+    - When you feel the urge to write "it should be" before a grammar fix — STOP. Rewrite as implicit recast inside a question: "Oh you *took* the bus — which one did you take?".
+    - Prefer elicitation (question form) over metalinguistic rule statements. Metalinguistic is OK only as a short tag on ALTERNATE turns ("Past or present?"), never a grammar lecture with rule names like "irregular plural", "past tense", "auxiliary verb".
+    - Article injection (e.g., learner "I bought car") → full_recast or partial_recast only ("Oh you bought *a car*! What color?"). NEVER "You need to add 'a' before 'car'".
   B1: |-
     RUBRIC B1 — Threshold
     Communicative goal: hold conversation on familiar topics, narrate events, give opinion+reason, manage travel. Past tenses + present perfect + first conditional.
     Tolerance:
     - T1 articles, common prepositions: silent.
-    - T2 lower-level structures (A1/A2 forms): recast.
-    - T3 on B1 target structures (since/for, present perfect, conditionals): prompts dominant. Alternate elicitation and metalinguistic, max 2× same type consecutive on same family.
+    - T2 lower-level structures (A1/A2 forms): partial_recast (echo the fix inside a friendly follow-up).
+    - T3 on B1 target structures (since/for, present perfect, conditionals): elicitation dominant, metalinguistic allowed on alternation. Max 2× same type consecutive on same family.
     - T4: prompt + explicit remediation + spaced retrieval.
-    Preferred T3 phrasings: elicit ('Almost — when started in past, continues now, which tense?'), metalinguistic ('Watch the tense. Action finished or ongoing?').
+    Preferred T3 phrasings: elicit ("Almost — when started in past, continues now, which tense?"), metalinguistic ("Watch the tense. Action finished or ongoing?").
     Target structures: present perfect (since/for, ever/never, just), conditionals 0+1, reported speech basic, phrasal verbs (top 50).
+    ANTI-PATTERNS (HARD BAN at B1) — the learner can handle metalinguistic talk, but NOT explicit "wrong/right" framing that demotivates:
+    - NEVER explicit correction. Banned openers: "It should be...", "The correct sentence is...", "You should say...", "Just a small correction:", "The right form is...", "Instead of X, it's Y".
+    - NEVER "full explicit" phrasing where a partial_recast or elicitation would do. If the learner says "learned about history of Europe" → reply "Oh you learned about *the* history of Europe — which period fascinated you?" (partial_recast), NOT "It should be 'the history of Europe'. You need the article."
+    - Metalinguistic is FINE at B1, but it must be embedded in a coaching question, not a verdict : "Watch the aspect — action still ongoing?" YES. "The correct tense here is the present perfect" NO.
+    - Conditional mixing errors (If I would) → partial_recast or elicit the structure, don't lecture. "Almost — 'If I *had*' + 'I would do' for unreal situations. Want to retry?" is OK. "This is because we use the past simple 'had' with 'would' in conditional sentences" is too explicit.
   B2: |-
     RUBRIC B2 — Vantage
     Communicative goal: argue, nuance position, cultural comparison, debate. All structures except rare + lexical precision.

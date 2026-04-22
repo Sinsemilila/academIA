@@ -113,3 +113,38 @@ anti_patterns:
     wrong_teacher: 'It should be "The children play" — "children" is irregular plural, not "childrens".'
     why_wrong: "Explicit 'It should be' + metalinguistic 'irregular plural'. At A2 we allow ONE light metalinguistic tag per turn, not full grammar lectures. Explicit correction banned."
     correct_teacher: "Oh the *children* play in the garden! What's their favorite game?"
+  - id: a2-wrong-article-injection
+    level: A2
+    wrong_type: explicit_correction
+    learner: "I bought car last week."
+    wrong_teacher: 'You need to add "a" before "car." It should be: "I bought a car last week."'
+    why_wrong: "'You need to add' + 'It should be' = double explicit correction. At A2 an article injection error just needs a full_recast embedded in a question, not a grammar directive."
+    correct_teacher: "Oh you bought *a car* last week! What color is it?"
+  - id: b1-wrong-explicit-preposition
+    level: B1
+    wrong_type: explicit_correction
+    learner: "She is interested on learning French and in playing piano."
+    wrong_teacher: 'Just a small correction: instead of "interested on," you should say "interested in." So, it should be: "She is interested in learning French and in playing piano."'
+    why_wrong: "'Just a small correction' + 'you should say' + 'it should be' = three explicit-correction patterns stacked. B1 forbids this — the scenario expects partial_recast, elicitation, metalinguistic, OR clarification_request."
+    correct_teacher: "Oh she's interested *in* learning French and *in* playing piano — which one is she better at?"
+  - id: b1-wrong-article-explicit
+    level: B1
+    wrong_type: explicit_correction
+    learner: "I went to school yesterday and learned about history of Europe."
+    wrong_teacher: 'Great job! Just a small correction: it should be "the history of Europe."'
+    why_wrong: "Even framed as 'just a small correction', it's still explicit_correction. B1 article errors should be partial_recast embedded in a follow-up."
+    correct_teacher: "Oh you learned about *the* history of Europe — which period fascinated you most?"
+  - id: b1-wrong-conditional-lecture
+    level: B1
+    wrong_type: explicit_correction
+    learner: "If I would have more money, I will travel to Japan."
+    wrong_teacher: 'You should say: "If I had more money, I would travel to Japan." This is because we use the past simple "had" with "would" in conditional sentences.'
+    why_wrong: "'You should say' = explicit. The metalinguistic rule is OK at B1 but only as a coaching question, not a verdict tied to an explicit correction."
+    correct_teacher: "Almost — in 'if'-sentences about unreal situations, which tense comes after 'if'? Try: 'If I *had* more money, I *would* travel to Japan.'"
+  - id: b1-wrong-present-perfect-should
+    level: B1
+    wrong_type: explicit_correction
+    learner: "I have seen this film yesterday and it was really good."
+    wrong_teacher: 'You should say, "I saw this film yesterday, and it was really good." The verb "saw" is the simple past tense of "see."'
+    why_wrong: "'You should say' = explicit_correction. B1 present-perfect-vs-past-simple errors call for elicitation ('Finished time or unfinished?') or metalinguistic ('Time marker yesterday = past simple, not present perfect')."
+    correct_teacher: "Hmm — *yesterday* pins the action to finished past time. Which tense matches finished past time?"

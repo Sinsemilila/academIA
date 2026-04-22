@@ -28,7 +28,7 @@ expected_dimensions:
     mode: all_required
     l2_ratio_band:
     - 0.7
-    - 0.98
+    - 1.0
   register_cefr_alignment:
     mode: within_sublevel
     target: A1

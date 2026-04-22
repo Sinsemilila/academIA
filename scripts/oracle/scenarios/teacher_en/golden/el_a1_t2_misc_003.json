@@ -1,24 +1,24 @@
 {
   "scenario_id": "el_a1_t2_misc_003",
-  "sha": "83fccdade4b0",
-  "recorded_at": "2026-04-22T20:32:53Z",
-  "response": "The correct phrase is \"for a long time.\" You can say, \"I haven't seen you for a long time.\" Keep practicing!",
-  "dify_conversation_id": "c075b1d4-f6f6-48ca-a65b-1c5088b27be1",
-  "dify_message_id": "037c83df-0b77-419d-8f6c-d8437240f501",
+  "sha": "041230126a96",
+  "recorded_at": "2026-04-22T20:52:40Z",
+  "response": "It should be \"for a long time.\" You use \"for\" to indicate a duration of time. Keep it up!",
+  "dify_conversation_id": "51dcee0f-ea96-4479-b159-5d8583902bad",
+  "dify_message_id": "9966ac67-0c56-4324-a7e5-9d284293f35d",
   "usage": {
     "prompt_tokens": 1751,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 27,
+    "completion_tokens": 25,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1778,
+    "total_tokens": 1776,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.066,
-    "time_to_first_token": 1.44,
+    "latency": 0.883,
+    "time_to_first_token": 1.249,
     "time_to_generate": 0.0
   }
 }
