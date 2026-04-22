@@ -99,7 +99,7 @@ class ApiClient {
   }
 
   // ── Auth ──────────────────────────────────
-  async login(username: string, password: string) {
+  async login(username: string, password: string): Promise<{ mfa_required?: boolean; access_token?: string; refresh_token?: string }> {
     const res = await this.fetch('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ username, password }),
@@ -109,9 +109,68 @@ class ApiClient {
       throw new Error(data.detail || 'Erreur de connexion');
     }
     const data = await res.json();
+    if (data.mfa_required) {
+      // Phase A4 — second factor required ; do NOT set tokens.
+      return data;
+    }
     this.setToken(data.access_token);
     if (data.refresh_token) this.setRefreshToken(data.refresh_token);
     return data;
+  }
+
+  async loginMfa(username: string, password: string, code: string) {
+    const res = await this.fetch('/auth/login-mfa', {
+      method: 'POST',
+      body: JSON.stringify({ username, password, code }),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.detail || 'Code MFA invalide');
+    }
+    const data = await res.json();
+    this.setToken(data.access_token);
+    if (data.refresh_token) this.setRefreshToken(data.refresh_token);
+    return data;
+  }
+
+  // ── TOTP MFA ──────────────────────────────
+  async totpStatus() {
+    const res = await this.fetch('/security/totp/status');
+    if (!res.ok) throw new Error('TOTP status fetch failed');
+    return res.json();
+  }
+
+  async totpEnrollStart() {
+    const res = await this.fetch('/security/totp/enroll-start', { method: 'POST' });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.detail || 'Enrollment failed');
+    }
+    return res.json();
+  }
+
+  async totpEnrollConfirm(secret: string, code: string) {
+    const res = await this.fetch('/security/totp/enroll-confirm', {
+      method: 'POST',
+      body: JSON.stringify({ secret, code }),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.detail || 'Code invalide');
+    }
+    return res.json();
+  }
+
+  async totpDisable(password: string, code: string) {
+    const res = await this.fetch('/security/totp/disable', {
+      method: 'POST',
+      body: JSON.stringify({ password, code }),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.detail || 'Disable failed');
+    }
+    return true;
   }
 
   async me() {
