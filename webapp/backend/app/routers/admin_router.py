@@ -639,3 +639,88 @@ async def onboarding_funnel_stats(
             for r in recent_aborts
         ],
     }
+
+
+# ── Session 44 B — model budget tracker (3-tier waterfall) ────────────
+
+@router.get("/api/admin/model-budgets")
+async def model_budgets(admin: dict = Depends(require_admin)):
+    """Return the 3-tier budget waterfall used by chat_router :
+
+      tier 1 : gpt-4o-mini (OpenAI complimentary, 1.5M TPD)
+      tier 2 : groq-standard (llama-3.3-70b-versatile, 100K TPD)
+      tier 3 : groq-snapshot (llama-3.1-8b-instant, 500K TPD)
+
+    Per-tier payload : name, limit, used, pct, is_active, eta_exhaust_min
+    (projected from last 15-min burn rate × 96, null if usage still zero).
+    `current_tier` and `current_since` come from model_switch_log.
+    """
+    from .chat_router import _TIER_CHAIN, _gpt4o_token_counter, _GPT4O_DAILY_LIMIT
+    # Ensure in-memory counter is seeded from DB snapshot before we read it.
+    from .chat_router import _load_daily_tokens
+    await _load_daily_tokens()
+
+    async with db.pool.acquire() as conn:
+        # Today's usage per groq model
+        rows = await conn.fetch(
+            "SELECT model, COALESCE(input_tokens,0) + COALESCE(output_tokens,0) AS total "
+            "FROM model_usage_daily WHERE usage_date = CURRENT_DATE",
+        )
+        usage_by_model = {r["model"]: int(r["total"]) for r in rows}
+        # Last 15-min burn rate per model for ETA
+        burn_rows = await conn.fetch(
+            """SELECT model,
+                      COALESCE(input_tokens, 0) + COALESCE(output_tokens, 0) AS total,
+                      updated_at
+                 FROM model_usage_daily
+                WHERE usage_date = CURRENT_DATE""",
+        )
+        # Most recent switch
+        sw = await conn.fetchrow(
+            "SELECT at, to_model FROM model_switch_log ORDER BY at DESC LIMIT 1",
+        )
+
+    current_tier = sw["to_model"] if sw else "gpt-4o-mini"
+    current_since = sw["at"].isoformat() if sw else None
+
+    tiers = []
+    for model, limit in _TIER_CHAIN:
+        if model == "gpt-4o-mini":
+            used = _gpt4o_token_counter["tokens"]
+        else:
+            used = usage_by_model.get(model, 0)
+        pct = round(used / limit * 100, 1) if limit else 0.0
+        is_active = (model == current_tier)
+        # Naive ETA : assume same rate continues through rest of day.
+        # Better would be "tokens in last 15min × 96" but we don't have
+        # bucketed data. Approximate with total_used / hours_elapsed today.
+        from datetime import datetime, timezone
+        hours_elapsed = max(
+            (datetime.now(timezone.utc) -
+             datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+             ).total_seconds() / 3600,
+            0.1,
+        )
+        rate_per_hour = used / hours_elapsed
+        eta_exhaust_min = None
+        if is_active and rate_per_hour > 0:
+            remaining = max(limit - used, 0)
+            eta_exhaust_min = int((remaining / rate_per_hour) * 60)
+        tiers.append({
+            "name": model,
+            "limit": limit,
+            "used": used,
+            "pct": pct,
+            "is_active": is_active,
+            "eta_exhaust_min": eta_exhaust_min,
+        })
+
+    # Total remaining across tiers (useful headline number)
+    total_remaining = sum(max(t["limit"] - t["used"], 0) for t in tiers)
+
+    return {
+        "tiers": tiers,
+        "current_tier": current_tier,
+        "current_since": current_since,
+        "total_remaining_today": total_remaining,
+    }

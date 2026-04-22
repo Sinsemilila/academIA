@@ -111,8 +111,9 @@ async def _track_gpt4o_tokens(input_tokens: int, output_tokens: int) -> None:
         _gpt4o_token_counter["date"] = today
         _gpt4o_token_counter["tokens"] = 0
         _gpt4o_token_counter["loaded"] = True
+        # Session 44 B — restore to tier 1 on calendar day rollover.
         if _current_dify_model != "gpt-4o-mini":
-            await _switch_dify_model("gpt-4o-mini")
+            await _switch_dify_model("gpt-4o-mini", "daily_reset")
     added = input_tokens + output_tokens
     _gpt4o_token_counter["tokens"] += added
     try:
@@ -262,11 +263,78 @@ async def get_gpt4o_usage() -> dict:
 _current_dify_model = "gpt-4o-mini"
 
 
-async def _switch_dify_model(target_model: str):
-    """Switch all Teacher LLM nodes in Dify to a different model."""
+# ── Session 44 B — 3-tier waterfall budget ───────────────────────────
+# TPD (tokens/day) limits per LiteLLM model_group. gpt-4o-mini is the
+# OpenAI complimentary pool; groq-standard / groq-snapshot are free-tier
+# groq models with per-model TPD (verified at console.groq.com/docs/
+# rate-limits, 2026-04-22).
+_GROQ_TPD_LIMITS = {
+    "groq-standard": 100_000,  # llama-3.3-70b-versatile
+    "groq-snapshot": 500_000,  # llama-3.1-8b-instant
+}
+# Chain of (model_name, tpd_limit) evaluated in order. A tier is
+# considered "spent" at _TIER_SWITCH_THRESHOLD, which we keep below 1.0
+# so the swap fires before in-flight requests start hitting 429s.
+_TIER_CHAIN: list[tuple[str, int]] = [
+    ("gpt-4o-mini", _GPT4O_DAILY_LIMIT),
+    ("groq-standard", _GROQ_TPD_LIMITS["groq-standard"]),
+    ("groq-snapshot", _GROQ_TPD_LIMITS["groq-snapshot"]),
+]
+_TIER_SWITCH_THRESHOLD = 0.95
+
+
+async def _groq_tokens_today(model: str) -> int:
+    """Return today's input+output tokens for a groq model from
+    model_usage_daily. 0 if no row yet (or table missing)."""
+    try:
+        async with db.pool.acquire() as conn:
+            row = await conn.fetchrow(
+                """SELECT COALESCE(input_tokens, 0) + COALESCE(output_tokens, 0) AS total
+                     FROM model_usage_daily
+                    WHERE usage_date = CURRENT_DATE AND model = $1""",
+                model,
+            )
+            return int(row["total"]) if row else 0
+    except Exception:
+        return 0
+
+
+async def _log_model_switch(from_model: str, to_model: str, reason: str) -> None:
+    try:
+        async with db.pool.acquire() as conn:
+            await conn.execute(
+                "INSERT INTO model_switch_log (from_model, to_model, reason) VALUES ($1, $2, $3)",
+                from_model, to_model, reason,
+            )
+    except Exception as e:
+        import logging
+        logging.getLogger("chat").warning("model_switch_log insert skipped: %s", e)
+
+
+async def _select_active_tier() -> tuple[str, str]:
+    """Walk the tier chain, return (target_model, reason). Advances past
+    any tier whose consumption is ≥95% of its TPD. Wraps back to tier 1
+    when a fresh calendar day zeroes every counter."""
+    for idx, (model, limit) in enumerate(_TIER_CHAIN):
+        if model == "gpt-4o-mini":
+            await _load_daily_tokens()
+            used = _gpt4o_token_counter["tokens"]
+        else:
+            used = await _groq_tokens_today(model)
+        if used < limit * _TIER_SWITCH_THRESHOLD:
+            return model, f"tier_{idx + 1}_under_threshold"
+    # All exhausted — stay on the last one. When it 429s, caller surfaces error.
+    last_model, _ = _TIER_CHAIN[-1]
+    return last_model, "all_tiers_exhausted"
+
+
+async def _switch_dify_model(target_model: str, reason: str | None = None):
+    """Switch all Teacher LLM nodes in Dify to a different model. Writes
+    a row to model_switch_log so the admin dashboard can show since-when."""
     global _current_dify_model
     if _current_dify_model == target_model:
         return
+    previous = _current_dify_model
     try:
         async with db.pool.acquire() as conn:
             for wf_id in ['c52a451f-e381-46f1-a23a-077197b0fccb', 'ed0d1c91-8c9a-48ad-9c3a-063981f8da87']:
@@ -275,8 +343,11 @@ async def _switch_dify_model(target_model: str):
                     f"'\"name\": \"{_current_dify_model}\"', '\"name\": \"{target_model}\"')::json, "
                     "updated_at = NOW() WHERE id = $1", wf_id)
         _current_dify_model = target_model
+        await _log_model_switch(previous, target_model, reason or "manual_switch")
         import logging
-        logging.getLogger("chat").info("Dify model switched to %s", target_model)
+        logging.getLogger("chat").info(
+            "Dify model switched %s → %s (%s)", previous, target_model, reason or "manual",
+        )
     except Exception as e:
         import logging
         logging.getLogger("chat").error("Failed to switch Dify model: %s", e)
@@ -798,14 +869,14 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         ):
             dify_inputs.setdefault(key, "")
 
-    # ── GPT-4o-mini daily token budget check ──
+    # ── Session 44 B — 3-tier waterfall budget check ──
+    # _select_active_tier() walks [gpt-4o-mini → groq-standard → groq-snapshot]
+    # and picks the first tier under 95% of its TPD. If we're already on the
+    # right tier _switch_dify_model short-circuits.
     input_token_est = _count_tokens(req.message) + 2000  # system prompt + history overhead
-    if await _gpt4o_budget_exceeded():
-        import logging
-        logging.getLogger("chat").warning(
-            "gpt-4o-mini daily budget exceeded (%d/%d). Switching Dify to groq-standard.",
-            _gpt4o_token_counter["tokens"], _GPT4O_DAILY_LIMIT)
-        await _switch_dify_model("groq-standard")
+    target_tier, reason = await _select_active_tier()
+    if target_tier != _current_dify_model:
+        await _switch_dify_model(target_tier, reason)
 
     payload = {
         "inputs": dify_inputs,

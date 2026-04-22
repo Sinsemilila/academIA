@@ -59,3 +59,37 @@ async def ingest_cache_stats(payload: CacheStatsPayload):
     except Exception as e:
         _log.warning("cache-stats insert failed: %s", e)
     return {"ok": True}
+
+
+# ── Session 44 B — model usage relay (groq tier tracker) ─────────────
+
+class ModelUsagePayload(BaseModel):
+    model: str = Field(..., max_length=200)
+    input_tokens: int = 0
+    output_tokens: int = 0
+
+
+@router.post("/model-usage", status_code=202)
+async def ingest_model_usage(payload: ModelUsagePayload):
+    """UPSERT today's token counts for a given model. Called by the
+    LiteLLM callback for every successful completion. Swallow errors to
+    keep the proxy hot path free."""
+    if payload.input_tokens <= 0 and payload.output_tokens <= 0:
+        return {"ok": True}
+    try:
+        async with database.pool.acquire() as conn:
+            await conn.execute(
+                """
+                INSERT INTO model_usage_daily
+                  (usage_date, model, input_tokens, output_tokens, updated_at)
+                VALUES (CURRENT_DATE, $1, $2, $3, NOW())
+                ON CONFLICT (usage_date, model) DO UPDATE SET
+                  input_tokens  = model_usage_daily.input_tokens  + EXCLUDED.input_tokens,
+                  output_tokens = model_usage_daily.output_tokens + EXCLUDED.output_tokens,
+                  updated_at    = NOW()
+                """,
+                payload.model, payload.input_tokens, payload.output_tokens,
+            )
+    except Exception as e:
+        _log.warning("model-usage insert failed: %s", e)
+    return {"ok": True}
