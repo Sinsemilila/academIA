@@ -516,3 +516,126 @@ async def oracle_runs_stats(agent: str = "teacher_en", hours: int = 168,
         ],
         "by_dim": [dict(r) for r in by_dim],
     }
+
+
+# ── Session 43 P5 — Onboarding funnel analytics ───────────────────────
+
+@router.get("/api/admin/onboarding-funnel")
+async def onboarding_funnel_stats(
+    domain: str = "en", hours: int = 720,
+    admin: dict = Depends(require_admin),
+):
+    """Aggregate onboarding_telemetry_events into a step-by-step funnel.
+
+    For each distinct session_id : max step_order reached via step_enter +
+    completion flag. Conversion rates computed between consecutive step
+    orders. Returns headline counts (started / completed / aborted),
+    the funnel table, and the 10 most recent aborts for inspection.
+
+    Sessions are scoped by `domain` and time window `hours` (default 720h / 30d).
+    """
+    hours = max(1, min(hours, 24 * 365))
+    async with db.pool.acquire() as conn:
+        summary = await conn.fetchrow(
+            """
+            WITH scoped AS (
+              SELECT session_id, event, step_order
+              FROM onboarding_telemetry_events
+              WHERE domain = $1
+                AND created_at > NOW() - ($2 || ' hours')::interval
+            ),
+            per_session AS (
+              SELECT
+                session_id,
+                bool_or(event = 'complete') AS completed,
+                bool_or(event = 'abort') AS aborted,
+                MAX(step_order) FILTER (WHERE event = 'step_enter') AS max_step
+              FROM scoped
+              GROUP BY session_id
+            )
+            SELECT
+              COUNT(*)::int AS sessions_started,
+              COUNT(*) FILTER (WHERE completed)::int AS sessions_completed,
+              COUNT(*) FILTER (WHERE aborted AND NOT completed)::int AS sessions_aborted,
+              COUNT(*) FILTER (WHERE NOT completed AND NOT aborted)::int AS sessions_inflight,
+              COALESCE(ROUND(100.0 * COUNT(*) FILTER (WHERE completed)
+                             / NULLIF(COUNT(*), 0), 1), 0) AS completion_pct
+            FROM per_session
+            """,
+            domain, str(hours),
+        )
+        by_step = await conn.fetch(
+            """
+            WITH scoped AS (
+              SELECT session_id, step_order, step_id, total_steps
+              FROM onboarding_telemetry_events
+              WHERE event = 'step_enter'
+                AND domain = $1
+                AND created_at > NOW() - ($2 || ' hours')::interval
+            ),
+            session_max AS (
+              SELECT session_id, MAX(step_order) AS max_step FROM scoped GROUP BY session_id
+            ),
+            per_step AS (
+              SELECT
+                s.step_order,
+                MAX(s.step_id) AS step_id,
+                COUNT(DISTINCT s.session_id)::int AS entered
+              FROM scoped s
+              GROUP BY s.step_order
+            )
+            SELECT
+              p.step_order,
+              p.step_id,
+              p.entered,
+              (SELECT COUNT(*)::int FROM session_max sm WHERE sm.max_step = p.step_order) AS dropped_off
+            FROM per_step p
+            ORDER BY p.step_order
+            """,
+            domain, str(hours),
+        )
+        recent_aborts = await conn.fetch(
+            """
+            SELECT
+              a.session_id, a.created_at, a.step_id, a.step_order,
+              (SELECT MIN(e.created_at) FROM onboarding_telemetry_events e
+                 WHERE e.session_id = a.session_id) AS started_at
+            FROM onboarding_telemetry_events a
+            WHERE a.event = 'abort'
+              AND a.domain = $1
+              AND a.created_at > NOW() - ($2 || ' hours')::interval
+            ORDER BY a.created_at DESC
+            LIMIT 10
+            """,
+            domain, str(hours),
+        )
+
+    # Conversion next from row i to row i+1
+    by_step_list = [dict(r) for r in by_step]
+    for i, row in enumerate(by_step_list):
+        nxt = by_step_list[i + 1]["entered"] if i + 1 < len(by_step_list) else None
+        row["entered_next"] = nxt
+        if nxt is not None and row["entered"]:
+            row["conversion_next_pct"] = round(100.0 * nxt / row["entered"], 1)
+        else:
+            row["conversion_next_pct"] = None
+
+    def _iso(x):
+        return x.isoformat() if x else None
+
+    return {
+        "domain": domain,
+        "hours": hours,
+        "summary": dict(summary or {}),
+        "by_step": by_step_list,
+        "recent_aborts": [
+            {
+                **{k: v for k, v in dict(r).items() if k not in ("created_at", "started_at")},
+                "created_at": _iso(r["created_at"]),
+                "started_at": _iso(r["started_at"]),
+                "duration_ms": int((r["created_at"] - r["started_at"]).total_seconds() * 1000)
+                    if r["started_at"] and r["created_at"] else None,
+            }
+            for r in recent_aborts
+        ],
+    }

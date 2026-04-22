@@ -23,6 +23,9 @@ from pydantic import BaseModel, Field, model_validator
 from ..auth import get_current_user
 from .. import database as db
 
+
+_UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", re.I)
+
 router = APIRouter(tags=["onboarding"])
 
 
@@ -592,3 +595,34 @@ async def patch_learner_profile(
             json.dumps(current), eleve_id, domain,
         )
     return {"ok": True, "domain_level": current}
+
+
+# ── Session 43 P5 — Onboarding telemetry ──────────────────────────────
+
+class TelemetryEvent(BaseModel):
+    session_id: str = Field(..., min_length=36, max_length=36)
+    domain: str
+    event: Literal["step_enter", "complete", "abort"]
+    step_id: str | None = Field(None, max_length=80)
+    step_order: int | None = Field(None, ge=0, le=50)
+    total_steps: int | None = Field(None, ge=0, le=50)
+
+
+@router.post("/api/telemetry/onboarding-event")
+async def record_onboarding_event(event: TelemetryEvent):
+    """Record a client-side onboarding event. Un-authed : sendBeacon (used
+    on beforeunload for abort) cannot attach Authorization headers, and
+    the abort signal is the most important to capture. session_id shape
+    is validated to rate-limit garbage inserts."""
+    if not _UUID_RE.match(event.session_id):
+        raise HTTPException(status_code=422, detail="session_id must be UUIDv4")
+    _validate_domain(event.domain)
+    async with db.pool.acquire() as conn:
+        await conn.execute(
+            """INSERT INTO onboarding_telemetry_events
+                 (session_id, domain, event, step_id, step_order, total_steps)
+               VALUES ($1, $2, $3, $4, $5, $6)""",
+            event.session_id, event.domain, event.event,
+            event.step_id, event.step_order, event.total_steps,
+        )
+    return {"ok": True}
