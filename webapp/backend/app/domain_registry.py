@@ -1,25 +1,18 @@
-"""Shared domain ↔ agent mapping. Avoids circular imports from routers
-that don't need the full LanguageDomain instances (chat_router.py).
+"""Shared domain ↔ agent mapping. Session 42 — dynamic derivation from
+`agents_config.active_agents()` (which reads AVAILABLE_AGENTS CSV / legacy
+ENABLE_* fallback).
 
-Source of truth remains `chat_router._DOMAIN_REGISTRY` — this module is a
-read-only reverse mapping for routers generating UI-facing URLs like
-`/chat/{agent_slug}`.
-
-Sprint 5 D1 — domains use ISO-639-1 codes ("en"/"es"/...) for languages,
-free strings for non-language domains ("python"/"cybersec").
+Source of truth : `agents_config.ALL_AGENTS`. This module is a read-only
+reverse mapping for routers generating UI-facing URLs like `/chat/{slug}`.
 """
 from __future__ import annotations
 
-# domain (ISO) → agent slug
-AGENT_BY_DOMAIN: dict[str, str] = {
-    "en": "teacher",
-    "es": "maestro",       # Sprint 5 Phase 4 — activation gated by ENABLE_MAESTRO
-    # "it": "professore",
-    # "de": "lehrer",
-    # "ja": "sensei",
-    # "python": "pymentor",
-    # "cybersec": "cybermentor",
-}
+from .agents_config import ALL_AGENTS, active_slug_set
+
+
+# Static reverse map domain → slug (independent of runtime availability,
+# used to resolve URLs even for disabled agents — UI will gate separately).
+AGENT_BY_DOMAIN: dict[str, str] = {a.language: a.slug for a in ALL_AGENTS}
 
 
 def get_agent_for_domain(domain: str) -> str:
@@ -30,3 +23,8 @@ def get_agent_for_domain(domain: str) -> str:
 def chat_url_for_domain(domain: str) -> str:
     """Return the SPA chat route for a given domain."""
     return f"/chat/{get_agent_for_domain(domain)}"
+
+
+def is_active_agent(slug: str) -> bool:
+    """True if the agent slug is currently enabled at runtime."""
+    return slug in active_slug_set()
