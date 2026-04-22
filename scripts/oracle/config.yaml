@@ -1,9 +1,4 @@
 judge:
-  # Session 41 V2 swap attempt : tried groq-standard (Llama 3.3 70B)
-  # — empirically too slow for batch (noise floor 2 runs = 60+ min
-  # wall time vs ~10 min on gpt-4o-mini). Groq rate limits kick in
-  # on sustained async load despite being "free tier". Reverted to
-  # gpt-4o-mini. Swap manually if you need cross-vendor + accept slowness.
   model: gpt-4o-mini
   n_votes: 3
   temperature: 0.0
@@ -23,13 +18,13 @@ axis_thresholds:
   output_shape: 0.66
   pedagogy_quality: 0.66
 noise_floor:
-  cf_move_set_valid: 0.125
+  cf_move_set_valid: 0.154
   scaffolding_flags_honored: 0.0
-  register_cefr_alignment: 0.208
+  register_cefr_alignment: 0.192
   recast_saliency_and_dosage: 0.0
-  semantic_fidelity_pairwise: 0.333
-  cf_move_set_valid_partial: 0.0
-  scaffolding_flags_l2_ratio: 0.125
+  semantic_fidelity_pairwise: 0.077
+  cf_move_set_valid_partial: 0.077
+  scaffolding_flags_l2_ratio: 0.154
 dropped_dims: []
 dify:
   public_api_base: http://127.0.0.1:5001
