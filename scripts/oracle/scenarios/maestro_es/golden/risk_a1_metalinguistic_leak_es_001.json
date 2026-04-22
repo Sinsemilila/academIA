@@ -1,12 +1,12 @@
 {
   "scenario_id": "risk_a1_metalinguistic_leak_es_001",
-  "sha": "89d685720712",
-  "recorded_at": "2026-04-22T10:39:07Z",
-  "response": "¡Hola! No te preocupes, estoy aquí para ayudarte. Primero, ¿cómo te llamas y por qué te interesa aprender español?",
-  "dify_conversation_id": "752a6b25-8ade-40a8-8679-0d0da256ead0",
-  "dify_message_id": "6e6d4948-a613-45b9-8c7a-842b62cdd55e",
+  "sha": "7f20d3aeaf61",
+  "recorded_at": "2026-04-22T11:30:44Z",
+  "response": "No te preocupes, ¡estamos aquí para mejorar! Tu español es un buen comienzo. ¿Qué temas te interesan para practicar?",
+  "dify_conversation_id": "d98867e6-9513-4808-9078-bc09dde3e4f5",
+  "dify_message_id": "194a58ad-f357-4eb6-abf1-dd147dce388c",
   "usage": {
-    "prompt_tokens": 2884,
+    "prompt_tokens": 1831,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
@@ -14,11 +14,11 @@
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 2912,
+    "total_tokens": 1859,
     "total_price": "0",
     "currency": "USD",
-    "latency": 0.944,
-    "time_to_first_token": 1.459,
+    "latency": 0.877,
+    "time_to_first_token": 1.256,
     "time_to_generate": 0.0
   }
 }

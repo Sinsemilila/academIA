@@ -43,15 +43,48 @@ def _current_sha() -> str:
         return "unknown"
 
 
+def _build_oracle_profile(scenario: ScenarioSchema, agent: str) -> tuple[str, str]:
+    """Synthesize a learner_profile_summary + learner_profile_json so Dify's
+    code_profil_check (patched Session 36 with QCM_AS_PROFIL_v1) sees a
+    non-empty summary → `profil_present=True` → routes to llm_session
+    instead of llm_onboarding. Without this, goldens are captured from
+    the onboarding flow (Session 41 finding)."""
+    import json as _json
+    k = scenario.scenario_key
+    lang = "anglais" if agent == "teacher_en" else "espagnol"
+    nl_summary = (
+        f"[ORACLE TEST SIMULATION] Apprenant·e FR-native niveau CEFR {k.cefr}. "
+        f"Style préféré : {k.style_profile}. FLA : {k.fla}. "
+        f"Langue cible : {lang}. Turn conversation : {scenario.turns[0].turn_number}. "
+        f"Bot doit répondre en {lang} (L2) selon la doctrine du niveau {k.cefr}."
+    )
+    # Minimal but valid learner_profile_json — fills the fields chat_router would build
+    lp_json = _json.dumps({
+        "universal": {"self_efficacy": 3, "autonomy_pref": "guided"},
+        "level": {"cefr_placement": k.cefr},
+        "motivation": {
+            "fla_category": k.fla,
+            "fla_items_raw": {"fla_a": 3, "fla_b": 3, "fla_c": 3},
+        },
+        "hints": {"nl_summary": nl_summary},
+    }, ensure_ascii=False)
+    return nl_summary, lp_json
+
+
 def record_one(client: httpx.Client, agent: str, key: str, scenario: ScenarioSchema, sha: str) -> GoldenFile | None:
     first_learner = next((t for t in scenario.turns if t.role == "learner"), None)
     if not first_learner:
         return None
     cfg = _cfg()
     url = cfg["dify"]["public_api_base"] + cfg["dify"].get("public_api_path", "/v1/chat-messages")
+    nl_summary, lp_json = _build_oracle_profile(scenario, agent)
     try:
         r = client.post(url, json={
-            "query": first_learner.text, "inputs": {},
+            "query": first_learner.text,
+            "inputs": {
+                "learner_profile_summary": nl_summary,
+                "learner_profile_json": lp_json,
+            },
             "user": f"oracle-{scenario.id}", "response_mode": "blocking",
             "conversation_id": "",
         }, headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
