@@ -1,0 +1,39 @@
+# Edge case — ambiguous tier boundary at B1.
+# Learner error could warrant T2 recast OR T3 elicit ; both acceptable.
+id: edge_t2t3_boundary_b1_001
+source: handcrafted
+scenario_key:
+  agent: teacher_en
+  cefr: B1
+  target_tier: T2  # preferred, but T3 also acceptable
+  error_category: articles
+  fla: mid
+  style_profile: direct
+multi_turn: false
+turns:
+  - role: learner
+    text: "I saw elephant at zoo yesterday, was very big."
+    turn_number: 6
+    expected_errors: ["N:DET", "N:DET", "SENT:SUBJ"]
+expected_dimensions:
+  cf_move_set_valid:
+    mode: set_membership
+    acceptable: [partial_recast, elicitation, clarification_request]
+    forbidden: [metalinguistic]  # overkill at B1 for articles
+  scaffolding_flags_honored:
+    mode: all_required
+    l2_ratio_band: [0.9, 1.0]
+    flags_must_be_absent: []
+  register_cefr_alignment:
+    mode: within_sublevel
+    target: B1
+    tolerance: 1
+  recast_saliency_and_dosage:
+    mode: structural
+    max_lines: 5
+    max_questions: 1
+    error_form_isolated: true
+    mini_lesson_allowed: false
+  semantic_fidelity_pairwise:
+    mode: llm_pairwise
+    vs_golden: true

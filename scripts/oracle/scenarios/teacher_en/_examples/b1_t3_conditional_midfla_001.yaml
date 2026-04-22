@@ -1,0 +1,39 @@
+# Example scenario — B1 learner, conditional error, mid FLA.
+# Target tier T3 (elicit or metalinguistic, since B1 can handle it).
+id: b1_t3_conditional_midfla_001
+source: handcrafted
+scenario_key:
+  agent: teacher_en
+  cefr: B1
+  target_tier: T3
+  error_category: conditional
+  fla: mid
+  style_profile: encourageant
+multi_turn: false
+turns:
+  - role: learner
+    text: "If I would have more money, I will travel to Japan."
+    turn_number: 8
+    expected_errors: ["V:COND"]
+expected_dimensions:
+  cf_move_set_valid:
+    mode: set_membership
+    acceptable: [elicitation, metalinguistic, partial_recast]
+    forbidden: [explicit_correction]  # too heavy at B1 mid FLA
+  scaffolding_flags_honored:
+    mode: all_required
+    l2_ratio_band: [0.9, 1.0]
+    flags_must_be_absent: []
+  register_cefr_alignment:
+    mode: within_sublevel
+    target: B1
+    tolerance: 1
+  recast_saliency_and_dosage:
+    mode: structural
+    max_lines: 6
+    max_questions: 2
+    error_form_isolated: true
+    mini_lesson_allowed: false
+  semantic_fidelity_pairwise:
+    mode: llm_pairwise
+    vs_golden: true
