@@ -395,6 +395,12 @@ class ApiClient {
     return await res.json();
   }
 
+  async adminModelBudgets() {
+    const res = await this.fetch('/admin/model-budgets');
+    if (!res.ok) throw new Error('Model budgets fetch failed');
+    return await res.json();
+  }
+
   async adminOnboardingFunnel(domain: string = 'en', hours: number = 720) {
     const res = await this.fetch(`/admin/onboarding-funnel?domain=${encodeURIComponent(domain)}&hours=${hours}`);
     if (!res.ok) throw new Error('Onboarding funnel fetch failed');
