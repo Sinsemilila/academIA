@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AcademIA — Tuteur de langue adaptatif (beta privée)</title>
+  <meta name="description" content="Un tuteur d'anglais et d'espagnol pour adultes francophones qui en ont marre de Duolingo. Conversations réelles, corrections personnalisées, progression CEFR.">
+  <meta property="og:title" content="AcademIA — Tu ne gagnes pas d'étoiles. Tu parles.">
+  <meta property="og:description" content="Beta privée, 20 places pour la vague actuelle. Basé sur 30 ans de recherche pédagogique (Lyster, CEFR 2020, Cambridge English Profile).">
+  <style>
+    :root {
+      --bg: #0f1113;
+      --surface: #191c1f;
+      --elevated: #22262a;
+      --border: #2a2f34;
+      --text: #e8eaed;
+      --muted: #9aa0a6;
+      --accent: #5b9df9;
+      --accent-dark: #3b7fd9;
+    }
+    @media (prefers-color-scheme: light) {
+      :root { --bg:#f7f8fa; --surface:#ffffff; --elevated:#eef0f3; --border:#d8dce1; --text:#0f1113; --muted:#5f6368; }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 780px; margin: 0 auto; padding: 3rem 1.5rem; }
+    header { text-align: center; margin-bottom: 3rem; }
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 800;
+      margin: 0 0 1rem;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .tagline {
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      color: var(--muted);
+      margin: 0 0 2rem;
+    }
+    .lead {
+      font-size: 1.15rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 1.75rem;
+      margin: 2rem 0;
+    }
+    .lead strong { color: var(--accent); }
+    .badge {
+      display: inline-block;
+      background: var(--elevated);
+      color: var(--muted);
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    section { margin: 2.5rem 0; }
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0 0 1rem;
+      letter-spacing: -0.01em;
+    }
+    .cta-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      margin: 2.5rem 0;
+    }
+    .cta-row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.85rem 1.5rem;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    .btn:hover { background: var(--accent-dark); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    form { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
+    input, select {
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--elevated);
+      color: var(--text);
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .faq-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .faq-item summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .faq-item[open] summary { margin-bottom: 0.75rem; }
+    .faq-item p { margin: 0; color: var(--muted); }
+    .founder {
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .founder-photo {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: var(--elevated);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; color: var(--muted);
+    }
+    .founder p { margin: 0 0 0.5rem; }
+    .founder .name { font-weight: 700; color: var(--text); }
+    .refs {
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      padding-top: 1.25rem;
+      margin-top: 2.5rem;
+    }
+    .refs a { color: var(--accent); text-decoration: none; }
+    .refs a:hover { text-decoration: underline; }
+    footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 2rem 1rem 1rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">🧪 Beta privée — 20 places</span>
+      <h1>Tu ne gagnes pas d'étoiles. Tu parles.</h1>
+      <p class="tagline">Un tuteur virtuel d'anglais et d'espagnol pour adultes francophones qui en ont marre de Duolingo.</p>
+    </header>
+
+    <div class="lead">
+      Duolingo te fait répéter. AcademIA te fait <strong>composer</strong>.
+      Le tuteur détecte tes patterns d'erreurs typiques de francophone
+      (<em>"I have 25 years"</em>, <em>"depend of"</em>, <em>"make my homework"</em>)
+      et les corrige avec la pédagogie qu'un prof humain utiliserait — sans te
+      réduire à un score ni t'infliger des notifications.
+    </div>
+
+    <div class="cta-wrap">
+      <h2 style="margin-top:0">Regarde-le fonctionner (5 min)</h2>
+      <p style="margin:0.5rem 0 0;color:var(--muted)">Loom non-monté d'une session réelle. Puis laisse ton email ; je te contacte sous 48 h si tu rejoins la vague actuelle.</p>
+      <div class="cta-row">
+        <a class="btn" href="#LOOM_URL_HERE" target="_blank" rel="noopener">Voir la démo (5 min)</a>
+      </div>
+      <form action="mailto:sinseproduction@gmail.com" method="POST" enctype="text/plain">
+        <input type="text" name="name" placeholder="Ton prénom" required>
+        <input type="email" name="email" placeholder="Ton email" required>
+        <select name="language" required>
+          <option value="">Langue cible</option>
+          <option value="en">🇬🇧 Anglais</option>
+          <option value="es">🇪🇸 Espagnol</option>
+        </select>
+        <select name="level" required>
+          <option value="">Ton niveau approximatif</option>
+          <option value="beginner">Débutant (j'ai presque tout oublié)</option>
+          <option value="intermediate">Intermédiaire (je comprends, j'hésite à l'oral)</option>
+          <option value="advanced">Avancé (bloqué au plafond, je veux progresser)</option>
+        </select>
+        <button type="submit" class="btn">Rejoindre la vague beta</button>
+      </form>
+    </div>
+
+    <section>
+      <h2>Questions courantes</h2>
+
+      <details class="faq-item">
+        <summary>Comment ça sait mon niveau ?</summary>
+        <p>Un QCM de 90 secondes en début de parcours (CEFR placement), puis le tuteur recalibre à chaque conversation via tes erreurs réelles. Tu peux être A1 sur les verbes mais B1 sur le vocabulaire — AcademIA le détecte.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Ça dure combien de temps par jour ?</summary>
+        <p>Tu décides. Une session type fait 10–15 min. Pas de streak qui te culpabilise si tu rates un jour. Le tuteur se souvient d'où tu t'es arrêté.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>C'est gratuit ?</summary>
+        <p>Oui pour les 20 premières personnes de la beta privée — <strong>gratuit à vie</strong>. Si la plateforme passe en mode pricing plus tard, tu es blindé·e.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Qu'est-ce qui change vs ChatGPT ?</summary>
+        <p>ChatGPT répond à tes questions. AcademIA structure une pédagogie : rubric CEFR par niveau, politique de correction adaptée à ton anxiété langagière, leçons ciblées déclenchées sur tes erreurs récurrentes, progression mesurable. C'est un tuteur, pas un chatbot.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Pourquoi je devrais te faire confiance ?</summary>
+        <p>Parce que je cherche 20 personnes pour me casser le produit et me dire ce qui marche ou pas. Pas 20 000 utilisateurs abstraits. Tu parles direct avec moi, pas un service client.</p>
+      </details>
+    </section>
+
+    <section>
+      <h2>Qui construit ça</h2>
+      <div class="founder">
+        <div class="founder-photo">👨‍💻</div>
+        <div>
+          <p class="name">Sinse — solo builder</p>
+          <p>Je construis AcademIA seul depuis plusieurs mois parce que les apps existantes m'ont toujours frustré : Duolingo pour apprendre, vraiment ? Ce produit s'appuie sur 30 ans de recherche en acquisition langagière (voir ci-dessous). Tu me dis ce qui cloche, j'itère vite — pas de product manager entre nous.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="refs">
+      <strong>Fondations pédagogiques</strong><br>
+      Lyster &amp; Ranta (1997) — taxonomie des feedbacks correctifs • Lyster (2007) <em>Counterbalanced Instruction</em> • CEFR 2020 Companion Volume (Conseil de l'Europe) • Cambridge English Profile • Sheen (2008), Rassaei (2023) — interaction FLA × type de feedback.
+    </div>
+
+    <footer>
+      Construit à Paris. <a href="mailto:sinseproduction@gmail.com" style="color:var(--accent);text-decoration:none;">sinseproduction@gmail.com</a>
+    </footer>
+  </div>
+</body>
+</html>
