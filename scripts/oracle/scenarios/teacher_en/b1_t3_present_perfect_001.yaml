@@ -1,0 +1,43 @@
+id: b1_t3_present_perfect_001
+source: handcrafted
+scenario_key:
+  agent: teacher_en
+  cefr: B1
+  target_tier: T3
+  error_category: verb_tense
+  fla: mid
+  style_profile: direct
+multi_turn: false
+turns:
+- role: learner
+  text: I have seen this film yesterday and it was really good.
+  turn_number: 5
+  expected_errors:
+  - V:TENSE
+expected_dimensions:
+  cf_move_set_valid:
+    mode: set_membership
+    acceptable:
+    - partial_recast
+    - elicitation
+    - metalinguistic
+    - clarification_request
+    forbidden: []
+  scaffolding_flags_honored:
+    mode: all_required
+    l2_ratio_band:
+    - 0.9
+    - 1.0
+  register_cefr_alignment:
+    mode: within_sublevel
+    target: B1
+    tolerance: 1
+  recast_saliency_and_dosage:
+    mode: structural
+    max_lines: 6
+    max_questions: 2
+    error_form_isolated: true
+    mini_lesson_allowed: false
+  semantic_fidelity_pairwise:
+    mode: llm_pairwise
+    vs_golden: true

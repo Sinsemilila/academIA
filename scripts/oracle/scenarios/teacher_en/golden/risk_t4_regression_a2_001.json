@@ -1,0 +1,24 @@
+{
+  "scenario_id": "risk_t4_regression_a2_001",
+  "sha": "4d1bafad4f37",
+  "recorded_at": "2026-04-22T09:56:29Z",
+  "response": "Merci pour ta réponse ! Envoie-moi ok pour decouvrir ton bilan de niveau.",
+  "dify_conversation_id": "8c1a8d0e-174c-4c28-818a-141b7cdbfcd1",
+  "dify_message_id": "da937ee6-36bc-4178-9112-78e55ffb8c5f",
+  "usage": {
+    "prompt_tokens": 2817,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 21,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2838,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 0.91,
+    "time_to_first_token": 1.239,
+    "time_to_generate": 0.0
+  }
+}

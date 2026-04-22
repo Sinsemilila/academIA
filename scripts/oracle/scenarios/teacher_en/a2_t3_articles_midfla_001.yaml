@@ -1,0 +1,43 @@
+id: a2_t3_articles_midfla_001
+source: handcrafted
+scenario_key:
+  agent: teacher_en
+  cefr: A2
+  target_tier: T3
+  error_category: articles
+  fla: mid
+  style_profile: direct
+multi_turn: false
+turns:
+- role: learner
+  text: I want to buy car for my wife. The house where we live is very small.
+  turn_number: 5
+  expected_errors:
+  - ART
+expected_dimensions:
+  cf_move_set_valid:
+    mode: set_membership
+    acceptable:
+    - full_recast
+    - partial_recast
+    - elicitation
+    - clarification_request
+    forbidden: []
+  scaffolding_flags_honored:
+    mode: all_required
+    l2_ratio_band:
+    - 0.85
+    - 1.0
+  register_cefr_alignment:
+    mode: within_sublevel
+    target: A2
+    tolerance: 1
+  recast_saliency_and_dosage:
+    mode: structural
+    max_lines: 5
+    max_questions: 2
+    error_form_isolated: true
+    mini_lesson_allowed: false
+  semantic_fidelity_pairwise:
+    mode: llm_pairwise
+    vs_golden: true

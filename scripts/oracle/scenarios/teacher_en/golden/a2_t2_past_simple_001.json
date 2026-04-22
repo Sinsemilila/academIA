@@ -1,0 +1,24 @@
+{
+  "scenario_id": "a2_t2_past_simple_001",
+  "sha": "4d1bafad4f37",
+  "recorded_at": "2026-04-22T09:54:28Z",
+  "response": "It seems like you're experimenting with past tense verbs! The correct forms are \"went\" and \"took.\" It's great that you're expressing your experiences. What movie did you see?",
+  "dify_conversation_id": "041a1dcd-47ec-4d54-8170-d7971cc506af",
+  "dify_message_id": "59db8152-ca6a-4951-b9f6-263fc55e089d",
+  "usage": {
+    "prompt_tokens": 2824,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 36,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2860,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 0.963,
+    "time_to_first_token": 1.257,
+    "time_to_generate": 0.0
+  }
+}

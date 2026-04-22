@@ -1,0 +1,24 @@
+{
+  "scenario_id": "b2_t3_passive_001",
+  "sha": "4d1bafad4f37",
+  "recorded_at": "2026-04-22T09:54:48Z",
+  "response": "Il semble que tu aies utilisé une construction qui pourrait être améliorée. Tu pourrais dire : \"The report was finished by my colleague before the deadline expired.\" Cela corrige le temps du verbe \"finish\" et rend la phrase plus fluide. Si tu souhaites, je peux t'aider à améliorer davantage tes phrases en anglais. As-tu des questions spécifiques sur la grammaire ou le vocabulaire ?",
+  "dify_conversation_id": "9ef21296-fb40-44cd-877a-b406a1d6bbfc",
+  "dify_message_id": "70e421da-60ce-49c1-9ec6-d7e7ca2781d2",
+  "usage": {
+    "prompt_tokens": 2823,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 83,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2906,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 1.529,
+    "time_to_first_token": 1.796,
+    "time_to_generate": 0.0
+  }
+}

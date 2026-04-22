@@ -1,0 +1,24 @@
+{
+  "scenario_id": "el_a1_t2_misc_002",
+  "sha": "4d1bafad4f37",
+  "recorded_at": "2026-04-22T09:54:58Z",
+  "response": "Salut ! Je suis ravi de te voir ici. Comment tu t'appelles et pourquoi l'anglais t'intéresse-t-il ? (travail, voyage, culture, examen, curiosité...)",
+  "dify_conversation_id": "10ee149f-6716-4050-babb-ee3c84592028",
+  "dify_message_id": "481d9bbc-971a-4081-8b11-5c6383dd3dda",
+  "usage": {
+    "prompt_tokens": 2814,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 39,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2853,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 4.956,
+    "time_to_first_token": 5.461,
+    "time_to_generate": 0.0
+  }
+}

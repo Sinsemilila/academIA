@@ -1,0 +1,44 @@
+id: a2_t2_plural_high_fla_001
+source: handcrafted
+scenario_key:
+  agent: teacher_en
+  cefr: A2
+  target_tier: T2
+  error_category: number
+  fla: high
+  style_profile: direct
+multi_turn: false
+turns:
+- role: learner
+  text: The childrens play with dogs in the gardens every days.
+  turn_number: 5
+  expected_errors:
+  - N:NUM
+expected_dimensions:
+  cf_move_set_valid:
+    mode: set_membership
+    acceptable:
+    - full_recast
+    - partial_recast
+    - elicitation
+    - clarification_request
+    forbidden:
+    - explicit_correction
+  scaffolding_flags_honored:
+    mode: all_required
+    l2_ratio_band:
+    - 0.85
+    - 1.0
+  register_cefr_alignment:
+    mode: within_sublevel
+    target: A2
+    tolerance: 1
+  recast_saliency_and_dosage:
+    mode: structural
+    max_lines: 5
+    max_questions: 2
+    error_form_isolated: true
+    mini_lesson_allowed: false
+  semantic_fidelity_pairwise:
+    mode: llm_pairwise
+    vs_golden: true

@@ -1,0 +1,43 @@
+id: b2_t3_passive_001
+source: handcrafted
+scenario_key:
+  agent: teacher_en
+  cefr: B2
+  target_tier: T3
+  error_category: verb_usage
+  fla: low
+  style_profile: direct
+multi_turn: false
+turns:
+- role: learner
+  text: The report was finish by my colleague before the deadline was expired.
+  turn_number: 5
+  expected_errors:
+  - V:PASS
+expected_dimensions:
+  cf_move_set_valid:
+    mode: set_membership
+    acceptable:
+    - elicitation
+    - metalinguistic
+    - partial_recast
+    - clarification_request
+    forbidden: []
+  scaffolding_flags_honored:
+    mode: all_required
+    l2_ratio_band:
+    - 0.95
+    - 1.0
+  register_cefr_alignment:
+    mode: within_sublevel
+    target: B2
+    tolerance: 1
+  recast_saliency_and_dosage:
+    mode: structural
+    max_lines: 6
+    max_questions: 2
+    error_form_isolated: true
+    mini_lesson_allowed: false
+  semantic_fidelity_pairwise:
+    mode: llm_pairwise
+    vs_golden: true

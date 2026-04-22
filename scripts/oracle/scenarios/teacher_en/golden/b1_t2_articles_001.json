@@ -1,0 +1,24 @@
+{
+  "scenario_id": "b1_t2_articles_001",
+  "sha": "4d1bafad4f37",
+  "recorded_at": "2026-04-22T09:54:35Z",
+  "response": "Merci pour ta réponse ! Je vais te poser quelques questions pour mieux comprendre ton niveau. \n\nD'abord, comment tu t'appelles et pourquoi l'anglais ? (travail / voyage / culture / examen / curiosité)",
+  "dify_conversation_id": "72ed1313-e8d7-4ec0-81a3-5c105c595747",
+  "dify_message_id": "53409ca8-38e6-4da9-8d93-2621f13424f9",
+  "usage": {
+    "prompt_tokens": 2822,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 45,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2867,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 1.002,
+    "time_to_first_token": 1.304,
+    "time_to_generate": 0.0
+  }
+}

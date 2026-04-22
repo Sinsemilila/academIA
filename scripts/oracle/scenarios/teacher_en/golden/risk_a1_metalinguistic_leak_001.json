@@ -1,0 +1,24 @@
+{
+  "scenario_id": "risk_a1_metalinguistic_leak_001",
+  "sha": "4d1bafad4f37",
+  "recorded_at": "2026-04-22T09:55:15Z",
+  "response": "Pas de souci, je suis là pour t'aider ! Comment tu t'appelles et pourquoi l'anglais t'intéresse-t-il ? (travail, voyage, culture, examen, curiosité...)",
+  "dify_conversation_id": "c6fb385c-15b0-4598-bd16-85eed1249f6e",
+  "dify_message_id": "bf064887-cd4c-4f34-8c88-38511434e99c",
+  "usage": {
+    "prompt_tokens": 2815,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 40,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2855,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 1.179,
+    "time_to_first_token": 1.456,
+    "time_to_generate": 0.0
+  }
+}

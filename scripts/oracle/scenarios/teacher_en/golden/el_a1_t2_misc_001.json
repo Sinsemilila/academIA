@@ -1,0 +1,24 @@
+{
+  "scenario_id": "el_a1_t2_misc_001",
+  "sha": "4d1bafad4f37",
+  "recorded_at": "2026-04-22T09:54:52Z",
+  "response": "Il semble que ton message soit incomplet. Peux-tu préciser ce que tu voulais dire ?",
+  "dify_conversation_id": "56c1edbd-c7b0-4736-8f05-f26dbcb89225",
+  "dify_message_id": "1a662af5-7b07-4bb0-8b77-1c2c8f6a8e6d",
+  "usage": {
+    "prompt_tokens": 2817,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 19,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2836,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 1.448,
+    "time_to_first_token": 1.79,
+    "time_to_generate": 0.0
+  }
+}

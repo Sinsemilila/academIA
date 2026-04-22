@@ -1,0 +1,24 @@
+{
+  "scenario_id": "risk_gravity_comm_breakdown_001",
+  "sha": "4d1bafad4f37",
+  "recorded_at": "2026-04-22T09:55:17Z",
+  "response": "Il semble que tu aies partagé une phrase incomplète ou confuse. Peux-tu reformuler ta pensée ou me donner plus de contexte sur ce que tu souhaites exprimer ? Je suis là pour t'aider !",
+  "dify_conversation_id": "ccbe8118-222b-4c0f-9495-ebaab7c8aec6",
+  "dify_message_id": "a6804342-87ed-4a11-87f3-09b0c3022e76",
+  "usage": {
+    "prompt_tokens": 2822,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 44,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2866,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 1.465,
+    "time_to_first_token": 1.735,
+    "time_to_generate": 0.0
+  }
+}

@@ -1,0 +1,46 @@
+id: multi_a1_verb_no_uptake_001
+source: handcrafted
+scenario_key:
+  agent: teacher_en
+  cefr: A1
+  target_tier: T2
+  error_category: verb_tense
+  fla: low
+  style_profile: direct
+multi_turn: true
+turns:
+- role: learner
+  text: Yesterday I go to the park with my mum.
+  turn_number: 5
+- role: learner
+  text: Yes I go there many time.
+  turn_number: 7
+  uptake: 'no'
+expected_dimensions:
+  cf_move_set_valid:
+    mode: set_membership
+    acceptable:
+    - full_recast
+    - partial_recast
+    - clarification_request
+    forbidden:
+    - metalinguistic
+    - explicit_correction
+  scaffolding_flags_honored:
+    mode: all_required
+    l2_ratio_band:
+    - 0.7
+    - 0.98
+  register_cefr_alignment:
+    mode: within_sublevel
+    target: A1
+    tolerance: 1
+  recast_saliency_and_dosage:
+    mode: structural
+    max_lines: 5
+    max_questions: 2
+    error_form_isolated: true
+    mini_lesson_allowed: false
+  semantic_fidelity_pairwise:
+    mode: llm_pairwise
+    vs_golden: true

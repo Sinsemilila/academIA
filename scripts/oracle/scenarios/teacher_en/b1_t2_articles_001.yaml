@@ -1,0 +1,44 @@
+id: b1_t2_articles_001
+source: handcrafted
+scenario_key:
+  agent: teacher_en
+  cefr: B1
+  target_tier: T2
+  error_category: articles
+  fla: low
+  style_profile: direct
+multi_turn: false
+turns:
+- role: learner
+  text: I went to school yesterday and learned about history of Europe.
+  turn_number: 5
+  expected_errors:
+  - ART:GEN
+expected_dimensions:
+  cf_move_set_valid:
+    mode: set_membership
+    acceptable:
+    - partial_recast
+    - elicitation
+    - metalinguistic
+    - clarification_request
+    forbidden:
+    - explicit_correction
+  scaffolding_flags_honored:
+    mode: all_required
+    l2_ratio_band:
+    - 0.9
+    - 1.0
+  register_cefr_alignment:
+    mode: within_sublevel
+    target: B1
+    tolerance: 1
+  recast_saliency_and_dosage:
+    mode: structural
+    max_lines: 6
+    max_questions: 2
+    error_form_isolated: true
+    mini_lesson_allowed: false
+  semantic_fidelity_pairwise:
+    mode: llm_pairwise
+    vs_golden: true

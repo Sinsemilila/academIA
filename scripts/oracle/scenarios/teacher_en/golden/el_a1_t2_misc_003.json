@@ -1,0 +1,24 @@
+{
+  "scenario_id": "el_a1_t2_misc_003",
+  "sha": "4d1bafad4f37",
+  "recorded_at": "2026-04-22T09:55:00Z",
+  "response": "Je ne comprends pas tout à fait ta réponse. Peux-tu préciser ce que tu veux dire ?",
+  "dify_conversation_id": "738c4d64-f078-4b64-8005-b7053f8dc5f3",
+  "dify_message_id": "ffdaf8ed-c3bb-4891-86ca-4d5395bc0c6d",
+  "usage": {
+    "prompt_tokens": 2814,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 20,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2834,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 0.743,
+    "time_to_first_token": 1.107,
+    "time_to_generate": 0.0
+  }
+}

@@ -41,7 +41,14 @@ PRIORITY_LEAK_PATTERNS = [
 ]
 
 
-def check_json_wrapper(response: str) -> LintResult:
+def check_json_wrapper(response: str, required: bool = False) -> LintResult:
+    """Opt-in via scenario.expected_dimensions.output_wrapper.required=true.
+    Most V1 scenarios use fresh conversation_id → Dify responds in plain
+    text (onboarding/welcome flow) and doesn't wrap. Only deep-session
+    scenarios should require the wrapper."""
+    if not required:
+        return LintResult(check="json_wrapper", passed=True,
+                          detail="skipped (not required by scenario)")
     match = OUTPUT_RE.search(response or "")
     if not match:
         return LintResult(check="json_wrapper", passed=False,
@@ -54,11 +61,11 @@ def check_json_wrapper(response: str) -> LintResult:
     return LintResult(check="json_wrapper", passed=True)
 
 
-def check_observed_level_emitted(response: str, turn_number: int) -> LintResult:
-    """observed_level required from turn 3+ per Session 37 doctrine."""
-    if turn_number < 3:
+def check_observed_level_emitted(response: str, turn_number: int, required: bool = False) -> LintResult:
+    """observed_level required only when the wrapper is expected AND turn_number >= 3."""
+    if not required or turn_number < 3:
         return LintResult(check="observed_level", passed=True,
-                          detail=f"skipped (turn {turn_number} < 3)")
+                          detail=f"skipped (required={required}, turn={turn_number})")
     match = OUTPUT_RE.search(response or "")
     if not match:
         return LintResult(check="observed_level", passed=False,
@@ -105,12 +112,19 @@ def check_no_priority_leak(response: str) -> LintResult:
 
 def run_lint(scenario: ScenarioSchema, response: str) -> list[LintResult]:
     """Run all lint checks on a bot response for a given scenario.
-    Returns list of LintResult, caller aggregates pass/fail."""
+    Returns list of LintResult, caller aggregates pass/fail.
+
+    Required-wrapper opt-in : scenario.expected_dimensions.output_wrapper.required
+    defaults to False (plain-text Dify response accepted). Scenarios that
+    simulate a deep-session bot (QCM'd user, turn >=3) can set it true.
+    """
     turn_number = scenario.turns[0].turn_number if scenario.turns else 1
     cefr = scenario.scenario_key.cefr
+    wrapper_spec = (scenario.expected_dimensions or {}).get("output_wrapper") or {}
+    wrapper_required = bool(wrapper_spec.get("required", False))
     return [
-        check_json_wrapper(response),
-        check_observed_level_emitted(response, turn_number),
+        check_json_wrapper(response, required=wrapper_required),
+        check_observed_level_emitted(response, turn_number, required=wrapper_required),
         check_a1_no_jargon(response, cefr),
         check_no_priority_leak(response),
     ]

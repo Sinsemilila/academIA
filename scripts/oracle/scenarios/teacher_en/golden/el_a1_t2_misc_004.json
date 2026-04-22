@@ -1,0 +1,24 @@
+{
+  "scenario_id": "el_a1_t2_misc_004",
+  "sha": "4d1bafad4f37",
+  "recorded_at": "2026-04-22T09:55:01Z",
+  "response": "Salut ! Comment tu t'appelles et pourquoi l'anglais ? (travail, voyage, culture, examen, curiosité)",
+  "dify_conversation_id": "adff6527-13e6-4dee-a3e4-981540ac4f0e",
+  "dify_message_id": "26de3cc8-1a8f-4f06-96f2-4297164e2299",
+  "usage": {
+    "prompt_tokens": 2814,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 26,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2840,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 0.935,
+    "time_to_first_token": 1.229,
+    "time_to_generate": 0.0
+  }
+}
