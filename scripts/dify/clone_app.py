@@ -134,21 +134,88 @@ def check_name_available(tenant_id: str, new_name: str) -> None:
         )
 
 
-def apply_prompts_override(graph_json: str, overrides: dict[str, str]) -> str:
-    """Apply simple string substitutions on the graph JSON.
+def apply_prompts_override(graph_json: str, overrides: dict[str, str], scoped: bool = True) -> str:
+    """Apply substitutions on the graph prompts. Session 42 D5 : default
+    behavior changed from naive `graph.replace()` (which could silently
+    corrupt JSON structure if a pattern matched a key/value delimiter)
+    to a SCOPED AST walker that only touches `nodes[*].data.prompt_template[*].text`.
 
-    `overrides` is a dict `{from_str: to_str}`. Each pair is applied in
-    definition order. Returns the patched JSON string.
+    Passing `scoped=False` falls back to the legacy string-replace for
+    callers that need broad substitution (not recommended).
 
-    For more sophisticated transformations (node-level edits), extend this
-    function or apply a subsequent graph-patch script (see Sprint 5 Phase 3).
+    `overrides` is a dict `{from_str: to_str}`. Each pair applied in
+    definition order.
     """
-    patched = graph_json
-    for src, dst in overrides.items():
-        patched = patched.replace(src, dst)
-    # validate roundtrip-parse
-    json.loads(patched)
-    return patched
+    if not scoped:
+        patched = graph_json
+        for src, dst in overrides.items():
+            patched = patched.replace(src, dst)
+        json.loads(patched)  # validate
+        return patched
+
+    # Scoped AST-level : parse → walk nodes → mutate prompt texts only → reserialize
+    graph = json.loads(graph_json)
+    nodes = graph.get("nodes") or []
+    hits = 0
+    for n in nodes:
+        tmpls = (n.get("data") or {}).get("prompt_template") or []
+        for t in tmpls:
+            if not isinstance(t, dict) or "text" not in t:
+                continue
+            original = t["text"]
+            patched = original
+            for src, dst in overrides.items():
+                patched = patched.replace(src, dst)
+            if patched != original:
+                t["text"] = patched
+                hits += 1
+    if hits == 0 and overrides:
+        # No scoped hit — the override may target a non-prompt field.
+        # Log via stderr ; caller can retry with scoped=False if intentional.
+        import sys as _sys
+        print(
+            f"  [WARN] apply_prompts_override(scoped=True) made 0 prompt_template.text "
+            f"substitutions. Check overrides target prompt text ; use scoped=False if "
+            f"targeting other graph fields.",
+            file=_sys.stderr,
+        )
+    return json.dumps(graph, ensure_ascii=False)
+
+
+def validate_data_pack(lang: str) -> None:
+    """Pre-flight validate YAML data packs for a target language.
+    Raises SystemExit on any schema violation so the caller never clones
+    into a broken pack. Session 42 D5."""
+    import sys
+    sys.path.insert(0, "/opt/academie/packages/academie-core")
+    from academie_core.data.schemas import (
+        CurriculumPack,
+        FewshotPack,
+        RubricPack,
+    )
+    import yaml as _yaml
+
+    data_dir = Path("/opt/academie/packages/academie-core/academie_core/data")
+    checks = [
+        (data_dir / f"curriculum_{lang}.yaml", lambda d: CurriculumPack.validate_mapping(d)),
+        (data_dir / "rubrics" / f"{lang}.yaml", lambda d: RubricPack.model_validate(d)),
+        (data_dir / "fewshots" / f"{lang}.yaml", lambda d: FewshotPack.model_validate(d)),
+    ]
+    errors = []
+    for path, validator in checks:
+        if not path.exists():
+            errors.append(f"missing: {path.relative_to(Path('/opt/academie'))}")
+            continue
+        try:
+            validator(_yaml.safe_load(path.read_text()))
+        except Exception as e:
+            errors.append(f"{path.name}: {e}")
+    if errors:
+        print("ERROR: data pack validation failed :", file=sys.stderr)
+        for e in errors:
+            print(f"  - {e}", file=sys.stderr)
+        raise SystemExit(2)
+    print(f"▸ Data pack for lang={lang!r} : curriculum + rubrics + fewshots validated ✓")
 
 
 def build_clone_sql(
@@ -250,7 +317,16 @@ def main() -> int:
                    help="Force dry-run (default behavior).")
     p.add_argument("--output-sql", type=Path, default=None,
                    help="If set, write the generated SQL to this file.")
+    p.add_argument("--validate-data-pack", default=None, metavar="LANG",
+                   help="Session 42 D5 — pre-flight validate YAML data pack "
+                        "(curriculum/rubrics/fewshots) for LANG. Abort clone if invalid.")
+    p.add_argument("--scoped-overrides", action=argparse.BooleanOptionalAction, default=True,
+                   help="Session 42 D5 — use AST-scoped overrides on prompt_template.text "
+                        "(default). --no-scoped-overrides for legacy full-string replace.")
     args = p.parse_args()
+
+    if args.validate_data_pack:
+        validate_data_pack(args.validate_data_pack)
 
     print(f"▸ Reading source app {args.source_app_id} ...")
     source = read_source_app(args.source_app_id)
@@ -264,7 +340,7 @@ def main() -> int:
         overrides = json.loads(args.prompts_override.read_text())
         print(f"▸ Loaded {len(overrides)} prompt overrides from {args.prompts_override}")
 
-    new_graph = apply_prompts_override(source.workflow_graph, overrides)
+    new_graph = apply_prompts_override(source.workflow_graph, overrides, scoped=args.scoped_overrides)
     if overrides:
         n_changed = sum(1 for k in overrides if k in source.workflow_graph)
         print(f"  applied {n_changed}/{len(overrides)} overrides (others not found in graph)")
