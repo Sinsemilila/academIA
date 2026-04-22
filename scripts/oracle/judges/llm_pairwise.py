@@ -228,12 +228,12 @@ async def _score_pairwise(client, cfg, scenario: ScenarioSchema, bot: str, golde
 
 
 def score_all(scenario: ScenarioSchema, response: str, golden: str, cfg: dict, n: int = 3) -> list[DimVerdict]:
-    """Sync wrapper — runs the 3 LLM-judged dims for one scenario sequentially."""
+    """Sync wrapper — runs the 3 LLM-judged dims concurrently via gather."""
     async def _run():
         async with httpx.AsyncClient() as client:
-            return [
-                await _score_cf_move(client, cfg, scenario, response, n),
-                await _score_cefr_register(client, cfg, scenario, response, n),
-                await _score_pairwise(client, cfg, scenario, response, golden, n),
-            ]
+            return list(await asyncio.gather(
+                _score_cf_move(client, cfg, scenario, response, n),
+                _score_cefr_register(client, cfg, scenario, response, n),
+                _score_pairwise(client, cfg, scenario, response, golden, n),
+            ))
     return asyncio.run(_run())

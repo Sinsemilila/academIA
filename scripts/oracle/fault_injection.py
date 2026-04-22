@@ -166,16 +166,39 @@ def _call_litellm(client: httpx.Client, system: str, user: str, cfg: dict) -> st
 
 
 def _score(agent: str, scenario: ScenarioSchema, response: str, cfg: dict) -> bool:
-    """True if oracle flags regression."""
+    """True if oracle flags regression.
+
+    IMPORTANT — methodological note :
+    Goldens were recorded via Dify public API (full workflow executes).
+    Fault injection calls LiteLLM directly with stubbed placeholders
+    (no Dify workflow). The two call paths produce materially different
+    response distributions even on IDENTICAL prompts. So `semantic_fidelity_pairwise`
+    (which compares response to golden) would flag ALL clean-baseline
+    responses as 'divergent' simply because of call-pattern mismatch,
+    not because of any regression.
+
+    Fault injection therefore scores on :
+      - lint (JSON wrapper, A1 no-jargon, priority leak, observed_level)
+      - deterministic (recast_saliency line/? count, scaffolding_l2_ratio,
+        cf_move_partial regex)
+      - cf_move_set_valid (LLM classifier — doesn't compare to golden)
+      - register_cefr_alignment (LLM classifier — doesn't compare to golden)
+
+    We exclude semantic_fidelity_pairwise from fault injection gating.
+    For full-mode regression testing against goldens (via harness.py),
+    pairwise stays in play because the bot is called via the SAME Dify
+    path the goldens were recorded from.
+    """
     if not response:
         return False
     if any(not r.passed for r in run_lint(scenario, response)):
         return True
     if any(d.verdict == "fail" for d in deterministic.score_all(scenario, response)):
         return True
-    golden = _load_golden(agent, scenario.id)
-    llm = llm_pairwise.score_all(scenario, response, golden, cfg, n=1)
-    return any(d.verdict == "fail" for d in llm)
+    # Only the classifier LLM dims, not pairwise-vs-golden
+    llm_all = llm_pairwise.score_all(scenario, response, "", cfg, n=1)
+    llm_classifier_only = [d for d in llm_all if d.dim != "semantic_fidelity_pairwise"]
+    return any(d.verdict == "fail" for d in llm_classifier_only)
 
 
 def run_condition(agent: str, label: str, prompt: str, scenarios: list[ScenarioSchema], cfg: dict) -> tuple[int, int]:
