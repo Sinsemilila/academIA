@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from ..models import LoginRequest, TokenResponse, RefreshRequest, UserResponse, UserCreate
 from ..auth import (
-    hash_password, verify_password,
+    hash_password, verify_password, verify_and_rehash,
     create_access_token, create_refresh_token, decode_refresh_token,
     get_current_user, require_admin,
 )
@@ -20,8 +20,19 @@ async def login(req: LoginRequest, request: Request):
             "SELECT id, username, password_hash FROM users WHERE username = $1",
             req.username,
         )
-    if not row or not verify_password(req.password, row["password_hash"]):
+    if not row:
         raise HTTPException(status_code=401, detail="Identifiants incorrects")
+    ok, new_hash = verify_and_rehash(req.password, row["password_hash"])
+    if not ok:
+        raise HTTPException(status_code=401, detail="Identifiants incorrects")
+
+    # Phase A2 — silent migration bcrypt → argon2id on successful login.
+    if new_hash:
+        async with db.pool.acquire() as conn:
+            await conn.execute(
+                "UPDATE users SET password_hash = $1 WHERE id = $2",
+                new_hash, row["id"],
+            )
 
     # Ensure eleve_id points to the correct eleve (fix UUID/user_N drift from Dify)
     async with db.pool.acquire() as conn:

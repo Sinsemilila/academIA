@@ -15,7 +15,20 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_DAYS = 7
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Refactor 2026-H2 Phase A2 — Argon2id + bcrypt rehash-on-login.
+# argon2 = default for new hashes (RFC 9106 winner, OWASP 2026 recommendation).
+# bcrypt kept for backward-compat verify of legacy hashes.
+# `deprecated="auto"` → `pwd_context.needs_update(hash)` returns True for any
+# scheme that's NOT the first one (bcrypt). Login path checks this and
+# rehashes silently to argon2 on successful verify.
+#
+# argon2id parameters (passlib defaults are RFC 9106 compliant):
+#   memory_cost = 65536 KiB (64 MiB), time_cost = 3, parallelism = 4
+pwd_context = CryptContext(
+    schemes=["argon2", "bcrypt"],
+    deprecated="auto",
+    argon2__type="ID",
+)
 security = HTTPBearer()
 
 
@@ -26,6 +39,18 @@ def hash_password(password: str) -> str:
 
 def verify_password(plain: str, hashed: str) -> bool:
     return pwd_context.verify(plain, hashed)
+
+
+def verify_and_rehash(plain: str, hashed: str) -> tuple[bool, str | None]:
+    """Verify password ; return (ok, new_hash_if_rehash_needed_else_None).
+
+    Used on login path : if the stored hash uses a deprecated scheme
+    (bcrypt under the new policy), passlib transparently re-hashes
+    with argon2id and we UPDATE the row. Migration is gradual and
+    invisible to users — at most one extra UPDATE per login.
+    """
+    ok, new_hash = pwd_context.verify_and_update(plain, hashed)
+    return ok, new_hash
 
 
 # ── JWT helpers ─────────────────────────────────────────
