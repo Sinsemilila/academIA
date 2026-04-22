@@ -26,29 +26,33 @@ from dify_db import psql_exec, psql_query
 
 # Tables touched by a Dify app delete. Ordered to respect FK (child → parent).
 # Does NOT touch global tables (users, accounts, sites, plugins).
-SCOPED_TABLES = [
-    "messages",
-    "conversations",
-    "end_users",
-    "app_model_configs",
-    "app_dataset_joins",
-    "api_tokens",
-    "workflows",
-    "workflow_runs",
-    "workflow_app_logs",
-    "app_annotation_settings",
-    "installed_apps",
-    "apps",  # only if the app still has a row here
+# (table, FK column pointing to apps.id). Most tables use `app_id` but the
+# `apps` table itself uses `id` — the bug that let orphans survive delete
+# in Session 39 Block 2b. The `sites` table joins via `app_id` in its
+# Dify schema variant, confirmed present.
+SCOPED_TABLES: list[tuple[str, str]] = [
+    ("messages", "app_id"),
+    ("conversations", "app_id"),
+    ("end_users", "app_id"),
+    ("app_model_configs", "app_id"),
+    ("app_dataset_joins", "app_id"),
+    ("api_tokens", "app_id"),
+    ("workflows", "app_id"),
+    ("workflow_runs", "app_id"),
+    ("workflow_app_logs", "app_id"),
+    ("app_annotation_settings", "app_id"),
+    ("installed_apps", "app_id"),
+    ("sites", "app_id"),
+    ("apps", "id"),  # ← bug fix : apps table uses `id` PK, not `app_id`
 ]
 
 
-def count(table: str, app_id: str) -> int | None:
-    """Return row count for the given app_id, or None if the table/column doesn't exist."""
+def count(table: str, col: str, app_id: str) -> int | None:
+    """Return row count for the given id, or None if table/column doesn't exist."""
     try:
-        raw = psql_query(f"SELECT COUNT(*) FROM {table} WHERE app_id = '{app_id}';")
+        raw = psql_query(f"SELECT COUNT(*) FROM {table} WHERE {col} = '{app_id}';")
         return int(raw) if raw else 0
     except Exception:
-        # Table doesn't exist in this Dify version, or no app_id column → skip
         return None
 
 
@@ -71,13 +75,12 @@ def predump(app_id: str, ts: str) -> Path:
 
 
 def apply_delete(app_id: str) -> None:
-    """Single transaction. Reverse FK order (child first)."""
+    """Single transaction. Reverse FK order (child first, apps last)."""
     sql = ["BEGIN;"]
-    for t in SCOPED_TABLES:
-        # Only include tables whose app_id column exists — skip silently if not.
-        if count(t, app_id) is None:
+    for t, col in SCOPED_TABLES:
+        if count(t, col, app_id) is None:
             continue
-        sql.append(f"DELETE FROM {t} WHERE app_id = '{app_id}';")
+        sql.append(f"DELETE FROM {t} WHERE {col} = '{app_id}';")
     sql.append("COMMIT;")
     psql_exec("\n".join(sql))
 
@@ -91,13 +94,13 @@ def main() -> int:
 
     print(f"▶ Inspecting app {args.app_id}")
     total = 0
-    for t in SCOPED_TABLES:
-        c = count(t, args.app_id)
+    for t, col in SCOPED_TABLES:
+        c = count(t, col, args.app_id)
         if c is None:
             continue
         total += c
         marker = "  " if c == 0 else " *"
-        print(f"{marker} {t:<28} {c}")
+        print(f"{marker} {t:<28} ({col:<8}) {c}")
     print(f"  TOTAL rows to remove : {total}")
 
     if total == 0:
@@ -116,7 +119,7 @@ def main() -> int:
     apply_delete(args.app_id)
 
     # Verify
-    post = sum((count(t, args.app_id) or 0) for t in SCOPED_TABLES)
+    post = sum((count(t, col, args.app_id) or 0) for t, col in SCOPED_TABLES)
     print(f"▶ post-delete total rows referencing app_id : {post}")
     return 0 if post == 0 else 1
 
