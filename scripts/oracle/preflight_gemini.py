@@ -20,33 +20,38 @@ import sys
 
 # Observed per-model limits on Sinse's free-tier project, 2026-04-22.
 # Limits are SEPARATE buckets per model → we sum them to get total budget.
+# litellm_cache_stats.model is the raw provider name (not the alias),
+# so queries use db_model while the chain order matches LiteLLM aliases.
 GEMINI_CHAIN = [
-    ("gemini-flash",           20),  # gemini-2.5-flash
-    ("gemini-3-flash",         20),  # gemini-3-flash-preview
-    ("gemini-3-1-flash-lite", 500),  # gemini-3.1-flash-lite-preview
+    ("gemini-flash",           "gemini-2.5-flash",              20),
+    ("gemini-3-flash",         "gemini-3-flash-preview",        20),
+    ("gemini-3-1-flash-lite",  "gemini-3.1-flash-lite-preview", 500),
 ]
-CUMULATED_RPD = sum(lim for _, lim in GEMINI_CHAIN)
+CUMULATED_RPD = sum(lim for _, _, lim in GEMINI_CHAIN)
 
 
 def _rpd_used_today() -> dict[str, int]:
-    """Return dict {model_alias → requests today} from litellm_cache_stats."""
-    used = {m: 0 for m, _ in GEMINI_CHAIN}
+    """Return dict {alias → requests today} from litellm_cache_stats."""
+    used = {alias: 0 for alias, _, _ in GEMINI_CHAIN}
     try:
-        models_csv = ",".join(f"'{m}'" for m, _ in GEMINI_CHAIN)
+        db_models_csv = ",".join(f"'{dbm}'" for _, dbm, _ in GEMINI_CHAIN)
         out = subprocess.check_output(
             [
                 "docker", "exec", "-i", "postgres-academie",
                 "psql", "-U", "sinse", "-d", "academie_db", "-tAc",
                 f"SELECT model, COUNT(*) FROM litellm_cache_stats "
-                f"WHERE model IN ({models_csv}) AND started_at::date = CURRENT_DATE "
+                f"WHERE model IN ({db_models_csv}) AND started_at::date = CURRENT_DATE "
                 f"GROUP BY model;",
             ],
             text=True,
         ).strip()
+        db_to_alias = {dbm: alias for alias, dbm, _ in GEMINI_CHAIN}
         for line in out.split("\n"):
             if "|" in line:
                 m, n = line.split("|", 1)
-                used[m.strip()] = int(n.strip() or 0)
+                alias = db_to_alias.get(m.strip())
+                if alias:
+                    used[alias] = int(n.strip() or 0)
     except Exception:
         pass
     return used
@@ -76,9 +81,9 @@ def main() -> int:
     headroom = total_remaining - planned
 
     print("Gemini judge chain — budget check (limits are per-model)")
-    for model, limit in GEMINI_CHAIN:
-        u = used.get(model, 0)
-        print(f"  {model:<24} {u:>4} / {limit} RPD")
+    for alias, _db, limit in GEMINI_CHAIN:
+        u = used.get(alias, 0)
+        print(f"  {alias:<24} {u:>4} / {limit} RPD")
     print(f"  {'TOTAL':<24} {total_used:>4} / {CUMULATED_RPD} RPD  "
           f"({total_remaining} remaining)")
     print(f"  planned run : {planned} calls ({args.mode or 'custom'}, n_votes={args.n_votes})")

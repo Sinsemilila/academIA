@@ -5,6 +5,7 @@
   import { currentDomain } from '$lib/stores/navigation';
   import { get } from 'svelte/store';
   import ModelBudgetBar from '$lib/components/admin/ModelBudgetBar.svelte';
+  import JudgeBudgetBar from '$lib/components/admin/JudgeBudgetBar.svelte';
 
   const availableAgents = $derived(agents.filter(a => a.available));
   const initialDomain = get(currentDomain);
@@ -19,6 +20,12 @@
   let modelBudgets = $state<any>(null);
   async function loadModelBudgets() {
     try { modelBudgets = await api.adminModelBudgets(); } catch { modelBudgets = null; }
+  }
+
+  // ── Session 45 P4.5 — Oracle judge budget (Gemini chain 540 RPD) ──
+  let judgeBudget = $state<any>(null);
+  async function loadJudgeBudget() {
+    try { judgeBudget = await api.adminJudgeBudget(); } catch { judgeBudget = null; }
   }
 
   // ── Prompt caching (global, windowed) ───────────────────────
@@ -82,7 +89,7 @@
   }
 
   onMount(() => {
-    loadTokenUsage(); loadCacheStats(); loadModelBudgets();
+    loadTokenUsage(); loadCacheStats(); loadModelBudgets(); loadJudgeBudget();
     loadConsolidationStats(); loadOracleStats(); loadFunnelStats();
   });
 </script>
@@ -136,6 +143,27 @@
           </div>
         </div>
       {/if}
+    {/if}
+  </div>
+
+  <!-- Oracle judge budget (Gemini chain 540 RPD cumulated) -->
+  <div class="bg-surface border border-border-subtle rounded-xl p-4 space-y-3">
+    <div>
+      <h2 class="text-sm font-semibold text-text-primary">Oracle judge budget</h2>
+      <p class="text-xs text-text-muted">
+        Chaîne Gemini κ=0.84 — LiteLLM cascade automatique quand 429. Reset 00:00 UTC.
+      </p>
+    </div>
+    {#if !judgeBudget || !judgeBudget.tiers}
+      <div class="skeleton h-24 rounded-lg"></div>
+    {:else}
+      <JudgeBudgetBar
+        tiers={judgeBudget.tiers}
+        totalUsed={judgeBudget.total_used}
+        totalLimit={judgeBudget.total_limit}
+        totalRemaining={judgeBudget.total_remaining}
+        preflightCmd={judgeBudget.preflight_cmd}
+      />
     {/if}
   </div>
 

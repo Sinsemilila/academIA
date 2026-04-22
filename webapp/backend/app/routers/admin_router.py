@@ -752,3 +752,69 @@ async def model_budgets(admin: dict = Depends(require_admin)):
         "current_since": current_since,
         "total_remaining_today": total_remaining,
     }
+
+
+# ── Session 45 P4.5 — Oracle judge chain budget ─────────────────────
+
+# Gemini judge chain config (mirrors scripts/oracle/preflight_gemini.py).
+# `db_model` is what LiteLLM actually writes to litellm_cache_stats.model
+# (raw provider name), `alias` is the LiteLLM model_group we cascade to
+# in the fallback chain. Limits are per-model on Google free tier.
+_JUDGE_CHAIN = [
+    {"alias": "gemini-flash",          "db_model": "gemini-2.5-flash",              "label": "Gemini 2.5 Flash",       "rpd_limit": 20},
+    {"alias": "gemini-3-flash",        "db_model": "gemini-3-flash-preview",        "label": "Gemini 3 Flash Preview", "rpd_limit": 20},
+    {"alias": "gemini-3-1-flash-lite", "db_model": "gemini-3.1-flash-lite-preview", "label": "Gemini 3.1 Flash Lite",  "rpd_limit": 500},
+]
+
+
+@router.get("/api/admin/judge-budget")
+async def judge_budget(admin: dict = Depends(require_admin)):
+    """Aggregate today's usage across the 3-tier Gemini judge chain used
+    by the Oracle harness. Mirrors the CLI at preflight_gemini.py but
+    renders on /admin. Active tier = highest-priority model that still
+    has budget left ; if tier 1 exhausted, LiteLLM is cascading to tier 2."""
+    db_models = [t["db_model"] for t in _JUDGE_CHAIN]
+    async with db.pool.acquire() as conn:
+        rows = await conn.fetch(
+            """SELECT model, COUNT(*)::int AS used_today
+                 FROM litellm_cache_stats
+                WHERE model = ANY($1::text[])
+                  AND started_at::date = CURRENT_DATE
+             GROUP BY model""",
+            db_models,
+        )
+    used_by_db_model = {r["model"]: int(r["used_today"]) for r in rows}
+
+    tiers = []
+    active_found = False
+    total_used = 0
+    total_limit = 0
+    for t in _JUDGE_CHAIN:
+        used = used_by_db_model.get(t["db_model"], 0)
+        remaining = max(t["rpd_limit"] - used, 0)
+        is_active = (not active_found) and (remaining > 0)
+        if is_active:
+            active_found = True
+        tiers.append({
+            "alias": t["alias"],
+            "label": t["label"],
+            "rpd_limit": t["rpd_limit"],
+            "used": used,
+            "remaining": remaining,
+            "pct": round(used / t["rpd_limit"] * 100, 1) if t["rpd_limit"] else 0.0,
+            "is_active": is_active,
+        })
+        total_used += used
+        total_limit += t["rpd_limit"]
+
+    # Fallback : if every tier exhausted, active flag stays on the last one
+    if not active_found and tiers:
+        tiers[-1]["is_active"] = True
+
+    return {
+        "tiers": tiers,
+        "total_used": total_used,
+        "total_limit": total_limit,
+        "total_remaining": max(total_limit - total_used, 0),
+        "preflight_cmd": "python3 scripts/oracle/preflight_gemini.py --mode full",
+    }

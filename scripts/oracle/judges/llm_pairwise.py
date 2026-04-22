@@ -82,8 +82,11 @@ Response B (golden) : "{response_b}"
 Output strict JSON : {{"equivalent": true|false, "confidence": 0.0-1.0, "reasoning": "one sentence"}}"""
 
 
-def _extract_json(text: str) -> dict | None:
-    # Strip code fences
+def _extract_json(text: str | None) -> dict | None:
+    # Defensive : Gemini 2.5 Flash returns content=None when thinking
+    # tokens consume the whole max_tokens budget — don't crash on that.
+    if not text:
+        return None
     t = text.strip()
     if t.startswith("```"):
         t = re.sub(r"^```(?:json)?\s*|\s*```$", "", t, flags=re.MULTILINE)
@@ -121,10 +124,20 @@ async def _call_judge(
             timeout=jcfg.get("timeout_s", 30),
         )
         r.raise_for_status()
-        text = r.json()["choices"][0]["message"]["content"]
-        return _extract_json(text)
+        choice = r.json().get("choices", [{}])[0]
+        text = (choice.get("message") or {}).get("content")
+        result = _extract_json(text)
+        if result is None:
+            # Surface whether we got an empty content (thinking overflow?)
+            # or a non-JSON body, so the operator can debug.
+            _log.warning(
+                "judge returned no parseable JSON "
+                "(content_empty=%s, finish_reason=%s)",
+                not text, choice.get("finish_reason"),
+            )
+        return result
     except Exception as e:
-        _log.warning("judge call failed: %s", e)
+        _log.warning("judge call failed: %s (%s)", type(e).__name__, e)
         return None
 
 
