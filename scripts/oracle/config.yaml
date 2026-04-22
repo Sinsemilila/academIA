@@ -1,47 +1,33 @@
-# Session 40 Phase A — Oracle V1 runtime config
-# Updated in Phase C with measured noise floors + active dims post-calibration.
-
 judge:
-  model: gpt-4o-mini              # V1 self-vendor; swap to groq-standard or claude-haiku-4-5 for V2 cross-vendor
-  n_votes: 3                      # majority-vote per dim
+  model: gpt-4o-mini
+  n_votes: 3
   temperature: 0.0
   max_tokens: 200
   timeout_s: 30
-
 modes:
   lint:
-    skip_dims: true               # no LLM calls; structural only
+    skip_dims: true
   smoke:
-    scenario_count: 6             # high-signal subset
+    scenario_count: 6
     n_votes: 1
   full:
     scenario_count: 24
     n_votes: 3
-
 axis_thresholds:
-  # Per-axis min score (pairwise "tie or better") to count as axis pass.
-  # V1 conservative : 2/3 majority on each axis.
   policy_compliance: 0.66
   output_shape: 0.66
   pedagogy_quality: 0.66
-
-# Per-dim noise floor — populated by Phase C calibration.
-# Pre-calibration defaults = 0.0 (strict) ; will be set from 5× baseline runs.
 noise_floor:
-  cf_move_set_valid: 0.0
+  cf_move_set_valid: 0.125
   scaffolding_flags_honored: 0.0
-  register_cefr_alignment: 0.0
+  register_cefr_alignment: 0.208
   recast_saliency_and_dosage: 0.0
-  semantic_fidelity_pairwise: 0.0
-
-# Dims dropped by Phase C calibration for κ < 0.4 (logged here for transparency).
+  semantic_fidelity_pairwise: 0.333
+  cf_move_set_valid_partial: 0.0
+  scaffolding_flags_l2_ratio: 0.125
 dropped_dims: []
-
 dify:
   teacher_en_app_id: 39565197-c9d1-4d5b-b66f-18925de236d9
   public_api_base: http://127.0.0.1:5001
-  # api_key read from $DIFY_KEY_TEACHER at runtime (webapp/.env)
-
 litellm:
   proxy_url: http://127.0.0.1:4000/v1/chat/completions
-  # api_key read from $LITELLM_MASTER_KEY at runtime if needed
