@@ -20,8 +20,13 @@ from pathlib import Path
 
 logger = logging.getLogger("academie-api.chat_router")
 
-# ── Daily token budget for gpt-4o-mini (free tier protection) ──
-_GPT4O_DAILY_LIMIT = 1_500_000
+# ── Daily token budget for the OpenAI "complimentary daily tokens" pool ──
+# This is shared across gpt-4o-mini + gpt-5-mini + gpt-5-nano + gpt-4.1-mini
+# + gpt-4.1-nano + o4-mini when the org has opted into data-sharing. Caps by
+# usage tier (verified at platform.openai.com/settings/organization/limits,
+# 2026-04-22) : Tier 1-2 = 2.5M TPD, Tier 3+ = up to 10M TPD.
+# Override via env if the tier changes : OPENAI_COMPLIMENTARY_TPD=2500000
+_GPT4O_DAILY_LIMIT = int(os.environ.get("OPENAI_COMPLIMENTARY_TPD", "2500000"))
 # Display safety margin : with the OpenAI Usage API reconciliation loop
 # feeding the authoritative total into the MAX(...), the admin display
 # matches OpenAI's dashboard within its own latency (a few minutes). 2%
