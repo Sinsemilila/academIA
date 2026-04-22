@@ -261,6 +261,37 @@ async def get_gpt4o_usage() -> dict:
 
 
 _current_dify_model = "gpt-4o-mini"
+_current_dify_model_loaded = False  # True once reconciled against the Dify workflow graph
+
+
+async def _reconcile_current_dify_model() -> None:
+    """On first call, read the published Teacher workflow graph and infer
+    the actual active model from the LLM nodes. This fixes the "after a
+    container rebuild, in-memory state loses the previous tier switch"
+    class of bugs. Idempotent : flips _current_dify_model once then
+    never touches it again (subsequent _switch_dify_model calls are the
+    source of truth)."""
+    global _current_dify_model, _current_dify_model_loaded
+    if _current_dify_model_loaded:
+        return
+    try:
+        async with db.pool.acquire() as conn:
+            row = await conn.fetchrow(
+                "SELECT graph::text AS g FROM workflows "
+                "WHERE id = 'c52a451f-e381-46f1-a23a-077197b0fccb'"
+            )
+        if row and row["g"]:
+            import json as _json
+            g = _json.loads(row["g"])
+            for node in g.get("nodes", []):
+                m = (node.get("data") or {}).get("model") or {}
+                name = m.get("name") if isinstance(m, dict) else None
+                if name and name in {"gpt-4o-mini", "groq-standard", "groq-snapshot", "groq-qwen"}:
+                    _current_dify_model = name
+                    break
+    except Exception:
+        pass
+    _current_dify_model_loaded = True
 
 
 # ── Session 44 B — 3-tier waterfall budget ───────────────────────────
@@ -315,6 +346,7 @@ async def _select_active_tier() -> tuple[str, str]:
     """Walk the tier chain, return (target_model, reason). Advances past
     any tier whose consumption is ≥95% of its TPD. Wraps back to tier 1
     when a fresh calendar day zeroes every counter."""
+    await _reconcile_current_dify_model()
     for idx, (model, limit) in enumerate(_TIER_CHAIN):
         if model == "gpt-4o-mini":
             await _load_daily_tokens()

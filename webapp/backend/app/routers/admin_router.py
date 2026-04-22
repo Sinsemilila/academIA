@@ -655,10 +655,12 @@ async def model_budgets(admin: dict = Depends(require_admin)):
     (projected from last 15-min burn rate × 96, null if usage still zero).
     `current_tier` and `current_since` come from model_switch_log.
     """
-    from .chat_router import _TIER_CHAIN, _gpt4o_token_counter, _GPT4O_DAILY_LIMIT
-    # Ensure in-memory counter is seeded from DB snapshot before we read it.
-    from .chat_router import _load_daily_tokens
-    await _load_daily_tokens()
+    from . import chat_router as _cr
+    _TIER_CHAIN = _cr._TIER_CHAIN
+    # Ensure in-memory state is seeded from DB before reading it.
+    await _cr._load_daily_tokens()
+    await _cr._reconcile_current_dify_model()
+    _gpt4o_token_counter = _cr._gpt4o_token_counter
 
     async with db.pool.acquire() as conn:
         # Today's usage per groq model
@@ -680,8 +682,12 @@ async def model_budgets(admin: dict = Depends(require_admin)):
             "SELECT at, to_model FROM model_switch_log ORDER BY at DESC LIMIT 1",
         )
 
-    current_tier = sw["to_model"] if sw else "gpt-4o-mini"
-    current_since = sw["at"].isoformat() if sw else None
+    # Source of truth for current_tier : the reconciled in-memory
+    # _current_dify_model (which was just refreshed from the actual
+    # Dify workflow graph). model_switch_log gives the "since when"
+    # if available; we fall back to null (UI shows "depuis minuit").
+    current_tier = _cr._current_dify_model
+    current_since = sw["at"].isoformat() if sw and sw["to_model"] == current_tier else None
 
     tiers = []
     for model, limit in _TIER_CHAIN:
