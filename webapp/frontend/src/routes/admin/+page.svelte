@@ -152,7 +152,23 @@
     return `il y a ${Math.floor(diff / 86400)}j`;
   }
 
-  onMount(() => { loadUsers(); loadTokenUsage(); loadCacheStats(); });
+  // Session 42 P3 — consolidation events admin analytics
+  let consolidationStats = $state<any>(null);
+  let consolidationLoading = $state(false);
+  async function loadConsolidationStats() {
+    consolidationLoading = true;
+    try {
+      consolidationStats = await api.adminConsolidationEvents(adminDomain, 168);
+    } catch {
+      consolidationStats = null;
+    } finally {
+      consolidationLoading = false;
+    }
+  }
+
+  onMount(() => {
+    loadUsers(); loadTokenUsage(); loadCacheStats(); loadConsolidationStats();
+  });
 </script>
 
 <svelte:head>
@@ -314,6 +330,64 @@
                   <td class="px-3 py-2 text-right font-mono">{(m.prompt_tokens ?? 0).toLocaleString()}</td>
                   <td class="px-3 py-2 text-right font-mono">{(m.cached_tokens ?? 0).toLocaleString()}</td>
                   <td class="px-3 py-2 text-right font-mono {m.cache_pct >= 50 ? 'text-teacher' : m.cache_pct >= 20 ? 'text-lehrer' : 'text-text-muted'}">{m.cache_pct ?? 0}%</td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      {/if}
+    {/if}
+  </div>
+
+  <!-- Session 42 P3 — Consolidation events analytics -->
+  <div class="bg-surface border border-border-subtle rounded-xl p-4 space-y-3">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-sm font-semibold text-text-primary">Consolidation CEFR events</h2>
+        <p class="text-xs text-text-muted">7 derniers jours — domaine {adminDomain}. Événements trigger/decide de consolidation.</p>
+      </div>
+    </div>
+    {#if consolidationLoading}
+      <div class="skeleton h-20 rounded-lg"></div>
+    {:else if !consolidationStats || !consolidationStats.summary}
+      <p class="text-xs text-text-muted italic">Aucune donnée.</p>
+    {:else}
+      {@const cs = consolidationStats.summary}
+      <div class="grid grid-cols-3 gap-3">
+        <div class="bg-elevated rounded-lg p-3">
+          <p class="text-[10px] uppercase tracking-wider text-text-muted">Total events</p>
+          <p class="text-lg font-mono font-semibold text-text-primary">{cs.total ?? 0}</p>
+          <p class="text-[10px] text-text-muted">{cs.pending ?? 0} pending · {cs.closed ?? 0} closed</p>
+        </div>
+        <div class="bg-elevated rounded-lg p-3">
+          <p class="text-[10px] uppercase tracking-wider text-text-muted">Mini-exam</p>
+          <p class="text-lg font-mono font-semibold text-text-primary">{cs.mini_exam_count ?? 0}</p>
+          <p class="text-[10px] text-text-muted">{cs.mini_exam_pass ?? 0} pass · {cs.mini_exam_fail ?? 0} fail · avg {cs.avg_mini_exam_score ?? 0}%</p>
+        </div>
+        <div class="bg-elevated rounded-lg p-3">
+          <p class="text-[10px] uppercase tracking-wider text-text-muted">Pass rate</p>
+          <p class="text-lg font-mono font-semibold {(cs.mini_exam_pass ?? 0) + (cs.mini_exam_fail ?? 0) > 0 ? 'text-teacher' : 'text-text-muted'}">
+            {((cs.mini_exam_pass ?? 0) + (cs.mini_exam_fail ?? 0)) > 0 ? Math.round((cs.mini_exam_pass / ((cs.mini_exam_pass ?? 0) + (cs.mini_exam_fail ?? 0))) * 100) : '—'}%
+          </p>
+        </div>
+      </div>
+
+      {#if consolidationStats.by_decision && consolidationStats.by_decision.length > 0}
+        <div class="bg-elevated rounded-lg overflow-hidden">
+          <table class="w-full text-xs">
+            <thead>
+              <tr class="border-b border-border-subtle text-text-muted">
+                <th class="text-left px-3 py-2 font-normal">Décision</th>
+                <th class="text-right px-3 py-2 font-normal">Count</th>
+                <th class="text-right px-3 py-2 font-normal">Avg score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each consolidationStats.by_decision as d (d.decision)}
+                <tr class="border-b border-border-subtle/50">
+                  <td class="px-3 py-2 font-mono">{d.decision}</td>
+                  <td class="px-3 py-2 text-right font-mono">{d.count}</td>
+                  <td class="px-3 py-2 text-right font-mono text-text-muted">{d.avg_score ? d.avg_score + '%' : '—'}</td>
                 </tr>
               {/each}
             </tbody>
