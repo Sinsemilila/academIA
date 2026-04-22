@@ -356,6 +356,12 @@ class ApiClient {
     return await res.json();
   }
 
+  async adminCacheStats(hours: number = 24) {
+    const res = await this.fetch(`/admin/cache-stats?hours=${hours}`);
+    if (!res.ok) throw new Error('Cache stats fetch failed');
+    return await res.json();
+  }
+
   async adminCreateUser(username: string, password: string) {
     const res = await this.fetch('/auth/users', {
       method: 'POST',

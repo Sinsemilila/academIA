@@ -42,10 +42,44 @@
   const availableAgents = $derived(agents.filter(a => a.available));
   let tokenUsage = $state<any>(null);
 
+  // Phase D v2 — OpenAI prompt caching telemetry (Block 1.2 sidecar)
+  let cacheStats = $state<any>(null);
+  let cacheHours = $state(24);
+  let cacheLoading = $state(false);
+
   async function loadTokenUsage() {
     try {
       tokenUsage = await api.getTokenUsage();
     } catch {}
+  }
+
+  async function loadCacheStats() {
+    cacheLoading = true;
+    try {
+      cacheStats = await api.adminCacheStats(cacheHours);
+    } catch {
+      cacheStats = null;
+    } finally {
+      cacheLoading = false;
+    }
+  }
+
+  async function switchCacheWindow(hours: number) {
+    cacheHours = hours;
+    await loadCacheStats();
+  }
+
+  function sparkPath(points: Array<{ bucket: string; cached_tokens: number; prompt_tokens: number }>): string {
+    if (!points.length) return '';
+    const w = 280, h = 60;
+    const pcts = points.map(p => p.prompt_tokens > 0 ? (p.cached_tokens / p.prompt_tokens) * 100 : 0);
+    const max = Math.max(100, ...pcts);
+    const step = points.length > 1 ? w / (points.length - 1) : 0;
+    return points.map((_, i) => {
+      const x = i * step;
+      const y = h - (pcts[i] / max) * h;
+      return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
   }
 
   async function loadUsers() {
@@ -118,7 +152,7 @@
     return `il y a ${Math.floor(diff / 86400)}j`;
   }
 
-  onMount(() => { loadUsers(); loadTokenUsage(); });
+  onMount(() => { loadUsers(); loadTokenUsage(); loadCacheStats(); });
 </script>
 
 <svelte:head>
@@ -191,6 +225,87 @@
       {/if}
     </div>
   {/if}
+
+  <!-- Phase D v2 — OpenAI prompt caching (Block 1.2 sidecar) -->
+  <div class="bg-surface border border-border-subtle rounded-xl p-4 space-y-3">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-sm font-semibold text-text-primary">Prompt caching (OpenAI)</h2>
+        <p class="text-xs text-text-muted">cached_tokens / prompt_tokens via LiteLLM callback → litellm_cache_stats</p>
+      </div>
+      <div class="flex gap-1">
+        {#each [24, 168, 720] as h (h)}
+          <button
+            onclick={() => switchCacheWindow(h)}
+            class="px-2 py-1 text-xs rounded {cacheHours === h ? 'bg-accent text-white' : 'bg-elevated text-text-muted hover:text-text-primary'}"
+          >
+            {h === 24 ? '24h' : h === 168 ? '7j' : '30j'}
+          </button>
+        {/each}
+      </div>
+    </div>
+
+    {#if cacheLoading}
+      <div class="skeleton h-20 rounded-lg"></div>
+    {:else if !cacheStats || !cacheStats.summary}
+      <p class="text-xs text-text-muted italic">Aucune donnée pour cette fenêtre.</p>
+    {:else}
+      {@const s = cacheStats.summary}
+      <div class="grid grid-cols-3 gap-3">
+        <div class="bg-elevated rounded-lg p-3">
+          <p class="text-[10px] uppercase tracking-wider text-text-muted">Requêtes</p>
+          <p class="text-lg font-mono font-semibold text-text-primary">{s.requests ?? 0}</p>
+        </div>
+        <div class="bg-elevated rounded-lg p-3">
+          <p class="text-[10px] uppercase tracking-wider text-text-muted">Cache hit</p>
+          <p class="text-lg font-mono font-semibold text-teacher">{s.cache_pct ?? 0}%</p>
+          <p class="text-[10px] text-text-muted">{(s.cached_tokens ?? 0).toLocaleString()} / {(s.prompt_tokens ?? 0).toLocaleString()} tok</p>
+        </div>
+        <div class="bg-elevated rounded-lg p-3">
+          <p class="text-[10px] uppercase tracking-wider text-text-muted">Économie ~</p>
+          <p class="text-lg font-mono font-semibold text-text-primary">${((s.cached_tokens ?? 0) * 0.075 / 1_000_000).toFixed(3)}</p>
+          <p class="text-[10px] text-text-muted">50% discount vs full input @ $0.15/1M</p>
+        </div>
+      </div>
+
+      {#if cacheStats.by_hour && cacheStats.by_hour.length > 1}
+        <div class="bg-elevated rounded-lg p-3">
+          <p class="text-[10px] uppercase tracking-wider text-text-muted mb-2">Hit rate dans le temps</p>
+          <svg viewBox="0 0 280 60" class="w-full h-16" preserveAspectRatio="none">
+            <line x1="0" y1="30" x2="280" y2="30" stroke="currentColor" stroke-opacity="0.1" stroke-dasharray="2 2" />
+            <path d={sparkPath(cacheStats.by_hour)} fill="none" stroke="currentColor" stroke-width="1.5" class="text-teacher" />
+          </svg>
+        </div>
+      {/if}
+
+      {#if cacheStats.by_model && cacheStats.by_model.length > 0}
+        <div class="bg-elevated rounded-lg overflow-hidden">
+          <table class="w-full text-xs">
+            <thead>
+              <tr class="border-b border-border-subtle text-text-muted">
+                <th class="text-left px-3 py-2 font-normal">Modèle</th>
+                <th class="text-right px-3 py-2 font-normal">Req</th>
+                <th class="text-right px-3 py-2 font-normal">Prompt tok</th>
+                <th class="text-right px-3 py-2 font-normal">Cached tok</th>
+                <th class="text-right px-3 py-2 font-normal">Hit %</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each cacheStats.by_model as m (m.model)}
+                <tr class="border-b border-border-subtle/50">
+                  <td class="px-3 py-2 font-mono">{m.model}</td>
+                  <td class="px-3 py-2 text-right font-mono">{m.requests}</td>
+                  <td class="px-3 py-2 text-right font-mono">{(m.prompt_tokens ?? 0).toLocaleString()}</td>
+                  <td class="px-3 py-2 text-right font-mono">{(m.cached_tokens ?? 0).toLocaleString()}</td>
+                  <td class="px-3 py-2 text-right font-mono {m.cache_pct >= 50 ? 'text-teacher' : m.cache_pct >= 20 ? 'text-lehrer' : 'text-text-muted'}">{m.cache_pct ?? 0}%</td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      {/if}
+    {/if}
+  </div>
 
   {#if showCreateForm}
     <div class="bg-surface border border-border-subtle rounded-xl p-4 space-y-3">
