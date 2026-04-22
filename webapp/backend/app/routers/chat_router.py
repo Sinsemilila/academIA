@@ -580,9 +580,10 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
     if eleve_id:
         try:
             from academie_core.pedagogy.three_strikes import detect_three_strikes_family
+            _bypass = os.environ.get("THREE_STRIKES_DEDUP_BYPASS", "false").lower() in ("1", "true", "yes")
             async with db.pool.acquire() as conn:
                 three_strikes_family = await detect_three_strikes_family(
-                    conn, eleve_id, domain,
+                    conn, eleve_id, domain, bypass_dedup=_bypass,
                 )
         except Exception as _e:
             import logging

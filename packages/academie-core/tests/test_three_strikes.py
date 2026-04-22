@@ -90,6 +90,17 @@ def test_detect_dedup_suppresses_recent_injection():
     assert result is None
 
 
+def test_detect_bypass_dedup_returns_family_even_when_recent():
+    conn = _StubConn(
+        fetch_rows=["V:TENSE", "V:TENSE", "V:TENSE"],
+        fetchval_result=1,  # dedup would normally suppress
+    )
+    result = _run(detect_three_strikes_family(
+        conn, eleve_id=1, domain="en", bypass_dedup=True,
+    ))
+    assert result == "verb_tense"
+
+
 def test_detect_unknown_code_returns_none():
     conn = _StubConn(fetch_rows=["ZZZ:UNKNOWN", "ZZZ:UNKNOWN", "ZZZ:UNKNOWN"])
     result = _run(detect_three_strikes_family(conn, eleve_id=1, domain="en"))

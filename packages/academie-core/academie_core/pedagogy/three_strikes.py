@@ -36,6 +36,7 @@ async def detect_three_strikes_family(
     window_errors: int = 10,
     threshold: int = 3,
     dedup_days: int = 3,
+    bypass_dedup: bool = False,
 ) -> str | None:
     """Return the error_family on which the learner just triggered a 3-strikes,
     or None if no family qualifies.
@@ -74,7 +75,12 @@ async def detect_three_strikes_family(
     if family == "unknown":
         return None
 
-    # Dedup — skip if we already injected this family recently
+    # Dedup — skip if we already injected this family recently.
+    # bypass_dedup=True lets dogfood sessions replay the same 3-strikes
+    # scenario without waiting 3 days (see THREE_STRIKES_DEDUP_BYPASS).
+    if bypass_dedup:
+        return family
+
     recent = await conn.fetchval(
         """
         SELECT 1 FROM micro_lesson_log
