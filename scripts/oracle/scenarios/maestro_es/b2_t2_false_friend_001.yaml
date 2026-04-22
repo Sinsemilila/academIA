@@ -1,0 +1,43 @@
+id: b2_t2_false_friend_001
+source: handcrafted
+scenario_key:
+  agent: maestro_es
+  cefr: B2
+  target_tier: T2
+  error_category: vocabulary
+  fla: low
+  style_profile: direct
+multi_turn: false
+turns:
+- role: learner
+  text: Actualmente estoy embarazada con este proyecto y tengo muchos compromisos.
+  turn_number: 5
+  expected_errors:
+  - LEX:FALSE
+expected_dimensions:
+  cf_move_set_valid:
+    mode: set_membership
+    acceptable:
+    - elicitation
+    - metalinguistic
+    - partial_recast
+    - clarification_request
+    forbidden: []
+  scaffolding_flags_honored:
+    mode: all_required
+    l2_ratio_band:
+    - 0.95
+    - 1.0
+  register_cefr_alignment:
+    mode: within_sublevel
+    target: B2
+    tolerance: 1
+  recast_saliency_and_dosage:
+    mode: structural
+    max_lines: 6
+    max_questions: 2
+    error_form_isolated: true
+    mini_lesson_allowed: false
+  semantic_fidelity_pairwise:
+    mode: llm_pairwise
+    vs_golden: true

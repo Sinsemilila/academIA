@@ -1,0 +1,44 @@
+id: b1_t2_quantifier_001
+source: handcrafted
+scenario_key:
+  agent: maestro_es
+  cefr: B1
+  target_tier: T2
+  error_category: QUANT:MUY_MUCHO
+  fla: low
+  style_profile: direct
+multi_turn: false
+turns:
+- role: learner
+  text: La fiesta fue mucho divertida pero yo estaba muy cansada después.
+  turn_number: 5
+  expected_errors:
+  - QUANT:MUY_MUCHO
+expected_dimensions:
+  cf_move_set_valid:
+    mode: set_membership
+    acceptable:
+    - partial_recast
+    - elicitation
+    - metalinguistic
+    - clarification_request
+    forbidden:
+    - explicit_correction
+  scaffolding_flags_honored:
+    mode: all_required
+    l2_ratio_band:
+    - 0.95
+    - 1.0
+  register_cefr_alignment:
+    mode: within_sublevel
+    target: B1
+    tolerance: 1
+  recast_saliency_and_dosage:
+    mode: structural
+    max_lines: 6
+    max_questions: 2
+    error_form_isolated: true
+    mini_lesson_allowed: false
+  semantic_fidelity_pairwise:
+    mode: llm_pairwise
+    vs_golden: true

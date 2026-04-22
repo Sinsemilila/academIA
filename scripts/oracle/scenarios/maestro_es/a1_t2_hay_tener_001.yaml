@@ -1,0 +1,44 @@
+id: a1_t2_hay_tener_001
+source: handcrafted
+scenario_key:
+  agent: maestro_es
+  cefr: A1
+  target_tier: T2
+  error_category: verb_usage
+  fla: low
+  style_profile: direct
+multi_turn: false
+turns:
+- role: learner
+  text: En mi ciudad tiene muchos parques y museos.
+  turn_number: 5
+  expected_errors:
+  - V:HAY_TENER
+expected_dimensions:
+  cf_move_set_valid:
+    mode: set_membership
+    acceptable:
+    - full_recast
+    - partial_recast
+    - clarification_request
+    forbidden:
+    - metalinguistic
+    - explicit_correction
+  scaffolding_flags_honored:
+    mode: all_required
+    l2_ratio_band:
+    - 0.85
+    - 1.0
+  register_cefr_alignment:
+    mode: within_sublevel
+    target: A1
+    tolerance: 1
+  recast_saliency_and_dosage:
+    mode: structural
+    max_lines: 5
+    max_questions: 2
+    error_form_isolated: true
+    mini_lesson_allowed: false
+  semantic_fidelity_pairwise:
+    mode: llm_pairwise
+    vs_golden: true
