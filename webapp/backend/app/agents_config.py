@@ -23,18 +23,23 @@ class AgentDef:
     language: str          # ISO code (en, es, it, ...)
     env_key_name: str      # DIFY_KEY_* env var
     display_name: str      # UI label (used when frontend doesn't have its own metadata)
+    # Session 44 — Dify app UUID, needed to target workflow graph updates
+    # (model swaps, etc.) at the correct app. Empty string = agent exists
+    # in ALL_AGENTS for future planning but hasn't been provisioned in Dify
+    # yet ; active_agents() asserts it's non-empty for any active slug.
+    dify_app_id: str = ""
 
 
 # All agents the platform CAN support (whether currently active or not).
 # Adding a new one = add entry here + flip AVAILABLE_AGENTS CSV.
 ALL_AGENTS: list[AgentDef] = [
-    AgentDef("teacher",     "en",       "DIFY_KEY_TEACHER",     "Teacher — English"),
-    AgentDef("maestro",     "es",       "DIFY_KEY_MAESTRO",     "Maestro — Spanish"),
-    AgentDef("professore",  "it",       "DIFY_KEY_PROFESSORE",  "Professore — Italian"),
-    AgentDef("lehrer",      "de",       "DIFY_KEY_LEHRER",      "Lehrer — German"),
-    AgentDef("sensei",      "ja",       "DIFY_KEY_SENSEI",      "Sensei — Japanese"),
-    AgentDef("pymentor",    "python",   "DIFY_KEY_PYMENTOR",    "PyMentor — Python"),
-    AgentDef("cybermentor", "cybersec", "DIFY_KEY_CYBERMENTOR", "CyberMentor — Cybersec"),
+    AgentDef("teacher",     "en",       "DIFY_KEY_TEACHER",     "Teacher — English",    "39565197-c9d1-4d5b-b66f-18925de236d9"),
+    AgentDef("maestro",     "es",       "DIFY_KEY_MAESTRO",     "Maestro — Spanish",    "47b0529c-b3a3-4651-8717-759e666172c9"),
+    AgentDef("professore",  "it",       "DIFY_KEY_PROFESSORE",  "Professore — Italian", ""),
+    AgentDef("lehrer",      "de",       "DIFY_KEY_LEHRER",      "Lehrer — German",      ""),
+    AgentDef("sensei",      "ja",       "DIFY_KEY_SENSEI",      "Sensei — Japanese",    ""),
+    AgentDef("pymentor",    "python",   "DIFY_KEY_PYMENTOR",    "PyMentor — Python",    ""),
+    AgentDef("cybermentor", "cybersec", "DIFY_KEY_CYBERMENTOR", "CyberMentor — Cybersec", ""),
 ]
 
 
@@ -63,9 +68,19 @@ def _active_slugs() -> set[str]:
 
 
 def active_agents() -> list[AgentDef]:
-    """Return the AgentDef list restricted to currently-active agents."""
+    """Return the AgentDef list restricted to currently-active agents.
+    Asserts every active agent has a dify_app_id so that any model-switch
+    / graph-edit code can iterate without silently skipping agents — a
+    missing id is a config bug, not runtime-recoverable."""
     slugs = _active_slugs()
-    return [a for a in ALL_AGENTS if a.slug in slugs]
+    out = [a for a in ALL_AGENTS if a.slug in slugs]
+    missing = [a.slug for a in out if not a.dify_app_id]
+    if missing:
+        raise RuntimeError(
+            f"Active agents missing dify_app_id: {missing}. "
+            "Populate agents_config.ALL_AGENTS before activating."
+        )
+    return out
 
 
 def active_slug_set() -> set[str]:

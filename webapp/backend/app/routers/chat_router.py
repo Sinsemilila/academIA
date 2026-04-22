@@ -272,30 +272,50 @@ _current_dify_model = "gpt-4o-mini"
 _current_dify_model_loaded = False  # True once reconciled against the Dify workflow graph
 
 
-TEACHER_APP_ID = "39565197-c9d1-4d5b-b66f-18925de236d9"
+async def _all_agent_workflow_ids() -> list[str]:
+    """Return [published_id, draft_id, ...] flattened across every active
+    agent. Read from apps.workflow_id (published source of truth) + the
+    matching draft row per app. Never hardcode workflow UUIDs — they
+    rotate on every publish and a stale hardcoded value silently hits
+    the wrong graph (happened Session 44 : ~1.8M tokens burned on
+    gpt-4o-mini that should have cascaded to groq because the switch
+    was updating an orphan row).
 
-
-async def _teacher_workflow_ids() -> list[str]:
-    """Return [published_workflow_id, draft_workflow_id] for the Teacher
-    app, read from apps.workflow_id (source of truth) + the matching
-    draft row. Never hardcode workflow UUIDs — they change on every
-    publish event and stale hardcoded values mean the model-switch
-    silently targets the wrong graph while Dify keeps executing the
-    real published one (happened Session 44, wasted ~1.8M tokens on
-    gpt-4o-mini that should have cascaded to groq)."""
+    Covers Teacher + Maestro + any future agent registered in
+    agents_config.active_agents() with its dify_app_id populated."""
+    wf_ids: list[str] = []
     try:
         async with db.pool.acquire() as conn:
-            pub = await conn.fetchval(
-                "SELECT workflow_id FROM apps WHERE id = $1", TEACHER_APP_ID,
-            )
-            draft = await conn.fetchval(
-                "SELECT id FROM workflows WHERE app_id = $1 AND version = 'draft' "
-                "ORDER BY updated_at DESC LIMIT 1",
-                TEACHER_APP_ID,
-            )
+            for agent in active_agents():
+                pub = await conn.fetchval(
+                    "SELECT workflow_id FROM apps WHERE id = $1", agent.dify_app_id,
+                )
+                draft = await conn.fetchval(
+                    "SELECT id FROM workflows WHERE app_id = $1 AND version = 'draft' "
+                    "ORDER BY updated_at DESC LIMIT 1",
+                    agent.dify_app_id,
+                )
+                wf_ids.extend(str(w) for w in (pub, draft) if w)
     except Exception:
-        return []
-    return [str(w) for w in (pub, draft) if w]
+        return wf_ids  # best-effort — return whatever we got
+    return wf_ids
+
+
+async def _first_active_agent_published_workflow_id() -> str | None:
+    """Helper for _reconcile_current_dify_model : all agents share the
+    same tier state, so sampling one is enough to detect the current
+    model. Returns the published workflow_id of the first active agent."""
+    try:
+        async with db.pool.acquire() as conn:
+            for agent in active_agents():
+                pub = await conn.fetchval(
+                    "SELECT workflow_id FROM apps WHERE id = $1", agent.dify_app_id,
+                )
+                if pub:
+                    return str(pub)
+    except Exception:
+        pass
+    return None
 
 
 async def _reconcile_current_dify_model() -> None:
@@ -307,13 +327,13 @@ async def _reconcile_current_dify_model() -> None:
     if _current_dify_model_loaded:
         return
     try:
-        wf_ids = await _teacher_workflow_ids()
-        if not wf_ids:
+        pub_id = await _first_active_agent_published_workflow_id()
+        if not pub_id:
             _current_dify_model_loaded = True
             return
         async with db.pool.acquire() as conn:
             row = await conn.fetchrow(
-                "SELECT graph::text AS g FROM workflows WHERE id = $1", wf_ids[0],
+                "SELECT graph::text AS g FROM workflows WHERE id = $1", pub_id,
             )
         if row and row["g"]:
             import json as _json
@@ -403,11 +423,11 @@ async def _switch_dify_model(target_model: str, reason: str | None = None):
         return
     previous = _current_dify_model
     try:
-        wf_ids = await _teacher_workflow_ids()
+        wf_ids = await _all_agent_workflow_ids()
         if not wf_ids:
             import logging
             logging.getLogger("chat").error(
-                "cannot resolve Teacher workflow ids — model switch skipped",
+                "cannot resolve any active agent workflow ids — model switch skipped",
             )
             return
         async with db.pool.acquire() as conn:
