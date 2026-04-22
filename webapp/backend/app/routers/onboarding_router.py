@@ -472,6 +472,34 @@ async def submit_learner_profile(
         distance = "medium"
 
     derived = _compute_derivations(payload, overlay_probe)
+
+    # Session 42 P4 — LLM fallback judge when regex misses the probe answer.
+    # Overlay must declare `probe.fallback_judge.enabled: true`. Fires only
+    # when learner provided an answer AND regex returned (0, regex_hit=False).
+    # Updates derived["domain_level"]["probe_score"] in place; keeps
+    # probe_regex_hit=False so downstream logic distinguishes regex-hit
+    # (high-confidence) from llm-judge score (medium-confidence).
+    _probe_fb_cfg = ((overlay_probe or {}).get("fallback_judge") or {})
+    if (_probe_fb_cfg.get("enabled") is True
+            and payload.domain_level.probe_answer
+            and not derived["domain_level"].get("probe_regex_hit", False)
+            and derived["domain_level"].get("probe_score", 0) == 0):
+        try:
+            from ..llm_judge import judge_probe_score
+            fallback_score = await judge_probe_score(
+                learner_answer=payload.domain_level.probe_answer,
+                target_sentence=(overlay_probe or {}).get("source_sentence_fr"),
+                target_structure=(overlay_probe or {}).get("target_structure"),
+                target_gold=(overlay_probe or {}).get("target_gold"),
+                model=_probe_fb_cfg.get("model", "gpt-4.1-mini"),
+            )
+            if fallback_score > 0:
+                derived["domain_level"]["probe_score"] = fallback_score
+                derived["domain_level"]["probe_fallback_used"] = True
+        except Exception as _e:
+            import logging
+            logging.getLogger("onboarding").warning("probe fallback judge failed: %s", _e)
+
     hints = _compute_tutor_hints(payload, derived, distance=distance)
     nl_summary = _render_nl_summary(payload, derived, hints, target_language_fr, overlay_probe)
 

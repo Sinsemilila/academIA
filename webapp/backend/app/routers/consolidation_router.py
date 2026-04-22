@@ -126,39 +126,13 @@ def _normalize(s: str) -> str:
     return re.sub(r"\s+", " ", (s or "").strip().lower())
 
 
-async def _llm_judge_item(prompt: str, learner_answer: str, hint: str) -> bool:
-    """Fallback judge for fuzzy items (produce_short, paraphrases).
+# Session 42 P4 — judge moved to shared ..llm_judge module.
+from ..llm_judge import judge_passfail as _llm_judge_item_impl
 
-    Uses the existing LiteLLM proxy (gpt-4.1-mini). Returns True/False.
-    Safe default on any failure: False.
-    """
-    try:
-        import httpx
-        api_key = os.environ.get("LITELLM_MASTER_KEY") or os.environ.get("LITELLM_API_KEY", "")
-        if not api_key:
-            return False
-        sys = (
-            "You grade short language-learning exercises. Answer ONLY 'PASS' or 'FAIL'. "
-            "Be strict but fair: accept minor typos, reject substantive errors. "
-            f"Teacher's expectation: {hint}"
-        )
-        msg = f"Prompt: {prompt}\nLearner answer: {learner_answer}\nYour verdict:"
-        async with httpx.AsyncClient(timeout=8.0) as client:
-            r = await client.post(
-                "http://litellm-proxy:4000/v1/chat/completions",
-                headers={"Authorization": f"Bearer {api_key}"},
-                json={
-                    "model": "gpt-4.1-mini",
-                    "messages": [{"role": "system", "content": sys},
-                                 {"role": "user", "content": msg}],
-                    "max_tokens": 8, "temperature": 0.0,
-                },
-            )
-            r.raise_for_status()
-            verdict = r.json()["choices"][0]["message"]["content"].strip().upper()
-            return verdict.startswith("PASS")
-    except Exception:
-        return False
+
+async def _llm_judge_item(prompt: str, learner_answer: str, hint: str) -> bool:
+    """Back-compat wrapper — thin passthrough to llm_judge.judge_passfail."""
+    return await _llm_judge_item_impl(prompt, learner_answer, hint)
 
 
 @router.post("/api/consolidation/mini-exam/submit/{domain}")
