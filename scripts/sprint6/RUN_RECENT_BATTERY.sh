@@ -108,12 +108,16 @@ fi  # SKIP_N8N_BLOCK gate
 run_block "smoke-test --quick (services + ports)" \
     bash -c "smoke-test --quick 2>&1 | tail -6"
 
-# ── 7. oracle V1 lint (Session 40, lint-only, zero LLM calls) ──────────
+# ── 7. oracle V1 lint — teacher_en (Session 40, lint-only, zero LLM calls) ──────
 # Structural regression catch : JSON wrapper (opt-in), A1 no-jargon,
 # priority leak, observed_level. Runs against recorded goldens.
 # Full mode is on-demand (~108K tokens) — not gated here.
-run_block "oracle V1 lint (scripts/oracle/harness.py --mode lint)" \
+run_block "oracle V1 lint — teacher_en" \
     bash -c "python3 $REPO/scripts/oracle/harness.py --agent teacher_en --mode lint --gate-mode strict 2>&1 | tail -5"
+
+# ── 8. oracle V1 lint — maestro_es (Session 41 extension, same gate) ────
+run_block "oracle V1 lint — maestro_es" \
+    bash -c "python3 $REPO/scripts/oracle/harness.py --agent maestro_es --mode lint --gate-mode strict 2>&1 | tail -5"
 
 # ── Scorecard ──────────────────────────────────────────────────────────
 echo -e "\n${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
