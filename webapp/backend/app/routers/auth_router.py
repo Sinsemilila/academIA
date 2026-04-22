@@ -1,4 +1,6 @@
+import json
 from fastapi import APIRouter, Depends, HTTPException, Request
+from pydantic import BaseModel, Field
 from ..models import LoginRequest, TokenResponse, RefreshRequest, UserResponse, UserCreate
 from ..auth import (
     hash_password, verify_password, verify_and_rehash,
@@ -7,6 +9,7 @@ from ..auth import (
 )
 from ..rate_limit import limiter
 from .. import database as db
+from .. import totp as totp_helper
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -34,6 +37,13 @@ async def login(req: LoginRequest, request: Request):
                 new_hash, row["id"],
             )
 
+    # Phase A4 — if user has TOTP enrolled, demand 2nd factor before issuing tokens.
+    has_totp = await db.pool.fetchval(
+        "SELECT 1 FROM user_totp WHERE user_id = $1", row["id"]
+    )
+    if has_totp:
+        return {"mfa_required": True, "username": req.username}
+
     # Ensure eleve_id points to the correct eleve (fix UUID/user_N drift from Dify)
     async with db.pool.acquire() as conn:
         dify_user = row.get("dify_user_id") or f"user_{row['id']}"
@@ -48,6 +58,56 @@ async def login(req: LoginRequest, request: Request):
                 "UPDATE users SET eleve_id = $1 WHERE id = $2 AND (eleve_id IS NULL OR eleve_id != $1)",
                 eleve["id"], row["id"],
             )
+
+    access = create_access_token(row["id"], row["username"])
+    refresh = create_refresh_token(row["id"], row["username"])
+    return TokenResponse(access_token=access, refresh_token=refresh)
+
+
+class LoginMfaRequest(BaseModel):
+    username: str
+    password: str
+    code: str = Field(..., min_length=6, max_length=10)
+
+
+@router.post("/login-mfa", response_model=TokenResponse)
+async def login_mfa(req: LoginMfaRequest, request: Request):
+    """Phase A4 — second factor verification after /login returned mfa_required."""
+    limiter.check(request, max_requests=5, window_seconds=60)
+    async with db.pool.acquire() as conn:
+        row = await conn.fetchrow(
+            "SELECT id, username, password_hash FROM users WHERE username = $1",
+            req.username,
+        )
+    if not row or not verify_password(req.password, row["password_hash"]):
+        raise HTTPException(status_code=401, detail="Identifiants incorrects")
+
+    totp_row = await db.pool.fetchrow(
+        "SELECT secret, recovery_codes FROM user_totp WHERE user_id = $1", row["id"]
+    )
+    if not totp_row:
+        raise HTTPException(status_code=400, detail="MFA non active pour cet utilisateur")
+
+    code_ok = totp_helper.verify_code(totp_row["secret"], req.code)
+    used_recovery = False
+    if not code_ok:
+        ok, new_codes = totp_helper.verify_and_consume_recovery_code(
+            totp_row["recovery_codes"], req.code
+        )
+        if ok:
+            code_ok = True
+            used_recovery = True
+            await db.pool.execute(
+                "UPDATE user_totp SET recovery_codes = $1, recovery_codes_used = recovery_codes_used + 1, last_used_at = now() WHERE user_id = $2",
+                json.dumps(new_codes), row["id"],
+            )
+    if not code_ok:
+        raise HTTPException(status_code=401, detail="Code TOTP/recovery invalide")
+
+    if not used_recovery:
+        await db.pool.execute(
+            "UPDATE user_totp SET last_used_at = now() WHERE user_id = $1", row["id"]
+        )
 
     access = create_access_token(row["id"], row["username"])
     refresh = create_refresh_token(row["id"], row["username"])
