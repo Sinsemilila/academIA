@@ -1,5 +1,15 @@
 judge:
-  model: gpt-4o-mini
+  # Session 44 κ calibration (2026-04-22) — gemini-flash measured at
+  # κ=0.84 vs 6-judge majority vote. gpt-4o-mini scored only κ=0.33
+  # (fair) and was producing systematic false-passes on forbidden CF
+  # moves at A1/A2. Migration validated by inter-LLM agreement across
+  # Claude, ChatGPT, Gemini Pro web, Mistral, and Groq Llama-70b.
+  # Free tier : 10 RPM, 250 RPD, 250K TPM (sufficient for 1 full
+  # oracle run/day at N=3 votes ≈ 234 calls).
+  # `reasoning_effort: disable` suppresses Gemini 2.5 Flash thinking
+  # tokens (which would otherwise consume the entire output budget).
+  model: gemini-flash
+  reasoning_effort: disable
   n_votes: 3
   temperature: 0.0
   max_tokens: 200

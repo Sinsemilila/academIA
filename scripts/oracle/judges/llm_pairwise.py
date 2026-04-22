@@ -106,6 +106,11 @@ async def _call_judge(
         "temperature": jcfg.get("temperature", 0.0),
         "max_tokens": jcfg.get("max_tokens", 200),
     }
+    # Session 44 — Gemini 2.5 Flash judges need reasoning suppressed,
+    # otherwise thinking tokens consume the entire max_tokens budget
+    # and the actual JSON verdict comes back empty. Optional pass-through.
+    if jcfg.get("reasoning_effort"):
+        payload["reasoning_effort"] = jcfg["reasoning_effort"]
     master = os.environ.get("LITELLM_MASTER_KEY", "")
     headers = {"Content-Type": "application/json"}
     if master:

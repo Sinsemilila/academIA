@@ -1,0 +1,495 @@
+[
+  {
+    "scenario_id": "a2_t2_past_simple_001",
+    "cefr": "A2",
+    "target_tier": "T2",
+    "fla": "low",
+    "learner_message": "Last weekend I goed to the cinema and I taked many photos.",
+    "golden_teacher_response": "Great effort in sharing your experience! Just a couple of corrections: it should be \"I went to the cinema\" instead of \"I goed,\" and \"I took many photos\" instead of \"I taked.\" \n\nSo, the correct sentence is: \"Last weekend, I went to the cinema and I took many photos.\" \n\nKeep it up! What movie did you see?",
+    "candidate_teacher_response": "Great effort in sharing your experience! Just a couple of corrections: it should be \"I went to the cinema\" instead of \"I goed,\" and \"I took many photos\" instead of \"I taked.\" \n\nSo, the correct sentence is: \"Last weekend, I went to the cinema and I took many photos.\" \n\nKeep it up! What movie did you see?",
+    "cf_move_acceptable": [
+      "full_recast",
+      "partial_recast",
+      "elicitation",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [
+      "explicit_correction"
+    ],
+    "register_target": "A2",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "a2_t2_plural_high_fla_001",
+    "cefr": "A2",
+    "target_tier": "T2",
+    "fla": "high",
+    "learner_message": "The childrens play with dogs in the gardens every days.",
+    "golden_teacher_response": "The children play with dogs in the garden every day. \n\nRemember, we use \"children\" (not \"childrens\") and \"day\" (not \"days\") in this context. Keep practicing! What else would you like to work on?",
+    "candidate_teacher_response": "The children play with dogs in the garden every day. \n\nRemember, we use \"children\" (not \"childrens\") and \"day\" (not \"days\") in this context. Keep practicing! What else would you like to work on?",
+    "cf_move_acceptable": [
+      "full_recast",
+      "partial_recast",
+      "elicitation",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [
+      "explicit_correction"
+    ],
+    "register_target": "A2",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "a2_t3_articles_midfla_001",
+    "cefr": "A2",
+    "target_tier": "T3",
+    "fla": "mid",
+    "learner_message": "I want to buy car for my wife. The house where we live is very small.",
+    "golden_teacher_response": "It's great that you want to buy a car for your wife! However, if your house is small, you might want to consider a compact or smaller car that fits well in tight spaces. Do you have a specific type of car in mind?",
+    "candidate_teacher_response": "It's great that you want to buy a car for your wife! However, if your house is small, you might want to consider a compact or smaller car that fits well in tight spaces. Do you have a specific type of car in mind?",
+    "cf_move_acceptable": [
+      "full_recast",
+      "partial_recast",
+      "elicitation",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [],
+    "register_target": "A2",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "b1_edge_t2t3_prepositions_001",
+    "cefr": "B1",
+    "target_tier": "T2",
+    "fla": "low",
+    "learner_message": "She is interested on learning French and in playing piano.",
+    "golden_teacher_response": "It's great that you're expressing interests! Just a small correction: instead of \"interested on,\" you should say \"interested in.\" So, it should be: \"She is interested in learning French and in playing piano.\" Keep up the good work! What other interests do you have?",
+    "candidate_teacher_response": "It's great that you're expressing interests! Just a small correction: instead of \"interested on,\" you should say \"interested in.\" So, it should be: \"She is interested in learning French and in playing piano.\" Keep up the good work! What other interests do you have?",
+    "cf_move_acceptable": [
+      "partial_recast",
+      "elicitation",
+      "metalinguistic",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [
+      "explicit_correction"
+    ],
+    "register_target": "B1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "b1_t2_articles_001",
+    "cefr": "B1",
+    "target_tier": "T2",
+    "fla": "low",
+    "learner_message": "I went to school yesterday and learned about history of Europe.",
+    "golden_teacher_response": "Great job! Just a small correction: it should be \"the history of Europe.\" So you would say, \"I went to school yesterday and learned about the history of Europe.\" Keep it up! What else did you learn?",
+    "candidate_teacher_response": "Great job! Just a small correction: it should be \"the history of Europe.\" So you would say, \"I went to school yesterday and learned about the history of Europe.\" Keep it up! What else did you learn?",
+    "cf_move_acceptable": [
+      "partial_recast",
+      "elicitation",
+      "metalinguistic",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [
+      "explicit_correction"
+    ],
+    "register_target": "B1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "b1_t3_conditional_midfla_001",
+    "cefr": "B1",
+    "target_tier": "T3",
+    "fla": "mid",
+    "learner_message": "If I would have more money, I will travel to Japan.",
+    "golden_teacher_response": "It's great that you want to travel to Japan! However, the sentence needs a little correction. You should say: \"If I had more money, I would travel to Japan.\" This is because we use the past simple \"had\" with \"would\" in conditional sentences. Keep it up!",
+    "candidate_teacher_response": "It's great that you want to travel to Japan! However, the sentence needs a little correction. You should say: \"If I had more money, I would travel to Japan.\" This is because we use the past simple \"had\" with \"would\" in conditional sentences. Keep it up!",
+    "cf_move_acceptable": [
+      "partial_recast",
+      "elicitation",
+      "metalinguistic",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [],
+    "register_target": "B1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "b1_t3_present_perfect_001",
+    "cefr": "B1",
+    "target_tier": "T3",
+    "fla": "mid",
+    "learner_message": "I have seen this film yesterday and it was really good.",
+    "golden_teacher_response": "You should say, \"I saw this film yesterday, and it was really good.\" The verb \"saw\" is the simple past tense of \"see,\" which is correct here. Keep up the good work! What's another film you've enjoyed lately?",
+    "candidate_teacher_response": "You should say, \"I saw this film yesterday, and it was really good.\" The verb \"saw\" is the simple past tense of \"see,\" which is correct here. Keep up the good work! What's another film you've enjoyed lately?",
+    "cf_move_acceptable": [
+      "partial_recast",
+      "elicitation",
+      "metalinguistic",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [],
+    "register_target": "B1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "b2_t2_collocations_001",
+    "cefr": "B2",
+    "target_tier": "T2",
+    "fla": "low",
+    "learner_message": "She makes her homework every evening before she does dinner.",
+    "golden_teacher_response": "It's great that you're practicing! Just a small correction: you should say \"She does her homework every evening before she makes dinner.\" Keep it up!",
+    "candidate_teacher_response": "It's great that you're practicing! Just a small correction: you should say \"She does her homework every evening before she makes dinner.\" Keep it up!",
+    "cf_move_acceptable": [
+      "elicitation",
+      "metalinguistic",
+      "partial_recast",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [],
+    "register_target": "B2",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "b2_t3_modal_deduction_001",
+    "cefr": "B2",
+    "target_tier": "T3",
+    "fla": "mid",
+    "learner_message": "He must have been forgot the meeting, he always is so responsible.",
+    "golden_teacher_response": "Almost there! It should be: \"He must have forgotten the meeting; he is always so responsible.\" \n\nRemember, we use \"forgotten\" instead of \"forgot\" in this case because of the perfect aspect of the modal verb \"must have.\" Keep up the good work!",
+    "candidate_teacher_response": "Almost there! It should be: \"He must have forgotten the meeting; he is always so responsible.\" \n\nRemember, we use \"forgotten\" instead of \"forgot\" in this case because of the perfect aspect of the modal verb \"must have.\" Keep up the good work!",
+    "cf_move_acceptable": [
+      "elicitation",
+      "metalinguistic",
+      "partial_recast",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [],
+    "register_target": "B2",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "b2_t3_passive_001",
+    "cefr": "B2",
+    "target_tier": "T3",
+    "fla": "low",
+    "learner_message": "The report was finish by my colleague before the deadline was expired.",
+    "golden_teacher_response": "The report was finished by my colleague before the deadline expired. \n\nYou did well in conveying the idea, but remember to use the correct form of the verb \"to finish\" in the past participle. Keep it up!",
+    "candidate_teacher_response": "The report was finished by my colleague before the deadline expired. \n\nYou did well in conveying the idea, but remember to use the correct form of the verb \"to finish\" in the past participle. Keep it up!",
+    "cf_move_acceptable": [
+      "elicitation",
+      "metalinguistic",
+      "partial_recast",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [],
+    "register_target": "B2",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "c1_t3_conditional_mix_001",
+    "cefr": "C1",
+    "target_tier": "T3",
+    "fla": "mid",
+    "learner_message": "If I would have known about the meeting earlier, I would have prepared differently.",
+    "golden_teacher_response": "I see what you're trying to express, but the correct form for the conditional past in this case is: \"If I had known about the meeting earlier, I would have prepared differently.\" \n\nRemember, when using the third conditional, you should use \"had\" in the if-clause, not \"would have.\" Keep practicing!",
+    "candidate_teacher_response": "I see what you're trying to express, but the correct form for the conditional past in this case is: \"If I had known about the meeting earlier, I would have prepared differently.\" \n\nRemember, when using the third conditional, you should use \"had\" in the if-clause, not \"would have.\" Keep practicing!",
+    "cf_move_acceptable": [
+      "elicitation",
+      "metalinguistic",
+      "partial_recast",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [],
+    "register_target": "C1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "c1_t3_false_friend_assister_001",
+    "cefr": "C1",
+    "target_tier": "T3",
+    "fla": "low",
+    "learner_message": "I assisted the presentation to the conference this morning and learned a lot.",
+    "golden_teacher_response": "It's great that you attended the conference and learned a lot! Just a small correction: instead of \"assisted the presentation to the conference,\" it should be \"attended the presentation at the conference.\" \n\nSo the corrected sentence would be: \"I attended the presentation at the conference this morning and learned a lot.\" Keep up the good work!",
+    "candidate_teacher_response": "It's great that you attended the conference and learned a lot! Just a small correction: instead of \"assisted the presentation to the conference,\" it should be \"attended the presentation at the conference.\" \n\nSo the corrected sentence would be: \"I attended the presentation at the conference this morning and learned a lot.\" Keep up the good work!",
+    "cf_move_acceptable": [
+      "elicitation",
+      "metalinguistic",
+      "partial_recast",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [],
+    "register_target": "C1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "c1_t3_subjunctive_001",
+    "cefr": "C1",
+    "target_tier": "T3",
+    "fla": "low",
+    "learner_message": "It is essential that he is present at the meeting tomorrow.",
+    "golden_teacher_response": "The correct form should be: \"It is essential that he be present at the meeting tomorrow.\" In this case, you need the subjunctive mood after \"essential.\" Keep it up! Would you like to try another sentence?",
+    "candidate_teacher_response": "The correct form should be: \"It is essential that he be present at the meeting tomorrow.\" In this case, you need the subjunctive mood after \"essential.\" Keep it up! Would you like to try another sentence?",
+    "cf_move_acceptable": [
+      "elicitation",
+      "metalinguistic",
+      "partial_recast"
+    ],
+    "cf_move_forbidden": [],
+    "register_target": "C1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "el_a1_t2_misc_001",
+    "cefr": "A1",
+    "target_tier": "T2",
+    "fla": "low",
+    "learner_message": "would you do if you were",
+    "golden_teacher_response": "It looks like your question is incomplete. Can you please finish your sentence? What would you like to know about what I would do?",
+    "candidate_teacher_response": "It looks like your question is incomplete. Can you please finish your sentence? What would you like to know about what I would do?",
+    "cf_move_acceptable": [
+      "full_recast",
+      "partial_recast",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [
+      "metalinguistic",
+      "explicit_correction"
+    ],
+    "register_target": "A1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "el_a1_t2_misc_002",
+    "cefr": "A1",
+    "target_tier": "T2",
+    "fla": "low",
+    "learner_message": "since long time",
+    "golden_teacher_response": "It should be \"for a long time.\" We use \"for\" to talk about a duration. Keep practicing!",
+    "candidate_teacher_response": "It should be \"for a long time.\" We use \"for\" to talk about a duration. Keep practicing!",
+    "cf_move_acceptable": [
+      "full_recast",
+      "partial_recast",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [
+      "metalinguistic",
+      "explicit_correction"
+    ],
+    "register_target": "A1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "el_a1_t2_misc_003",
+    "cefr": "A1",
+    "target_tier": "T2",
+    "fla": "low",
+    "learner_message": "since long time",
+    "golden_teacher_response": "It's \"for a long time.\" You use \"for\" to talk about a duration. For example, \"I have lived here for a long time.\" Keep practicing! What else would you like to learn?",
+    "candidate_teacher_response": "It's \"for a long time.\" You use \"for\" to talk about a duration. For example, \"I have lived here for a long time.\" Keep practicing! What else would you like to learn?",
+    "cf_move_acceptable": [
+      "full_recast",
+      "partial_recast",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [
+      "metalinguistic",
+      "explicit_correction"
+    ],
+    "register_target": "A1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "el_a1_t2_misc_004",
+    "cefr": "A1",
+    "target_tier": "T2",
+    "fla": "low",
+    "learner_message": "since long time",
+    "golden_teacher_response": "It should be \"for a long time.\" You use \"for\" with a duration of time. For example, \"I have lived here for a long time.\" Keep it up!",
+    "candidate_teacher_response": "It should be \"for a long time.\" You use \"for\" with a duration of time. For example, \"I have lived here for a long time.\" Keep it up!",
+    "cf_move_acceptable": [
+      "full_recast",
+      "partial_recast",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [
+      "metalinguistic",
+      "explicit_correction"
+    ],
+    "register_target": "A1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "multi_a1_verb_no_uptake_001",
+    "cefr": "A1",
+    "target_tier": "T2",
+    "fla": "low",
+    "learner_message": "Yesterday I go to the park with my mum.",
+    "golden_teacher_response": "You did well to use \"yesterday,\" but the verb should be in the past tense. It should be: \"Yesterday I went to the park with my mum.\" Keep practicing! What do you like to do in the park?",
+    "candidate_teacher_response": "You did well to use \"yesterday,\" but the verb should be in the past tense. It should be: \"Yesterday I went to the park with my mum.\" Keep practicing! What do you like to do in the park?",
+    "cf_move_acceptable": [
+      "full_recast",
+      "partial_recast",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [
+      "metalinguistic",
+      "explicit_correction"
+    ],
+    "register_target": "A1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "multi_a2_art_uptake_001",
+    "cefr": "A2",
+    "target_tier": "T2",
+    "fla": "mid",
+    "learner_message": "I bought car last week.",
+    "golden_teacher_response": "You need to add \"a\" before \"car.\" It should be: \"I bought a car last week.\" Good job using the past tense! What else can you tell me about your car?",
+    "candidate_teacher_response": "You need to add \"a\" before \"car.\" It should be: \"I bought a car last week.\" Good job using the past tense! What else can you tell me about your car?",
+    "cf_move_acceptable": [
+      "full_recast",
+      "partial_recast",
+      "elicitation",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [
+      "explicit_correction"
+    ],
+    "register_target": "A2",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "multi_b1_cond_partial_001",
+    "cefr": "B1",
+    "target_tier": "T3",
+    "fla": "mid",
+    "learner_message": "If I would win the lottery, I buy a house.",
+    "golden_teacher_response": "Great try! Just a small correction: it should be \"If I won the lottery, I would buy a house.\" You're using the second conditional here, which is perfect for unreal situations. Keep going! Would you like to try another sentence?",
+    "candidate_teacher_response": "Great try! Just a small correction: it should be \"If I won the lottery, I would buy a house.\" You're using the second conditional here, which is perfect for unreal situations. Keep going! Would you like to try another sentence?",
+    "cf_move_acceptable": [
+      "partial_recast",
+      "elicitation",
+      "metalinguistic",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [],
+    "register_target": "B1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "multi_b2_modal_no_uptake_001",
+    "cefr": "B2",
+    "target_tier": "T3",
+    "fla": "low",
+    "learner_message": "He must have been forgot the meeting.",
+    "golden_teacher_response": "It seems like you're trying to express that someone forgot about the meeting. The correct phrase would be: \"He must have forgotten the meeting.\" \n\n\"Forgot\" is the past simple form, while \"forgotten\" is the past participle used with \"must have.\" Keep it up! Would you like to try another sentence?",
+    "candidate_teacher_response": "It seems like you're trying to express that someone forgot about the meeting. The correct phrase would be: \"He must have forgotten the meeting.\" \n\n\"Forgot\" is the past simple form, while \"forgotten\" is the past participle used with \"must have.\" Keep it up! Would you like to try another sentence?",
+    "cf_move_acceptable": [
+      "elicitation",
+      "metalinguistic",
+      "partial_recast",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [],
+    "register_target": "B2",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "risk_a1_metalinguistic_leak_001",
+    "cefr": "A1",
+    "target_tier": "T2",
+    "fla": "low",
+    "learner_message": "I no understand this.",
+    "golden_teacher_response": "It's okay! Let's break it down. What part do you find difficult to understand? I can help you with that.",
+    "candidate_teacher_response": "It's okay! Let's break it down. What part do you find difficult to understand? I can help you with that.",
+    "cf_move_acceptable": [
+      "full_recast",
+      "partial_recast",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [
+      "metalinguistic",
+      "explicit_correction"
+    ],
+    "register_target": "A1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "risk_gravity_comm_breakdown_001",
+    "cefr": "B1",
+    "target_tier": "T4",
+    "fla": "mid",
+    "learner_message": "The thing that was doing of the person for the reason.",
+    "golden_teacher_response": "It seems like you're trying to express a thought, but the sentence is a bit unclear. You might want to say something like, \"The thing that the person was doing for a reason.\" Can you tell me more about what you want to express?",
+    "candidate_teacher_response": "It seems like you're trying to express a thought, but the sentence is a bit unclear. You might want to say something like, \"The thing that the person was doing for a reason.\" Can you tell me more about what you want to express?",
+    "cf_move_acceptable": [
+      "partial_recast",
+      "elicitation",
+      "metalinguistic",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [],
+    "register_target": "B1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "risk_l1_drift_a1_001",
+    "cefr": "A1",
+    "target_tier": "T2",
+    "fla": "mid",
+    "learner_message": "I eat apple this morning for breakfast.",
+    "golden_teacher_response": "Good effort! It should be: \"I ate an apple this morning for breakfast.\" \n\nRemember, use \"ate\" for the past tense. Keep going!",
+    "candidate_teacher_response": "Good effort! It should be: \"I ate an apple this morning for breakfast.\" \n\nRemember, use \"ate\" for the past tense. Keep going!",
+    "cf_move_acceptable": [
+      "full_recast",
+      "partial_recast",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [
+      "metalinguistic",
+      "explicit_correction"
+    ],
+    "register_target": "A1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "risk_priority_leak_b1_001",
+    "cefr": "B1",
+    "target_tier": "T2",
+    "fla": "low",
+    "learner_message": "Tell me about your weekend please.",
+    "golden_teacher_response": "I don't have weekends like you do, but if I did, I would probably enjoy relaxing, maybe reading a book or going for a walk. How about you? What did you do last weekend?",
+    "candidate_teacher_response": "I don't have weekends like you do, but if I did, I would probably enjoy relaxing, maybe reading a book or going for a walk. How about you? What did you do last weekend?",
+    "cf_move_acceptable": [
+      "partial_recast",
+      "elicitation",
+      "metalinguistic",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [
+      "explicit_correction"
+    ],
+    "register_target": "B1",
+    "register_tolerance": 1
+  },
+  {
+    "scenario_id": "risk_t4_regression_a2_001",
+    "cefr": "A2",
+    "target_tier": "T4",
+    "fla": "high",
+    "learner_message": "I go at the park yesterday.",
+    "golden_teacher_response": "I see what you're trying to say! The correct sentence is: \"I went to the park yesterday.\" \n\nRemember, we use \"went\" for the past tense and \"to\" for places. Keep it up! What would you like to practice next?",
+    "candidate_teacher_response": "I see what you're trying to say! The correct sentence is: \"I went to the park yesterday.\" \n\nRemember, we use \"went\" for the past tense and \"to\" for places. Keep it up! What would you like to practice next?",
+    "cf_move_acceptable": [
+      "full_recast",
+      "partial_recast",
+      "elicitation",
+      "clarification_request"
+    ],
+    "cf_move_forbidden": [],
+    "register_target": "A2",
+    "register_tolerance": 1
+  }
+]
