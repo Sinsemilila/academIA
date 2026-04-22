@@ -96,7 +96,7 @@ class LanguageDomain:
                 "social": e.get("gravity_social", 0),
             }
             types_map[e.get("error_code", "?")] = tier_to_feedback_type(
-                tier, family, gravity=gravity,
+                tier, family, gravity=gravity, level=level,
             )
         return {
             "to_correct": decision.to_correct,

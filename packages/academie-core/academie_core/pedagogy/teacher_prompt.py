@@ -70,12 +70,85 @@ DOSAGE_HARD_CAP = {
 # Tier → feedback type mapping (Lyster & Saito 2010).
 # T1 silent (log only). T2 recast. T3 alternates elicitation/metalinguistic.
 # T4 prompt + remediation + flag for spaced retrieval.
+#
+# DEPRECATED (Session 45 P2) : this level-agnostic mapping was producing
+# `metalinguistic` + `elicitation` feedback at A1 where rubrics explicitly
+# ban them. Kept only as fallback when caller doesn't pass `level`. New
+# code must use TIER_TO_FEEDBACK_BY_LEVEL below.
 TIER_TO_FEEDBACK_DEFAULT = {
     "T0": "silent",
     "T1": "silent",
     "T2": "implicit_recast",
     "T3": "elicitation",   # default; alternates with metalinguistic via diversity rule
     "T4": "prompt_plus_remediation",
+}
+
+# Session 45 P2 — CEFR-gated tier→feedback mapping.
+#
+# Source of truth for per-level CF move legality :
+#   • A1 (rubric line 103) : "ANTI-PATTERNS: metalinguistic terms (banned)"
+#     + (rubric line 101) : "NEVER elicit at A1" → T3 collapses to
+#     implicit_recast (soft inline). Explicit_correction never emitted
+#     by this mapping (not a feedback_type), but rubric must also block
+#     the LLM from generating it on its own — see rubrics/en.yaml A1.
+#   • A2 (rubric line 111-112) : T3 "elicitation, alternate with light
+#     metalinguistic" → starts elicitation, diversity rule flips.
+#   • B1-B2 : same shape as A2 (elicitation default, metalinguistic on
+#     diversity alternation).
+#   • C1-C2 : T3 tilts metalinguistic-default (learners accept explicit
+#     grammar talk), diversity alternates to elicitation.
+#
+# Surfaced as a bug in Session 44 κ calibration (6 A1/A2 scenarios
+# consistently failing cf_move_set_valid under gemini-3-1-flash-lite judge).
+TIER_TO_FEEDBACK_BY_LEVEL: dict[str, dict[str, str]] = {
+    "A1": {
+        "T0": "silent", "T1": "silent",
+        "T2": "implicit_recast",
+        "T3": "implicit_recast",
+        "T4": "prompt_plus_remediation",
+    },
+    "A2": {
+        "T0": "silent", "T1": "silent",
+        "T2": "implicit_recast",
+        "T3": "elicitation",
+        "T4": "prompt_plus_remediation",
+    },
+    "B1": {
+        "T0": "silent", "T1": "silent",
+        "T2": "implicit_recast",
+        "T3": "elicitation",
+        "T4": "prompt_plus_remediation",
+    },
+    "B2": {
+        "T0": "silent", "T1": "silent",
+        "T2": "implicit_recast",
+        "T3": "elicitation",
+        "T4": "prompt_plus_remediation",
+    },
+    "C1": {
+        "T0": "silent", "T1": "silent",
+        "T2": "implicit_recast",
+        "T3": "metalinguistic",
+        "T4": "prompt_plus_remediation",
+    },
+    "C2": {
+        "T0": "silent", "T1": "silent",
+        "T2": "implicit_recast",
+        "T3": "metalinguistic",
+        "T4": "prompt_plus_remediation",
+    },
+}
+
+# Set of T3 feedback types that participate in the diversity alternation
+# rule, indexed by level. If `current` is the only allowed type at a
+# level, the diversity rule is a no-op (A1 stays on implicit_recast).
+_T3_DIVERSITY_BY_LEVEL: dict[str, tuple[str, str] | None] = {
+    "A1": None,  # single option, no diversity
+    "A2": ("elicitation", "metalinguistic"),
+    "B1": ("elicitation", "metalinguistic"),
+    "B2": ("elicitation", "metalinguistic"),
+    "C1": ("metalinguistic", "elicitation"),
+    "C2": ("metalinguistic", "elicitation"),
 }
 
 # Lazy reconciliation interval against drift validation.
@@ -272,30 +345,45 @@ def tier_to_feedback_type(
     family: str,
     last_feedback_per_family: dict[str, list[str]] | None = None,
     gravity: dict | None = None,
+    level: str | None = None,
 ) -> str:
     """Map a tier to a feedback type, applying:
-      - default mapping (TIER_TO_FEEDBACK_DEFAULT)
-      - diversity rule for T3 (alternate elicitation ↔ metalinguistic)
+      - per-CEFR-level mapping (TIER_TO_FEEDBACK_BY_LEVEL, preferred)
+        OR level-agnostic fallback (TIER_TO_FEEDBACK_DEFAULT) when level
+        is None — kept for backward compat only.
+      - diversity rule for T3, CEFR-gated : only fires if the level
+        allows BOTH elicitation and metalinguistic. At A1 where T3 =
+        implicit_recast, the rule is a no-op.
       - gravity-axes overrides:
-          * gravity_communicative ≥ 0.7 + tier T1 → upgrade to implicit_recast
-          * gravity_social ≥ 0.6 + tier T2 → upgrade to elicitation
+          * gravity_communicative ≥ 0.7 + tier T1 → upgrade to T2
+          * gravity_social ≥ 0.6 + tier T2 → upgrade to T3
     """
     g = gravity or {}
-    # Gravity overrides BEFORE default mapping
+    # Gravity overrides BEFORE mapping lookup
     if tier == "T1" and g.get("communicative", 0) >= 0.7:
         tier = "T2"
     elif tier == "T2" and g.get("social", 0) >= 0.6:
         tier = "T3"
 
-    base = TIER_TO_FEEDBACK_DEFAULT.get(tier, "silent")
+    # Session 45 P2 : prefer per-level mapping when level is known.
+    if level and level in TIER_TO_FEEDBACK_BY_LEVEL:
+        base = TIER_TO_FEEDBACK_BY_LEVEL[level].get(tier, "silent")
+    else:
+        base = TIER_TO_FEEDBACK_DEFAULT.get(tier, "silent")
 
-    # Diversity rule only meaningful for T3 (the only tier with two interchangeable types)
+    # Diversity rule only meaningful for T3 when the level actually
+    # supports two alternating feedback types. A1 T3 = implicit_recast
+    # only → no diversity. Order in the tuple = default first, swap to
+    # second if history is saturated on first.
     if tier == "T3" and last_feedback_per_family:
-        history = last_feedback_per_family.get(family, [])
-        if len(history) >= 2 and history[-1] == history[-2] == "elicitation":
-            return "metalinguistic"
-        if len(history) >= 2 and history[-1] == history[-2] == "metalinguistic":
-            return "elicitation"
+        allowed_pair = _T3_DIVERSITY_BY_LEVEL.get(level) if level else ("elicitation", "metalinguistic")
+        if allowed_pair:
+            primary, secondary = allowed_pair
+            history = last_feedback_per_family.get(family, [])
+            if len(history) >= 2 and history[-1] == history[-2] == primary:
+                return secondary
+            if len(history) >= 2 and history[-1] == history[-2] == secondary:
+                return primary
 
     return base
 
@@ -820,6 +908,7 @@ def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = 
                 "communicative": e.get("gravity_communicative", 0),
                 "social": e.get("gravity_social", 0),
             },
+            level=ctx.level,
         )
         tier_summary_lines.append(
             f"  - {e.get('error_code', '?')} ({family}) tier={tier} → suggested={ftype}"

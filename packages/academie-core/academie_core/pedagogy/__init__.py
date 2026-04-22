@@ -17,6 +17,7 @@ from .teacher_prompt import (  # noqa: F401
     DOSAGE_BUDGET,
     DOSAGE_HARD_CAP,
     TIER_TO_FEEDBACK_DEFAULT,
+    TIER_TO_FEEDBACK_BY_LEVEL,
     L1_NAMES,
     L1_TRANSFER_SEED,
     RUBRICS,

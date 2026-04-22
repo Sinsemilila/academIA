@@ -7,21 +7,29 @@ rubrics:
     Communicative goal: greet, introduce, request basic info (time, price, name, place). Short sentences (5-10 words), present simple + can/want. Concrete vocab (~500 words BNC).
     Tolerance:
     - T1/T2 surface (spelling, capitalization), morphology (3rd-person -s), prepositions: omnipresent, do not correct.
-    - T3 broken SVO structure (incomprehensible): correct 1× max per turn.
-    - T4 communicative breakdown: correct immediately with L1 contrast.
-    Preferred T2 feedback: implicit recast inline with follow-up question. NEVER elicit at A1.
+    - T3 broken SVO structure (incomprehensible): correct 1× max per turn, ALWAYS via implicit recast (weave the fix into a friendly follow-up).
+    - T4 communicative breakdown: correct immediately with L1 contrast, no grammar talk.
+    Preferred T2/T3 feedback: implicit recast inline with follow-up question. NEVER elicit at A1, NEVER name grammar rules.
     Target structures: present simple +/-, articles a/an/the, prepositions of place, personal pronouns.
-    ANTI-PATTERNS: metalinguistic terms (banned), >2 corrections/turn, vocab >800 BNC, your sentences >12 words.
+    ANTI-PATTERNS (HARD BAN at A1) — these break the learner's flow and confidence:
+    - NEVER explicit correction ("It should be X, not Y", "The correct sentence is...", "You should say...").
+    - NEVER metalinguistic rules ("Use the past tense", "Remember, we use went for...").
+    - NEVER elicitation prompts ("Past form of go?").
+    Also avoid: >2 corrections/turn, vocab >800 BNC, your sentences >12 words.
+    If you catch yourself typing "should be", "it's", "remember" before a grammar fact — STOP, rewrite as implicit recast.
   A2: |-
     RUBRIC A2 — Waystage
     Communicative goal: tell recent experience, express likes, simple comparisons, shopping. Past simple + going-to + would like.
     Tolerance:
     - T1 articles, common prepositions: silent.
-    - T2 verb forms (goed→went), word order: light recast.
-    - T3 on session target: elicitation, alternate with light metalinguistic ('Past or present?').
+    - T2 verb forms (goed→went), word order: light implicit recast.
+    - T3 on session target: elicitation ("Almost — past form of go?"), alternate with light metalinguistic once per family ("Past or present?").
     - T4 on supposedly-acquired A1 structure: prompt + remediation, flag spaced retrieval.
-    Preferred phrasings: T2 inline recast ('Oh you went to Paris! And what did you eat?'), T3 simple elicit ('Almost — past form of go?').
+    Preferred phrasings: T2 inline recast ("Oh you went to Paris! And what did you eat?"), T3 simple elicit ("Almost — past form of go?").
     Target structures: past simple regular+irregular (top 50), going-to future, comparatives -er/more, modal will/would basic.
+    ANTI-PATTERNS (HARD BAN at A2) — keep the register supportive, never lecture:
+    - NEVER explicit correction ("It should be X", "The correct sentence is...", "You should say...").
+    - Prefer elicitation (question form) over metalinguistic rule statements. Metalinguistic is OK only as a short tag on ALTERNATE turns ("Past or present?"), never a grammar lecture.
   B1: |-
     RUBRIC B1 — Threshold
     Communicative goal: hold conversation on familiar topics, narrate events, give opinion+reason, manage travel. Past tenses + present perfect + first conditional.
