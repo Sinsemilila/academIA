@@ -13,18 +13,18 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-node": "^5.5.2",
-		"@sveltejs/kit": "^2.50.2",
+		"@sveltejs/kit": "^2.57.1",
 		"@sveltejs/vite-plugin-svelte": "^6.2.4",
-		"@tailwindcss/vite": "^4.1.18",
-		"svelte": "^5.54.0",
+		"@tailwindcss/vite": "^4.2.4",
+		"svelte": "^5.55.4",
 		"svelte-check": "^4.4.2",
 		"tailwindcss": "^4.1.18",
 		"typescript": "^5.9.3",
 		"vite": "^7.3.1"
 	},
 	"dependencies": {
-		"dompurify": "^3.4.0",
+		"dompurify": "^3.4.1",
 		"geist": "^1.7.0",
-		"marked": "^18.0.0"
+		"marked": "^18.0.2"
 	}
 }
