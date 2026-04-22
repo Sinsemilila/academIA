@@ -68,6 +68,11 @@ _MODEL_GROUP_BY_NAME = {
     "groq-qwen": "groq-qwen",
     "groq/qwen/qwen3-32b": "groq-qwen",
     "qwen/qwen3-32b": "groq-qwen",
+    # Session 44 — Gemini Flash as Oracle judge (free tier has tight
+    # RPD, typically 20-250 per Google's adaptive throttling).
+    "gemini-flash": "gemini-flash",
+    "gemini/gemini-2.5-flash": "gemini-flash",
+    "gemini-2.5-flash": "gemini-flash",
 }
 RELAY_TIMEOUT_S = 1.5
 
