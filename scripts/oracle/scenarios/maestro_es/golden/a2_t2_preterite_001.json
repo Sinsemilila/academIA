@@ -1,0 +1,24 @@
+{
+  "scenario_id": "a2_t2_preterite_001",
+  "sha": "89d685720712",
+  "recorded_at": "2026-04-22T10:38:37Z",
+  "response": "Gracias por compartir tu experiencia. \n\nVoy a empezar a evaluar tu nivel con algunas preguntas. \n\nPrimera pregunta: ¿Qué hiciste el fin de semana pasado?",
+  "dify_conversation_id": "75e91657-92aa-492e-b523-bc1d45907f0c",
+  "dify_message_id": "68956ea9-c105-4346-b847-01439627a064",
+  "usage": {
+    "prompt_tokens": 2890,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 33,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2923,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 1.052,
+    "time_to_first_token": 1.322,
+    "time_to_generate": 0.0
+  }
+}

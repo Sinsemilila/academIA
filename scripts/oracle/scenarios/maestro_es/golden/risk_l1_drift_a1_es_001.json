@@ -1,0 +1,24 @@
+{
+  "scenario_id": "risk_l1_drift_a1_es_001",
+  "sha": "89d685720712",
+  "recorded_at": "2026-04-22T10:39:11Z",
+  "response": "¡Hola! Voy a hacerte unas preguntas para calibrar tu nivel. Primera pregunta: háblame de ti.",
+  "dify_conversation_id": "4ba0f068-a49e-486c-bd62-db4a8fb76c79",
+  "dify_message_id": "58da39a6-2497-4027-817c-4feb1a01a2d9",
+  "usage": {
+    "prompt_tokens": 2885,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 24,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2909,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 1.272,
+    "time_to_first_token": 1.591,
+    "time_to_generate": 0.0
+  }
+}

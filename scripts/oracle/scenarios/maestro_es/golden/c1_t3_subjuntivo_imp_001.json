@@ -1,0 +1,24 @@
+{
+  "scenario_id": "c1_t3_subjuntivo_imp_001",
+  "sha": "89d685720712",
+  "recorded_at": "2026-04-22T10:38:58Z",
+  "response": "Tu frase es correcta, pero hay un pequeño ajuste que podría mejorarla. En lugar de \"Me alegré mucho de que tú viniste\", sería más natural decir \"Me alegré mucho de que vinieras\". Esto se debe a que se utiliza el subjuntivo en este tipo de construcciones. Así que la frase quedaría: \"Me alegré mucho de que vinieras a la cena ayer por la noche.\"\n\n¿Tienes alguna pregunta sobre el uso del subjuntivo?",
+  "dify_conversation_id": "f60b682b-5f95-4828-ba10-f6539134e6a8",
+  "dify_message_id": "ddb879e9-1d27-4180-834d-8b0448499304",
+  "usage": {
+    "prompt_tokens": 2893,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 98,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2991,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 2.085,
+    "time_to_first_token": 2.361,
+    "time_to_generate": 0.0
+  }
+}

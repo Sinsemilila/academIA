@@ -1,0 +1,24 @@
+{
+  "scenario_id": "b1_t2_quantifier_001",
+  "sha": "89d685720712",
+  "recorded_at": "2026-04-22T10:38:42Z",
+  "response": "Parece que disfrutaste de la fiesta, pero entiendo que puede ser agotador. ¿Qué fue lo que más te gustó de la fiesta?",
+  "dify_conversation_id": "5e05d929-75de-4f37-b0bd-825e7208a992",
+  "dify_message_id": "e0459cbc-3723-4f87-b6ef-3bad5df82f22",
+  "usage": {
+    "prompt_tokens": 2889,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 30,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2919,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 1.001,
+    "time_to_first_token": 1.262,
+    "time_to_generate": 0.0
+  }
+}

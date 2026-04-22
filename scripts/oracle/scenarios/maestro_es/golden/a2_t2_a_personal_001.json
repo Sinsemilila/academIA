@@ -1,0 +1,24 @@
+{
+  "scenario_id": "a2_t2_a_personal_001",
+  "sha": "89d685720712",
+  "recorded_at": "2026-04-22T10:38:35Z",
+  "response": "Merci pour ta réponse ! Envoie-moi ok pour découvrir ton bilan de niveau.",
+  "dify_conversation_id": "78f40d7a-e85e-4552-b968-bc6008d76734",
+  "dify_message_id": "fa5ae4b4-f829-4fe7-8fbf-85472ddd74e2",
+  "usage": {
+    "prompt_tokens": 2887,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 21,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2908,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 0.923,
+    "time_to_first_token": 1.192,
+    "time_to_generate": 0.0
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "scenario_id": "a1_t2_ser_estar_loc_001",
+  "sha": "89d685720712",
+  "recorded_at": "2026-04-22T10:38:30Z",
+  "response": "¡Hola! Voy a hacerte unas preguntas para calibrar tu nivel. Primera pregunta: háblame de ti.",
+  "dify_conversation_id": "708a124f-df0a-4955-9353-af93c94b3a5b",
+  "dify_message_id": "bdb2697b-503c-4372-b8e8-963888f7c242",
+  "usage": {
+    "prompt_tokens": 2886,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 24,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2910,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 1.113,
+    "time_to_first_token": 1.416,
+    "time_to_generate": 0.0
+  }
+}

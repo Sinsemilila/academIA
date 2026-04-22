@@ -1,0 +1,24 @@
+{
+  "scenario_id": "b2_t3_condicional_001",
+  "sha": "89d685720712",
+  "recorded_at": "2026-04-22T10:38:53Z",
+  "response": "¡Hola! Voy a hacerte unas preguntas para calibrar tu nivel. Primera pregunta: háblame de ti.",
+  "dify_conversation_id": "af4a3c5c-42ca-49a4-b899-a7051fdeb449",
+  "dify_message_id": "4dead828-649f-4f3a-8db5-290225dc3871",
+  "usage": {
+    "prompt_tokens": 2891,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 24,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2915,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 0.896,
+    "time_to_first_token": 1.153,
+    "time_to_generate": 0.0
+  }
+}

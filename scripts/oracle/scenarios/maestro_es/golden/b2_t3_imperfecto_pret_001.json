@@ -1,0 +1,24 @@
+{
+  "scenario_id": "b2_t3_imperfecto_pret_001",
+  "sha": "89d685720712",
+  "recorded_at": "2026-04-22T10:38:55Z",
+  "response": "¡Hola! Voy a hacerte unas preguntas para calibrar tu nivel. Primera pregunta: háblame de ti.",
+  "dify_conversation_id": "e78f933e-4ec7-4c2e-ab3c-d930c823510c",
+  "dify_message_id": "fca5f832-18b6-4447-a5d5-f6e86b1117b8",
+  "usage": {
+    "prompt_tokens": 2896,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 24,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2920,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 1.067,
+    "time_to_first_token": 1.373,
+    "time_to_generate": 0.0
+  }
+}

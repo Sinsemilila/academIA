@@ -1,0 +1,24 @@
+{
+  "scenario_id": "multi_b1_subj_partial_001",
+  "sha": "89d685720712",
+  "recorded_at": "2026-04-22T10:39:03Z",
+  "response": "Parece que estás tratando de invitar a alguien o hacer un plan. La forma correcta sería \"Quiero que vengas mañana\". Si necesitas ayuda con algo más específico, ¡dímelo!",
+  "dify_conversation_id": "334378e9-684a-49e0-85aa-73c410f53760",
+  "dify_message_id": "c8f73dfe-d89a-4004-8fea-f06dadc0c6c9",
+  "usage": {
+    "prompt_tokens": 2884,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 40,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2924,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 0.972,
+    "time_to_first_token": 1.236,
+    "time_to_generate": 0.0
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "scenario_id": "risk_a1_metalinguistic_leak_es_001",
+  "sha": "89d685720712",
+  "recorded_at": "2026-04-22T10:39:07Z",
+  "response": "¡Hola! No te preocupes, estoy aquí para ayudarte. Primero, ¿cómo te llamas y por qué te interesa aprender español?",
+  "dify_conversation_id": "752a6b25-8ade-40a8-8679-0d0da256ead0",
+  "dify_message_id": "6e6d4948-a613-45b9-8c7a-842b62cdd55e",
+  "usage": {
+    "prompt_tokens": 2884,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 28,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2912,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 0.944,
+    "time_to_first_token": 1.459,
+    "time_to_generate": 0.0
+  }
+}

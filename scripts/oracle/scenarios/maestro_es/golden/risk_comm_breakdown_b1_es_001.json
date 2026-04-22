@@ -1,0 +1,24 @@
+{
+  "scenario_id": "risk_comm_breakdown_b1_es_001",
+  "sha": "89d685720712",
+  "recorded_at": "2026-04-22T10:39:09Z",
+  "response": "¡Hola! Voy a hacerte unas preguntas para calibrar tu nivel. Primera pregunta: háblame de ti.",
+  "dify_conversation_id": "f09d1f94-a893-4dcf-9d1b-e2a5ec0838d4",
+  "dify_message_id": "54c2795e-979d-4d69-ab5e-dee645b17004",
+  "usage": {
+    "prompt_tokens": 2889,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 24,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2913,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 1.148,
+    "time_to_first_token": 1.429,
+    "time_to_generate": 0.0
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "scenario_id": "multi_b2_imperfecto_no_uptake_001",
+  "sha": "89d685720712",
+  "recorded_at": "2026-04-22T10:39:05Z",
+  "response": "¡Hola! Voy a hacerte unas preguntas para calibrar tu nivel. Primera pregunta: háblame de ti.",
+  "dify_conversation_id": "8b91156f-4b2a-4874-8c45-ce1c65dfcabb",
+  "dify_message_id": "6852f54f-dadc-44ca-93ef-1c08d6ca1962",
+  "usage": {
+    "prompt_tokens": 2883,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 24,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2907,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 1.046,
+    "time_to_first_token": 1.358,
+    "time_to_generate": 0.0
+  }
+}
