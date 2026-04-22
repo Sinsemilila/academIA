@@ -1,0 +1,3408 @@
+{
+  "workflow_id": "d3df0ef0-a28f-4850-9396-d4d1cf6c0e21",
+  "agent": "maestro",
+  "stage": "published",
+  "exported_at": "2026-04-22-100453",
+  "graph": {
+    "edges": [
+      {
+        "id": "edge-v11-00",
+        "data": {
+          "sourceType": "start",
+          "targetType": "http-request"
+        },
+        "type": "custom",
+        "source": "1775343637677",
+        "target": "1775343918798",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-01",
+        "data": {
+          "sourceType": "http-request",
+          "targetType": "code"
+        },
+        "type": "custom",
+        "source": "1775343918798",
+        "target": "code_profil_check",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-02",
+        "data": {
+          "sourceType": "code",
+          "targetType": "if-else"
+        },
+        "type": "custom",
+        "source": "code_profil_check",
+        "target": "if_profil",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-03",
+        "data": {
+          "sourceType": "if-else",
+          "targetType": "code"
+        },
+        "type": "custom",
+        "source": "if_profil",
+        "target": "code_turn_check",
+        "sourceHandle": "cas1",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-04",
+        "data": {
+          "sourceType": "if-else",
+          "targetType": "llm"
+        },
+        "type": "custom",
+        "source": "if_profil",
+        "target": "llm_onboarding",
+        "sourceHandle": "false",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-05",
+        "data": {
+          "sourceType": "code",
+          "targetType": "if-else"
+        },
+        "type": "custom",
+        "source": "code_turn_check",
+        "target": "if_resume_exam",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-06",
+        "data": {
+          "sourceType": "if-else",
+          "targetType": "assigner"
+        },
+        "type": "custom",
+        "source": "if_resume_exam",
+        "target": "var_assigner_exam_resume",
+        "sourceHandle": "resume_yes",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-07",
+        "data": {
+          "sourceType": "assigner",
+          "targetType": "if-else"
+        },
+        "type": "custom",
+        "source": "var_assigner_exam_resume",
+        "target": "if_exam_active",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-08",
+        "data": {
+          "sourceType": "if-else",
+          "targetType": "assigner"
+        },
+        "type": "custom",
+        "source": "if_resume_exam",
+        "target": "var_assigner_scoring_recovery",
+        "sourceHandle": "scoring_recovery",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-09",
+        "data": {
+          "sourceType": "assigner",
+          "targetType": "http-request"
+        },
+        "type": "custom",
+        "source": "var_assigner_scoring_recovery",
+        "target": "http_scoring_recovery_clear",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-10",
+        "data": {
+          "sourceType": "http-request",
+          "targetType": "if-else"
+        },
+        "type": "custom",
+        "source": "http_scoring_recovery_clear",
+        "target": "if_first_turn",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-11",
+        "data": {
+          "sourceType": "if-else",
+          "targetType": "if-else"
+        },
+        "type": "custom",
+        "source": "if_resume_exam",
+        "target": "if_exam_active",
+        "sourceHandle": "false",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-12",
+        "data": {
+          "sourceType": "if-else",
+          "targetType": "llm"
+        },
+        "type": "custom",
+        "source": "if_exam_active",
+        "target": "llm_exam",
+        "sourceHandle": "exam_on",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-13",
+        "data": {
+          "sourceType": "if-else",
+          "targetType": "if-else"
+        },
+        "type": "custom",
+        "source": "if_exam_active",
+        "target": "if_first_turn",
+        "sourceHandle": "false",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-14",
+        "data": {
+          "sourceType": "if-else",
+          "targetType": "llm"
+        },
+        "type": "custom",
+        "source": "if_first_turn",
+        "target": "llm_plan_choice",
+        "sourceHandle": "first",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-15",
+        "data": {
+          "sourceType": "if-else",
+          "targetType": "llm"
+        },
+        "type": "custom",
+        "source": "if_first_turn",
+        "target": "llm_session",
+        "sourceHandle": "false",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-16",
+        "data": {
+          "sourceType": "llm",
+          "targetType": "answer"
+        },
+        "type": "custom",
+        "source": "llm_plan_choice",
+        "target": "answer_plan",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-17",
+        "data": {
+          "sourceType": "llm",
+          "targetType": "code"
+        },
+        "type": "custom",
+        "source": "llm_session",
+        "target": "code_exam_detect",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-18",
+        "data": {
+          "sourceType": "code",
+          "targetType": "answer"
+        },
+        "type": "custom",
+        "source": "code_exam_detect",
+        "target": "answer_session",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-19",
+        "data": {
+          "sourceType": "code",
+          "targetType": "assigner"
+        },
+        "type": "custom",
+        "source": "code_exam_detect",
+        "target": "var_assigner_exam_start",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-20",
+        "data": {
+          "sourceType": "code",
+          "targetType": "assigner"
+        },
+        "type": "custom",
+        "source": "code_exam_detect",
+        "target": "var_assigner_review_start",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-21",
+        "data": {
+          "sourceType": "llm",
+          "targetType": "assigner"
+        },
+        "type": "custom",
+        "source": "llm_plan_choice",
+        "target": "var_assigner",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-22",
+        "data": {
+          "sourceType": "llm",
+          "targetType": "assigner"
+        },
+        "type": "custom",
+        "source": "llm_session",
+        "target": "var_assigner",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-23",
+        "data": {
+          "sourceType": "llm",
+          "targetType": "assigner"
+        },
+        "type": "custom",
+        "source": "llm_onboarding",
+        "target": "var_assigner",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-24",
+        "data": {
+          "sourceType": "llm",
+          "targetType": "assigner"
+        },
+        "type": "custom",
+        "source": "llm_exam",
+        "target": "var_assigner",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-25",
+        "data": {
+          "sourceType": "assigner",
+          "targetType": "code"
+        },
+        "type": "custom",
+        "source": "var_assigner",
+        "target": "code_check",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-26",
+        "data": {
+          "sourceType": "code",
+          "targetType": "if-else"
+        },
+        "type": "custom",
+        "source": "code_check",
+        "target": "if_snap",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-27",
+        "data": {
+          "sourceType": "if-else",
+          "targetType": "http-request"
+        },
+        "type": "custom",
+        "source": "if_snap",
+        "target": "http_snapshot",
+        "sourceHandle": "true",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-28",
+        "data": {
+          "sourceType": "http-request",
+          "targetType": "code"
+        },
+        "type": "custom",
+        "source": "http_snapshot",
+        "target": "parse_snapshot",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-29",
+        "data": {
+          "sourceType": "code",
+          "targetType": "assigner"
+        },
+        "type": "custom",
+        "source": "parse_snapshot",
+        "target": "store_snapshot",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-30",
+        "data": {
+          "sourceType": "assigner",
+          "targetType": "http-request"
+        },
+        "type": "custom",
+        "source": "store_snapshot",
+        "target": "http_profil_update",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-31",
+        "data": {
+          "sourceType": "llm",
+          "targetType": "code"
+        },
+        "type": "custom",
+        "source": "llm_onboarding",
+        "target": "code_eval_check",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-32",
+        "data": {
+          "sourceType": "code",
+          "targetType": "answer"
+        },
+        "type": "custom",
+        "source": "code_eval_check",
+        "target": "answer_onboarding",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-33",
+        "data": {
+          "sourceType": "code",
+          "targetType": "if-else"
+        },
+        "type": "custom",
+        "source": "code_eval_check",
+        "target": "if_eval_ready",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-34",
+        "data": {
+          "sourceType": "if-else",
+          "targetType": "http-request"
+        },
+        "type": "custom",
+        "source": "if_eval_ready",
+        "target": "http_diagnostic",
+        "sourceHandle": "eval_true",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-35",
+        "data": {
+          "sourceType": "llm",
+          "targetType": "code"
+        },
+        "type": "custom",
+        "source": "llm_exam",
+        "target": "code_exam_track",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-36",
+        "data": {
+          "sourceType": "code",
+          "targetType": "assigner"
+        },
+        "type": "custom",
+        "source": "code_exam_track",
+        "target": "var_assigner_exam",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-37",
+        "data": {
+          "sourceType": "code",
+          "targetType": "if-else"
+        },
+        "type": "custom",
+        "source": "code_exam_track",
+        "target": "if_exam_complete",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-38",
+        "data": {
+          "sourceType": "if-else",
+          "targetType": "answer"
+        },
+        "type": "custom",
+        "source": "if_exam_complete",
+        "target": "answer_exam",
+        "sourceHandle": "false",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-39",
+        "data": {
+          "sourceType": "if-else",
+          "targetType": "http-request"
+        },
+        "type": "custom",
+        "source": "if_exam_complete",
+        "target": "http_exam_scoring",
+        "sourceHandle": "exam_done",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-40",
+        "data": {
+          "sourceType": "code",
+          "targetType": "code"
+        },
+        "type": "custom",
+        "source": "code_exam_track",
+        "target": "code_exam_persist",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-41",
+        "data": {
+          "sourceType": "code",
+          "targetType": "http-request"
+        },
+        "type": "custom",
+        "source": "code_exam_persist",
+        "target": "http_exam_persist",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-42",
+        "data": {
+          "sourceType": "http-request",
+          "targetType": "code"
+        },
+        "type": "custom",
+        "source": "http_exam_scoring",
+        "target": "code_exam_bilan",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-43",
+        "data": {
+          "sourceType": "code",
+          "targetType": "answer"
+        },
+        "type": "custom",
+        "source": "code_exam_bilan",
+        "target": "answer_exam_bilan",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      },
+      {
+        "id": "edge-v11-44",
+        "data": {
+          "sourceType": "code",
+          "targetType": "assigner"
+        },
+        "type": "custom",
+        "source": "code_exam_bilan",
+        "target": "var_assigner_exam_reset",
+        "sourceHandle": "source",
+        "targetHandle": "target"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "1775343637677",
+        "data": {
+          "type": "start",
+          "title": "Début",
+          "selected": false,
+          "variables": [
+            {
+              "type": "text-input",
+              "label": "minutes_since_last",
+              "default": "0",
+              "required": false,
+              "variable": "minutes_since_last",
+              "max_length": 10
+            },
+            {
+              "type": "text-input",
+              "label": "mock_exam",
+              "default": "",
+              "required": false,
+              "variable": "mock_exam",
+              "max_length": 200
+            },
+            {
+              "type": "text-input",
+              "label": "mode_override",
+              "default": "",
+              "required": false,
+              "variable": "mode_override",
+              "max_length": 20
+            },
+            {
+              "type": "text-input",
+              "label": "error_feedback",
+              "default": "",
+              "required": false,
+              "variable": "error_feedback",
+              "max_length": 1000
+            },
+            {
+              "type": "text-input",
+              "label": "turn_response_secs",
+              "default": "0",
+              "required": false,
+              "variable": "turn_response_secs",
+              "max_length": 10
+            },
+            {
+              "type": "text-input",
+              "label": "repeated_errors",
+              "default": "",
+              "required": false,
+              "variable": "repeated_errors",
+              "max_length": 500
+            },
+            {
+              "type": "paragraph",
+              "label": "rubric_for_level",
+              "default": "",
+              "required": false,
+              "variable": "rubric_for_level",
+              "max_length": 4000
+            },
+            {
+              "type": "paragraph",
+              "label": "fewshots_block",
+              "default": "",
+              "required": false,
+              "variable": "fewshots_block",
+              "max_length": 4000
+            },
+            {
+              "type": "paragraph",
+              "label": "dosage_block",
+              "default": "",
+              "required": false,
+              "variable": "dosage_block",
+              "max_length": 2000
+            },
+            {
+              "type": "paragraph",
+              "label": "level_reminder_inject",
+              "default": "",
+              "required": false,
+              "variable": "level_reminder_inject",
+              "max_length": 2000
+            },
+            {
+              "type": "paragraph",
+              "label": "drift_validation_request",
+              "default": "",
+              "required": false,
+              "variable": "drift_validation_request",
+              "max_length": 2000
+            },
+            {
+              "type": "paragraph",
+              "label": "l1_watch",
+              "default": "",
+              "required": false,
+              "variable": "l1_watch",
+              "max_length": 2000
+            },
+            {
+              "type": "paragraph",
+              "label": "spaced_retrieval_today",
+              "default": "",
+              "required": false,
+              "variable": "spaced_retrieval_today",
+              "max_length": 2000
+            },
+            {
+              "type": "paragraph",
+              "label": "output_schema_block",
+              "default": "",
+              "required": false,
+              "variable": "output_schema_block",
+              "max_length": 2000
+            },
+            {
+              "type": "text-input",
+              "label": "lang_target_name",
+              "default": "Anglais",
+              "required": false,
+              "variable": "lang_target_name",
+              "max_length": 40
+            },
+            {
+              "type": "text-input",
+              "label": "lang_target_prof",
+              "default": "d'anglais",
+              "required": false,
+              "variable": "lang_target_prof",
+              "max_length": 40
+            },
+            {
+              "type": "paragraph",
+              "label": "concept_hints_json",
+              "default": "{}",
+              "required": false,
+              "variable": "concept_hints_json",
+              "max_length": 10000
+            },
+            {
+              "type": "paragraph",
+              "label": "cefr_diagnostics_block",
+              "default": "",
+              "required": false,
+              "variable": "cefr_diagnostics_block",
+              "max_length": 5000
+            },
+            {
+              "type": "paragraph",
+              "label": "learner_profile_json",
+              "default": "{}",
+              "required": false,
+              "variable": "learner_profile_json",
+              "max_length": 10000
+            },
+            {
+              "type": "paragraph",
+              "label": "learner_profile_summary",
+              "default": "",
+              "required": false,
+              "variable": "learner_profile_summary",
+              "max_length": 2000
+            }
+          ]
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 447,
+        "position": {
+          "x": 80,
+          "y": 282
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 80,
+          "y": 282
+        }
+      },
+      {
+        "id": "1775343918798",
+        "data": {
+          "url": "http://n8n-academie:5678/webhook/dify-profil-get?username={{#sys.user_id#}}&domain=es",
+          "body": {
+            "data": [],
+            "type": "none"
+          },
+          "type": "http-request",
+          "title": "Requête HTTP",
+          "method": "get",
+          "params": "",
+          "headers": "",
+          "timeout": {
+            "max_read_timeout": 0,
+            "max_write_timeout": 0,
+            "max_connect_timeout": 0
+          },
+          "selected": false,
+          "variables": [],
+          "ssl_verify": true,
+          "retry_config": {
+            "max_retries": 3,
+            "retry_enabled": true,
+            "retry_interval": 100
+          },
+          "authorization": {
+            "type": "no-auth",
+            "config": null
+          }
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 172,
+        "position": {
+          "x": 373.4373172949216,
+          "y": 303
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 373.4373172949216,
+          "y": 303
+        }
+      },
+      {
+        "id": "code_check",
+        "data": {
+          "code": "def main(nb: int, profil_present: bool, exam_mode: str) -> dict:\n    n = int(nb or 0) + 1\n    in_exam = str(exam_mode or 'off') != 'off'\n    do_snap = n % 10 == 0 and bool(profil_present) and not in_exam\n    return {\"new_count\": n, \"do_snapshot\": do_snap}\n",
+          "type": "code",
+          "title": "Vérifier snapshot",
+          "outputs": {
+            "new_count": {
+              "type": "number",
+              "children": null
+            },
+            "do_snapshot": {
+              "type": "boolean",
+              "children": null
+            }
+          },
+          "selected": false,
+          "variables": [
+            {
+              "variable": "nb",
+              "value_selector": [
+                "conversation",
+                "nb_interactions"
+              ]
+            },
+            {
+              "variable": "profil_present",
+              "value_selector": [
+                "code_profil_check",
+                "profil_present"
+              ]
+            },
+            {
+              "variable": "exam_mode",
+              "value_selector": [
+                "conversation",
+                "exam_mode"
+              ]
+            }
+          ],
+          "code_language": "python3"
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 52,
+        "position": {
+          "x": 2389.1032837459043,
+          "y": 303
+        },
+        "selected": true,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 2389.1032837459043,
+          "y": 303
+        }
+      },
+      {
+        "id": "if_snap",
+        "data": {
+          "type": "if-else",
+          "cases": [
+            {
+              "id": "true",
+              "case_id": "true",
+              "conditions": [
+                {
+                  "value": "true",
+                  "varType": "boolean",
+                  "variable_selector": [
+                    "code_check",
+                    "do_snapshot"
+                  ],
+                  "comparison_operator": "="
+                }
+              ],
+              "logical_operator": "and"
+            }
+          ],
+          "title": "Si snapshot",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 148,
+        "position": {
+          "x": 2558.852232171082,
+          "y": 406.40086020018646
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 2558.852232171082,
+          "y": 406.40086020018646
+        }
+      },
+      {
+        "id": "var_assigner",
+        "data": {
+          "type": "assigner",
+          "items": [
+            {
+              "value": 1,
+              "operation": "+=",
+              "input_type": "constant",
+              "variable_selector": [
+                "conversation",
+                "nb_interactions"
+              ]
+            }
+          ],
+          "title": "Incrémenter compteur",
+          "version": "2",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 84,
+        "position": {
+          "x": 2147.9713754040313,
+          "y": 181.90640157364305
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 2147.9713754040313,
+          "y": 181.90640157364305
+        }
+      },
+      {
+        "id": "http_snapshot",
+        "data": {
+          "url": "http://n8n-academie:5678/webhook/dify-snapshot",
+          "body": {
+            "data": [
+              {
+                "key": "",
+                "type": "text",
+                "value": "{\"username\": \"{{#sys.user_id#}}\", \"domain\": \"es\", \"conversation_id\": \"{{#sys.conversation_id#}}\"}"
+              }
+            ],
+            "type": "json"
+          },
+          "type": "http-request",
+          "title": "Snapshot session",
+          "method": "post",
+          "params": "",
+          "headers": "",
+          "timeout": {
+            "max_read_timeout": 0,
+            "max_write_timeout": 0,
+            "max_connect_timeout": 0
+          },
+          "selected": false,
+          "variables": [],
+          "ssl_verify": true,
+          "retry_config": {
+            "max_retries": 3,
+            "retry_enabled": true,
+            "retry_interval": 100
+          },
+          "authorization": {
+            "type": "no-auth",
+            "config": null
+          }
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 136,
+        "position": {
+          "x": 2837.4928724032675,
+          "y": 406.40086020018646
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 2837.4928724032675,
+          "y": 406.40086020018646
+        }
+      },
+      {
+        "id": "http_profil_update",
+        "data": {
+          "url": "http://n8n-academie:5678/webhook/dify-profil-update",
+          "body": {
+            "data": [
+              {
+                "key": "",
+                "type": "text",
+                "value": "{\"username\": \"{{#sys.user_id#}}\", \"domain\": \"es\"}"
+              }
+            ],
+            "type": "json"
+          },
+          "type": "http-request",
+          "title": "Maj profil élève",
+          "method": "post",
+          "params": "",
+          "headers": "",
+          "timeout": {
+            "max_read_timeout": 0,
+            "max_write_timeout": 0,
+            "max_connect_timeout": 0
+          },
+          "selected": false,
+          "variables": [],
+          "ssl_verify": true,
+          "retry_config": {
+            "max_retries": 3,
+            "retry_enabled": true,
+            "retry_interval": 100
+          },
+          "authorization": {
+            "type": "no-auth",
+            "config": null
+          }
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 136,
+        "position": {
+          "x": 3672.4812094531235,
+          "y": 406.40086020018646
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 3672.4812094531235,
+          "y": 406.40086020018646
+        }
+      },
+      {
+        "id": "parse_snapshot",
+        "data": {
+          "code": "import json\ndef main(body: str) -> dict:\n    try:\n        data = json.loads(body or '{}')\n        return {\"summary\": data.get(\"summary\", \"\")}\n    except:\n        return {\"summary\": \"\"}",
+          "type": "code",
+          "title": "Parser snapshot",
+          "outputs": {
+            "summary": {
+              "type": "string",
+              "children": null
+            }
+          },
+          "selected": false,
+          "variables": [
+            {
+              "variable": "body",
+              "value_selector": [
+                "http_snapshot",
+                "body"
+              ]
+            }
+          ],
+          "code_language": "python3"
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 52,
+        "position": {
+          "x": 3109.3521345911818,
+          "y": 406.40086020018646
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 3109.3521345911818,
+          "y": 406.40086020018646
+        }
+      },
+      {
+        "id": "store_snapshot",
+        "data": {
+          "type": "assigner",
+          "items": [
+            {
+              "value": [
+                "parse_snapshot",
+                "summary"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "session_snapshot"
+              ]
+            }
+          ],
+          "title": "Stocker snapshot",
+          "version": "2",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 84,
+        "position": {
+          "x": 3398.6697915334225,
+          "y": 406.40086020018646
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 3398.6697915334225,
+          "y": 406.40086020018646
+        }
+      },
+      {
+        "id": "code_profil_check",
+        "data": {
+          "code": "import json\n\ndef main(body: str, learner_profile_json: str = '{}', learner_profile_summary: str = '') -> dict:\n    if not body:\n        return {\n            \"profil_present\": False, \"profil_text\": \"\",\n            \"concept_keys_json\": \"[]\", \"scores_json\": \"{}\",\n            \"mode_apprentissage\": \"libre\",\n            \"next_concept_keys_json\": \"[]\", \"next_niveau\": \"\",\n            \"examen_en_cours_json\": \"null\",\n            \"dernier_examen_json\": \"null\", \"nb_examens_niveau\": 0,\n            \"sessions_depuis_examen\": 0,\n            \"concept_weights_json\": \"{}\", \"concept_groups_json\": \"{}\",\n            \"derniere_session\": \"\",\n            \"exam_resume_active\": False, \"exam_resume_mode\": \"off\",\n            \"exam_resume_question_num\": 0, \"exam_resume_responses\": \"[]\",\n            \"exam_resume_module_index\": 0, \"exam_resume_module_total\": 1,\n            \"exam_resume_module_name\": \"\", \"exam_resume_module_concepts\": \"\",\n            \"exam_resume_total_questions\": 20, \"exam_resume_modules_json\": \"[]\",\n            \"exam_scoring_recovered\": False,\n            \"error_exam_eligible\": False\n        ,\n        # Sprint 5 Phase 5 — QCM learner profile passthrough (onboarding branch)\n        'learner_profile_json': str(learner_profile_json or '{}'),\n        'learner_profile_summary': str(learner_profile_summary or ''),\n    }\n\n    text = \"\"\n    concept_keys = []\n    scores = {}\n    mode = \"libre\"\n    next_keys = []\n    next_niveau = \"\"\n    examen_en_cours = None\n    dernier_examen = None\n    nb_examens = 0\n    concept_weights = {}\n    concept_groups = {}\n    derniere_session = \"\"\n    error_exam_eligible = False\n\n    raw = str(body).strip()\n\n    try:\n        parsed = json.loads(raw)\n        if isinstance(parsed, list) and len(parsed) > 0:\n            parsed = parsed[0]\n        if isinstance(parsed, dict):\n            text = parsed.get(\"profil_formate\", \"\")\n            concept_keys = parsed.get(\"concept_keys\", [])\n            scores = parsed.get(\"scores_confiance\", {})\n            mode = parsed.get(\"mode_apprentissage\", \"libre\")\n            next_keys = parsed.get(\"next_concept_keys\", [])\n            next_niveau = parsed.get(\"next_niveau\", \"\")\n            examen_en_cours = parsed.get(\"examen_en_cours\", None)\n            dernier_examen = parsed.get(\"dernier_examen\", None)\n            nb_examens = parsed.get(\"nb_examens_niveau\", 0)\n            sessions_depuis = parsed.get(\"sessions_depuis_examen\", 0)\n            concept_weights = parsed.get(\"concept_weights\", {})\n            concept_groups = parsed.get(\"concept_groups\", {})\n            derniere_session = parsed.get(\"derniere_session\", \"\") or \"\"\n            error_exam_eligible = parsed.get(\"error_exam_eligible\", False)\n    except (json.JSONDecodeError, TypeError):\n        if raw.startswith('[PROFIL ELEVE]'):\n            text = raw\n        sessions_depuis = 0\n\n    # QCM_AS_PROFIL_v1 — Session 36 : treat QCM users (non-empty learner_profile_summary) as having a profile so routing bypasses llm_onboarding.\n    _has_legacy = bool(text) and text.strip().startswith('[PROFIL ELEVE]')\n    _has_qcm = bool((learner_profile_summary or '').strip())\n    present = _has_legacy or _has_qcm\n\n    # --- Exam resume outputs ---\n    exam_resume_mode = \"off\"\n    exam_resume_question_num = 0\n    exam_resume_responses = \"[]\"\n    exam_resume_module_index = 0\n    exam_resume_module_total = 1\n    exam_resume_module_name = \"\"\n    exam_resume_module_concepts = \"\"\n    exam_resume_total_questions = 20\n    exam_resume_modules_json = \"[]\"\n    exam_resume_active = False\n    exam_scoring_recovered = False\n\n    if examen_en_cours and isinstance(examen_en_cours, dict):\n        saved_mode = examen_en_cours.get(\"mode\", \"off\")\n        if saved_mode in (\"active\", \"intro\"):\n            exam_resume_active = True\n            exam_resume_mode = saved_mode\n            exam_resume_question_num = int(examen_en_cours.get(\"question_num\", 0))\n            exam_resume_responses = str(examen_en_cours.get(\"responses\", \"[]\"))\n            exam_resume_module_index = int(examen_en_cours.get(\"module_index\", 0))\n            exam_resume_module_total = int(examen_en_cours.get(\"module_total\", 1))\n            exam_resume_module_name = str(examen_en_cours.get(\"module_name\", \"\"))\n            exam_resume_module_concepts = str(examen_en_cours.get(\"module_concepts\", \"\"))\n            exam_resume_total_questions = int(examen_en_cours.get(\"total_questions\", 20))\n            exam_resume_modules_json = str(examen_en_cours.get(\"modules_json\", \"[]\"))\n        elif saved_mode == \"scoring\":\n            exam_scoring_recovered = True\n\n    return {\n        \"profil_present\": present,\n        \"profil_text\": text,\n        \"concept_keys_json\": json.dumps(concept_keys) if isinstance(concept_keys, list) else \"[]\",\n        \"scores_json\": json.dumps(scores) if isinstance(scores, dict) else \"{}\",\n        \"mode_apprentissage\": str(mode or \"libre\"),\n        \"next_concept_keys_json\": json.dumps(next_keys) if isinstance(next_keys, list) else \"[]\",\n        \"next_niveau\": str(next_niveau or \"\"),\n        \"examen_en_cours_json\": json.dumps(examen_en_cours) if examen_en_cours else \"null\",\n        \"dernier_examen_json\": json.dumps(dernier_examen) if dernier_examen else \"null\",\n        \"nb_examens_niveau\": int(nb_examens or 0),\n        \"sessions_depuis_examen\": int(sessions_depuis or 0),\n        \"concept_weights_json\": json.dumps(concept_weights) if isinstance(concept_weights, dict) else \"{}\",\n        \"concept_groups_json\": json.dumps(concept_groups) if isinstance(concept_groups, dict) else \"{}\",\n        \"exam_resume_active\": exam_resume_active,\n        \"exam_resume_mode\": exam_resume_mode,\n        \"exam_resume_question_num\": exam_resume_question_num,\n        \"exam_resume_responses\": exam_resume_responses,\n        \"exam_resume_module_index\": exam_resume_module_index,\n        \"exam_resume_module_total\": exam_resume_module_total,\n        \"exam_resume_module_name\": exam_resume_module_name,\n        \"exam_resume_module_concepts\": exam_resume_module_concepts,\n        \"exam_resume_total_questions\": exam_resume_total_questions,\n        \"exam_resume_modules_json\": exam_resume_modules_json,\n        \"exam_scoring_recovered\": exam_scoring_recovered,\n        \"derniere_session\": str(derniere_session or \"\"),\n        \"error_exam_eligible\": bool(error_exam_eligible)\n    ,\n        # Sprint 5 Phase 5 — QCM learner profile passthrough (onboarding branch)\n        'learner_profile_json': str(learner_profile_json or '{}'),\n        'learner_profile_summary': str(learner_profile_summary or ''),\n    }\n",
+          "type": "code",
+          "title": "Détection profil",
+          "outputs": {
+            "next_niveau": {
+              "type": "string",
+              "children": null
+            },
+            "profil_text": {
+              "type": "string",
+              "children": null
+            },
+            "scores_json": {
+              "type": "string",
+              "children": null
+            },
+            "profil_present": {
+              "type": "boolean",
+              "children": null
+            },
+            "derniere_session": {
+              "type": "string",
+              "children": null
+            },
+            "exam_resume_mode": {
+              "type": "string",
+              "children": null
+            },
+            "concept_keys_json": {
+              "type": "string",
+              "children": null
+            },
+            "nb_examens_niveau": {
+              "type": "number",
+              "children": null
+            },
+            "exam_resume_active": {
+              "type": "boolean",
+              "children": null
+            },
+            "mode_apprentissage": {
+              "type": "string",
+              "children": null
+            },
+            "concept_groups_json": {
+              "type": "string",
+              "children": null
+            },
+            "dernier_examen_json": {
+              "type": "string",
+              "children": null
+            },
+            "error_exam_eligible": {
+              "type": "boolean",
+              "children": null
+            },
+            "concept_weights_json": {
+              "type": "string",
+              "children": null
+            },
+            "examen_en_cours_json": {
+              "type": "string",
+              "children": null
+            },
+            "learner_profile_json": {
+              "type": "string",
+              "children": null
+            },
+            "exam_resume_responses": {
+              "type": "string",
+              "children": null
+            },
+            "exam_scoring_recovered": {
+              "type": "boolean",
+              "children": null
+            },
+            "next_concept_keys_json": {
+              "type": "string",
+              "children": null
+            },
+            "sessions_depuis_examen": {
+              "type": "number",
+              "children": null
+            },
+            "exam_resume_module_name": {
+              "type": "string",
+              "children": null
+            },
+            "learner_profile_summary": {
+              "type": "string",
+              "children": null
+            },
+            "exam_resume_module_index": {
+              "type": "number",
+              "children": null
+            },
+            "exam_resume_module_total": {
+              "type": "number",
+              "children": null
+            },
+            "exam_resume_modules_json": {
+              "type": "string",
+              "children": null
+            },
+            "exam_resume_question_num": {
+              "type": "number",
+              "children": null
+            },
+            "exam_resume_module_concepts": {
+              "type": "string",
+              "children": null
+            },
+            "exam_resume_total_questions": {
+              "type": "number",
+              "children": null
+            }
+          },
+          "selected": false,
+          "variables": [
+            {
+              "variable": "body",
+              "value_selector": [
+                "1775343918798",
+                "body"
+              ]
+            },
+            {
+              "variable": "learner_profile_json",
+              "value_selector": [
+                "1775343637677",
+                "learner_profile_json"
+              ]
+            },
+            {
+              "variable": "learner_profile_summary",
+              "value_selector": [
+                "1775343637677",
+                "learner_profile_summary"
+              ]
+            }
+          ],
+          "code_language": "python3"
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 52,
+        "position": {
+          "x": 650.5488390795931,
+          "y": 303
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 650.5488390795931,
+          "y": 303
+        }
+      },
+      {
+        "id": "if_profil",
+        "data": {
+          "type": "if-else",
+          "cases": [
+            {
+              "id": "cas1",
+              "case_id": "cas1",
+              "conditions": [
+                {
+                  "value": "true",
+                  "varType": "boolean",
+                  "variable_selector": [
+                    "code_profil_check",
+                    "profil_present"
+                  ],
+                  "comparison_operator": "="
+                }
+              ],
+              "logical_operator": "and"
+            }
+          ],
+          "title": "Profil présent ?",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 148,
+        "position": {
+          "x": 993.2062766626027,
+          "y": 303
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 993.2062766626027,
+          "y": 303
+        }
+      },
+      {
+        "id": "code_turn_check",
+        "data": {
+          "code": "import json\nfrom datetime import datetime, timezone, date as date_type\n\n# ── Helpers spaced repetition ──────────────────────────────────────────\n\ndef parse_score_entry(v):\n    # Normalise ancien format (int) et nouveau ({score, last_seen, first_seen, days_seen})\n    if isinstance(v, (int, float)):\n        return int(v), None, 0\n    if isinstance(v, dict):\n        return int(v.get('score', 0)), v.get('last_seen'), int(v.get('days_seen', 0))\n    return 0, None, 0\n\ndef expected_interval(score):\n    # Jours attendus entre revisions selon le niveau de maitrise\n    if score >= 90: return 30\n    if score >= 70: return 14\n    if score >= 50: return 7\n    return 3\n\ndef compute_priority(score, last_seen_str, today):\n    # Score de priorite : faible + ancien = urgent\n    weakness = 100 - score\n    if not last_seen_str:\n        return weakness + 200\n    try:\n        ls = date_type.fromisoformat(str(last_seen_str)[:10])\n        days = (today - ls).days\n    except:\n        days = 0\n    interval = expected_interval(score)\n    urgency = max(0, days - interval) * 2\n    return weakness + urgency\n\ndef concept_label(key, score, last_seen_str, today, tag=None):\n    # Label explicatif pour affichage dans le plan\n    label = key.replace(\"_\", \" \")\n    if tag:\n        return label + \" [\" + tag + \"]\"\n    if not last_seen_str:\n        return label + \" 🆕 jamais travaille\"\n    try:\n        ls = date_type.fromisoformat(str(last_seen_str)[:10])\n        days = (today - ls).days\n    except:\n        days = 0\n    interval = expected_interval(score)\n    overdue = days > interval * 1.5\n    if overdue:\n        weeks = days // 7\n        if weeks >= 2:\n            suffix = \" ⏰ \" + str(weeks) + \" sem. sans revoir\"\n        elif days >= 7:\n            suffix = \" ⏰ 1 sem. sans revoir\"\n        else:\n            suffix = \" ⏰ \" + str(days) + \"j sans revoir\"\n    elif score < 50:\n        suffix = \" ⚡ score \" + str(score)\n    elif score >= 80:\n        suffix = \" ✅ \" + str(score) + \"/100\"\n    else:\n        suffix = \" (\" + str(score) + \"/100)\"\n    return label + suffix\n\n# ── Main ───────────────────────────────────────────────────────────────\n\ndef main(dialogue_count: int, profil_text: str, concept_keys_json: str, scores_json: str,\n         mode_apprentissage: str, next_concept_keys_json: str, next_niveau: str,\n         exam_mode: str, dernier_examen_json: str, sessions_depuis_examen: int,\n         concept_weights_json: str, concept_groups_json: str,\n         examen_en_cours_json: str, exam_scoring_recovered: bool,\n         review_mode: str, derniere_session: str,\n         minutes_since_last: int,\n         mock_exam: str, mode_override: str,\n         error_feedback: str, turn_response_secs: str, repeated_errors: str,\n         error_exam_eligible: bool,\n         rubric_for_level: str = '', fewshots_block: str = '',\n         dosage_block: str = '', level_reminder_inject: str = '',\n         drift_validation_request: str = '', l1_watch: str = '',\n         spaced_retrieval_today: str = '', output_schema_block: str = '',\n         lang_target_name: str = 'Anglais', lang_target_prof: str = \"d'anglais\",\n         concept_hints_json: str = '{}', cefr_diagnostics_block: str = '',\n         learner_profile_json: str = '{}', learner_profile_summary: str = '') -> dict:\n    n = int(dialogue_count or 0)\n    mode = str(mode_apprentissage or 'libre')\n    # Mode override from frontend toggle (immediate effect)\n    mode_over = str(mode_override or '').strip()\n    if mode_over in ('structure', 'libre'):\n        mode = mode_over\n    exam = str(exam_mode or 'off')\n    sessions_since = int(sessions_depuis_examen or 0)\n\n    # --- SCORING RECOVERY : previous scoring failed ---\n    scoring_recovery = False\n    if exam == 'scoring':\n        scoring_recovery = True\n        exam = 'off'\n    if bool(exam_scoring_recovered):\n        scoring_recovery = True\n\n    # --- EXAM RESUME : detect saved exam on first turn ---\n    exam_resume_needed = False\n    exam_resume_values = {}\n    if n == 1:\n        try:\n            examen_ec = json.loads(examen_en_cours_json or 'null')\n        except:\n            examen_ec = None\n        if examen_ec and isinstance(examen_ec, dict):\n            saved_mode = examen_ec.get(\"mode\", \"off\")\n            if saved_mode in (\"active\", \"intro\"):\n                exam_resume_needed = True\n                exam = saved_mode\n\n    niveau = 'B1'\n    for line in (profil_text or '').split('\\n'):\n        if line.strip().startswith('Niveau : '):\n            niveau = line.strip()[9:]\n            break\n\n    try:\n        concept_keys = json.loads(concept_keys_json or '[]')\n    except:\n        concept_keys = []\n    try:\n        scores_raw = json.loads(scores_json or '{}')\n    except:\n        scores_raw = {}\n    try:\n        next_keys = json.loads(next_concept_keys_json or '[]')\n    except:\n        next_keys = []\n    try:\n        dernier_examen = json.loads(dernier_examen_json or 'null')\n    except:\n        dernier_examen = None\n    try:\n        weights = json.loads(concept_weights_json or '{}')\n    except:\n        weights = {}\n\n    today = datetime.now(timezone.utc).date()\n\n    # Normalise scores vers {concept: (score_int, last_seen_str|None, days_seen_int)}\n    norm = {}\n    for k, v in scores_raw.items():\n        sc, ls, ds = parse_score_entry(v)\n        norm[k] = (sc, ls, ds)\n\n    scored_concepts = {k: norm[k][0] for k in concept_keys if k in norm}\n    nb_total = len(concept_keys)\n\n    untested = [k for k in concept_keys if k not in norm]\n    weak = sorted([(k, v) for k, v in scored_concepts.items() if v < 50], key=lambda x: x[1])\n    medium = sorted([(k, v) for k, v in scored_concepts.items() if 50 <= v < 80], key=lambda x: x[1])\n    # Mastered = score >= 75 ET vu sur au moins 2 jours differents (consolidation memoire)\n    mastered = [(k, v) for k, v in scored_concepts.items() if v >= 75 and norm[k][2] >= 2]\n    # Score >= 75 mais pas encore consolide (moins de 2 jours)\n    mastered_but_fresh = [(k, v) for k, v in scored_concepts.items() if v >= 75 and norm[k][2] < 2]\n\n    promotion_ready = False\n    exploring_next = False\n    approaching_promo = False\n    pct_mastered = (len(mastered) / nb_total * 100) if nb_total > 0 else 0\n\n    all_tested = len(untested) == 0\n    high_mastery = nb_total > 0 and len(mastered) >= nb_total * 0.8\n\n    # Exam recommendation (advisor, not gatekeeper)\n    # error_exam_eligible NOT used as gate — errors shape exam content, not access\n    exam_recommendation = \"not_ready\"\n    if mode == 'structure':\n        if all_tested and high_mastery:\n            exam_recommendation = \"recommended\"\n            promotion_ready = True\n        elif high_mastery or pct_mastered >= 60:\n            exam_recommendation = \"approaching\"\n    else:\n        if all_tested and high_mastery:\n            exploring_next = True\n\n    if not all_tested and high_mastery:\n        approaching_promo = True\n\n    # --- COOLDOWN EXAMEN ---\n    cooldown_met = True\n    cooldown_reason = \"\"\n    if dernier_examen:\n        exam_date_str = dernier_examen.get(\"date\", \"\")\n        days_since = 999\n        if exam_date_str:\n            try:\n                exam_dt = datetime.fromisoformat(exam_date_str.replace(\"Z\", \"+00:00\"))\n                now = datetime.now(timezone.utc)\n                days_since = (now - exam_dt).days\n            except:\n                days_since = 999\n\n        # Progressive cooldown: escalates with exam attempts\n        exam_attempts = int(nb_examens or 0)\n        if exam_attempts <= 1:\n            cd_days, cd_sess = 3, 3\n        elif exam_attempts == 2:\n            cd_days, cd_sess = 7, 5\n        else:\n            cd_days, cd_sess = 14, 8\n\n        need_days = days_since < cd_days\n        need_sessions = sessions_since < cd_sess\n\n        if need_days or need_sessions:\n            cooldown_met = False\n            parts = []\n            if need_days:\n                parts.append(str(cd_days - days_since) + \"j avant prochaine proposition\")\n            if need_sessions:\n                parts.append(str(cd_sess - sessions_since) + \" sessions restantes\")\n            cooldown_reason = \" + \".join(parts)\n\n    if not cooldown_met and exam_recommendation in (\"recommended\", \"approaching\"):\n        exam_recommendation = \"cooldown\"\n\n    selected = []\n\n    if promotion_ready:\n        all_sorted = sorted(scored_concepts.items(), key=lambda x: x[1])\n        for k, v in all_sorted[:2]:\n            selected.append(k)\n    elif approaching_promo and untested:\n        for k in untested:\n            if len(selected) < 2:\n                selected.append(k)\n    elif exploring_next and next_keys:\n        # Priorité par urgence spaced repetition sur niveau courant\n        by_prio = sorted(\n            [(k, compute_priority(scored_concepts.get(k, 0), norm.get(k, (0,None))[1], today))\n             for k in concept_keys if k not in next_keys],\n            key=lambda x: -x[1]\n        )\n        if by_prio:\n            selected.append(by_prio[0][0])\n        next_scores_norm = {k: norm[k][0] for k in next_keys if k in norm}\n        next_untested = [k for k in next_keys if k not in norm]\n        next_weak = sorted([(k, v) for k, v in next_scores_norm.items() if v < 50], key=lambda x: x[1])\n        if next_untested:\n            selected.append(next_untested[0])\n        elif next_weak:\n            selected.append(next_weak[0][0])\n    else:\n        # Sélection par priorité spaced repetition : weakness × urgence temporelle\n        all_prio = []\n        for k in concept_keys:\n            if k in norm:\n                sc, ls, _ds = norm[k]\n                prio = compute_priority(sc, ls, today)\n            else:\n                prio = 300  # jamais testé = priorité max\n            all_prio.append((k, prio))\n        all_prio.sort(key=lambda x: -x[1])\n        for k, _ in all_prio:\n            if k not in selected:\n                selected.append(k)\n            if len(selected) >= 2:\n                break\n\n    # ── Labels explicatifs (metacognition #4 + progrès #8) ────────────\n    if selected:\n        labels = []\n        total_duration = 0\n        for s in selected:\n            w = weights.get(s, 3)\n            total_duration += w * 3\n            if next_keys and s in next_keys:\n                lbl = concept_label(s, norm.get(s, (0,None,0))[0], norm.get(s, (0,None,0))[1], today,\n                                    tag=(next_niveau or \"N+1\") + \" decouverte\")\n            elif s in norm:\n                sc, ls, ds = norm[s]\n                lbl = concept_label(s, sc, ls, today)\n            else:\n                lbl = concept_label(s, 0, None, today)\n            labels.append(lbl)\n        duration_hint = \"~\" + str(total_duration) + \" min\"\n        concepts_display = \" | \".join(labels)\n\n        # Contexte score pour le LLM (mode TTT adaptatif)\n        score_hints = []\n        for s in selected:\n            sc = norm.get(s, (0, None, 0))[0]\n            if sc == 0:\n                score_hints.append(s.replace(\"_\", \" \") + \" → DECOUVERTE (score 0)\")\n            elif sc < 50:\n                score_hints.append(s.replace(\"_\", \" \") + \" → RENFORCEMENT (score \" + str(sc) + \")\")\n            elif sc < 80:\n                score_hints.append(s.replace(\"_\", \" \") + \" → PRATIQUE (score \" + str(sc) + \")\")\n            else:\n                score_hints.append(s.replace(\"_\", \" \") + \" → MAINTIEN (score \" + str(sc) + \")\")\n        concept_modes = \" | \".join(score_hints)\n\n        # ── FOCUS CONCEPT : le système décide quel concept travailler à chaque tour ──\n        # Tours 2-5 → concept 1 | Tour 5 = transition | Tours 6+ → concept 2\n        TRANSITION_TOUR = 6\n        if len(selected) >= 2:\n            if n < TRANSITION_TOUR:\n                focus_concept = selected[0].replace(\"_\", \" \")\n                focus_mode = score_hints[0]\n                if n == TRANSITION_TOUR - 1:\n                    transition_instruction = (\n                        \">>> C'est le DERNIER tour sur \" + focus_concept + \". \"\n                        \"Fais une micro-synthese (1 phrase : ce qu'on retient) \"\n                        \"puis annonce : 'On passe a \" + selected[1].replace(\"_\", \" \") + \" !'\"\n                    )\n                else:\n                    transition_instruction = \"\"\n            else:\n                focus_concept = selected[1].replace(\"_\", \" \")\n                focus_mode = score_hints[1]\n                if n == 9:\n                    transition_instruction = (\n                        \">>> DERNIER TOUR. Fais une synthese globale de la session \"\n                        \"(les 2 concepts, ce que l'eleve retient).\"\n                    )\n                else:\n                    transition_instruction = \"\"\n        elif len(selected) == 1:\n            focus_concept = selected[0].replace(\"_\", \" \")\n            focus_mode = score_hints[0]\n            transition_instruction = \"\"\n        else:\n            focus_concept = \"\"\n            focus_mode = \"\"\n            transition_instruction = \"\"\n    else:\n        concepts_display = \"choisir librement depuis le curriculum\"\n        concept_modes = \"\"\n        duration_hint = \"\"\n        focus_concept = \"\"\n        focus_mode = \"\"\n        transition_instruction = \"\"\n\n    # --- FRESH PROMOTION DETECTION ---\n    # Detecte si l'eleve vient de reussir un examen cette session (sessions_since=0)\n    fresh_promotion = False\n    fresh_score = 0\n    fresh_prev_niveau = \"\"\n    if dernier_examen and isinstance(dernier_examen, dict):\n        if dernier_examen.get('passed') and int(sessions_since) == 0 and not promotion_ready:\n            fresh_promotion = True\n            fresh_score = dernier_examen.get('score', 0)\n            fresh_prev_niveau = dernier_examen.get('niveau', '?')\n\n    promotion_msg = \"\"\n    plan_prefix = \"\"\n\n    # --- PRIORITE 0 : CELEBRATION POST-PROMOTION ---\n    if fresh_promotion:\n        plan_prefix = (\n            \">>> INSTRUCTION PRIORITAIRE — FELICITATION PROMOTION <<<\\n\"\n            \"L'eleve vient de reussir l'examen \" + fresh_prev_niveau + \" → \" + niveau + \" (score : \" + str(fresh_score) + \"/100) !\\n\"\n            \"Ta reponse DOIT contenir dans cet ordre :\\n\"\n            \"1. Felicitation sincere et chaleureuse (1-2 phrases). Mentionne le score.\\n\"\n            \"2. Annonce que vous decouvrez maintenant le \" + niveau + \" ensemble.\\n\"\n            \"3. Plan de session normal avec les concepts selectionnes.\\n\"\n            \"INTERDIT : proposer un examen ou mentionner 'examen'. Il faut d'abord pratiquer le nouveau niveau.\\n\"\n            \">>> FIN INSTRUCTION PRIORITAIRE <<<\"\n        )\n\n    nxt = next_niveau or \"niveau suivant\"\n    if exam_recommendation == \"recommended\":\n        promotion_msg = \"PROMOTION RECOMMANDEE — \" + str(int(pct_mastered)) + \"% maitrise. Je te conseille de passer l'examen \" + nxt + \" !\"\n        plan_prefix = (\n            \">>> INSTRUCTION PRIORITAIRE — A SUIVRE AVANT TOUT <<<\\n\"\n            \"L'eleve maitrise \" + str(int(pct_mastered)) + \"% du \" + niveau + \".\\n\"\n            \"Ta reponse DOIT commencer par cette phrase EXACTE (copie-la) :\\n\"\n            \"\\\"Bravo ! Tu maitrises \" + str(int(pct_mastered)) + \"% du \" + niveau + \" ! \"\n            \"Tu veux tenter l'examen de passage vers le \" + nxt + \" ? \"\n            \"Sinon on continue a s'entrainer.\\\"\\n\"\n            \"Puis affiche le plan normalement.\\n\"\n            \">>> FIN INSTRUCTION PRIORITAIRE <<<\"\n        )\n    elif exam_recommendation == \"cooldown\":\n        promotion_msg = \"COOLDOWN ACTIF (\" + cooldown_reason + \") — ne pas proposer l'examen mais l'eleve peut le demander\"\n    elif exam_recommendation == \"approaching\":\n        promotion_msg = \"EXAMEN ACCESSIBLE — \" + str(int(pct_mastered)) + \"% maitrise. L'eleve peut demander l'examen s'il se sent pret.\"\n    elif approaching_promo:\n        promotion_msg = \"QUASI-PRET : \" + str(int(pct_mastered)) + \"% maitrise mais \" + str(len(untested)) + \" concept(s) jamais travaille(s). On les couvre d'abord.\"\n    elif mastered_but_fresh and not promotion_ready:\n        nb_fresh = len(mastered_but_fresh)\n        promotion_msg = \"CONSOLIDATION : \" + str(nb_fresh) + \" concept(s) ont un bon score mais doivent etre revus un autre jour pour etre valides.\"\n    elif exploring_next and next_keys:\n        promotion_msg = \"L'eleve maitrise le \" + niveau + \". Un concept \" + (next_niveau or \"N+1\") + \" est inclus en decouverte.\"\n\n    # --- #5 COOLDOWN MODULE ECHOUE ---\n    # Si l'eleve vient de rater un module (sessions_since=0, passed=False)\n    # → guider vers consolidation AVANT de repasser\n    if not plan_prefix and dernier_examen and isinstance(dernier_examen, dict):\n        if not dernier_examen.get('passed') and int(sessions_since) == 0 and not fresh_promotion:\n            score = dernier_examen.get('score', 0)\n            to_review_list = dernier_examen.get('to_review', [])\n            to_review_str = \", \".join(to_review_list) if to_review_list else \"voir bilan precedent\"\n            plan_prefix = (\n                \">>> INSTRUCTION PRIORITAIRE — MODULE ECHOUE <<<\\n\"\n                \"L'eleve vient d'echouer un module d'examen (score: \" + str(score) + \"/100, minimum 70).\\n\"\n                \"Concepts a consolider : \" + to_review_str + \"\\n\"\n                \"Ta reponse DOIT :\\n\"\n                \"1. Mentionner l'echec tres brievement et sans dramatiser (1 phrase).\\n\"\n                \"2. Proposer de consolider les concepts faibles AVANT de repasser le module.\\n\"\n                \"3. Afficher le plan avec ces concepts en priorite.\\n\"\n                \"INTERDIT : proposer de repasser l'examen maintenant.\\n\"\n                \">>> FIN INSTRUCTION PRIORITAIRE <<<\"\n            )\n            # Override selected_concepts avec les concepts faibles du module rate\n            if to_review_list:\n                labels = [c.replace(\"_\", \" \") + \" [a consolider]\" for c in to_review_list[:3]]\n                concepts_display = \" | \".join(labels)\n\n    # --- #6 REVIEW MODE (demande manuelle revision lacunes) ---\n    # Si l'eleve a demande [REVIEW_LACUNES] lors du tour precedent\n    if str(review_mode or '').strip() == 'active' and not plan_prefix:\n        review_selected = []\n        for k, v in weak:\n            if len(review_selected) < 4:\n                review_selected.append(k)\n        for k in untested:\n            if len(review_selected) < 4 and k not in review_selected:\n                review_selected.append(k)\n        if review_selected:\n            labels = [c.replace(\"_\", \" \") + \" [lacune]\" for c in review_selected]\n            concepts_display = \" | \".join(labels)\n        else:\n            # Rien de vraiment faible — prendre les plus bas scores\n            all_sorted = sorted(scored_concepts.items(), key=lambda x: x[1])\n            for k, v in all_sorted[:3]:\n                review_selected.append(k)\n            if review_selected:\n                labels = [c.replace(\"_\", \" \") + \" [a renforcer]\" for c in review_selected]\n                concepts_display = \" | \".join(labels)\n        plan_prefix = (\n            \">>> MODE REVISION ACTIVE <<<\\n\"\n            \"L'eleve a demande a revoir ses lacunes.\\n\"\n            \"Ta reponse DOIT :\\n\"\n            \"1. Confirmer brievement le mode revision (1 phrase).\\n\"\n            \"2. Afficher le plan avec uniquement les concepts faibles/non testes listes.\\n\"\n            \"INTERDIT : proposer un examen.\\n\"\n            \">>> FIN MODE REVISION <<<\"\n        )\n\n    # --- SCORING RECOVERY MESSAGE ---\n    if scoring_recovery and not plan_prefix:\n        plan_prefix = (\n            \">>> INSTRUCTION PRIORITAIRE <<<\\n\"\n            \"L'examen precedent a rencontre un probleme technique.\\n\"\n            \"Dis a l'eleve : \\\"Desole, il y a eu un souci technique avec ton dernier examen. \"\n            \"Tu peux le retenter quand tu veux.\\\"\\n\"\n            \"Puis affiche le plan normalement.\\n\"\n            \">>> FIN INSTRUCTION PRIORITAIRE <<<\"\n        )\n\n    # --- ABSENCE-AWARE WELCOME (based on minutes_since_last, lowest priority) ---\n    # Uses minutes_since_last from FastAPI (time since last message in conversation)\n    mins = int(minutes_since_last or 0)\n\n    if mins >= 60 and not plan_prefix:\n        if mins >= 10080:  # 7+ days\n            days = mins // 1440\n            plan_prefix = (\n                \">>> INSTRUCTION ACCUEIL — LONGUE ABSENCE <<<\\n\"\n                \"L'eleve revient apres \" + str(days) + \" jours d'absence.\\n\"\n                \"Ton accueil DOIT :\\n\"\n                \"1. Mentionner que ca fait longtemps (content de le revoir, sans culpabiliser).\\n\"\n                \"2. Proposer une revision en douceur des concepts les plus rouilles (ceux avec ⏰ dans le plan).\\n\"\n                \"3. Ton ton doit etre chaleureux et encourageant, comme retrouver un ami.\\n\"\n                \">>> FIN INSTRUCTION ACCUEIL <<<\"\n            )\n        elif mins >= 1440:  # 1-6 days\n            days = mins // 1440\n            plan_prefix = (\n                \">>> INSTRUCTION ACCUEIL — QUELQUES JOURS <<<\\n\"\n                \"L'eleve revient apres \" + str(days) + \" jour(s).\\n\"\n                \"Mentionne brievement son retour (ex: 'Ca fait quelques jours !').\\n\"\n                \"Propose de revoir les points qui ont pu etre oublies.\\n\"\n                \"Enchaine sur le plan de session.\\n\"\n                \">>> FIN INSTRUCTION ACCUEIL <<<\"\n            )\n        elif mins >= 60:  # 1h-24h\n            hours = mins // 60\n            plan_prefix = (\n                \">>> INSTRUCTION ACCUEIL — NOUVELLE SESSION <<<\\n\"\n                \"L'eleve revient apres \" + str(hours) + \"h d'absence.\\n\"\n                \"Accueille-le brievement ('On reprend !' ou similaire).\\n\"\n                \"Genere un plan de session frais base sur les concepts selectionnes.\\n\"\n                \">>> FIN INSTRUCTION ACCUEIL <<<\"\n            )\n        # < 60 min : continuation silencieuse, pas de plan_prefix\n\n    exam_active = exam != 'off'\n\n    # --- COMPUTE EXAM MODULES ---\n    exam_modules_json = \"[]\"\n    try:\n        groups = json.loads(concept_groups_json or '{}')\n    except:\n        groups = {}\n\n    if groups and weights:\n        ratio_map = {'A1': 70, 'A2': 60, 'B1': 50, 'B2': 40, 'C1': 30, 'C2': 20}\n        targeted_pct = ratio_map.get(niveau, 50)\n        level_types_map = {\n            'A1': 'FILL,CHOICE,PRODUCE',\n            'A2': 'FILL,CHOICE,CORRECT,PRODUCE',\n            'B1': 'FILL,CHOICE,CORRECT,TRANSFORM,PRODUCE',\n            'B2': 'FILL,CHOICE,CORRECT,TRANSFORM,FORM,PRODUCE',\n            'C1': 'FILL,CHOICE,CORRECT,TRANSFORM,FORM,PRODUCE',\n            'C2': 'FILL,CHOICE,CORRECT,TRANSFORM,FORM,PRODUCE'\n        }\n        q_types = level_types_map.get(niveau, 'FILL,CHOICE,CORRECT,TRANSFORM,PRODUCE')\n\n        modules = []\n        for group_name, group_concepts in groups.items():\n            total_q = sum(weights.get(c, 3) for c in group_concepts)\n            concepts_with_weights = []\n            for c in group_concepts:\n                w = weights.get(c, 3)\n                concepts_with_weights.append({\"key\": c, \"weight\": w})\n            modules.append({\n                \"name\": group_name,\n                \"concepts\": concepts_with_weights,\n                \"total_questions\": total_q,\n                \"targeted_pct\": targeted_pct,\n                \"question_types\": q_types\n            })\n        exam_modules_json = json.dumps(modules)\n\n    # ── MOCK EXAM (Quiz) — piloté par le frontend via input ──\n    mock_exam_input = str(mock_exam or '').strip()\n    mock_exam_instruction = ''\n\n    if mock_exam_input and not exam_active:\n        # Format: \"Q3/10:conditional_2:DECOUVERTE\" or \"start\" or \"bilan\"\n        if mock_exam_input == 'bilan':\n            mock_exam_instruction = (\n                \">>> QUIZ TERMINE — BILAN <<<\\n\"\n                \"Fais un bilan de ce quiz en 5-8 lignes :\\n\"\n                \"1. Score approximatif (X/10 environ basé sur ce que tu as vu)\\n\"\n                \"2. Pour chaque concept travaillé : ✅ (solide), ⚠️ (fragile), ou ❌ (a retravailler)\\n\"\n                \"3. Un conseil personnalisé en 1-2 phrases\\n\"\n                \"Sois encourageant mais honnête.\\n\"\n                \">>> FIN BILAN <<<\"\n            )\n        elif mock_exam_input.startswith('Q'):\n            # Parse \"Q3/10:conditional_2:DECOUVERTE\"\n            parts = mock_exam_input.split(':')\n            q_part = parts[0] if len(parts) >= 1 else 'Q1/10'\n            concept_part = parts[1].replace('_', ' ') if len(parts) >= 2 else ''\n            mode_part = parts[2] if len(parts) >= 3 else 'DECOUVERTE'\n\n            # Build a human-readable hint for the concept\n            concept_hint_map = {}\n            try:\n                concept_hint_map = json.loads(concept_hints_json or '{}')\n            except Exception:\n                concept_hint_map = {}\n            concept_hint = concept_hint_map.get(parts[1] if len(parts) >= 2 else '', '')\n\n            mock_exam_instruction = (\n                \">>> MODE QUIZ — IGNORE TOUTES LES AUTRES INSTRUCTIONS CI-DESSOUS <<<\\n\"\n                \"Tu es en mode QUIZ. NE fais PAS de plan. NE presente PAS les concepts. IGNORE l'historique.\\n\\n\"\n                \"\" + q_part + \"\\n\"\n                \"CONCEPT OBLIGATOIRE : \" + concept_part + \"\\n\"\n                + (\"AIDE : \" + concept_hint + \"\\n\" if concept_hint else \"\")\n                + \"Tu DOIS poser une question sur CE concept et AUCUN autre.\\n\"\n                \"Pose UNE question (traduction FR→EN, ou phrase a completer, ou correction d'erreur).\\n\"\n                \"Maximum 2 lignes.\\n\\n\"\n                \"Si l'eleve a deja repondu a la question precedente :\\n\"\n                \"- NE CORRIGE PAS. NE donne PAS la bonne reponse. NE dis PAS si c'est correct ou non.\\n\"\n                \"- Dis juste 'Suivante !' et pose IMMEDIATEMENT la question sur le concept ci-dessus.\\n\"\n                \">>> FIN QUIZ <<<\"\n            )\n\n    return {\n        'is_first_turn': n == 0,\n        'tour': n,\n        'niveau': niveau,\n        'selected_concepts': concepts_display,\n        'concept_modes': concept_modes,\n        'focus_concept': focus_concept if not exam_active and not mock_exam_instruction else '',\n        'focus_mode': focus_mode if not exam_active and not mock_exam_instruction else '',\n        'transition_instruction': transition_instruction if not exam_active and not mock_exam_instruction else '',\n        'duration_hint': duration_hint,\n        'promotion_ready': promotion_ready,\n        'promotion_msg': promotion_msg,\n        'plan_prefix': mock_exam_instruction if mock_exam_instruction else plan_prefix,\n        'pct_mastered': int(pct_mastered),\n        'exam_active': exam_active,\n        'exam_modules_json': exam_modules_json,\n        'exam_resume_needed': exam_resume_needed,\n        'scoring_recovery': scoring_recovery,\n        'error_feedback': '' if exam_active or mock_exam_instruction else str(error_feedback or ''),\n        'turn_response_secs': str(turn_response_secs or '0'),\n        'repeated_errors': str(repeated_errors or ''),\n        # Sprint 3 V2 sections — passthrough so prompt template can reference\n        # `{{#code_turn_check.<name>#}}`. Empty strings when V1 active.\n        'rubric_for_level': str(rubric_for_level or ''),\n        'fewshots_block': str(fewshots_block or ''),\n        'dosage_block': str(dosage_block or ''),\n        'level_reminder_inject': str(level_reminder_inject or ''),\n        'drift_validation_request': str(drift_validation_request or ''),\n        'l1_watch': str(l1_watch or ''),\n        'spaced_retrieval_today': str(spaced_retrieval_today or ''),\n        'output_schema_block': str(output_schema_block or ''),\n    \n        # Sprint 5 Phase 3 — language-tutor passthrough\n        'lang_target_name': str(lang_target_name or 'Anglais'),\n        'lang_target_prof': str(lang_target_prof or \"d'anglais\"),\n        'concept_hints_json': str(concept_hints_json or '{}'),\n        'cefr_diagnostics_block': str(cefr_diagnostics_block or ''),\n    \n        # Sprint 5 Phase 5 — QCM learner profile passthrough\n        'learner_profile_json': str(learner_profile_json or '{}'),\n        'learner_profile_summary': str(learner_profile_summary or ''),\n    }\n",
+          "type": "code",
+          "title": "Préparer session",
+          "outputs": {
+            "tour": {
+              "type": "number",
+              "children": null
+            },
+            "niveau": {
+              "type": "string",
+              "children": null
+            },
+            "l1_watch": {
+              "type": "string",
+              "children": null
+            },
+            "focus_mode": {
+              "type": "string",
+              "children": null
+            },
+            "exam_active": {
+              "type": "boolean",
+              "children": null
+            },
+            "plan_prefix": {
+              "type": "string",
+              "children": null
+            },
+            "dosage_block": {
+              "type": "string",
+              "children": null
+            },
+            "pct_mastered": {
+              "type": "number",
+              "children": null
+            },
+            "concept_modes": {
+              "type": "string",
+              "children": null
+            },
+            "duration_hint": {
+              "type": "string",
+              "children": null
+            },
+            "focus_concept": {
+              "type": "string",
+              "children": null
+            },
+            "is_first_turn": {
+              "type": "boolean",
+              "children": null
+            },
+            "promotion_msg": {
+              "type": "string",
+              "children": null
+            },
+            "error_feedback": {
+              "type": "string",
+              "children": null
+            },
+            "fewshots_block": {
+              "type": "string",
+              "children": null
+            },
+            "promotion_ready": {
+              "type": "boolean",
+              "children": null
+            },
+            "repeated_errors": {
+              "type": "string",
+              "children": null
+            },
+            "lang_target_name": {
+              "type": "string",
+              "children": null
+            },
+            "lang_target_prof": {
+              "type": "string",
+              "children": null
+            },
+            "rubric_for_level": {
+              "type": "string",
+              "children": null
+            },
+            "scoring_recovery": {
+              "type": "boolean",
+              "children": null
+            },
+            "exam_modules_json": {
+              "type": "string",
+              "children": null
+            },
+            "selected_concepts": {
+              "type": "string",
+              "children": null
+            },
+            "concept_hints_json": {
+              "type": "string",
+              "children": null
+            },
+            "exam_resume_needed": {
+              "type": "boolean",
+              "children": null
+            },
+            "turn_response_secs": {
+              "type": "string",
+              "children": null
+            },
+            "output_schema_block": {
+              "type": "string",
+              "children": null
+            },
+            "learner_profile_json": {
+              "type": "string",
+              "children": null
+            },
+            "level_reminder_inject": {
+              "type": "string",
+              "children": null
+            },
+            "cefr_diagnostics_block": {
+              "type": "string",
+              "children": null
+            },
+            "spaced_retrieval_today": {
+              "type": "string",
+              "children": null
+            },
+            "transition_instruction": {
+              "type": "string",
+              "children": null
+            },
+            "learner_profile_summary": {
+              "type": "string",
+              "children": null
+            },
+            "drift_validation_request": {
+              "type": "string",
+              "children": null
+            }
+          },
+          "selected": false,
+          "variables": [
+            {
+              "variable": "dialogue_count",
+              "value_selector": [
+                "sys",
+                "dialogue_count"
+              ]
+            },
+            {
+              "variable": "profil_text",
+              "value_selector": [
+                "code_profil_check",
+                "profil_text"
+              ]
+            },
+            {
+              "variable": "concept_keys_json",
+              "value_selector": [
+                "code_profil_check",
+                "concept_keys_json"
+              ]
+            },
+            {
+              "variable": "scores_json",
+              "value_selector": [
+                "code_profil_check",
+                "scores_json"
+              ]
+            },
+            {
+              "variable": "mode_apprentissage",
+              "value_selector": [
+                "code_profil_check",
+                "mode_apprentissage"
+              ]
+            },
+            {
+              "variable": "next_concept_keys_json",
+              "value_selector": [
+                "code_profil_check",
+                "next_concept_keys_json"
+              ]
+            },
+            {
+              "variable": "next_niveau",
+              "value_selector": [
+                "code_profil_check",
+                "next_niveau"
+              ]
+            },
+            {
+              "variable": "exam_mode",
+              "value_selector": [
+                "conversation",
+                "exam_mode"
+              ]
+            },
+            {
+              "variable": "dernier_examen_json",
+              "value_selector": [
+                "code_profil_check",
+                "dernier_examen_json"
+              ]
+            },
+            {
+              "variable": "sessions_depuis_examen",
+              "value_selector": [
+                "code_profil_check",
+                "sessions_depuis_examen"
+              ]
+            },
+            {
+              "variable": "concept_weights_json",
+              "value_selector": [
+                "code_profil_check",
+                "concept_weights_json"
+              ]
+            },
+            {
+              "variable": "concept_groups_json",
+              "value_selector": [
+                "code_profil_check",
+                "concept_groups_json"
+              ]
+            },
+            {
+              "variable": "examen_en_cours_json",
+              "value_selector": [
+                "code_profil_check",
+                "examen_en_cours_json"
+              ]
+            },
+            {
+              "variable": "exam_scoring_recovered",
+              "value_selector": [
+                "code_profil_check",
+                "exam_scoring_recovered"
+              ]
+            },
+            {
+              "variable": "review_mode",
+              "value_selector": [
+                "conversation",
+                "review_mode"
+              ]
+            },
+            {
+              "variable": "derniere_session",
+              "value_selector": [
+                "code_profil_check",
+                "derniere_session"
+              ]
+            },
+            {
+              "variable": "minutes_since_last",
+              "value_selector": [
+                "1775343637677",
+                "minutes_since_last"
+              ]
+            },
+            {
+              "variable": "mock_exam",
+              "value_selector": [
+                "1775343637677",
+                "mock_exam"
+              ]
+            },
+            {
+              "variable": "mode_override",
+              "value_selector": [
+                "1775343637677",
+                "mode_override"
+              ]
+            },
+            {
+              "variable": "error_feedback",
+              "value_selector": [
+                "1775343637677",
+                "error_feedback"
+              ]
+            },
+            {
+              "variable": "turn_response_secs",
+              "value_selector": [
+                "1775343637677",
+                "turn_response_secs"
+              ]
+            },
+            {
+              "variable": "repeated_errors",
+              "value_selector": [
+                "1775343637677",
+                "repeated_errors"
+              ]
+            },
+            {
+              "variable": "error_exam_eligible",
+              "value_selector": [
+                "code_profil_check",
+                "error_exam_eligible"
+              ]
+            },
+            {
+              "variable": "rubric_for_level",
+              "value_selector": [
+                "1775343637677",
+                "rubric_for_level"
+              ]
+            },
+            {
+              "variable": "fewshots_block",
+              "value_selector": [
+                "1775343637677",
+                "fewshots_block"
+              ]
+            },
+            {
+              "variable": "dosage_block",
+              "value_selector": [
+                "1775343637677",
+                "dosage_block"
+              ]
+            },
+            {
+              "variable": "level_reminder_inject",
+              "value_selector": [
+                "1775343637677",
+                "level_reminder_inject"
+              ]
+            },
+            {
+              "variable": "drift_validation_request",
+              "value_selector": [
+                "1775343637677",
+                "drift_validation_request"
+              ]
+            },
+            {
+              "variable": "l1_watch",
+              "value_selector": [
+                "1775343637677",
+                "l1_watch"
+              ]
+            },
+            {
+              "variable": "spaced_retrieval_today",
+              "value_selector": [
+                "1775343637677",
+                "spaced_retrieval_today"
+              ]
+            },
+            {
+              "variable": "output_schema_block",
+              "value_selector": [
+                "1775343637677",
+                "output_schema_block"
+              ]
+            },
+            {
+              "variable": "lang_target_name",
+              "value_selector": [
+                "1775343637677",
+                "lang_target_name"
+              ]
+            },
+            {
+              "variable": "lang_target_prof",
+              "value_selector": [
+                "1775343637677",
+                "lang_target_prof"
+              ]
+            },
+            {
+              "variable": "concept_hints_json",
+              "value_selector": [
+                "1775343637677",
+                "concept_hints_json"
+              ]
+            },
+            {
+              "variable": "cefr_diagnostics_block",
+              "value_selector": [
+                "1775343637677",
+                "cefr_diagnostics_block"
+              ]
+            },
+            {
+              "variable": "learner_profile_json",
+              "value_selector": [
+                "1775343637677",
+                "learner_profile_json"
+              ]
+            },
+            {
+              "variable": "learner_profile_summary",
+              "value_selector": [
+                "1775343637677",
+                "learner_profile_summary"
+              ]
+            }
+          ],
+          "code_language": "python3"
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 52,
+        "position": {
+          "x": 1119.133362473133,
+          "y": -47.18018278667029
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 1119.133362473133,
+          "y": -47.18018278667029
+        }
+      },
+      {
+        "id": "if_first_turn",
+        "data": {
+          "type": "if-else",
+          "cases": [
+            {
+              "id": "first",
+              "case_id": "first",
+              "conditions": [
+                {
+                  "value": "true",
+                  "varType": "boolean",
+                  "variable_selector": [
+                    "code_turn_check",
+                    "is_first_turn"
+                  ],
+                  "comparison_operator": "="
+                }
+              ],
+              "logical_operator": "and"
+            }
+          ],
+          "title": "Premier tour ?",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 148,
+        "position": {
+          "x": 1854.209225030249,
+          "y": -169.63622308181874
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 1854.209225030249,
+          "y": -169.63622308181874
+        }
+      },
+      {
+        "id": "llm_plan_choice",
+        "data": {
+          "type": "llm",
+          "model": {
+            "mode": "chat",
+            "name": "gpt-4o-mini",
+            "provider": "langgenius/openai_api_compatible/openai_api_compatible",
+            "completion_params": {
+              "max_tokens": 400,
+              "temperature": 0.7
+            }
+          },
+          "title": "Plan + choix",
+          "memory": {
+            "window": {
+              "size": 15,
+              "enabled": true
+            },
+            "role_prefix": {
+              "user": "",
+              "assistant": ""
+            },
+            "query_prompt_template": "{{#sys.query#}}\n\n{{#sys.files#}}"
+          },
+          "vision": {
+            "enabled": false
+          },
+          "context": {
+            "enabled": false,
+            "variable_selector": []
+          },
+          "selected": false,
+          "prompt_config": {
+            "jinja2_variables": []
+          },
+          "prompt_template": [
+            {
+              "id": "plan-prompt",
+              "role": "system",
+              "text": "<learner_profile>\n{{#code_turn_check.learner_profile_summary#}}\n</learner_profile>\n\n{{#code_turn_check.plan_prefix#}}\n\n=== SI EL TEXTO DE ARRIBA CONTIENE 'MODE QUIZ' ===\n→ Sigue ÚNICAMENTE las instrucciones del MODE QUIZ. Ignora TODO lo que viene después.\n=== SI NO : PLAN DE SESIÓN ===\n\nEres Maestro, profe de {{#code_turn_check.lang_target_prof#}}. Máximo 5 líneas — regla absoluta.\n\nPERFIL DEL ALUMNO :\n{{#code_profil_check.profil_text#}}\n\nCONCEPTOS DE LA SESIÓN : {{#code_turn_check.selected_concepts#}}\nDURACIÓN ESTIMADA : {{#code_turn_check.duration_hint#}}\n\nESTRUCTURA DE TU RESPUESTA (plan de sesión) :\n1. Saludo cálido (1 línea, con un detalle del perfil del alumno)\n2. Plan con motivos :\n   📋 Sesión — {{#code_turn_check.niveau#}} • {{#code_turn_check.duration_hint#}}\n   • [concepto 1] — [traduce el motivo de la etiqueta : 🆕=nuevo, ⏰=a repasar, ⚡=punto débil, ✅=consolidación]\n   • [concepto 2] — [ídem]\n   Si un concepto está marcado [découverte] : \"vamos a probar algo nuevo del siguiente nivel\"\n3. \"¿Por cuál quieres empezar?\"\n\nPROHIBICIONES ABSOLUTAS :\n- NO incluir NUNCA [EXAM_START]\n- NO iniciar NUNCA un examen salvo que una INSTRUCCIÓN PRIORITARIA lo pida explícitamente\n- Aquí no enseñas nada. Solo presentas el plan de la sesión.\n\n=== OBSERVED_LEVEL_v2 ===\nÀ CHAQUE turn, émets ton estimation CEFR du niveau APPARENT de l'apprenant·e\nsur la base de ses productions cumulées. Renseigne le champ `observed_level`\navec une des valeurs : \"A1\", \"A2\", \"B1\", \"B2\", \"C1\", \"C2\".\n\nRÈGLES STRICTES :\n1. OBLIGATOIRE à partir du turn 3. Jamais \"\" passé ce seuil.\n2. Si la production du turn est courte, appuie-toi sur l'ensemble des turns\n   précédents pour déduire le niveau. Émets ton meilleur pari, pas \"\".\n3. Ne discute JAMAIS ce niveau dans `feedback` — télémétrie interne pure,\n   l'apprenant·e ne le voit pas et ne doit pas le savoir.\n4. Seul cas autorisé pour \"\" : turns 1-2 avec zéro production (ex: \"ok\",\n   \"yo\", \"salut\") — après turn 2 c'est une valeur concrète obligatoirement.\n\nEXEMPLES (learner production → observed_level) :\n• \"yo / je débute / je connais pas trop\" → \"A1\"\n• \"Me llamo Juan, soy francés y tengo treinta años. Vivo en París.\"\n  (présent simple, ser/vivir, zéro subjonctif ni passé) → \"A1\"\n• \"Ayer fui al cine y vi una película muy buena. Me gustó mucho la historia.\"\n  (passé simple correct, coordination, vocabulaire courant) → \"A2\"\n• \"Creo que el teletrabajo es útil, aunque es importante que las empresas\n  organicen encuentros presenciales.\" (opinion + subjonctif + concessif) → \"B1\"\n• \"Si tuviera más tiempo libre, estudiaría más idiomas, pero el trabajo me\n  absorbe todo el día.\" (subj imparfait + condicional) → \"B2\"\n• \"A pesar de que las empresas abogan por la flexibilidad, muchas siguen\n  exigiendo presencia física, lo cual genera tensiones.\" (concessif\n  complexe + relative + lexique abstrait) → \"C1\"\n=== FIN OBSERVED_LEVEL_v2 ===\n",
+              "edition_type": "basic"
+            }
+          ]
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 88,
+        "position": {
+          "x": 2283.6746548898914,
+          "y": -169.63622308181874
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 2283.6746548898914,
+          "y": -169.63622308181874
+        }
+      },
+      {
+        "id": "llm_session",
+        "data": {
+          "type": "llm",
+          "model": {
+            "mode": "chat",
+            "name": "gpt-4o-mini",
+            "provider": "langgenius/openai_api_compatible/openai_api_compatible",
+            "completion_params": {
+              "max_tokens": 600,
+              "temperature": 0.7
+            }
+          },
+          "title": "Session interactive",
+          "memory": {
+            "window": {
+              "size": 15,
+              "enabled": true
+            },
+            "role_prefix": {
+              "user": "",
+              "assistant": ""
+            },
+            "query_prompt_template": "{{#sys.query#}}\n\n{{#sys.files#}}"
+          },
+          "vision": {
+            "enabled": false
+          },
+          "context": {
+            "enabled": false,
+            "variable_selector": []
+          },
+          "selected": false,
+          "prompt_config": {
+            "jinja2_variables": []
+          },
+          "prompt_template": [
+            {
+              "id": "session-prompt-v2",
+              "role": "system",
+              "text": "<!-- CACHE_REORDER_v1 : everything above === CONTEXTE DE CE TOUR === is STABLE (cacheable prefix) ; below is per-turn VOLATILE. Do NOT inject per-turn placeholders above that marker or OpenAI prompt caching breaks. -->\n\nEres Maestro, profe de {{#code_turn_check.lang_target_prof#}}. Tuteas al alumno.\n\n{{#code_turn_check.rubric_for_level#}}\n\n=== TONO Y ESTILO ===\nAdapta tu estilo según el campo Estilo del perfil :\n- 'directo' : conciso, factual, corrige sin rodeos\n- 'alentador'/'suave' : anima primero, corrige después\n- 'humor' : toques de humor, metáforas divertidas\n- vacío : cercano, directo, con algo de humor (por defecto)\n\n=== BALANCE POST-DIAGNÓSTICO ===\nSi el perfil contiene [DIAGNOSTIC INITIAL] Y turno 1 :\nBalance cálido de 3-5 líneas : nivel provisional, 1-2 puntos fuertes, 1-2 ejes, '¡Empezamos!'.\nSi no, ignorar.\n\n=== PERFILADO PROGRESIVO ===\nSi no hay Intereses en el perfil Y turno 1-2 : pregunta de forma natural '¿Qué temas te interesan?'\nSi no hay Estilo Y turno 3-4 : pregunta '¿Cómo prefieres que te corrija?'\nUNA sola pregunta de perfilado por sesión.\n\nESTADO EXAMEN : {{#code_turn_check.promotion_msg#}}\n\n=== DETECCIÓN EXAMEN ===\nSi el alumno pide explícitamente examen :\n  → 'COOLDOWN' : explica el plazo, no pongas [EXAM_START]\n  → 'RECOMMANDEE' : '¡Perfecto, pasamos a modo examen!' + [EXAM_START]\n  → SI NO : avisa + '¡vamos allá si te apetece!' + [EXAM_START]\nNUNCA [EXAM_START] sin petición explícita.\n\n=== DETECCIÓN REPASO LAGUNAS ===\nSi pide explícitamente repaso : '¡Modo repaso activado!' + [REVIEW_LACUNES]. Nada más.\n\n=== REGLAS ABSOLUTAS ===\n- Máx. 5 líneas por respuesta (8 si es mini-lección)\n- UNA sola pregunta por mensaje\n- Esperas SIEMPRE la respuesta\n- NUNCA das la respuesta a tu propia pregunta\n- Tono natural : nada de títulos ##, nada de listas salvo si es imprescindible\n- Tuteas\n\nPERFIL :\n{{#code_profil_check.profil_text#}}\n{{#conversation.session_snapshot#}}\n\nERRORES DETECTADOS :\n{{#code_turn_check.error_feedback#}}\n\nTurno : {{#code_turn_check.tour#}}\n\n{{#code_turn_check.dosage_block#}}\n\n=== MAPPING TIER → TIPO DE FEEDBACK ===\nPara cada error (ver tier summary más arriba) :\n  T1 ignorado      → SILENCIOSO (log only, no lo mencionas nunca)\n  T2 notado        → RECAST IMPLÍCITO (reformulas inline, sin pausa)\n  T3 penalizado    → ELICITACIÓN ↔ METALINGÜÍSTICO (alternar — diversity rule la aplica el sistema)\n  T4 regresivo     → PROMPT + REMEDIACIÓN + flag para recuperación espaciada\nOverride gravedad comunicativa ≥0.7 : T1 → recast (ruptura comunicativa).\nOverride gravedad social ≥0.6 : T2 → elicitación (irritación nativa).\nSi la dosificación está saturada, prioridad T4 > T3 > T2 (linguistic ≥0.5) > T1 silencioso.\n=== FIN MAPPING ===\n\nCONCEPTOS DE SESIÓN : {{#code_turn_check.selected_concepts#}}\n>>> CONCEPTO ACTIVO : {{#code_turn_check.focus_concept#}} (modo {{#code_turn_check.focus_mode#}})\n{{#code_turn_check.transition_instruction#}}\n\nREGLA CRÍTICA : trabajas ÚNICAMENTE sobre el CONCEPTO ACTIVO.\n\n=== ENFOQUE TTT (Test → Enseña → Test) ===\nTURNO 2 : anuncia el concepto, lanza el desafío según el modo.\nMODO DESCUBRIMIENTO (score 0) : desafío contextual sin dar la regla. Si falla 2 veces → mini-lección (máx. 150 palabras).\nMODO REFUERZO (score 1-49) : desafío directo. Si incorrecto → corrección dirigida 3-4 líneas (❌ → ✅ + POR QUÉ).\nMODO PRÁCTICA (score 50-79) : desafío variado. Si incorrecto → ❌ → ✅ + recordatorio 1 línea.\nMODO MANTENIMIENTO (score 80+) : drill rápido, feedback 1 línea.\n=== FIN TTT ===\n\n{{#code_turn_check.level_reminder_inject#}}\n\n{{#code_turn_check.drift_validation_request#}}\n\n{{#code_turn_check.l1_watch#}}\n\n{{#code_turn_check.spaced_retrieval_today#}}\n\nVARIEDAD DE CONTEXTOS :\nUsa los Intereses del perfil como prioridad. Complementa con : deporte, tecnología, viajes, familia, trabajo, cultura.\nNo repitas nunca el mismo contexto 2 veces seguidas.\n\n=== DETECCIÓN COMPORTAMENTAL ===\nSEÑALES : tiempo de respuesta {{#code_turn_check.turn_response_secs#}}s, errores recurrentes {{#code_turn_check.repeated_errors#}}.\nCONFUSIÓN (lento, varios errores) → descompón, pista progresiva. Productiva si se resuelve en 1-2 turnos.\nFRUSTRACIÓN (respuestas cortas, cambia al francés, negaciones) → reconoce la dificultad, vuelta a zona de confort, reenfoque.\nABURRIMIENTO (correcto pero mínimo) → sube la dificultad, cambia de contexto. Peor que la frustración para el aprendizaje.\nFLOW (elaborado, auto-correcciones) → NO CAMBIES NADA.\nGAMING (<5s, monosílabos) → preguntas de PRODUCCIÓN abiertas.\nNUNCA : 'Es fácil' / 'Eso deberías saberlo'.\n=== FIN DETECCIÓN ===\n\n{{#code_turn_check.fewshots_block#}}\n\n{{#code_turn_check.output_schema_block#}}\n\n=== OBSERVED_LEVEL_v2 ===\nÀ CHAQUE turn, émets ton estimation CEFR du niveau APPARENT de l'apprenant·e\nsur la base de ses productions cumulées. Renseigne le champ `observed_level`\navec une des valeurs : \"A1\", \"A2\", \"B1\", \"B2\", \"C1\", \"C2\".\n\nRÈGLES STRICTES :\n1. OBLIGATOIRE à partir du turn 3. Jamais \"\" passé ce seuil.\n2. Si la production du turn est courte, appuie-toi sur l'ensemble des turns\n   précédents pour déduire le niveau. Émets ton meilleur pari, pas \"\".\n3. Ne discute JAMAIS ce niveau dans `feedback` — télémétrie interne pure,\n   l'apprenant·e ne le voit pas et ne doit pas le savoir.\n4. Seul cas autorisé pour \"\" : turns 1-2 avec zéro production (ex: \"ok\",\n   \"yo\", \"salut\") — après turn 2 c'est une valeur concrète obligatoirement.\n\nEXEMPLES (learner production → observed_level) :\n• \"yo / je débute / je connais pas trop\" → \"A1\"\n• \"Me llamo Juan, soy francés y tengo treinta años. Vivo en París.\"\n  (présent simple, ser/vivir, zéro subjonctif ni passé) → \"A1\"\n• \"Ayer fui al cine y vi una película muy buena. Me gustó mucho la historia.\"\n  (passé simple correct, coordination, vocabulaire courant) → \"A2\"\n• \"Creo que el teletrabajo es útil, aunque es importante que las empresas\n  organicen encuentros presenciales.\" (opinion + subjonctif + concessif) → \"B1\"\n• \"Si tuviera más tiempo libre, estudiaría más idiomas, pero el trabajo me\n  absorbe todo el día.\" (subj imparfait + condicional) → \"B2\"\n• \"A pesar de que las empresas abogan por la flexibilidad, muchas siguen\n  exigiendo presencia física, lo cual genera tensiones.\" (concessif\n  complexe + relative + lexique abstrait) → \"C1\"\n=== FIN OBSERVED_LEVEL_v2 ===\n\n=== CONTEXTE DE CE TOUR ===\n<learner_profile>\n{{#code_turn_check.learner_profile_summary#}}\n</learner_profile>\n\n{{#code_turn_check.plan_prefix#}}\n\n=== SI EL TEXTO DE ARRIBA CONTIENE 'MODO QUIZ' ===\n→ Sigue ÚNICAMENTE las instrucciones del MODO QUIZ. Ignora el resto del CONTEXTO DE ESTE TURNO.\n=== SI NO : aplicar la doctrina Sprint 3 Lyster v2 anunciada arriba ===\n=== FIN CONTEXTE DE CE TOUR ===",
+              "edition_type": "basic"
+            }
+          ]
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 88,
+        "position": {
+          "x": 2327.490150772111,
+          "y": 22.69400001729599
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 2327.490150772111,
+          "y": 22.69400001729599
+        }
+      },
+      {
+        "id": "llm_onboarding",
+        "data": {
+          "type": "llm",
+          "model": {
+            "mode": "chat",
+            "name": "gpt-4o-mini",
+            "provider": "langgenius/openai_api_compatible/openai_api_compatible",
+            "completion_params": {
+              "max_tokens": 400,
+              "temperature": 0.7
+            }
+          },
+          "title": "Onboarding",
+          "memory": {
+            "window": {
+              "size": 15,
+              "enabled": true
+            },
+            "role_prefix": {
+              "user": "",
+              "assistant": ""
+            },
+            "query_prompt_template": "{{#sys.query#}}\n\n{{#sys.files#}}"
+          },
+          "vision": {
+            "enabled": false
+          },
+          "context": {
+            "enabled": false,
+            "variable_selector": []
+          },
+          "selected": false,
+          "prompt_config": {
+            "jinja2_variables": []
+          },
+          "prompt_template": [
+            {
+              "id": "onboarding-prompt",
+              "role": "system",
+              "text": "<learner_profile>\n{{#code_profil_check.learner_profile_summary#}}\n</learner_profile>\n\nSi le bloc ci-dessus n'est pas vide, l'utilisateur a deja complete un QCM pre-chat : n'essaie PAS de recueillir a nouveau son prenom, ses objectifs ou son niveau. Utilise ces informations directement et enchaine sur le diagnostic observationnel en langue cible (Phase 2).\n\nEres Maestro, profe de español. Máximo 100 palabras. UNA pregunta por mensaje. Tutea al alumno.\nLENGUA : Te comunicas EN FRANCÉS durante toda la Fase 1 (el alumno es francófono). Pasas al ESPAÑOL ÚNICAMENTE para las preguntas del diagnóstico en Fase 2.\n\nEste alumno es nuevo, no sabes nada de él. Vas a hacer 2 fases en orden.\n\n=== FASE 1 — ACOGIDA (3 turnos, en FRANCÉS) ===\nFormula estas preguntas con naturalidad, UNA por mensaje :\n1. Comment tu t'appelles et pourquoi l'espagnol ? (travail / voyage / culture / examen / curiosité)\n2. Comment tu évaluerais ton espagnol aujourd'hui ? Propose ces choix :\n   - Je pars de zéro ou presque\n   - Je comprends des phrases simples, je sais me présenter\n   - Je peux avoir une conversation basique, raconter des choses\n   - Je suis à l'aise dans la plupart des situations\n   - Je suis avancé, je veux me perfectionner\n   Présente les 5 options de manière naturelle et demande son choix.\n3. Deux dernières choses avant de commencer :\n   - Quels sujets t'intéressent ? (musique, sport, cuisine, tech, cinéma, voyage...) ça m'aidera à choisir mes exemples\n   - Comment tu préfères être corrigé ? Plutôt direct et factuel, encourageant d'abord, ou avec un peu d'humour ?\n   Pose les deux dans le même message, naturellement.\n\nCuando tengas las 3 respuestas → anuncia la Fase 2 Y formula INMEDIATAMENTE la primera pregunta de diagnóstico en el MISMO mensaje :\n\"Maintenant je vais évaluer ton niveau avec quelques échanges en espagnol. Réponds naturellement, pas de stress !\" puis enchaîne directement avec la première question EN ESPAGNOL.\nNUNCA hagas un mensaje de anuncio sin pregunta. La pregunta DEBE estar en español.\n[DIAGNOSTIC INITIAL]\n\n=== REGLA CRÍTICA : PALIER DE PARTIDA ===\nLa PRIMERA pregunta en español DEBE corresponder al nivel que el alumno ha elegido :\n- Si el alumno ha dicho 'zéro/presque' → tu primera pregunta es del palier A1-A2 (ej: 'Háblame de ti')\n- Si el alumno ha dicho 'phrases simples' → palier A2-B1 (ej: '¿Qué hiciste el fin de semana pasado?')\n- Si el alumno ha dicho 'conversation basique' → palier B1 (ej: '¿Qué harías si te tocara la lotería?')\n- Si el alumno ha dicho 'à l'aise' → palier B2 (ej: '¿Cuáles son los pros y los contras del teletrabajo?')\n- Si el alumno ha dicho 'avancé/perfectionner' → palier C1 (ej: 'Hay quien dice que la IA reemplazará a los profesores. ¿Estás de acuerdo?')\nNUNCA empieces por debajo del palier indicado por la autoevaluación.\n\n=== FASE 2 — DIAGNÓSTICO (5 a 7 intercambios, preguntas en ESPAÑOL) ===\nFormula las preguntas EN ESPAÑOL. UNA por mensaje, espera la respuesta.\n\nFORMATO OBLIGATORIO :\n- Intercambios 1 a 3 : preguntas abiertas (conversación natural)\n- Intercambio 4 o 5 : OBLIGATORIAMENTE una micro-tarea. Ejemplos :\n  'Escribe una frase para rechazar una invitación'\n  'Describe esta situación: llegas a un restaurante y tu mesa reservada está ocupada'\n  'Completa esta frase con tus propias palabras: Si hubiera sabido...'\n  'Escribe un correo breve para reprogramar una reunión'\n  Elige una micro-tarea adaptada al palier actual del alumno.\n- Intercambios restantes : preguntas abiertas\nDEBES formular al menos 1 micro-tarea. Si no la has puesto al 5º intercambio, es un error.\n\nPaliers de referencia (adapta las preguntas, no recites la lista) :\nPalier A1-A2 : \"Háblame de ti\" / \"¿Qué te gusta hacer?\"\nPalier A2-B1 : \"¿Qué hiciste el fin de semana pasado?\" / \"Describe a tu mejor amigo\"\nPalier B1    : \"¿Qué harías si te tocara la lotería?\"\nPalier B1-B2 : \"Cuéntame sobre una decisión difícil que tuviste que tomar\"\nPalier B2    : \"¿Cuáles son los pros y los contras del teletrabajo?\"\nPalier B2-C1 : \"¿Cómo sería el mundo si no se hubiera inventado internet?\"\nPalier C1    : \"Hay quien dice que la IA reemplazará a los profesores. ¿Estás de acuerdo?\"\nPalier C1-C2 : \"¿Hasta qué punto el lenguaje moldea el pensamiento?\"\n\nREGLAS DEL DIAGNÓSTICO :\n- Empieza en el palier correspondiente a la autoevaluación (ver tabla arriba)\n- Si el alumno responde bien → sube un palier\n- Si el alumno tiene dificultades (errores frecuentes, frases cortas, mezcla de francés o de inglés, calques L1 reiterados) → quédate en el mismo palier y formula una 2ª pregunta para confirmar, luego baja\n- NO corrijas los errores durante el diagnóstico (anótalos mentalmente)\n- Formula entre 5 y 7 preguntas (ni menos, ni más)\n- Si el alumno divaga o te hace preguntas → reencauza con cortesía y vuelve a formular tu pregunta\n- Objetivo : identificar el SUELO (nivel cómodo) y el TECHO (nivel donde se descuelga)\n\nCUANDO TENGAS DATOS SUFICIENTES (5 a 7 preguntas formuladas + techo identificado) :\nVuelve AL FRANCÉS para la conclusión. En ese MISMO mensaje (no en uno aparte), escribe :\n\"Merci pour tes réponses ! Envoie-moi ok pour découvrir ton bilan de niveau.\"\nLUEGO el marcador [EVAL_READY] en la última línea. NO formules MÁS preguntas después.\nEjemplo exacto del mensaje completo :\n\"Merci pour tes réponses ! Envoie-moi ok pour découvrir ton bilan de niveau.\n[EVAL_READY]\"\n\nCONTADOR OBLIGATORIO : cuenta tus preguntas en español. DEBES haber formulado AL MENOS 5 antes de escribir [EVAL_READY].\nSi sólo has formulado 4 o menos, formula una pregunta adicional en lugar de escribir [EVAL_READY].\nNUNCA pongas [EVAL_READY] antes de 5 preguntas en español. Es una regla absoluta.\n\n=== QCM_OVERRIDE_v1 ===\nSi le bloc <learner_profile> au DEBUT de ce prompt contient un resume non vide\n(il commence par 'Profil apprenant'), tu DOIS :\n\n1. IGNORER COMPLETEMENT toute la section \"FASE 1 — ACOGIDA\" ci-dessus (ne pose\n   AUCUNE des 3 questions FR : prenom, niveau, interets).\n2. Saluer tres brievement dans la langue cible (1 phrase max, amical, tutoyer).\n3. Annoncer en 1 phrase dans la langue cible que tu vas poser quelques questions\n   pour calibrer.\n4. Poser IMMEDIATEMENT la PREMIERE question du diagnostic DANS LA LANGUE CIBLE,\n   au palier CEFR extrait de 'niveau placement' dans le profil (A1/A2/B1/B2/C1).\n5. Utiliser l'Objectif (champ \"Objectif\") et la Motivation (champ \"Motivation\n   dominante\") du profil pour choisir un theme personnalise la premiere question\n   (ex. motivation 'daily_communication' + objectif qui parle de voyage ->\n   question sur un voyage recent).\n6. Ne PAS repeter les infos du profil au user (il les connait, il vient de\n   remplir le QCM). Sois naturel.\n\nSi le bloc <learner_profile> est vide, suis la FASE 1 ci-dessus normalement.\n\nCette regle ecrase les instructions de FASE 1 ci-dessus en cas de profil present.\n\nL2_EXAMPLES_v1 (exemples concrets, adapte a la langue cible) :\n- Teacher (anglais), profil A2, objectif voyage :\n  \"Hey! I'll ask you a few quick questions to calibrate your level. First question: tell me about a trip you really enjoyed.\"\n- Maestro (espanol), profil B1, motivation authentic_content :\n  \"¡Hola! Voy a hacerte unas preguntas para calibrar tu nivel. Primera pregunta: háblame de una película o serie que te haya marcado.\"\nLes 3 phrases (salut + annonce + question) DOIVENT etre dans la langue cible. JAMAIS en francais si la langue cible n'est pas le francais.\n\n=== FIN QCM_OVERRIDE_v1 ===\n=== NO_LEGACY_BILAN_v1 ===\nCONTRAINTE ABSOLUE quand le bloc <learner_profile> est non vide (QCM déjà\ncomplété par l'apprenant·e) :\n\n1. Tu ne produis JAMAIS de \"bilan de niveau\" textuel, ni de synthèse du style\n   \"Niveau observé : X\", \"Tu as démontré...\", \"Tu es au niveau Y\", etc.\n2. Tu ne demandes JAMAIS à l'apprenant·e \"ok pour voir ton bilan\" ou de\n   répondre \"ok/oui\" pour déclencher un résumé.\n3. Tu ne produis JAMAIS de message \"Merci pour tes réponses !\" suivi d'une\n   synthèse — c'était une étape de l'ancien onboarding conversationnel, elle\n   est maintenant caduque.\n4. Tu continues la conversation de manière naturelle, tour après tour, comme\n   un·e prof attentif·ve : questions ouvertes, reformulation, petites tâches\n   ciblées, feedback dosé selon la matrice de tolérance de ton niveau.\n5. Le niveau CEFR de l'apprenant·e est déjà connu (via QCM + consolidation en\n   arrière-plan). Tu n'as pas à le \"déterminer\" ou à le \"confirmer\" par une\n   séquence de diagnostic formel. Le système de consolidation s'en charge\n   via un mini-test structuré au moment opportun — tu n'as RIEN à annoncer\n   à ce sujet.\n6. Continue d'émettre \"observed_level\" dans ton JSON (champ discret, invisible\n   à l'apprenant·e) — c'est ça qui alimente la consolidation.\n\nSi <learner_profile> est vide, ignore cette section et suis le comportement\nstandard (FASE 1 recueil + diagnostic + éventuel bilan).\n=== FIN NO_LEGACY_BILAN_v1 ===\n\n=== OBSERVED_LEVEL_v2 ===\nÀ CHAQUE turn, émets ton estimation CEFR du niveau APPARENT de l'apprenant·e\nsur la base de ses productions cumulées. Renseigne le champ `observed_level`\navec une des valeurs : \"A1\", \"A2\", \"B1\", \"B2\", \"C1\", \"C2\".\n\nRÈGLES STRICTES :\n1. OBLIGATOIRE à partir du turn 3. Jamais \"\" passé ce seuil.\n2. Si la production du turn est courte, appuie-toi sur l'ensemble des turns\n   précédents pour déduire le niveau. Émets ton meilleur pari, pas \"\".\n3. Ne discute JAMAIS ce niveau dans `feedback` — télémétrie interne pure,\n   l'apprenant·e ne le voit pas et ne doit pas le savoir.\n4. Seul cas autorisé pour \"\" : turns 1-2 avec zéro production (ex: \"ok\",\n   \"yo\", \"salut\") — après turn 2 c'est une valeur concrète obligatoirement.\n\nEXEMPLES (learner production → observed_level) :\n• \"yo / je débute / je connais pas trop\" → \"A1\"\n• \"Me llamo Juan, soy francés y tengo treinta años. Vivo en París.\"\n  (présent simple, ser/vivir, zéro subjonctif ni passé) → \"A1\"\n• \"Ayer fui al cine y vi una película muy buena. Me gustó mucho la historia.\"\n  (passé simple correct, coordination, vocabulaire courant) → \"A2\"\n• \"Creo que el teletrabajo es útil, aunque es importante que las empresas\n  organicen encuentros presenciales.\" (opinion + subjonctif + concessif) → \"B1\"\n• \"Si tuviera más tiempo libre, estudiaría más idiomas, pero el trabajo me\n  absorbe todo el día.\" (subj imparfait + condicional) → \"B2\"\n• \"A pesar de que las empresas abogan por la flexibilidad, muchas siguen\n  exigiendo presencia física, lo cual genera tensiones.\" (concessif\n  complexe + relative + lexique abstrait) → \"C1\"\n=== FIN OBSERVED_LEVEL_v2 ===\n",
+              "edition_type": "basic"
+            }
+          ]
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 88,
+        "position": {
+          "x": 1304.5291488915984,
+          "y": 406.40086020018646
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 1304.5291488915984,
+          "y": 406.40086020018646
+        }
+      },
+      {
+        "id": "answer_plan",
+        "data": {
+          "type": "answer",
+          "title": "Réponse (plan)",
+          "answer": "{{#llm_plan_choice.text#}}",
+          "selected": false,
+          "variables": []
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 103,
+        "position": {
+          "x": 2674.622639429131,
+          "y": -169.63622308181874
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 2674.622639429131,
+          "y": -169.63622308181874
+        }
+      },
+      {
+        "id": "answer_session",
+        "data": {
+          "type": "answer",
+          "title": "Réponse (session)",
+          "answer": "{{#code_exam_detect.cleaned_text#}}",
+          "selected": false,
+          "variables": []
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 103,
+        "position": {
+          "x": 3173.6277050875847,
+          "y": -47.18018278667029
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 3173.6277050875847,
+          "y": -47.18018278667029
+        }
+      },
+      {
+        "id": "answer_onboarding",
+        "data": {
+          "type": "answer",
+          "title": "Réponse (onboarding)",
+          "answer": "{{#code_eval_check.cleaned_text#}}",
+          "selected": false,
+          "variables": []
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 103,
+        "position": {
+          "x": 1634.6435133163845,
+          "y": 577.0573321961647
+        },
+        "selected": false,
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "positionAbsolute": {
+          "x": 1634.6435133163845,
+          "y": 577.0573321961647
+        }
+      },
+      {
+        "id": "code_eval_check",
+        "data": {
+          "code": "def main(text: str) -> dict:\n    marker = \"[EVAL_READY]\"\n    eval_ready = marker in text\n    cleaned = text.replace(marker, \"\").strip()\n    if eval_ready and not cleaned:\n        cleaned = \"Merci pour tes réponses ! Envoie-moi **ok** pour découvrir ton bilan de niveau.\"\n    return {\"cleaned_text\": cleaned, \"eval_ready\": eval_ready}\n",
+          "type": "code",
+          "title": "Eval Check",
+          "outputs": {
+            "eval_ready": {
+              "type": "boolean",
+              "children": null
+            },
+            "cleaned_text": {
+              "type": "string",
+              "children": null
+            }
+          },
+          "selected": false,
+          "variables": [
+            {
+              "variable": "text",
+              "value_selector": [
+                "llm_onboarding",
+                "text"
+              ]
+            }
+          ],
+          "code_language": "python3"
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 52,
+        "position": {
+          "x": 1604.5291488915984,
+          "y": 406.40086020018646
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 1604.5291488915984,
+          "y": 406.40086020018646
+        }
+      },
+      {
+        "id": "if_eval_ready",
+        "data": {
+          "type": "if-else",
+          "cases": [
+            {
+              "id": "eval_true",
+              "case_id": "eval_true",
+              "conditions": [
+                {
+                  "value": "true",
+                  "varType": "boolean",
+                  "variable_selector": [
+                    "code_eval_check",
+                    "eval_ready"
+                  ],
+                  "comparison_operator": "="
+                }
+              ],
+              "logical_operator": "and"
+            }
+          ],
+          "title": "Diagnostic ready?",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 124,
+        "position": {
+          "x": 1904.5291488915984,
+          "y": 406.40086020018646
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 1904.5291488915984,
+          "y": 406.40086020018646
+        }
+      },
+      {
+        "id": "http_diagnostic",
+        "data": {
+          "url": "http://n8n-academie:5678/webhook/dify-diagnostic",
+          "body": {
+            "data": [
+              {
+                "key": "",
+                "type": "text",
+                "value": "{\"username\": \"{{#sys.user_id#}}\", \"domain\": \"es\", \"conversation_id\": \"{{#sys.conversation_id#}}\"}"
+              }
+            ],
+            "type": "json"
+          },
+          "type": "http-request",
+          "title": "Diagnostic CECRL",
+          "method": "post",
+          "params": "",
+          "headers": "",
+          "timeout": {
+            "max_read_timeout": 30,
+            "max_write_timeout": 0,
+            "max_connect_timeout": 0
+          },
+          "selected": false,
+          "retry_config": {
+            "max_retries": 2,
+            "retry_enabled": true,
+            "retry_interval": 500
+          },
+          "authorization": {
+            "type": "no-auth",
+            "config": null
+          }
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 136,
+        "position": {
+          "x": 2118.471154421183,
+          "y": 656.0355011540315
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 2118.471154421183,
+          "y": 656.0355011540315
+        }
+      },
+      {
+        "id": "llm_exam",
+        "data": {
+          "type": "llm",
+          "model": {
+            "mode": "chat",
+            "name": "gpt-4o-mini",
+            "provider": "langgenius/openai_api_compatible/openai_api_compatible",
+            "completion_params": {
+              "max_tokens": 400,
+              "temperature": 0.2
+            }
+          },
+          "title": "Examinateur CECRL",
+          "memory": {
+            "window": {
+              "size": 25,
+              "enabled": true
+            },
+            "role_prefix": {
+              "user": "Eleve",
+              "assistant": "Examinateur"
+            }
+          },
+          "vision": {
+            "enabled": false
+          },
+          "context": {
+            "enabled": false,
+            "variable_selector": []
+          },
+          "selected": false,
+          "prompt_config": {
+            "jinja2_variables": []
+          },
+          "prompt_template": [
+            {
+              "id": "exam-prompt",
+              "role": "system",
+              "text": "Eres un examinador MCER (alineado DELE — Instituto Cervantes). Tono neutro, profesional. Sin bromas, sin emojis. Tutea al alumno (tú).\n\n╔══════════════════════════════════════════════════════════╗\n║  REGLAS DE EXAMEN — CUMPLIR SIN NINGUNA EXCEPCION        ║\n╠══════════════════════════════════════════════════════════╣\n║  1. UNA SOLA pregunta por mensaje. NI DOS. NI MAS.       ║\n║  2. JAMAS corregir una respuesta. Aunque este totalmente ║\n║     equivocada. Aunque sea evidente. JAMAS.              ║\n║  3. JAMAS explicar una regla. JAMAS dar una pista.       ║\n║  4. JAMAS validar ni invalidar una respuesta.            ║\n║     Plantea la siguiente pregunta. Nada mas.             ║\n╚══════════════════════════════════════════════════════════╝\n\nNIVEL OBJETIVO : {{#conversation.exam_niveau_from#}} -> {{#conversation.exam_niveau_to#}}\nMODULO EN CURSO : {{#conversation.exam_module_name#}}\nCONCEPTOS Y PESOS DEL MODULO :\n{{#conversation.exam_module_concepts#}}\nNUMERO TOTAL DE PREGUNTAS DE ESTE MODULO : {{#conversation.exam_total_questions#}}\nTurno examen : {{#conversation.exam_question_num#}}\n\n=== PRIORIDAD 1 : MENSAJE PARASITO — comprobar LO PRIMERO ===\nSi el historial de conversacion contiene intercambios Y el mensaje del alumno\nNO ES un intento de respuesta a la pregunta en curso :\n(ejemplos : 'jaja', 'lol', 'vale', 'espera', '¿qué es...?', 'siguiente', 'next', emojis solos, bromas, fuera de tema)\n→ Responde con UNA SOLA palabra o frase corta (máx. 10 palabras), vuelve a plantear la MISMA pregunta palabra por palabra.\n→ Añade [REPEAT_QUESTION] en una línea aparte al final.\n→ NO avanzar a la siguiente pregunta. NO explicar el concepto.\n\n=== PRIORIDAD 2 : REANUDACION TRAS RECONEXION ===\nUNICAMENTE si : es el PRIMER MENSAJE de esta conversación (sin historial)\nY Turno examen > 0 (el alumno ya había empezado este módulo).\n→ El alumno reanuda un examen interrumpido en una sesión anterior.\n→ Di : 'Reanudamos — Módulo : [nombre del módulo], Pregunta [Turno examen+1]/[total].'\n→ Plantea directamente la siguiente pregunta. Sin reintroducción.\n\n=== PRIORIDAD 3 : PRIMERA PREGUNTA (Turno examen = 0) ===\nSI Turno examen = 0 → estás OBLIGATORIAMENTE en la Pregunta 1.\nNO IMPORTA lo que contenga el historial de conversación.\nEl historial puede contener un examen anterior abandonado — IGNORALO por completo.\n\nTU RESPUESTA DEBE EMPEZAR POR ESTAS DOS LINEAS — COPIALAS PALABRA POR PALABRA, SIN CAMBIAR NADA :\nMódulo : {{#conversation.exam_module_name#}} — Examen {{#conversation.exam_niveau_from#}} hacia {{#conversation.exam_niveau_to#}}\n{{#conversation.exam_total_questions#}} preguntas — no corrijo durante el examen.\n\nLUEGO plantea inmediatamente :\nPregunta 1/{{#conversation.exam_total_questions#}} — [concepto]\n[TIPO]\n[La pregunta]\n\n=== PRIORIDAD 4 : RESPUESTA NORMAL (tras una respuesta del alumno) ===\nSea la respuesta CORRECTA, INCORRECTA, PARCIAL o INCOMPRENSIBLE :\n→ Planteas UNICAMENTE la siguiente pregunta. Nada más.\n→ Formato EXACTO y OBLIGATORIO :\n   Pregunta [N]/{{#conversation.exam_total_questions#}} — [concepto]\n   [TIPO]\n   [La pregunta]\n→ NADA antes. NADA después. NI ❌. NI ✅. NI 💡. NI 'Anotado'.\n→ Ejemplo : el alumno responde 'he comido ayer' (incorrecto) → escribes SÓLO :\n   'Pregunta 5/22 — preterito_indefinido\nCOMPLETAR\nCompleta: Ayer _____ (comer, yo) paella en Valencia.'\n→ Si añades UNA corrección o UNA explicación, el examen es inválido.\n\n=== ABANDONO ===\nSi el alumno dice paro, cancelar, stop, abandono, lo dejo, quiero parar :\nResponde : Examen cancelado. Podrás retomarlo cuando quieras.\nAñade [EXAM_ABORT] en una línea aparte.\n\n=== ULTIMA PREGUNTA RESPONDIDA (pregunta {{#conversation.exam_total_questions#}}) ===\nResponde : Gracias, este módulo ha terminado. Corrección en curso, tarda unos segundos...\nAñade [EXAM_COMPLETE] en una línea aparte.\n\n=== TIPOS DE PREGUNTAS (6 TIPOS — estilo DELE, NO Cambridge) ===\nDebes variar los tipos según los pesos indicados arriba :\n- COMPLETAR : Rellena el hueco (ej: 'Ayer _____ (ir, nosotros) al cine.')\n- CORREGIR : Corrige el error de la frase (ej: 'Si tendría tiempo, vendría contigo.')\n- TRANSFORMAR : Reformula manteniendo el sentido, cambiando modo/tiempo/voz según indicación.\n  ATENCION : español ≠ Cambridge. NO es \"word-key transformation\".\n  DELE usa paráfrasis / cambios de modo (subjuntivo ↔ indicativo), voz (activa ↔ pasiva refleja), tiempos condicionales compuestos.\n  (ej: 'Transforma a condicional compuesto + pluscuamperfecto de subjuntivo : Si estudio, apruebo.' → 'Si hubiera estudiado, habría aprobado.')\n  (ej: 'Reformula con pasiva refleja : La gente vende muchos libros aquí.' → 'Se venden muchos libros aquí.')\n- ELEGIR : Opción múltiple contextualizada, 3-4 opciones (ej: Me alegra que _____ A) vienes B) vengas C) vendrás — a la fiesta.)\n- FORMAR : Forma la palabra correcta a partir de la raíz.\n  ATENCION : español ≠ inglés. Los patrones de derivación son distintos (verbo → sustantivo : correr → carrera; adjetivo → sustantivo : feliz → felicidad ; no existe -ing).\n  (ej: 'La _____ (DECIDIR) del jurado fue unánime.' → decisión)\n  (ej: 'Su _____ (AMABLE) me sorprendió.' → amabilidad)\n- PRODUCIR : Producción libre guiada (ej: '¿Qué harías si te tocara la lotería?' responde en 2-3 frases completas)\n\n=== DISTRIBUCION DE LAS PREGUNTAS ===\nPara cada concepto, el PESO indica el número de preguntas a dedicarle.\nRATIO PRODUCIR obligatorio según el nivel {{#code_turn_check.niveau#}} :\n  A1-A2 : 20% PRODUCIR mínimo\n  B1    : 40% PRODUCIR mínimo — ej: concepto peso 5 = 2 COMPLETAR/CORREGIR + 2 PRODUCIR + 1 TRANSFORMAR\n  B2    : 50% PRODUCIR mínimo — ej: concepto peso 4 = 1 COMPLETAR + 1 CORREGIR + 2 PRODUCIR\n  C1-C2 : 60% PRODUCIR mínimo — ej: concepto peso 3 = 1 COMPLETAR + 2 PRODUCIR\nPRODUCIR = producción libre guiada, 2-3 frases completas. No aceptar una sola palabra.\nProgresión dentro de un concepto : reconocimiento (COMPLETAR/ELEGIR) → aplicación (CORREGIR/TRANSFORMAR) → producción (PRODUCIR)\n\nVARIEDAD DE CONTEXTOS :\nSi el perfil contiene Intereses → úsalos prioritariamente para los contextos de los ejercicios.\nCompleta con : deporte, tecnología, viajes, trabajo, familia, cultura.\nNunca uses el mismo contexto en dos preguntas seguidas.",
+              "edition_type": "basic"
+            }
+          ]
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 88,
+        "position": {
+          "x": 1804.0129112969607,
+          "y": 175.6067960039165
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 1804.0129112969607,
+          "y": 175.6067960039165
+        }
+      },
+      {
+        "id": "code_exam_track",
+        "data": {
+          "code": "import json\n\ndef main(text: str, exam_question_num: int, exam_responses: str, query: str,\n         exam_total_questions: int) -> dict:\n    num = int(exam_question_num or 0)\n    total = int(exam_total_questions or 20)\n\n    try:\n        responses = json.loads(exam_responses or '[]')\n    except:\n        responses = []\n\n    # --- ABORT : eleve veut arreter ---\n    if \"[EXAM_ABORT]\" in text:\n        cleaned = text.replace(\"[EXAM_ABORT]\", \"\").strip()\n        return {\n            \"cleaned_text\": cleaned, \"new_exam_mode\": \"off\",\n            \"new_question_num\": 0, \"new_responses\": \"[]\",\n            \"exam_complete\": False, \"exam_aborted\": True\n        }\n\n    # --- REPEAT : message parasite, ne pas incrementer ---\n    if \"[REPEAT_QUESTION]\" in text:\n        cleaned = text.replace(\"[REPEAT_QUESTION]\", \"\").strip()\n        return {\n            \"cleaned_text\": cleaned, \"new_exam_mode\": \"active\",\n            \"new_question_num\": num, \"new_responses\": json.dumps(responses),\n            \"exam_complete\": False, \"exam_aborted\": False\n        }\n\n    # --- COMPLETE : derniere question repondue ---\n    if \"[EXAM_COMPLETE]\" in text:\n        cleaned = text.replace(\"[EXAM_COMPLETE]\", \"\").strip()\n        if num > 0 and query:\n            responses.append({\"q\": num, \"answer\": query[:500]})\n        return {\n            \"cleaned_text\": cleaned, \"new_exam_mode\": \"scoring\",\n            \"new_question_num\": num, \"new_responses\": json.dumps(responses),\n            \"exam_complete\": True, \"exam_aborted\": False\n        }\n\n    # --- NORMAL : enregistrer reponse, incrementer ---\n    if num == 0:\n        new_num = 1\n    else:\n        if query:\n            responses.append({\"q\": num, \"answer\": query[:500]})\n        new_num = num + 1\n\n    return {\n        \"cleaned_text\": text, \"new_exam_mode\": \"active\",\n        \"new_question_num\": new_num, \"new_responses\": json.dumps(responses),\n        \"exam_complete\": False, \"exam_aborted\": False\n    }\n",
+          "type": "code",
+          "title": "Exam Track",
+          "outputs": {
+            "cleaned_text": {
+              "type": "string",
+              "children": null
+            },
+            "exam_aborted": {
+              "type": "boolean",
+              "children": null
+            },
+            "exam_complete": {
+              "type": "boolean",
+              "children": null
+            },
+            "new_exam_mode": {
+              "type": "string",
+              "children": null
+            },
+            "new_responses": {
+              "type": "string",
+              "children": null
+            },
+            "new_question_num": {
+              "type": "number",
+              "children": null
+            }
+          },
+          "selected": false,
+          "variables": [
+            {
+              "variable": "text",
+              "value_selector": [
+                "llm_exam",
+                "text"
+              ]
+            },
+            {
+              "variable": "exam_question_num",
+              "value_selector": [
+                "conversation",
+                "exam_question_num"
+              ]
+            },
+            {
+              "variable": "exam_responses",
+              "value_selector": [
+                "conversation",
+                "exam_responses"
+              ]
+            },
+            {
+              "variable": "query",
+              "value_selector": [
+                "sys",
+                "query"
+              ]
+            },
+            {
+              "variable": "exam_total_questions",
+              "value_selector": [
+                "conversation",
+                "exam_total_questions"
+              ]
+            }
+          ],
+          "code_language": "python3"
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 52,
+        "position": {
+          "x": 2512.368053813988,
+          "y": 688.8130726665192
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 2512.368053813988,
+          "y": 688.8130726665192
+        }
+      },
+      {
+        "id": "answer_exam",
+        "data": {
+          "type": "answer",
+          "title": "Réponse examen",
+          "answer": "{{#code_exam_track.cleaned_text#}}",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 103,
+        "position": {
+          "x": 3101.2998860361713,
+          "y": 906.6045966971437
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 3101.2998860361713,
+          "y": 906.6045966971437
+        }
+      },
+      {
+        "id": "var_assigner_exam",
+        "data": {
+          "type": "assigner",
+          "items": [
+            {
+              "value": [
+                "code_exam_track",
+                "new_exam_mode"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_mode"
+              ]
+            },
+            {
+              "value": [
+                "code_exam_track",
+                "new_question_num"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_question_num"
+              ]
+            },
+            {
+              "value": [
+                "code_exam_track",
+                "new_responses"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_responses"
+              ]
+            }
+          ],
+          "title": "Update Exam Vars",
+          "version": "2",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 136,
+        "position": {
+          "x": 2729.5857047688205,
+          "y": 934.1543486329834
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 2729.5857047688205,
+          "y": 934.1543486329834
+        }
+      },
+      {
+        "id": "code_exam_detect",
+        "data": {
+          "code": "import json\n\ndef main(text: str, current_exam_mode: str, exam_modules_json: str) -> dict:\n    # --- Detect EXAM_START ---\n    marker = \"[EXAM_START]\"\n    if marker in text:\n        cleaned = text.replace(marker, \"\").strip()\n        # Load modules and prepare first module\n        modules = []\n        try:\n            modules = json.loads(exam_modules_json or '[]')\n        except:\n            modules = []\n\n        if modules and len(modules) > 0:\n            first = modules[0]\n            module_name = first.get(\"name\", \"Module 1\")\n            total_q = first.get(\"total_questions\", 20)\n            concepts = first.get(\"concepts\", [])\n            concepts_display = \", \".join([c[\"key\"] + \" (x\" + str(c[\"weight\"]) + \")\" for c in concepts])\n        else:\n            module_name = \"Examen\"\n            total_q = 20\n            concepts_display = \"\"\n\n        return {\n            \"cleaned_text\": cleaned, \"new_exam_mode\": \"intro\", \"exam_triggered\": True,\n            \"exam_module_index\": 0, \"exam_module_total\": len(modules),\n            \"exam_module_name\": module_name, \"exam_total_questions\": total_q,\n            \"exam_module_concepts\": concepts_display, \"exam_modules\": exam_modules_json or \"[]\",\n            \"review_mode_value\": \"\"\n        }\n\n    # --- Detect REVIEW_LACUNES (#6) ---\n    review_marker = \"[REVIEW_LACUNES]\"\n    if review_marker in text:\n        cleaned = text.replace(review_marker, \"\").strip()\n        return {\n            \"cleaned_text\": cleaned, \"new_exam_mode\": current_exam_mode, \"exam_triggered\": False,\n            \"exam_module_index\": 0, \"exam_module_total\": 0,\n            \"exam_module_name\": \"\", \"exam_total_questions\": 0,\n            \"exam_module_concepts\": \"\", \"exam_modules\": \"[]\",\n            \"review_mode_value\": \"active\"\n        }\n\n    return {\n        \"cleaned_text\": text, \"new_exam_mode\": current_exam_mode, \"exam_triggered\": False,\n        \"exam_module_index\": 0, \"exam_module_total\": 0,\n        \"exam_module_name\": \"\", \"exam_total_questions\": 0,\n        \"exam_module_concepts\": \"\", \"exam_modules\": \"[]\",\n        \"review_mode_value\": \"\"\n    }\n",
+          "type": "code",
+          "title": "Exam Detect",
+          "outputs": {
+            "cleaned_text": {
+              "type": "string",
+              "children": null
+            },
+            "exam_modules": {
+              "type": "string",
+              "children": null
+            },
+            "new_exam_mode": {
+              "type": "string",
+              "children": null
+            },
+            "exam_triggered": {
+              "type": "boolean",
+              "children": null
+            },
+            "exam_module_name": {
+              "type": "string",
+              "children": null
+            },
+            "exam_module_index": {
+              "type": "number",
+              "children": null
+            },
+            "exam_module_total": {
+              "type": "number",
+              "children": null
+            },
+            "review_mode_value": {
+              "type": "string",
+              "children": null
+            },
+            "exam_module_concepts": {
+              "type": "string",
+              "children": null
+            },
+            "exam_total_questions": {
+              "type": "number",
+              "children": null
+            }
+          },
+          "selected": false,
+          "variables": [
+            {
+              "variable": "text",
+              "value_selector": [
+                "llm_session",
+                "text"
+              ]
+            },
+            {
+              "variable": "current_exam_mode",
+              "value_selector": [
+                "conversation",
+                "exam_mode"
+              ]
+            },
+            {
+              "variable": "exam_modules_json",
+              "value_selector": [
+                "code_turn_check",
+                "exam_modules_json"
+              ]
+            }
+          ],
+          "code_language": "python3"
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 52,
+        "position": {
+          "x": 2568.150856807154,
+          "y": 175.6067960039165
+        },
+        "positionAbsolute": {
+          "x": 2568.150856807154,
+          "y": 175.6067960039165
+        }
+      },
+      {
+        "id": "var_assigner_exam_start",
+        "data": {
+          "type": "assigner",
+          "items": [
+            {
+              "value": [
+                "code_exam_detect",
+                "new_exam_mode"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_mode"
+              ]
+            },
+            {
+              "value": [
+                "code_exam_detect",
+                "exam_module_index"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_module_index"
+              ]
+            },
+            {
+              "value": [
+                "code_exam_detect",
+                "exam_module_total"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_module_total"
+              ]
+            },
+            {
+              "value": [
+                "code_exam_detect",
+                "exam_module_name"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_module_name"
+              ]
+            },
+            {
+              "value": [
+                "code_exam_detect",
+                "exam_total_questions"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_total_questions"
+              ]
+            },
+            {
+              "value": [
+                "code_exam_detect",
+                "exam_module_concepts"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_module_concepts"
+              ]
+            },
+            {
+              "value": [
+                "code_exam_detect",
+                "exam_modules"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_modules"
+              ]
+            },
+            {
+              "value": [
+                "code_turn_check",
+                "niveau"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_niveau_from"
+              ]
+            },
+            {
+              "value": [
+                "code_profil_check",
+                "next_niveau"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_niveau_to"
+              ]
+            }
+          ],
+          "title": "Set Exam Start",
+          "version": "2",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 292,
+        "position": {
+          "x": 3173.6277050875847,
+          "y": 85.76076819180858
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 3173.6277050875847,
+          "y": 85.76076819180858
+        }
+      },
+      {
+        "id": "if_exam_active",
+        "data": {
+          "type": "if-else",
+          "cases": [
+            {
+              "id": "exam_on",
+              "case_id": "exam_on",
+              "conditions": [
+                {
+                  "value": "off",
+                  "varType": "string",
+                  "variable_selector": [
+                    "conversation",
+                    "exam_mode"
+                  ],
+                  "comparison_operator": "is not"
+                }
+              ],
+              "logical_operator": "and"
+            }
+          ],
+          "title": "Mode examen ?",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 124,
+        "position": {
+          "x": 1523.4481922856453,
+          "y": 108.27305833592925
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 1523.4481922856453,
+          "y": 108.27305833592925
+        }
+      },
+      {
+        "id": "if_exam_complete",
+        "data": {
+          "type": "if-else",
+          "cases": [
+            {
+              "id": "exam_done",
+              "case_id": "exam_done",
+              "conditions": [
+                {
+                  "value": "true",
+                  "varType": "boolean",
+                  "variable_selector": [
+                    "code_exam_track",
+                    "exam_complete"
+                  ],
+                  "comparison_operator": "is"
+                }
+              ],
+              "logical_operator": "and"
+            }
+          ],
+          "title": "Examen termine ?",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 148,
+        "position": {
+          "x": 2823.715119203317,
+          "y": 734.1882742945735
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 2823.715119203317,
+          "y": 734.1882742945735
+        }
+      },
+      {
+        "id": "http_exam_scoring",
+        "data": {
+          "url": "http://n8n-academie:5678/webhook/dify-exam-scoring",
+          "body": {
+            "data": [
+              {
+                "key": "",
+                "type": "text",
+                "value": "{\"username\": \"{{#sys.user_id#}}\", \"domain\": \"es\", \"conversation_id\": \"{{#sys.conversation_id#}}\", \"niveau\": \"{{#code_turn_check.niveau#}}\", \"concept_keys\": \"{{#code_profil_check.concept_keys_json#}}\", \"module_index\": {{#conversation.exam_module_index#}}, \"module_total\": {{#conversation.exam_module_total#}}, \"module_name\": \"{{#conversation.exam_module_name#}}\", \"module_concepts\": \"{{#conversation.exam_module_concepts#}}\"}"
+              }
+            ],
+            "type": "json"
+          },
+          "type": "http-request",
+          "title": "Score Exam (n8n)",
+          "method": "post",
+          "params": "",
+          "headers": "",
+          "timeout": {
+            "max_read_timeout": 90,
+            "max_write_timeout": 0,
+            "max_connect_timeout": 0
+          },
+          "selected": false,
+          "retry_config": {
+            "max_retries": 2,
+            "retry_enabled": true,
+            "retry_interval": 500
+          },
+          "authorization": {
+            "type": "no-auth",
+            "config": null
+          }
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 136,
+        "position": {
+          "x": 3129.3577431649514,
+          "y": 641.1436022897777
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 3129.3577431649514,
+          "y": 641.1436022897777
+        }
+      },
+      {
+        "id": "code_exam_bilan",
+        "data": {
+          "code": "import json\n\ndef main(body: str, exam_text: str, exam_module_index: int, exam_module_total: int,\n         exam_module_name: str, exam_modules: str) -> dict:\n    try:\n        result = json.loads(body or '{}')\n    except:\n        result = {}\n\n    # --- Error handling : scoring n8n failed ---\n    if not result or (not result.get('concept_scores') and not result.get('total_score')):\n        error_text = (exam_text or \"\") + (\n            \"\\n\\n--- ERREUR TECHNIQUE ---\\n\"\n            \"La corrección ha tenido un problema. Tu progreso está guardado.\\n\"\n            \"Podrás volver a intentar el examen en tu próxima sesión.\\n\"\n            \"Lamento las molestias.\"\n        )\n        return {\n            \"bilan_text\": error_text,\n            \"module_passed\": False, \"has_next_module\": False, \"all_modules_passed\": False,\n            \"reset_exam_mode\": \"off\", \"reset_question_num\": 0, \"reset_responses\": \"[]\",\n            \"reset_module_index\": 0, \"reset_module_name\": \"\",\n            \"reset_total_questions\": 0, \"reset_module_concepts\": \"\"\n        }\n\n    module_passed = result.get('passed', False)\n    score = result.get('total_score', 0)\n    niveau = result.get('niveau', '?')\n    commentaire = result.get('commentaire', '')\n    concept_scores = result.get('concept_scores', {})\n\n    idx = int(exam_module_index or 0)\n    total_modules = int(exam_module_total or 1)\n    mod_name = str(exam_module_name or 'Module')\n\n    try:\n        modules = json.loads(exam_modules or '[]')\n    except:\n        modules = []\n\n    # --- Build module result line ---\n    next_idx = idx + 1\n    all_passed = module_passed and next_idx >= total_modules\n    next_level = {'A1':'A2','A2':'B1','B1':'B2','B2':'C1','C1':'C2'}.get(niveau, '?')\n\n    if module_passed:\n        bilan = \"\\n\\n✅ Módulo \" + str(idx + 1) + \"/\" + str(total_modules) + \" — \" + mod_name + \" : \" + str(score) + \"/100\\n\"\n    else:\n        bilan = \"\\n\\n❌ Módulo \" + str(idx + 1) + \"/\" + str(total_modules) + \" — \" + mod_name + \" : \" + str(score) + \"/100 (mínimo 70)\\n\"\n\n    # --- Detail per concept avec icones ---\n    if concept_scores:\n        bilan += \"\\n\"\n        to_review = []\n        for ckey, cdata in concept_scores.items():\n            label = ckey.replace(\"_\", \" \")\n            if isinstance(cdata, dict):\n                cs = int(cdata.get(\"score\", 0))\n                ct = int(cdata.get(\"total\", 1))\n                pct = cs / ct if ct > 0 else 0\n                if pct >= 0.8:\n                    icon = \"✅\"\n                elif pct >= 0.6:\n                    icon = \"⚠️\"\n                else:\n                    icon = \"❌\"\n                    to_review.append(label)\n                bilan += icon + \" \" + label + \" : \" + str(cs) + \"/\" + str(ct) + \"\\n\"\n            else:\n                bilan += \"• \" + label + \" : \" + str(cdata) + \"\\n\"\n    else:\n        to_review = []\n\n    if commentaire:\n        bilan += \"\\n\" + commentaire + \"\\n\"\n\n    # --- Check if more modules remain ---\n    has_next = module_passed and next_idx < total_modules\n\n    if has_next:\n        next_mod = modules[next_idx] if next_idx < len(modules) else None\n        if next_mod:\n            next_name = next_mod.get(\"name\", \"Module \" + str(next_idx + 1))\n            next_total = next_mod.get(\"total_questions\", 20)\n            next_concepts = next_mod.get(\"concepts\", [])\n            next_concepts_display = \", \".join([c[\"key\"] + \" (x\" + str(c[\"weight\"]) + \")\" for c in next_concepts])\n            bilan += \"\\n➡️  Próximo módulo : \" + next_name + \" (\" + str(next_total) + \" preguntas)\\n\"\n            bilan += \"¿Listo/a? Responde 'sí' para continuar.\\n\"\n        else:\n            next_name = \"\"\n            next_total = 0\n            next_concepts_display = \"\"\n            has_next = False\n    else:\n        next_name = \"\"\n        next_total = 0\n        next_concepts_display = \"\"\n\n    if all_passed:\n        bilan += \"\\n🎉 ¡TODOS LOS MÓDULOS SUPERADOS — Pasas a \" + next_level + \" !\\n\"\n\n    if not module_passed:\n        if to_review:\n            bilan += \"\\nA repasar : \" + \", \".join(to_review) + \"\\n\"\n        bilan += \"Tienes que volver a hacer este módulo. Vamos a consolidarlo juntos.\\n\"\n\n    full_text = (exam_text or \"Examen terminado.\") + bilan\n\n    # --- Prepare values for var_assigner_exam_reset ---\n    # If next module: keep exam alive with new module info\n    # If no next: full reset\n    if has_next:\n        reset_exam_mode = \"intro\"\n        reset_question_num = 0\n        reset_responses = \"[]\"\n        reset_module_index = next_idx\n        reset_module_name = next_name\n        reset_total_questions = next_total\n        reset_module_concepts = next_concepts_display\n    else:\n        reset_exam_mode = \"off\"\n        reset_question_num = 0\n        reset_responses = \"[]\"\n        reset_module_index = 0\n        reset_module_name = \"\"\n        reset_total_questions = 0\n        reset_module_concepts = \"\"\n\n    return {\n        \"bilan_text\": full_text,\n        \"module_passed\": module_passed,\n        \"has_next_module\": has_next,\n        \"all_modules_passed\": module_passed and next_idx >= total_modules,\n        \"reset_exam_mode\": reset_exam_mode,\n        \"reset_question_num\": reset_question_num,\n        \"reset_responses\": reset_responses,\n        \"reset_module_index\": reset_module_index,\n        \"reset_module_name\": reset_module_name,\n        \"reset_total_questions\": reset_total_questions,\n        \"reset_module_concepts\": reset_module_concepts\n    }\n",
+          "type": "code",
+          "title": "Format Bilan",
+          "outputs": {
+            "bilan_text": {
+              "type": "string",
+              "children": null
+            },
+            "module_passed": {
+              "type": "boolean",
+              "children": null
+            },
+            "has_next_module": {
+              "type": "boolean",
+              "children": null
+            },
+            "reset_exam_mode": {
+              "type": "string",
+              "children": null
+            },
+            "reset_responses": {
+              "type": "string",
+              "children": null
+            },
+            "reset_module_name": {
+              "type": "string",
+              "children": null
+            },
+            "all_modules_passed": {
+              "type": "boolean",
+              "children": null
+            },
+            "reset_module_index": {
+              "type": "number",
+              "children": null
+            },
+            "reset_question_num": {
+              "type": "number",
+              "children": null
+            },
+            "reset_module_concepts": {
+              "type": "string",
+              "children": null
+            },
+            "reset_total_questions": {
+              "type": "number",
+              "children": null
+            }
+          },
+          "selected": false,
+          "variables": [
+            {
+              "variable": "body",
+              "value_selector": [
+                "http_exam_scoring",
+                "body"
+              ]
+            },
+            {
+              "variable": "exam_text",
+              "value_selector": [
+                "code_exam_track",
+                "cleaned_text"
+              ]
+            },
+            {
+              "variable": "exam_module_index",
+              "value_selector": [
+                "conversation",
+                "exam_module_index"
+              ]
+            },
+            {
+              "variable": "exam_module_total",
+              "value_selector": [
+                "conversation",
+                "exam_module_total"
+              ]
+            },
+            {
+              "variable": "exam_module_name",
+              "value_selector": [
+                "conversation",
+                "exam_module_name"
+              ]
+            },
+            {
+              "variable": "exam_modules",
+              "value_selector": [
+                "conversation",
+                "exam_modules"
+              ]
+            }
+          ],
+          "code_language": "python3"
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 52,
+        "position": {
+          "x": 3421.089711136177,
+          "y": 649.3332727530816
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 3421.089711136177,
+          "y": 649.3332727530816
+        }
+      },
+      {
+        "id": "answer_exam_bilan",
+        "data": {
+          "type": "answer",
+          "title": "Bilan examen",
+          "answer": "{{#code_exam_bilan.bilan_text#}}",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 103,
+        "position": {
+          "x": 3810.196271040262,
+          "y": 604.9758967147156
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 3810.196271040262,
+          "y": 604.9758967147156
+        }
+      },
+      {
+        "id": "var_assigner_exam_reset",
+        "data": {
+          "type": "assigner",
+          "items": [
+            {
+              "value": [
+                "code_exam_bilan",
+                "reset_exam_mode"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_mode"
+              ]
+            },
+            {
+              "value": [
+                "code_exam_bilan",
+                "reset_question_num"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_question_num"
+              ]
+            },
+            {
+              "value": [
+                "code_exam_bilan",
+                "reset_responses"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_responses"
+              ]
+            },
+            {
+              "value": [
+                "code_exam_bilan",
+                "reset_module_index"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_module_index"
+              ]
+            },
+            {
+              "value": [
+                "code_exam_bilan",
+                "reset_module_name"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_module_name"
+              ]
+            },
+            {
+              "value": [
+                "code_exam_bilan",
+                "reset_total_questions"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_total_questions"
+              ]
+            },
+            {
+              "value": [
+                "code_exam_bilan",
+                "reset_module_concepts"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_module_concepts"
+              ]
+            }
+          ],
+          "title": "Reset/Next Module",
+          "version": "2",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 240,
+        "position": {
+          "x": 3810.196271040262,
+          "y": 739.7525366907369
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 3810.196271040262,
+          "y": 739.7525366907369
+        }
+      },
+      {
+        "id": "if_resume_exam",
+        "data": {
+          "type": "if-else",
+          "cases": [
+            {
+              "id": "resume_yes",
+              "case_id": "resume_yes",
+              "conditions": [
+                {
+                  "value": "true",
+                  "varType": "boolean",
+                  "variable_selector": [
+                    "code_turn_check",
+                    "exam_resume_needed"
+                  ],
+                  "comparison_operator": "="
+                }
+              ],
+              "logical_operator": "and"
+            },
+            {
+              "id": "scoring_recovery",
+              "case_id": "scoring_recovery",
+              "conditions": [
+                {
+                  "value": "true",
+                  "varType": "boolean",
+                  "variable_selector": [
+                    "code_turn_check",
+                    "scoring_recovery"
+                  ],
+                  "comparison_operator": "="
+                }
+              ],
+              "logical_operator": "and"
+            }
+          ],
+          "title": "Resume/Recovery?",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 220,
+        "position": {
+          "x": 459.6348108201764,
+          "y": -279.5118294293069
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 459.6348108201764,
+          "y": -279.5118294293069
+        }
+      },
+      {
+        "id": "var_assigner_exam_resume",
+        "data": {
+          "type": "assigner",
+          "items": [
+            {
+              "value": [
+                "code_profil_check",
+                "exam_resume_mode"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_mode"
+              ]
+            },
+            {
+              "value": [
+                "code_profil_check",
+                "exam_resume_question_num"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_question_num"
+              ]
+            },
+            {
+              "value": [
+                "code_profil_check",
+                "exam_resume_responses"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_responses"
+              ]
+            },
+            {
+              "value": [
+                "code_profil_check",
+                "exam_resume_module_index"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_module_index"
+              ]
+            },
+            {
+              "value": [
+                "code_profil_check",
+                "exam_resume_module_total"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_module_total"
+              ]
+            },
+            {
+              "value": [
+                "code_profil_check",
+                "exam_resume_module_name"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_module_name"
+              ]
+            },
+            {
+              "value": [
+                "code_profil_check",
+                "exam_resume_module_concepts"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_module_concepts"
+              ]
+            },
+            {
+              "value": [
+                "code_profil_check",
+                "exam_resume_total_questions"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_total_questions"
+              ]
+            },
+            {
+              "value": [
+                "code_profil_check",
+                "exam_resume_modules_json"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "exam_modules"
+              ]
+            }
+          ],
+          "title": "Resume Exam State",
+          "version": "2",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 292,
+        "position": {
+          "x": 993.2062766626027,
+          "y": -468.8255947992387
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 993.2062766626027,
+          "y": -468.8255947992387
+        }
+      },
+      {
+        "id": "var_assigner_scoring_recovery",
+        "data": {
+          "type": "assigner",
+          "items": [
+            {
+              "value": "off",
+              "operation": "set",
+              "input_type": "constant",
+              "variable_selector": [
+                "conversation",
+                "exam_mode"
+              ]
+            },
+            {
+              "value": 0,
+              "operation": "set",
+              "input_type": "constant",
+              "variable_selector": [
+                "conversation",
+                "exam_question_num"
+              ]
+            },
+            {
+              "value": "[]",
+              "operation": "set",
+              "input_type": "constant",
+              "variable_selector": [
+                "conversation",
+                "exam_responses"
+              ]
+            }
+          ],
+          "title": "Reset Scoring Stuck",
+          "version": "2",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 136,
+        "position": {
+          "x": 708.4680081808679,
+          "y": -4.522745203660577
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 708.4680081808679,
+          "y": -4.522745203660577
+        }
+      },
+      {
+        "id": "code_exam_persist",
+        "data": {
+          "code": "import json\n\ndef main(new_exam_mode: str, new_question_num: int, new_responses: str,\n         module_index: int, module_total: int, module_name: str,\n         module_concepts: str, total_questions: int, modules_json: str,\n         username: str) -> dict:\n    mode = str(new_exam_mode or 'off')\n    if mode in ('off', 'scoring'):\n        return {\"persist_body\": json.dumps({\"username\": str(username), \"domain\": \"es\", \"clear\": True})}\n    state = {\n        \"mode\": mode,\n        \"question_num\": int(new_question_num or 0),\n        \"responses\": new_responses or \"[]\",\n        \"module_index\": int(module_index or 0),\n        \"module_total\": int(module_total or 1),\n        \"module_name\": str(module_name or \"\"),\n        \"module_concepts\": str(module_concepts or \"\"),\n        \"total_questions\": int(total_questions or 20),\n        \"modules_json\": modules_json or \"[]\"\n    }\n    return {\"persist_body\": json.dumps({\"username\": str(username), \"domain\": \"es\", \"exam_state\": state})}\n",
+          "type": "code",
+          "title": "Build Persist Body",
+          "outputs": {
+            "persist_body": {
+              "type": "string",
+              "children": null
+            }
+          },
+          "selected": false,
+          "variables": [
+            {
+              "variable": "new_exam_mode",
+              "value_selector": [
+                "code_exam_track",
+                "new_exam_mode"
+              ]
+            },
+            {
+              "variable": "new_question_num",
+              "value_selector": [
+                "code_exam_track",
+                "new_question_num"
+              ]
+            },
+            {
+              "variable": "new_responses",
+              "value_selector": [
+                "code_exam_track",
+                "new_responses"
+              ]
+            },
+            {
+              "variable": "module_index",
+              "value_selector": [
+                "conversation",
+                "exam_module_index"
+              ]
+            },
+            {
+              "variable": "module_total",
+              "value_selector": [
+                "conversation",
+                "exam_module_total"
+              ]
+            },
+            {
+              "variable": "module_name",
+              "value_selector": [
+                "conversation",
+                "exam_module_name"
+              ]
+            },
+            {
+              "variable": "module_concepts",
+              "value_selector": [
+                "conversation",
+                "exam_module_concepts"
+              ]
+            },
+            {
+              "variable": "total_questions",
+              "value_selector": [
+                "conversation",
+                "exam_total_questions"
+              ]
+            },
+            {
+              "variable": "modules_json",
+              "value_selector": [
+                "conversation",
+                "exam_modules"
+              ]
+            },
+            {
+              "variable": "username",
+              "value_selector": [
+                "sys",
+                "user_id"
+              ]
+            }
+          ],
+          "code_language": "python3"
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 52,
+        "position": {
+          "x": 2791.773830664178,
+          "y": 613.3792133831097
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 2791.773830664178,
+          "y": 613.3792133831097
+        }
+      },
+      {
+        "id": "http_exam_persist",
+        "data": {
+          "url": "http://n8n-academie:5678/webhook/dify-exam-persist",
+          "body": {
+            "data": [
+              {
+                "key": "",
+                "type": "text",
+                "value": "{{#code_exam_persist.persist_body#}}"
+              }
+            ],
+            "type": "json"
+          },
+          "type": "http-request",
+          "title": "Persist Exam (n8n)",
+          "method": "post",
+          "params": "",
+          "headers": "",
+          "timeout": {
+            "max_read_timeout": 10,
+            "max_write_timeout": 0,
+            "max_connect_timeout": 0
+          },
+          "selected": false,
+          "retry_config": {
+            "max_retries": 1,
+            "retry_enabled": true,
+            "retry_interval": 300
+          },
+          "authorization": {
+            "type": "no-auth",
+            "config": null
+          }
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 136,
+        "position": {
+          "x": 3129.3577431649514,
+          "y": 487.30569852557653
+        },
+        "selected": false,
+        "positionAbsolute": {
+          "x": 3129.3577431649514,
+          "y": 487.30569852557653
+        }
+      },
+      {
+        "id": "http_scoring_recovery_clear",
+        "data": {
+          "url": "http://n8n-academie:5678/webhook/dify-exam-persist",
+          "body": {
+            "data": [
+              {
+                "key": "",
+                "type": "text",
+                "value": "{\"username\": \"{{#sys.user_id#}}\", \"domain\": \"es\", \"clear\": true}"
+              }
+            ],
+            "type": "json"
+          },
+          "type": "http-request",
+          "title": "Clear Scoring Stuck (n8n)",
+          "method": "post",
+          "params": "",
+          "headers": "",
+          "timeout": {
+            "max_read_timeout": 10,
+            "max_write_timeout": 0,
+            "max_connect_timeout": 0
+          },
+          "selected": false,
+          "retry_config": {
+            "max_retries": 1,
+            "retry_enabled": true,
+            "retry_interval": 300
+          },
+          "authorization": {
+            "type": "no-auth",
+            "config": null
+          }
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 136,
+        "position": {
+          "x": 820,
+          "y": 160
+        },
+        "positionAbsolute": {
+          "x": 820,
+          "y": 160
+        }
+      },
+      {
+        "id": "var_assigner_review_start",
+        "data": {
+          "type": "assigner",
+          "items": [
+            {
+              "value": [
+                "code_exam_detect",
+                "review_mode_value"
+              ],
+              "operation": "over-write",
+              "input_type": "variable",
+              "variable_selector": [
+                "conversation",
+                "review_mode"
+              ]
+            }
+          ],
+          "title": "Set Review Mode",
+          "version": "2",
+          "selected": false
+        },
+        "type": "custom",
+        "width": 242,
+        "height": 84,
+        "position": {
+          "x": 1800,
+          "y": 300
+        },
+        "positionAbsolute": {
+          "x": 1800,
+          "y": 300
+        }
+      }
+    ],
+    "viewport": {
+      "x": -56.96315347083441,
+      "y": 225.1306999339983,
+      "zoom": 0.25
+    }
+  }
+}
