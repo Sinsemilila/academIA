@@ -90,6 +90,29 @@ def test_detect_dedup_suppresses_recent_injection():
     assert result is None
 
 
+@pytest.mark.parametrize("codes,expected_family", [
+    # ES codes that map to themselves (YAML family keys)
+    (["V:SER_ESTAR"] * 3, "V:SER_ESTAR"),
+    (["PREP:POR_PARA"] * 3, "PREP:POR_PARA"),
+    (["ART:PROF"] * 3, "ART:PROF"),
+    # ES codes that fold into shared families
+    (["PUNCT:INTERROG", "ORTH:NY", "PUNCT:INTERROG"], "surface"),
+    (["V:GUSTAR_SUBJECT"] * 3, "verb_usage"),
+    (["IDIOM:HACE_AGO"] * 3, "vocabulary"),
+    (["QUANT:MUY_MUCHO"] * 3, "morphology"),
+    (["PREP:MOVEMENT"] * 3, "preposition"),
+    (["LEX:FR_RESIDUE", "PREP:CALQUE", "LEX:FR_RESIDUE"], "calque"),
+    (["ASPECT:PERF_OVERUSE", "V:TENSE", "V:ASPECT"], "verb_tense"),
+])
+def test_detect_es_codes_map_to_family(codes, expected_family):
+    """S39 regression : ERROR_CODE_TO_FAMILY must cover every code that
+    rules_es.py emits, otherwise three-strikes silently never fires for
+    ES learners."""
+    conn = _StubConn(fetch_rows=codes)
+    result = _run(detect_three_strikes_family(conn, eleve_id=1, domain="es"))
+    assert result == expected_family
+
+
 def test_detect_bypass_dedup_returns_family_even_when_recent():
     conn = _StubConn(
         fetch_rows=["V:TENSE", "V:TENSE", "V:TENSE"],

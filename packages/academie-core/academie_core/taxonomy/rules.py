@@ -233,6 +233,20 @@ ERROR_CODE_TO_FAMILY = {
     "LEX:ARGSTRUCT": "vocabulary",
     "DISC:TRANS": "discourse", "DISC:COHER": "discourse",
     "REG:LEVEL": "discourse", "REG:PRAGMA": "discourse",
+    # ── ES-specific codes (rules_es.py). Three map to themselves because
+    # the micro-lesson YAML (data/micro_lessons/es.yaml) uses those codes
+    # directly as family keys ; the rest fold into existing EN families.
+    "V:SER_ESTAR": "V:SER_ESTAR",
+    "PREP:POR_PARA": "PREP:POR_PARA",
+    "ART:PROF": "ART:PROF",
+    "PUNCT:INTERROG": "surface",
+    "ORTH:NY": "surface",
+    "V:GUSTAR_SUBJECT": "verb_usage",
+    "IDIOM:HACE_AGO": "vocabulary",
+    "QUANT:MUY_MUCHO": "morphology",
+    "PREP:MOVEMENT": "preposition",
+    "LEX:FR_RESIDUE": "calque",
+    "ASPECT:PERF_OVERUSE": "verb_tense",
 }
 
 def detect_errors(text: str, lang: str = "en") -> list[RuleDetection]:
