@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.14-slim
 WORKDIR /app
 
 # academie-core (shared pedagogy + taxonomy layer, Sprint 4 Phase B onwards)
