@@ -5,7 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from .database import init_pool, close_pool
 from .rate_limit import limiter
-from .routers import auth_router, profile_router, chat_router, settings_router, error_analysis_router, admin_router, onboarding_router, internal_router
+from .routers import auth_router, profile_router, chat_router, settings_router, error_analysis_router, admin_router, onboarding_router, internal_router, security_router
 
 # ── Structured logging ────────────────────────────
 logging.basicConfig(
@@ -41,13 +41,32 @@ app.add_middleware(
     allow_headers=["Authorization", "Content-Type"],
 )
 
-# Security headers
+# Security headers — refactor 2026-H2 Phase A3.
+# CSP itself is set on HTML responses by SvelteKit hooks.server.ts (HTML pages
+# need per-document CSP with nonces; FastAPI only emits JSON/streams).
+# Here we cover the cross-cutting headers that apply to all responses.
+_PERMISSIONS_POLICY = ", ".join([
+    "accelerometer=()", "ambient-light-sensor=()", "autoplay=()",
+    "battery=()", "camera=()", "cross-origin-isolated=()",
+    "display-capture=()", "document-domain=()", "encrypted-media=()",
+    "execution-while-not-rendered=()", "execution-while-out-of-viewport=()",
+    "fullscreen=()", "geolocation=()", "gyroscope=()",
+    "keyboard-map=()", "magnetometer=()", "microphone=()",
+    "midi=()", "navigation-override=()", "payment=()",
+    "picture-in-picture=()", "publickey-credentials-get=()",
+    "screen-wake-lock=()", "sync-xhr=()", "usb=()",
+    "web-share=()", "xr-spatial-tracking=()",
+])
+
 @app.middleware("http")
 async def security_headers(request: Request, call_next):
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+    response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
+    response.headers["Permissions-Policy"] = _PERMISSIONS_POLICY
     return response
 
 # Routers
@@ -63,6 +82,7 @@ app.include_router(consolidation_router.router)
 app.include_router(internal_router.router)
 from .routers import agents_router  # noqa: E402
 app.include_router(agents_router.router)
+app.include_router(security_router.router)
 
 
 # ── Request logging middleware ────────────────────
