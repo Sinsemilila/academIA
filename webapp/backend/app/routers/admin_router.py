@@ -657,10 +657,15 @@ async def model_budgets(admin: dict = Depends(require_admin)):
     """
     from . import chat_router as _cr
     _TIER_CHAIN = _cr._TIER_CHAIN
-    # Ensure in-memory state is seeded from DB before reading it.
-    await _cr._load_daily_tokens()
     await _cr._reconcile_current_dify_model()
-    _gpt4o_token_counter = _cr._gpt4o_token_counter
+    # get_gpt4o_usage() returns MAX(local, litellm, openai) × 1.10 safety
+    # margin, which is what the /admin display should trust — a rebuild
+    # resets the in-memory counter so we need the DB-reconciled value.
+    try:
+        gpt4o_snapshot = await _cr.get_gpt4o_usage()
+        gpt4o_used = int(gpt4o_snapshot.get("tokens") or 0)
+    except Exception:
+        gpt4o_used = 0
 
     async with db.pool.acquire() as conn:
         # Today's usage per groq model
@@ -692,7 +697,7 @@ async def model_budgets(admin: dict = Depends(require_admin)):
     tiers = []
     for model, limit in _TIER_CHAIN:
         if model == "gpt-4o-mini":
-            used = _gpt4o_token_counter["tokens"]
+            used = gpt4o_used
         else:
             used = usage_by_model.get(model, 0)
         pct = round(used / limit * 100, 1) if limit else 0.0
