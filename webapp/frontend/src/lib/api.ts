@@ -160,6 +160,27 @@ class ApiClient {
     return await res.json();
   }
 
+  // Session 43 P5 — onboarding telemetry (un-authed, tolerant to failure).
+  async postOnboardingTelemetry(event: {
+    session_id: string;
+    domain: string;
+    event: 'step_enter' | 'complete' | 'abort';
+    step_id?: string | null;
+    step_order?: number | null;
+    total_steps?: number | null;
+  }) {
+    try {
+      await fetch(`${API_BASE}/telemetry/onboarding-event`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(event),
+        keepalive: true,
+      });
+    } catch {
+      // telemetry is best-effort; never break onboarding UX
+    }
+  }
+
   async patchLearnerProfile(domain: string, patch: any) {
     const res = await this.fetch(`/learner-profile/${domain}`, {
       method: 'PATCH',
@@ -371,6 +392,12 @@ class ApiClient {
   async adminOracleRuns(agent: string = 'teacher_en', hours: number = 168) {
     const res = await this.fetch(`/admin/oracle-runs?agent=${encodeURIComponent(agent)}&hours=${hours}`);
     if (!res.ok) throw new Error('Oracle runs fetch failed');
+    return await res.json();
+  }
+
+  async adminOnboardingFunnel(domain: string = 'en', hours: number = 720) {
+    const res = await this.fetch(`/admin/onboarding-funnel?domain=${encodeURIComponent(domain)}&hours=${hours}`);
+    if (!res.ok) throw new Error('Onboarding funnel fetch failed');
     return await res.json();
   }
 

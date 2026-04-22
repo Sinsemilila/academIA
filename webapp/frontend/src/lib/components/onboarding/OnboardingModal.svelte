@@ -46,12 +46,40 @@
   let submitResult = $state<any>(null);
 
   const draftKey = $derived(`academie:qcm:draft:${domain}`);
+  const sessionKey = $derived(`academie:onboarding:session:${domain}`);
+
+  // Session 43 P5 — onboarding telemetry
+  let sessionId = '';
+  let completed = false;
+  let lastLoggedStep = -1;
+
+  function genUUID(): string {
+    if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) return crypto.randomUUID();
+    // RFC4122 v4 fallback
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
+
+  function currentStepId(): string {
+    if (step === 0) return 'intro';
+    if (step > 0 && step <= totalSteps) return visibleItems[step - 1]?.id ?? `step_${step}`;
+    if (step === totalSteps + 1) return 'summary';
+    return `step_${step}`;
+  }
 
   onMount(async () => {
     try {
       content = await api.getOnboardingContent(domain);
-      // Restore draft
+      // Restore draft + telemetry session_id
       if (typeof window !== 'undefined') {
+        sessionId = localStorage.getItem(sessionKey) || '';
+        if (!sessionId) {
+          sessionId = genUUID();
+          localStorage.setItem(sessionKey, sessionId);
+        }
         const raw = localStorage.getItem(draftKey);
         if (raw) {
           try {
@@ -62,12 +90,46 @@
             }
           } catch {}
         }
+
+        // Abort beacon : fires when the tab closes/reloads before complete.
+        // sendBeacon works during unload where fetch() is unreliable.
+        const onBeforeUnload = () => {
+          if (completed || !sessionId) return;
+          const payload = JSON.stringify({
+            session_id: sessionId,
+            domain,
+            event: 'abort',
+            step_id: currentStepId(),
+            step_order: step,
+            total_steps: totalSteps,
+          });
+          if (navigator.sendBeacon) {
+            const blob = new Blob([payload], { type: 'application/json' });
+            navigator.sendBeacon('/api/telemetry/onboarding-event', blob);
+          }
+        };
+        window.addEventListener('beforeunload', onBeforeUnload);
       }
     } catch (e: any) {
       error = e?.message ?? 'Erreur de chargement du questionnaire';
     } finally {
       loading = false;
     }
+  });
+
+  // Log step_enter on each step change (dedup on lastLoggedStep).
+  $effect(() => {
+    if (loading || !content || !sessionId) return;
+    if (step === lastLoggedStep) return;
+    lastLoggedStep = step;
+    api.postOnboardingTelemetry({
+      session_id: sessionId,
+      domain,
+      event: 'step_enter',
+      step_id: currentStepId(),
+      step_order: step,
+      total_steps: totalSteps,
+    });
   });
 
   // Filter visible items (conditional ones skipped if rule fails)
@@ -176,6 +238,16 @@
       const payload = { universal_block, domain_level, domain_motivation };
       const res = await api.submitLearnerProfile(domain, payload);
       submitResult = res;
+      completed = true;
+      api.postOnboardingTelemetry({
+        session_id: sessionId,
+        domain,
+        event: 'complete',
+        step_id: 'summary',
+        step_order: step,
+        total_steps: totalSteps,
+      });
+      if (typeof window !== 'undefined') localStorage.removeItem(sessionKey);
       clearDraft();
       // Small delay so user sees the summary once before chat opens
       setTimeout(() => onComplete(), 1200);

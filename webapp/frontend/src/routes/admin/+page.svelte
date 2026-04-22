@@ -181,9 +181,23 @@
     }
   }
 
+  // Session 43 P5 — onboarding funnel analytics
+  let funnelStats = $state<any>(null);
+  let funnelLoading = $state(false);
+  async function loadFunnelStats() {
+    funnelLoading = true;
+    try {
+      funnelStats = await api.adminOnboardingFunnel(adminDomain, 720);
+    } catch {
+      funnelStats = null;
+    } finally {
+      funnelLoading = false;
+    }
+  }
+
   onMount(() => {
     loadUsers(); loadTokenUsage(); loadCacheStats();
-    loadConsolidationStats(); loadOracleStats();
+    loadConsolidationStats(); loadOracleStats(); loadFunnelStats();
   });
 </script>
 
@@ -470,7 +484,7 @@
 
       {#if oracleStats.recent_runs && oracleStats.recent_runs.length > 0}
         <details class="bg-elevated rounded-lg">
-          <summary class="px-3 py-2 text-xs cursor-pointer text-text-muted">Recent runs ({oracleStats.recent_runs.length})</summary>
+          <summary class="px-3 py-2 text-xs cursor-pointer text-text-muted">Recent oracle runs ({oracleStats.recent_runs.length})</summary>
           <table class="w-full text-xs">
             <thead>
               <tr class="border-b border-border-subtle text-text-muted">
@@ -491,6 +505,95 @@
                   <td class="px-3 py-2 text-right font-mono text-teacher">{r.pass_count}</td>
                   <td class="px-3 py-2 text-right font-mono {r.fail_count > 0 ? 'text-maestro' : 'text-text-muted'}">{r.fail_count}</td>
                   <td class="px-3 py-2 font-mono text-text-muted">{r.sha || '—'}</td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </details>
+      {/if}
+    {/if}
+  </div>
+
+  <!-- Session 43 P5 — Onboarding funnel analytics -->
+  <div class="bg-surface border border-border-subtle rounded-xl p-4 space-y-3">
+    <div>
+      <h2 class="text-sm font-semibold text-text-primary">Onboarding funnel</h2>
+      <p class="text-xs text-text-muted">30 derniers jours — domaine {adminDomain}. Step-by-step drop-off (client telemetry).</p>
+    </div>
+    {#if funnelLoading}
+      <div class="skeleton h-20 rounded-lg"></div>
+    {:else if !funnelStats || !funnelStats.summary || (funnelStats.summary.sessions_started ?? 0) === 0}
+      <p class="text-xs text-text-muted italic">Aucune session enregistrée.</p>
+    {:else}
+      {@const fs_ = funnelStats.summary}
+      <div class="grid grid-cols-4 gap-3">
+        <div class="bg-elevated rounded-lg p-3">
+          <p class="text-[10px] uppercase tracking-wider text-text-muted">Started</p>
+          <p class="text-lg font-mono font-semibold text-text-primary">{fs_.sessions_started ?? 0}</p>
+        </div>
+        <div class="bg-elevated rounded-lg p-3">
+          <p class="text-[10px] uppercase tracking-wider text-text-muted">Completed</p>
+          <p class="text-lg font-mono font-semibold text-teacher">{fs_.sessions_completed ?? 0}</p>
+          <p class="text-[10px] text-text-muted">{fs_.completion_pct ?? 0}%</p>
+        </div>
+        <div class="bg-elevated rounded-lg p-3">
+          <p class="text-[10px] uppercase tracking-wider text-text-muted">Aborted</p>
+          <p class="text-lg font-mono font-semibold {fs_.sessions_aborted > 0 ? 'text-maestro' : 'text-text-muted'}">{fs_.sessions_aborted ?? 0}</p>
+        </div>
+        <div class="bg-elevated rounded-lg p-3">
+          <p class="text-[10px] uppercase tracking-wider text-text-muted">In-flight</p>
+          <p class="text-lg font-mono font-semibold text-text-muted">{fs_.sessions_inflight ?? 0}</p>
+        </div>
+      </div>
+
+      {#if funnelStats.by_step && funnelStats.by_step.length > 0}
+        <div class="bg-elevated rounded-lg overflow-hidden">
+          <table class="w-full text-xs">
+            <thead>
+              <tr class="border-b border-border-subtle text-text-muted">
+                <th class="text-left px-3 py-2 font-normal">#</th>
+                <th class="text-left px-3 py-2 font-normal">Step</th>
+                <th class="text-right px-3 py-2 font-normal">Entered</th>
+                <th class="text-right px-3 py-2 font-normal">Dropped</th>
+                <th class="text-right px-3 py-2 font-normal">→ next %</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each funnelStats.by_step as s (s.step_order)}
+                <tr class="border-b border-border-subtle/50">
+                  <td class="px-3 py-2 font-mono text-text-muted">{s.step_order}</td>
+                  <td class="px-3 py-2 font-mono">{s.step_id ?? '—'}</td>
+                  <td class="px-3 py-2 text-right font-mono">{s.entered}</td>
+                  <td class="px-3 py-2 text-right font-mono {s.dropped_off > 0 ? 'text-maestro' : 'text-text-muted'}">{s.dropped_off}</td>
+                  <td class="px-3 py-2 text-right font-mono {s.conversion_next_pct === null ? 'text-text-muted' : s.conversion_next_pct >= 80 ? 'text-teacher' : s.conversion_next_pct >= 50 ? 'text-lehrer' : 'text-maestro'}">
+                    {s.conversion_next_pct === null ? '—' : `${s.conversion_next_pct}%`}
+                  </td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      {/if}
+
+      {#if funnelStats.recent_aborts && funnelStats.recent_aborts.length > 0}
+        <details class="bg-elevated rounded-lg">
+          <summary class="px-3 py-2 text-xs cursor-pointer text-text-muted">Recent aborts ({funnelStats.recent_aborts.length})</summary>
+          <table class="w-full text-xs">
+            <thead>
+              <tr class="border-b border-border-subtle text-text-muted">
+                <th class="text-left px-3 py-2 font-normal">When</th>
+                <th class="text-left px-3 py-2 font-normal">Last step</th>
+                <th class="text-right px-3 py-2 font-normal">#</th>
+                <th class="text-right px-3 py-2 font-normal">Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each funnelStats.recent_aborts as a (a.session_id)}
+                <tr class="border-b border-border-subtle/50">
+                  <td class="px-3 py-2 font-mono text-text-muted">{a.created_at ? a.created_at.slice(0, 16).replace('T', ' ') : '—'}</td>
+                  <td class="px-3 py-2 font-mono">{a.step_id ?? '—'}</td>
+                  <td class="px-3 py-2 text-right font-mono">{a.step_order ?? '—'}</td>
+                  <td class="px-3 py-2 text-right font-mono text-text-muted">{a.duration_ms !== null ? `${Math.round(a.duration_ms / 1000)}s` : '—'}</td>
                 </tr>
               {/each}
             </tbody>
