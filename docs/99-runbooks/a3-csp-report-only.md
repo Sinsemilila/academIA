@@ -43,13 +43,13 @@ Collecte 2 semaines des violations CSP en mode report-only → analyse → flip 
 ### 1. Appliquer la migration
 
 ```bash
-docker exec -i postgres-academie psql -U academie -d academie_db \
+docker exec -i postgres-academie psql -U sinse -d academie_db \
   < /opt/academie/scripts/sprint8/01_csp_violations_schema.sql
 ```
 
 Vérif :
 ```bash
-docker exec postgres-academie psql -U academie -d academie_db -c "\d csp_violations"
+docker exec postgres-academie psql -U sinse -d academie_db -c "\d csp_violations"
 ```
 
 ### 2. Rebuild containers backend + frontend
