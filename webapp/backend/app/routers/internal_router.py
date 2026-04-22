@@ -93,3 +93,52 @@ async def ingest_model_usage(payload: ModelUsagePayload):
     except Exception as e:
         _log.warning("model-usage insert failed: %s", e)
     return {"ok": True}
+
+
+# ── Session 44 V2 — rate-limit snapshot from response headers ─────────
+
+class RateLimitSnapshot(BaseModel):
+    model: str = Field(..., max_length=200)
+    limit_requests:     Optional[int] = None
+    remaining_requests: Optional[int] = None
+    reset_requests_sec: Optional[int] = None
+    limit_tokens:       Optional[int] = None
+    remaining_tokens:   Optional[int] = None
+    reset_tokens_sec:   Optional[int] = None
+
+
+@router.post("/rate-limit-snapshot", status_code=202)
+async def ingest_rate_limit_snapshot(payload: RateLimitSnapshot):
+    """UPSERT the latest x-ratelimit-* state for a model (last-write-wins).
+    Called by the LiteLLM callback after every successful completion ;
+    the admin endpoint reads this to display authoritative
+    provider-attested counters (no 15-min reconcile lag, no estimation)."""
+    if all(getattr(payload, f) is None for f in (
+        "limit_requests", "remaining_requests", "reset_requests_sec",
+        "limit_tokens", "remaining_tokens", "reset_tokens_sec",
+    )):
+        return {"ok": True}
+    try:
+        async with database.pool.acquire() as conn:
+            await conn.execute(
+                """
+                INSERT INTO model_rate_snapshot
+                  (model, limit_requests, remaining_requests, reset_requests_sec,
+                   limit_tokens, remaining_tokens, reset_tokens_sec, observed_at)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+                ON CONFLICT (model) DO UPDATE SET
+                  limit_requests     = COALESCE(EXCLUDED.limit_requests,     model_rate_snapshot.limit_requests),
+                  remaining_requests = COALESCE(EXCLUDED.remaining_requests, model_rate_snapshot.remaining_requests),
+                  reset_requests_sec = COALESCE(EXCLUDED.reset_requests_sec, model_rate_snapshot.reset_requests_sec),
+                  limit_tokens       = COALESCE(EXCLUDED.limit_tokens,       model_rate_snapshot.limit_tokens),
+                  remaining_tokens   = COALESCE(EXCLUDED.remaining_tokens,   model_rate_snapshot.remaining_tokens),
+                  reset_tokens_sec   = COALESCE(EXCLUDED.reset_tokens_sec,   model_rate_snapshot.reset_tokens_sec),
+                  observed_at        = NOW()
+                """,
+                payload.model,
+                payload.limit_requests, payload.remaining_requests, payload.reset_requests_sec,
+                payload.limit_tokens, payload.remaining_tokens, payload.reset_tokens_sec,
+            )
+    except Exception as e:
+        _log.warning("rate-limit-snapshot insert failed: %s", e)
+    return {"ok": True}

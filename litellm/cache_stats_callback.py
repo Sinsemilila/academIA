@@ -42,6 +42,17 @@ MODEL_USAGE_RELAY_URL = os.environ.get(
     "LITELLM_MODEL_USAGE_RELAY",
     "http://academie-api:8000/internal/model-usage",
 )
+# Session 44 V2 — header-based rate-limit snapshot relay.
+RATE_LIMIT_RELAY_URL = os.environ.get(
+    "LITELLM_RATE_LIMIT_RELAY",
+    "http://academie-api:8000/internal/rate-limit-snapshot",
+)
+# Also track gpt-4o-mini and derivatives — these are the OpenAI models
+# that matter for the admin budget view. Groq models are covered in
+# _MODEL_GROUP_BY_NAME already.
+_RATE_TRACKED_OPENAI = {
+    "openai/gpt-4o-mini", "gpt-4o-mini",
+}
 # Map every form LiteLLM might pass in kwargs["model"] (provider-prefixed,
 # raw provider name, or our config alias) → the model_group we track in
 # model_usage_daily. Covers the observed variants across versions of
@@ -136,6 +147,67 @@ class CacheStatsLogger(CustomLogger):
         except Exception as e:
             _log.warning("relay %s failed: %s", url, e)
 
+    def _rate_limit_payload(self, kwargs: dict, response_obj: Any) -> dict | None:
+        """Read x-ratelimit-* headers from the LiteLLM response and return
+        a snapshot payload. Returns None when nothing trackable is in
+        the headers (e.g. local provider, or when LiteLLM didn't forward
+        headers)."""
+        raw = kwargs.get("model") or ""
+        group = _MODEL_GROUP_BY_NAME.get(raw, raw if raw in _RATE_TRACKED_OPENAI else None)
+        # Normalize OpenAI variants to "gpt-4o-mini" (without the provider prefix)
+        if group and group.startswith("openai/"):
+            group = group[len("openai/"):]
+        if not group:
+            return None
+        headers = getattr(response_obj, "_response_headers", None)
+        if not headers:
+            return None
+
+        def _get(key: str):
+            return headers.get(key) or headers.get(f"llm_provider-{key}")
+
+        def _as_int(v):
+            if v is None:
+                return None
+            try:
+                return int(v)
+            except (TypeError, ValueError):
+                return None
+
+        def _parse_reset(v):
+            """Turn '8h32m15s' / '6m0s' / '500ms' / '12' into seconds (int)."""
+            if v is None:
+                return None
+            s = str(v).strip()
+            try:
+                return int(s)  # plain integer seconds
+            except ValueError:
+                pass
+            import re
+            m = re.match(r"(?:(\d+(?:\.\d+)?)h)?(?:(\d+(?:\.\d+)?)m(?!s))?(?:(\d+(?:\.\d+)?)s)?(?:(\d+(?:\.\d+)?)ms)?$", s)
+            if not m:
+                return None
+            h, mn, sc, ms = m.groups()
+            total = 0.0
+            if h:  total += float(h) * 3600
+            if mn: total += float(mn) * 60
+            if sc: total += float(sc)
+            if ms: total += float(ms) / 1000.0
+            return int(total)
+
+        payload = {
+            "model": group,
+            "limit_requests":     _as_int(_get("x-ratelimit-limit-requests")),
+            "remaining_requests": _as_int(_get("x-ratelimit-remaining-requests")),
+            "reset_requests_sec": _parse_reset(_get("x-ratelimit-reset-requests")),
+            "limit_tokens":       _as_int(_get("x-ratelimit-limit-tokens")),
+            "remaining_tokens":   _as_int(_get("x-ratelimit-remaining-tokens")),
+            "reset_tokens_sec":   _parse_reset(_get("x-ratelimit-reset-tokens")),
+        }
+        if all(v is None for k, v in payload.items() if k != "model"):
+            return None
+        return payload
+
     def _model_usage_payload(self, kwargs: dict, response_obj: Any) -> dict | None:
         """Return a {model, input_tokens, output_tokens} dict for a tracked
         model_group, or None for everything else (no-op relay). Normalizes
@@ -169,21 +241,22 @@ class CacheStatsLogger(CustomLogger):
             return None
         return {"model": group, "input_tokens": pt, "output_tokens": ct}
 
-    def log_success_event(self, kwargs, response_obj, start_time, end_time):  # noqa: D401
+    def _dispatch(self, kwargs, response_obj, start_time):
         cache_payload = self._payload(kwargs, response_obj, start_time)
         if cache_payload:
             self._post(RELAY_URL, cache_payload)
         model_payload = self._model_usage_payload(kwargs, response_obj)
         if model_payload:
             self._post(MODEL_USAGE_RELAY_URL, model_payload)
+        rate_payload = self._rate_limit_payload(kwargs, response_obj)
+        if rate_payload:
+            self._post(RATE_LIMIT_RELAY_URL, rate_payload)
+
+    def log_success_event(self, kwargs, response_obj, start_time, end_time):  # noqa: D401
+        self._dispatch(kwargs, response_obj, start_time)
 
     async def async_log_success_event(self, kwargs, response_obj, start_time, end_time):  # noqa: D401
-        cache_payload = self._payload(kwargs, response_obj, start_time)
-        if cache_payload:
-            self._post(RELAY_URL, cache_payload)
-        model_payload = self._model_usage_payload(kwargs, response_obj)
-        if model_payload:
-            self._post(MODEL_USAGE_RELAY_URL, model_payload)
+        self._dispatch(kwargs, response_obj, start_time)
 
 
 proxy_handler_instance = CacheStatsLogger()

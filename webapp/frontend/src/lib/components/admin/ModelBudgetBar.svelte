@@ -1,4 +1,14 @@
 <script lang="ts">
+  type RateSnapshot = {
+    limit_requests: number | null;
+    remaining_requests: number | null;
+    reset_requests_sec: number | null;
+    limit_tokens: number | null;
+    remaining_tokens: number | null;
+    reset_tokens_sec: number | null;
+    observed_at: string | null;
+  };
+
   type Tier = {
     name: string;
     limit: number;
@@ -6,6 +16,7 @@
     pct: number;
     is_active: boolean;
     eta_exhaust_min: number | null;
+    rate_snapshot: RateSnapshot | null;
   };
 
   let { tiers, currentTier, currentSince, totalRemaining } = $props<{
@@ -56,6 +67,16 @@
     if (diff < 3600) return `depuis ${Math.floor(diff / 60)}min`;
     if (diff < 86400) return `depuis ${Math.floor(diff / 3600)}h`;
     return `depuis ${Math.floor(diff / 86400)}j`;
+  }
+
+  function fmtResetCountdown(sec: number | null): string | null {
+    if (sec === null || sec === undefined) return null;
+    if (sec <= 0) return 'bientôt';
+    if (sec < 60) return `${sec}s`;
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    if (h > 0) return `${h}h${m > 0 ? m + 'm' : ''}`;
+    return `${m}m`;
   }
 
   // Color per tier : OK (green) / warn (amber) / near-exhaust (red)
@@ -141,6 +162,7 @@
   <!-- Per-tier breakdown -->
   <div class="grid grid-cols-3 gap-2">
     {#each tiers as t (t.name)}
+      {@const dailyReset = fmtResetCountdown(t.rate_snapshot?.reset_requests_sec ?? null)}
       <div class="bg-elevated rounded-lg p-2 {t.is_active ? 'ring-1 ring-accent' : ''}">
         <div class="flex items-baseline justify-between gap-1">
           <p class="text-[10px] uppercase tracking-wider text-text-muted truncate" title={t.name}>{t.name}</p>
@@ -152,6 +174,9 @@
           {t.pct}%
         </p>
         <p class="text-[10px] text-text-muted font-mono">{fmtTokens(t.used)} / {fmtTokens(t.limit)}</p>
+        {#if dailyReset}
+          <p class="text-[10px] text-text-muted font-mono" title="Countdown provider-attesté (x-ratelimit-reset-requests)">↻ {dailyReset}</p>
+        {/if}
       </div>
     {/each}
   </div>

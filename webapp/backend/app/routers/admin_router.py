@@ -674,6 +674,9 @@ async def model_budgets(admin: dict = Depends(require_admin)):
             "FROM model_usage_daily WHERE usage_date = CURRENT_DATE",
         )
         usage_by_model = {r["model"]: int(r["total"]) for r in rows}
+        # Session 44 V2 — latest provider-attested rate-limit snapshot per model.
+        snap_rows = await conn.fetch("SELECT * FROM model_rate_snapshot")
+        rate_snapshots = {r["model"]: dict(r) for r in snap_rows}
         # Last 15-min burn rate per model for ETA
         burn_rows = await conn.fetch(
             """SELECT model,
@@ -717,6 +720,19 @@ async def model_budgets(admin: dict = Depends(require_admin)):
         if is_active and rate_per_hour > 0:
             remaining = max(limit - used, 0)
             eta_exhaust_min = int((remaining / rate_per_hour) * 60)
+        # V2 — provider-attested snapshot from response headers.
+        snap = rate_snapshots.get(model)
+        rate_snapshot = None
+        if snap:
+            rate_snapshot = {
+                "limit_requests":     snap.get("limit_requests"),
+                "remaining_requests": snap.get("remaining_requests"),
+                "reset_requests_sec": snap.get("reset_requests_sec"),
+                "limit_tokens":       snap.get("limit_tokens"),
+                "remaining_tokens":   snap.get("remaining_tokens"),
+                "reset_tokens_sec":   snap.get("reset_tokens_sec"),
+                "observed_at": snap["observed_at"].isoformat() if snap.get("observed_at") else None,
+            }
         tiers.append({
             "name": model,
             "limit": limit,
@@ -724,6 +740,7 @@ async def model_budgets(admin: dict = Depends(require_admin)):
             "pct": pct,
             "is_active": is_active,
             "eta_exhaust_min": eta_exhaust_min,
+            "rate_snapshot": rate_snapshot,
         })
 
     # Total remaining across tiers (useful headline number)
