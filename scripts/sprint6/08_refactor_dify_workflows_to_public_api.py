@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
-"""Session 37 — refactor `dify-snapshot` n8n workflow to use Dify public API.
+"""ONE-SHOT MIGRATION — executed Session 37 (2026-04-21). Retained for audit.
+
+This script patched the `dify-snapshot` n8n workflow graph in-place ; it is
+NOT part of any runtime code path, battery, or CI. Hardcoded app_id
+`DIFY_APP_TEACHER` is therefore acceptable — the script will never run again.
+For future similar migrations, read the canonical source via
+`agents_config.active_agents()` (field `dify_app_id`, added Session 44).
+
+Session 37 — refactor `dify-snapshot` n8n workflow to use Dify public API.
 
 Before : `dify-snapshot` called
     http://dify-api:5001/console/api/apps/{APP_ID}/chat-messages?...

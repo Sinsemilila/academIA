@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
-"""Session 37 followup — refactor `dify-diagnostic` + `dify-exam-scoring` to Dify public API.
+"""ONE-SHOT MIGRATION — executed Session 38 (2026-04-22). Retained for audit.
+
+This script patched 2 n8n workflow graphs in-place ; it is NOT part of any
+runtime code path, battery, or CI. Hardcoded `DIFY_APP_TEACHER` +
+`DIFY_APP_MAESTRO` are therefore acceptable — the script will never run
+again. For future similar migrations, read the canonical source via
+`agents_config.active_agents()` (field `dify_app_id`, added Session 44).
+
+Session 37 followup — refactor `dify-diagnostic` + `dify-exam-scoring` to Dify public API.
 
 Same pattern as `08_refactor_dify_workflows_to_public_api.py` (snapshot), but here
 both callers are Dify workflows (Teacher + Maestro), not a cron. So instead of
