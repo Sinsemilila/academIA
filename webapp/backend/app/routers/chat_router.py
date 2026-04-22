@@ -22,10 +22,13 @@ logger = logging.getLogger("academie-api.chat_router")
 
 # ── Daily token budget for gpt-4o-mini (free tier protection) ──
 _GPT4O_DAILY_LIMIT = 1_500_000
-# Display safety margin: /admin shows tokens × 1.10 to stay above OpenAI dashboard.
-# Auto-switch threshold (`exceeded`) uses the same inflated value, so the model
-# bascule fires a touch early — protective bias.
-_DISPLAY_SAFETY_MARGIN = 1.10
+# Display safety margin : with the OpenAI Usage API reconciliation loop
+# feeding the authoritative total into the MAX(...), the admin display
+# matches OpenAI's dashboard within its own latency (a few minutes). 2%
+# covers in-flight requests that haven't yet shown up in either LiteLLM
+# SpendLogs or the Usage API. Previously 10% — too conservative, inflated
+# the pct noticeably above what OpenAI showed.
+_DISPLAY_SAFETY_MARGIN = 1.02
 # Lazy reconciliation against OpenAI Usage API: skip if last reconcile is fresher
 # than this (seconds).
 _RECONCILE_STALENESS_S = 15 * 60

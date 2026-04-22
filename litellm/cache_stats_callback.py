@@ -42,9 +42,22 @@ MODEL_USAGE_RELAY_URL = os.environ.get(
     "LITELLM_MODEL_USAGE_RELAY",
     "http://academie-api:8000/internal/model-usage",
 )
-# model_group strings we aggregate into model_usage_daily. Anything else
-# falls through to the cache-stats relay only.
-_TRACKED_MODEL_NAMES = {"groq-standard", "groq-snapshot", "groq-qwen"}
+# Map every form LiteLLM might pass in kwargs["model"] (provider-prefixed,
+# raw provider name, or our config alias) → the model_group we track in
+# model_usage_daily. Covers the observed variants across versions of
+# LiteLLM (tested against LiteLLM_SpendLogs — the "model" column is the
+# underlying provider model, not the alias).
+_MODEL_GROUP_BY_NAME = {
+    "groq-standard": "groq-standard",
+    "groq/llama-3.3-70b-versatile": "groq-standard",
+    "llama-3.3-70b-versatile": "groq-standard",
+    "groq-snapshot": "groq-snapshot",
+    "groq/llama-3.1-8b-instant": "groq-snapshot",
+    "llama-3.1-8b-instant": "groq-snapshot",
+    "groq-qwen": "groq-qwen",
+    "groq/qwen/qwen3-32b": "groq-qwen",
+    "qwen/qwen3-32b": "groq-qwen",
+}
 RELAY_TIMEOUT_S = 1.5
 
 
@@ -125,11 +138,20 @@ class CacheStatsLogger(CustomLogger):
 
     def _model_usage_payload(self, kwargs: dict, response_obj: Any) -> dict | None:
         """Return a {model, input_tokens, output_tokens} dict for a tracked
-        model_group, or None for everything else (no-op relay)."""
-        # Dify / downstream callers send their model_group in kwargs["model"].
-        # Fall back to response_obj.model which is the upstream provider model.
-        group = kwargs.get("model") or ""
-        if group not in _TRACKED_MODEL_NAMES:
+        model_group, or None for everything else (no-op relay). Normalizes
+        whatever LiteLLM passes (alias, provider-prefixed, raw provider)
+        into our canonical model_group label."""
+        raw = kwargs.get("model") or ""
+        # Also try response_obj.model as a fallback (some LiteLLM versions
+        # populate that and not kwargs when a fallback cascade fires).
+        if raw not in _MODEL_GROUP_BY_NAME:
+            resp_model = getattr(response_obj, "model", None) or (
+                response_obj.get("model") if isinstance(response_obj, dict) else None
+            )
+            if resp_model and resp_model in _MODEL_GROUP_BY_NAME:
+                raw = resp_model
+        group = _MODEL_GROUP_BY_NAME.get(raw)
+        if not group:
             return None
         usage = getattr(response_obj, "usage", None) or (
             response_obj.get("usage") if isinstance(response_obj, dict) else None
