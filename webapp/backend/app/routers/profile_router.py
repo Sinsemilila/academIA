@@ -111,6 +111,8 @@ async def set_l1(payload: L1Payload, domain: str = "en", user: dict = Depends(ge
 
 @router.get("/api/profile/{domain}")
 async def get_profile(domain: str, user: dict = Depends(get_current_user)):
+    from ..domain_utils import validate_domain_format
+    validate_domain_format(domain)
     eleve_id = user.get("eleve_id")
     if not eleve_id:
         return {"niveau": None, "scores": {}, "points_forts": None,

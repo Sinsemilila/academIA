@@ -387,10 +387,7 @@ def _render_nl_summary(
 
 # ── Endpoints ────────────────────────────────────────────────────────
 
-def _validate_domain(domain: str) -> None:
-    """Reject unknown domains early (keeps Dify/loader consistent)."""
-    if not re.match(r"^[a-z]{2,16}$", domain):
-        raise HTTPException(status_code=422, detail="invalid domain code")
+from ..domain_utils import validate_domain_format as _validate_domain  # Session 42 D3 — centralized
 
 
 @router.get("/api/onboarding/content/{domain}")

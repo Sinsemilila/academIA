@@ -185,6 +185,8 @@ async def get_error_profile(username: str, domain: str = "en", user: dict = Depe
 @router.get("/api/error-profile/{domain}")
 async def get_my_error_profile(domain: str = "en", user: dict = Depends(get_current_user)):
     """Returns the authenticated user's error profile. Used by the frontend."""
+    from ..domain_utils import validate_domain_format
+    validate_domain_format(domain)
     eleve_id = user.get("eleve_id")
     if not eleve_id:
         return {"band": "intermediate", "niveau": "B1", "families": {}, "concepts_by_family": {},
