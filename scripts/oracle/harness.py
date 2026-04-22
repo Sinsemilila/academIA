@@ -69,13 +69,18 @@ def load_golden(scenario: ScenarioSchema, agent: str) -> str | None:
 
 def fetch_current_response(scenario: ScenarioSchema, agent: str) -> str | None:
     """Call Dify public API to get the current bot response for this scenario's
-    first learner turn. Returns None if --mode lint (lint uses golden only)."""
-    # Deferred import so lint mode doesn't require httpx.
+    first learner turn. Returns None if --mode lint (lint uses golden only).
+
+    Session 42 O1 : passes `scenario` to call_agent → injects learner profile
+    inputs → Dify routes to llm_session (same path as record_golden.py), NOT
+    llm_onboarding. Without this, noise floor measurement picks up
+    onboarding-flow bot replies while goldens are session-flow replies —
+    call-path mismatch that produces artifactual noise on every dim."""
     from oracle.judges.dify_client import call_agent  # type: ignore
     first_learner = next((t for t in scenario.turns if t.role == "learner"), None)
     if not first_learner:
         return None
-    return call_agent(agent, first_learner.text, scenario.id)
+    return call_agent(agent, first_learner.text, scenario.id, scenario=scenario)
 
 
 def score_scenario(scenario: ScenarioSchema, agent: str, mode: str, cfg: dict) -> ScenarioResult:
