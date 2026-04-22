@@ -70,13 +70,12 @@ def load_golden(scenario: ScenarioSchema, agent: str) -> str | None:
 def fetch_current_response(scenario: ScenarioSchema, agent: str) -> str | None:
     """Call Dify public API to get the current bot response for this scenario's
     first learner turn. Returns None if --mode lint (lint uses golden only)."""
-    # Phase B2 fills this. For Phase A skeleton, stub with a placeholder.
     # Deferred import so lint mode doesn't require httpx.
-    from oracle.judges.dify_client import call_teacher_en  # type: ignore
+    from oracle.judges.dify_client import call_agent  # type: ignore
     first_learner = next((t for t in scenario.turns if t.role == "learner"), None)
     if not first_learner:
         return None
-    return call_teacher_en(first_learner.text, scenario.id)
+    return call_agent(agent, first_learner.text, scenario.id)
 
 
 def score_scenario(scenario: ScenarioSchema, agent: str, mode: str, cfg: dict) -> ScenarioResult:

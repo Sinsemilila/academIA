@@ -27,7 +27,18 @@ noise_floor:
   scaffolding_flags_l2_ratio: 0.125
 dropped_dims: []
 dify:
-  teacher_en_app_id: 39565197-c9d1-4d5b-b66f-18925de236d9
   public_api_base: http://127.0.0.1:5001
+  public_api_path: /v1/chat-messages
+agents:
+  teacher_en:
+    app_id: 39565197-c9d1-4d5b-b66f-18925de236d9
+    workflow_id: 006cba2d-08b0-449c-91ed-0dda79d414ce
+    env_key_name: DIFY_KEY_TEACHER
+    language: en
+  maestro_es:
+    app_id: 47b0529c-b3a3-4651-8717-759e666172c9
+    workflow_id: d3df0ef0-a28f-4850-9396-d4d1cf6c0e21
+    env_key_name: DIFY_KEY_MAESTRO
+    language: es
 litellm:
   proxy_url: http://127.0.0.1:4000/v1/chat/completions

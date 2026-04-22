@@ -16,26 +16,29 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parent
-SC_DIR = ROOT / "scenarios" / "teacher_en"
-GOLDEN_DIR = SC_DIR / "golden"
 
 
-def _load_scenarios() -> list[dict]:
+def _load_scenarios(agent: str) -> list[dict]:
+    sc_dir = ROOT / "scenarios" / agent
     sc = []
-    for f in sorted(SC_DIR.glob("*.yaml")):
+    for f in sorted(sc_dir.glob("*.yaml")):
         sc.append(yaml.safe_load(f.read_text()))
     return sc
 
 
-def _load_golden(sid: str) -> str:
-    p = GOLDEN_DIR / f"{sid}.json"
+def _load_golden(agent: str, sid: str) -> str:
+    p = ROOT / "scenarios" / agent / "golden" / f"{sid}.json"
     if not p.exists():
         return "(no golden recorded)"
     return json.loads(p.read_text()).get("response", "")
 
 
 def main() -> int:
-    scenarios = _load_scenarios()
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--agent", default="teacher_en")
+    args = ap.parse_args()
+    scenarios = _load_scenarios(args.agent)
     out = []
     out.append("# Oracle V1 — Manual scoring template (Sinse)")
     out.append("")
@@ -53,7 +56,7 @@ def main() -> int:
         sid = sc["id"]
         ckey = sc["scenario_key"]
         learner = next((t for t in sc["turns"] if t["role"] == "learner"), {})
-        golden = _load_golden(sid)
+        golden = _load_golden(args.agent, sid)
         out.append(f"  {sid}:")
         out.append(f"    # learner [{ckey['cefr']}/{ckey['target_tier']}/{ckey['fla']}]: {learner.get('text', '')[:80]}")
         out.append(f"    # bot: {golden[:120].replace(chr(10), ' ')}")

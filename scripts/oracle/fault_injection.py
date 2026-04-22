@@ -42,14 +42,11 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from oracle.judges import deterministic, llm_pairwise  # noqa: E402
+from oracle.judges.dify_client import _agent_config  # noqa: E402
 from oracle.lint import run_lint  # noqa: E402
 from oracle.schemas import ScenarioSchema  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
-SC_DIR = ROOT / "scenarios" / "teacher_en"
-GOLDEN_DIR = SC_DIR / "golden"
-
-TEACHER_EN_WORKFLOW_ID = "006cba2d-08b0-449c-91ed-0dda79d414ce"
 
 
 # 5 fault patches — each is a {from_str: to_str} dict applied via
@@ -79,12 +76,13 @@ FAULTS = {
 }
 
 
-def _extract_prompt() -> str:
-    """Pull the llm_session system prompt from the current Teacher EN workflow."""
+def _extract_prompt(agent: str) -> str:
+    """Pull the llm_session system prompt from the current workflow of `agent`."""
+    workflow_id = _agent_config(agent)["workflow_id"]
     sql = (
         "SELECT n->'data'->'prompt_template'->0->>'text' "
         f"FROM workflows, jsonb_array_elements(graph::jsonb->'nodes') n "
-        f"WHERE id='{TEACHER_EN_WORKFLOW_ID}' "
+        f"WHERE id='{workflow_id}' "
         f"AND n->'data'->>'type'='llm' "
         f"AND n->'data'->>'title' ~* 'session' LIMIT 1;"
     )
@@ -123,15 +121,16 @@ def _validate_faults(base_prompt: str) -> list[str]:
     return missing
 
 
-def _load_scenarios() -> list[ScenarioSchema]:
+def _load_scenarios(agent: str) -> list[ScenarioSchema]:
+    sc_dir = ROOT / "scenarios" / agent
     out = []
-    for f in sorted(SC_DIR.glob("*.yaml")):
+    for f in sorted(sc_dir.glob("*.yaml")):
         out.append(ScenarioSchema.model_validate(yaml.safe_load(f.read_text())))
     return out
 
 
-def _load_golden(sid: str) -> str:
-    p = GOLDEN_DIR / f"{sid}.json"
+def _load_golden(agent: str, sid: str) -> str:
+    p = ROOT / "scenarios" / agent / "golden" / f"{sid}.json"
     if not p.exists():
         return ""
     return json.loads(p.read_text()).get("response", "")
@@ -166,7 +165,7 @@ def _call_litellm(client: httpx.Client, system: str, user: str, cfg: dict) -> st
         return None
 
 
-def _score(scenario: ScenarioSchema, response: str, cfg: dict) -> bool:
+def _score(agent: str, scenario: ScenarioSchema, response: str, cfg: dict) -> bool:
     """True if oracle flags regression."""
     if not response:
         return False
@@ -174,12 +173,12 @@ def _score(scenario: ScenarioSchema, response: str, cfg: dict) -> bool:
         return True
     if any(d.verdict == "fail" for d in deterministic.score_all(scenario, response)):
         return True
-    golden = _load_golden(scenario.id)
+    golden = _load_golden(agent, scenario.id)
     llm = llm_pairwise.score_all(scenario, response, golden, cfg, n=1)
     return any(d.verdict == "fail" for d in llm)
 
 
-def run_condition(label: str, prompt: str, scenarios: list[ScenarioSchema], cfg: dict) -> tuple[int, int]:
+def run_condition(agent: str, label: str, prompt: str, scenarios: list[ScenarioSchema], cfg: dict) -> tuple[int, int]:
     flagged = 0
     with httpx.Client(timeout=60) as client:
         for i, sc in enumerate(scenarios, 1):
@@ -189,7 +188,7 @@ def run_condition(label: str, prompt: str, scenarios: list[ScenarioSchema], cfg:
             system = _stub_placeholders(prompt, sc.scenario_key.cefr,
                                         sc.scenario_key.style_profile)
             response = _call_litellm(client, system, learner.text, cfg)
-            is_flagged = _score(sc, response or "", cfg) if response else True
+            is_flagged = _score(agent, sc, response or "", cfg) if response else True
             marker = "⚠" if is_flagged else "·"
             print(f"  [{label}][{i}/{len(scenarios)}] {marker} {sc.id}")
             if is_flagged:
@@ -199,13 +198,14 @@ def run_condition(label: str, prompt: str, scenarios: list[ScenarioSchema], cfg:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--agent", default="teacher_en")
     ap.add_argument("--apply", action="store_true")
     ap.add_argument("--only")
     args = ap.parse_args()
 
     cfg = yaml.safe_load((ROOT / "config.yaml").read_text())
-    base_prompt = _extract_prompt()
-    print(f"▶ Extracted Teacher EN prompt : {len(base_prompt)} chars")
+    base_prompt = _extract_prompt(args.agent)
+    print(f"▶ Extracted {args.agent} prompt : {len(base_prompt)} chars")
 
     missing = _validate_faults(base_prompt)
     if missing:
@@ -214,7 +214,7 @@ def main() -> int:
             print(f"  - {m}")
         return 2
 
-    scenarios = _load_scenarios()
+    scenarios = _load_scenarios(args.agent)
     print(f"▶ {len(scenarios)} scenarios loaded")
 
     if not args.apply:
@@ -225,7 +225,7 @@ def main() -> int:
 
     # Clean baseline
     print("\n━━━ CLEAN BASELINE ━━━")
-    fl, tot = run_condition("clean", base_prompt, scenarios, cfg)
+    fl, tot = run_condition(args.agent, "clean", base_prompt, scenarios, cfg)
     results["clean"] = {"flagged": fl, "total": tot, "rate": fl / tot}
     print(f"  false_alarm_rate = {fl}/{tot} = {fl/tot:.1%}")
 
@@ -235,7 +235,7 @@ def main() -> int:
         print(f"\n━━━ FAULT : {name} ━━━")
         patched = _apply_patch(base_prompt, patches)
         assert patched != base_prompt, f"patch {name} made no change"
-        fl, tot = run_condition(name, patched, scenarios, cfg)
+        fl, tot = run_condition(args.agent, name, patched, scenarios, cfg)
         results[name] = {"flagged": fl, "total": tot, "rate": fl / tot}
         print(f"  detection_rate = {fl}/{tot} = {fl/tot:.1%}")
 
