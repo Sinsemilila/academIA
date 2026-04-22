@@ -1,26 +1,7 @@
 judge:
-  # Session 44 κ calibration (2026-04-22) — gemini-flash measured at
-  # κ=0.84 vs 6-judge majority vote. gpt-4o-mini scored only κ=0.33
-  # (fair) and was producing systematic false-passes on forbidden CF
-  # moves at A1/A2. Migration validated by inter-LLM agreement across
-  # Claude, ChatGPT, Gemini Pro web, Mistral, and Groq Llama-70b.
-  # Free tier : 10 RPM, 250 RPD, 250K TPM (sufficient for 1 full
-  # oracle run/day at N=3 votes ≈ 234 calls).
-  # `reasoning_effort: disable` suppresses Gemini 2.5 Flash thinking
-  # tokens (which would otherwise consume the entire output budget).
-  # Session 45 : switched from gemini-flash to gemini-3-1-flash-lite —
-  # same κ=0.84 per Session 44 calibration, but 500 RPD vs 20. Cascade
-  # from 2.5-flash was adding 15-30s latency per 429 (retries × delay)
-  # before LiteLLM fallback kicked in. Using the high-budget tier
-  # directly is simpler and avoids the cascade wait.
   model: gemini-3-1-flash-lite
-  # reasoning_effort not needed on 3.1-flash-lite (no thinking model).
   n_votes: 3
   temperature: 0.0
-  # Bumped 200 → 500 Session 45 : Gemini Flash output regularly cut
-  # short mid-JSON at 200, causing judge_call_failed warnings even
-  # with reasoning disabled. 500 gives comfortable headroom for
-  # {move, confidence, reasoning} structure.
   max_tokens: 500
   timeout_s: 30
 modes:
@@ -37,13 +18,13 @@ axis_thresholds:
   output_shape: 0.66
   pedagogy_quality: 0.66
 noise_floor:
-  cf_move_set_valid: 0.154
+  cf_move_set_valid: 0.0
   scaffolding_flags_honored: 0.0
-  register_cefr_alignment: 0.192
+  register_cefr_alignment: 0.0
   recast_saliency_and_dosage: 0.0
-  semantic_fidelity_pairwise: 0.077
-  cf_move_set_valid_partial: 0.077
-  scaffolding_flags_l2_ratio: 0.154
+  semantic_fidelity_pairwise: 0.038
+  cf_move_set_valid_partial: 0.115
+  scaffolding_flags_l2_ratio: 0.038
 dropped_dims: []
 dify:
   public_api_base: http://127.0.0.1:5001
