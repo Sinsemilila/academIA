@@ -1,0 +1,1934 @@
+{
+  "mode": "full",
+  "agent": "teacher_en",
+  "results": [
+    {
+      "scenario_id": "a2_t2_past_simple_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=A2)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=2, ?=1, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "fail",
+          "score": null,
+          "reasoning": "forbidden CF move detected: ['explicit_correction']",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.9767441860465116,
+          "reasoning": "L2_ratio=0.98 in [0.85,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "fail",
+          "score": null,
+          "reasoning": "move=explicit_correction in forbidden set",
+          "judge_votes": [
+            {
+              "move": "explicit_correction",
+              "confidence": 1.0,
+              "reasoning": "The tutor explicitly flags the errors ('you should say \"went\" instead of \"goed\" and \"took\" instead of \"taked\"') and then provides the correct forms within a full corrected sentence."
+            }
+          ]
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "observed=A2, target=A2",
+          "judge_votes": [
+            {
+              "level": "A2",
+              "reasoning": "The response uses simple past tense corrections, common vocabulary, and direct questions suitable for an A2 learner."
+            },
+            {
+              "level": "A2",
+              "reasoning": "The response uses simple past tense corrections and asks a direct question about an everyday topic, aligning with A2 descriptors."
+            }
+          ]
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "majority equivalent",
+          "judge_votes": [
+            {
+              "equivalent": true,
+              "confidence": 0.9,
+              "reasoning": "Both responses identify and correct the same two past tense irregular verb errors ('goed' to 'went', 'taked' to 'took') using explicit correction, and both maintain a supportive tone while asking a follow-up question. The CEFR level and tier of correction are consistent."
+            }
+          ]
+        }
+      ],
+      "overall": "fail"
+    },
+    {
+      "scenario_id": "a2_t2_plural_high_fla_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=A2)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=2, ?=0, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no clear violation in regex pass",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 1.0,
+          "reasoning": "L2_ratio=1.00 in [0.85,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "fail",
+          "score": null,
+          "reasoning": "move=explicit_correction in forbidden set",
+          "judge_votes": [
+            {
+              "move": "explicit_correction",
+              "confidence": 0.9,
+              "reasoning": "The tutor explicitly flags the errors ('Remember to use 'children' instead of 'childrens' and 'every day' instead of 'every days'') and provides the correct forms within the initial recast."
+            }
+          ]
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "observed=A1, target=A2",
+          "judge_votes": [
+            {
+              "level": "A1",
+              "reasoning": "The response uses very simple words, short sentences, and focuses on basic grammatical corrections suitable for a beginner."
+            }
+          ]
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "majority equivalent",
+          "judge_votes": [
+            {
+              "equivalent": true,
+              "confidence": 0.9,
+              "reasoning": "Both responses correct the same errors ('childrens' and 'every days') using a similar explicit correction and recast, aiming at the same CEFR level and tier."
+            }
+          ]
+        }
+      ],
+      "overall": "fail"
+    },
+    {
+      "scenario_id": "a2_t3_articles_midfla_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=A2)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=1, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no forbidden set defined",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.9387755102040817,
+          "reasoning": "L2_ratio=0.94 in [0.85,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "fail",
+          "score": null,
+          "reasoning": "move=no_corrective_feedback not in acceptable set ['clarification_request', 'elicitation', 'full_recast', 'partial_recast']",
+          "judge_votes": [
+            {
+              "move": "no_corrective_feedback",
+              "confidence": 1.0,
+              "reasoning": "The tutor's response acknowledges the learner's statement and offers advice related to the content, but does not address any linguistic errors in the learner's utterance."
+            }
+          ]
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "observed=B1, target=A2",
+          "judge_votes": [
+            {
+              "level": "B1",
+              "reasoning": "The response uses 'however' and 'might want to consider' which indicate simple conjunctions and expressing opinion/suggestion, characteristic of B1."
+            }
+          ]
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "majority equivalent",
+          "judge_votes": [
+            {
+              "equivalent": true,
+              "confidence": 0.9,
+              "reasoning": "Both responses address the same 'house is small' implication by suggesting a compact car, using similar phrasing and maintaining the same conversational tone and CEFR level."
+            }
+          ]
+        }
+      ],
+      "overall": "fail"
+    },
+    {
+      "scenario_id": "b1_edge_t2t3_prepositions_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=B1)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=0, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no clear violation in regex pass",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 1.0,
+          "reasoning": "L2_ratio=1.00 in [0.9,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "b1_t2_articles_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=B1)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=1, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no clear violation in regex pass",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.975,
+          "reasoning": "L2_ratio=0.97 in [0.9,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "b1_t3_conditional_midfla_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=B1)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=0, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no forbidden set defined",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.9545454545454546,
+          "reasoning": "L2_ratio=0.95 in [0.9,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "observed=B2, target=B1",
+          "judge_votes": [
+            {
+              "level": "B2",
+              "reasoning": "The response uses the second conditional to explain a hypothetical situation and employs meta-linguistic terminology like 'hypothetical situation' and 'correction'."
+            }
+          ]
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "majority equivalent",
+          "judge_votes": [
+            {
+              "equivalent": true,
+              "confidence": 0.95,
+              "reasoning": "Both responses provide an explicit correction of the second conditional structure and offer a similar metalinguistic explanation."
+            }
+          ]
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "b1_t3_present_perfect_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=B1)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=0, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no forbidden set defined",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.9393939393939394,
+          "reasoning": "L2_ratio=0.94 in [0.9,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "observed=A2, target=B1",
+          "judge_votes": [
+            {
+              "level": "A2",
+              "reasoning": "The response uses the past simple tense and addresses basic grammatical corrections related to everyday topics, which aligns with A2 level communication."
+            }
+          ]
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "majority equivalent",
+          "judge_votes": [
+            {
+              "equivalent": true,
+              "confidence": 0.9,
+              "reasoning": "Both responses address the same error (incorrect past tense of 'see'), use a similar explicit correction with explanation, and are pitched at a comparable CEFR level and tier."
+            }
+          ]
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "b2_t2_collocations_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=B2)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=2, ?=1, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no forbidden set defined",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.9714285714285714,
+          "reasoning": "L2_ratio=0.97 in [0.95,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "b2_t3_modal_deduction_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=B2)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=2, ?=0, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no forbidden set defined",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.98,
+          "reasoning": "L2_ratio=0.98 in [0.95,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "b2_t3_passive_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=B2)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=2, ?=1, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no forbidden set defined",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 1.0,
+          "reasoning": "L2_ratio=1.00 in [0.95,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "fail",
+          "score": null,
+          "reasoning": "observed=A2 vs target=B2 (\u00b11)",
+          "judge_votes": [
+            {
+              "level": "A2",
+              "reasoning": "The response uses the past simple and past participle, focuses on everyday workplace vocabulary, and employs simple conjunctions and encouraging, direct instructions suitable for a high-beginner learner."
+            }
+          ]
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "fail"
+    },
+    {
+      "scenario_id": "c1_t3_conditional_mix_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=8)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=C1)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=0, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no forbidden set defined",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 1.0,
+          "reasoning": "L2_ratio=1.00 in [0.95,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "c1_t3_false_friend_assister_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=8)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=C1)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=0, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no forbidden set defined",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.9583333333333334,
+          "reasoning": "L2_ratio=0.96 in [0.95,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "c1_t3_subjunctive_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=C1)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=1, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no forbidden set defined",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.975609756097561,
+          "reasoning": "L2_ratio=0.98 in [0.95,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "el_a1_t2_misc_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=2, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no clear violation in regex pass",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "fail",
+          "score": 1.0,
+          "reasoning": "L2_ratio=1.00 outside [0.7,0.98]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "fail"
+    },
+    {
+      "scenario_id": "el_a1_t2_misc_002",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=0, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no clear violation in regex pass",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.8636363636363636,
+          "reasoning": "L2_ratio=0.86 in [0.7,0.98]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "el_a1_t2_misc_003",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=1, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no clear violation in regex pass",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.9259259259259259,
+          "reasoning": "L2_ratio=0.93 in [0.7,0.98]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "el_a1_t2_misc_004",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=0, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no clear violation in regex pass",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.8846153846153846,
+          "reasoning": "L2_ratio=0.88 in [0.7,0.98]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "multi_a1_verb_no_uptake_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=0, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "fail",
+          "score": null,
+          "reasoning": "forbidden CF move detected: ['metalinguistic']",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.9459459459459459,
+          "reasoning": "L2_ratio=0.95 in [0.7,0.98]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "fail"
+    },
+    {
+      "scenario_id": "multi_a2_art_uptake_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=A2)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=0, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "fail",
+          "score": null,
+          "reasoning": "forbidden CF move detected: ['explicit_correction']",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.8823529411764706,
+          "reasoning": "L2_ratio=0.88 in [0.85,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "fail"
+    },
+    {
+      "scenario_id": "multi_b1_cond_partial_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=B1)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=2, ?=1, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no forbidden set defined",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.9508196721311475,
+          "reasoning": "L2_ratio=0.95 in [0.9,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "multi_b2_modal_no_uptake_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=B2)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=1, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no forbidden set defined",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 1.0,
+          "reasoning": "L2_ratio=1.00 in [0.95,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "risk_a1_metalinguistic_leak_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=1, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no clear violation in regex pass",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.9545454545454546,
+          "reasoning": "L2_ratio=0.95 in [0.7,0.98]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "risk_gravity_comm_breakdown_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=B1)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=1, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no forbidden set defined",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.98,
+          "reasoning": "L2_ratio=0.98 in [0.9,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "risk_l1_drift_a1_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=0, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no clear violation in regex pass",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.9545454545454546,
+          "reasoning": "L2_ratio=0.95 in [0.7,0.98]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "risk_priority_leak_b1_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=B1)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=2, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no clear violation in regex pass",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 0.9767441860465116,
+          "reasoning": "L2_ratio=0.98 in [0.9,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    },
+    {
+      "scenario_id": "risk_t4_regression_a2_001",
+      "mode": "full",
+      "lint": [
+        {
+          "check": "json_wrapper",
+          "passed": true,
+          "detail": "skipped (not required by scenario)"
+        },
+        {
+          "check": "observed_level",
+          "passed": true,
+          "detail": "skipped (required=False, turn=5)"
+        },
+        {
+          "check": "a1_no_jargon",
+          "passed": true,
+          "detail": "skipped (CEFR=A2)"
+        },
+        {
+          "check": "no_priority_leak",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "dims": [
+        {
+          "dim": "recast_saliency_and_dosage",
+          "verdict": "pass",
+          "score": null,
+          "reasoning": "lines=1, ?=0, marker=False",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid_partial",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no forbidden set defined",
+          "judge_votes": []
+        },
+        {
+          "dim": "scaffolding_flags_l2_ratio",
+          "verdict": "pass",
+          "score": 1.0,
+          "reasoning": "L2_ratio=1.00 in [0.85,1.0]",
+          "judge_votes": []
+        },
+        {
+          "dim": "cf_move_set_valid",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "register_cefr_alignment",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        },
+        {
+          "dim": "semantic_fidelity_pairwise",
+          "verdict": "unknown",
+          "score": null,
+          "reasoning": "no consensus",
+          "judge_votes": []
+        }
+      ],
+      "overall": "pass"
+    }
+  ]
+}

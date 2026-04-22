@@ -18,13 +18,13 @@ axis_thresholds:
   output_shape: 0.66
   pedagogy_quality: 0.66
 noise_floor:
-  cf_move_set_valid: 0.0
+  cf_move_set_valid: 0.308
   scaffolding_flags_honored: 0.0
-  register_cefr_alignment: 0.0
+  register_cefr_alignment: 0.269
   recast_saliency_and_dosage: 0.0
-  semantic_fidelity_pairwise: 0.038
-  cf_move_set_valid_partial: 0.115
-  scaffolding_flags_l2_ratio: 0.038
+  semantic_fidelity_pairwise: 0.269
+  cf_move_set_valid_partial: 0.077
+  scaffolding_flags_l2_ratio: 0.0
 dropped_dims: []
 dify:
   public_api_base: http://127.0.0.1:5001
