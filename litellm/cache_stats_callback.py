@@ -68,11 +68,17 @@ _MODEL_GROUP_BY_NAME = {
     "groq-qwen": "groq-qwen",
     "groq/qwen/qwen3-32b": "groq-qwen",
     "qwen/qwen3-32b": "groq-qwen",
-    # Session 44 — Gemini Flash as Oracle judge (free tier has tight
-    # RPD, typically 20-250 per Google's adaptive throttling).
+    # Session 44 — Gemini judge chain. Limits per-model (separate
+    # buckets) so we cascade 2.5 Flash → 3 Flash → 3.1 Flash Lite.
     "gemini-flash": "gemini-flash",
     "gemini/gemini-2.5-flash": "gemini-flash",
     "gemini-2.5-flash": "gemini-flash",
+    "gemini-3-flash": "gemini-3-flash",
+    "gemini/gemini-3-flash-preview": "gemini-3-flash",
+    "gemini-3-flash-preview": "gemini-3-flash",
+    "gemini-3-1-flash-lite": "gemini-3-1-flash-lite",
+    "gemini/gemini-3.1-flash-lite-preview": "gemini-3-1-flash-lite",
+    "gemini-3.1-flash-lite-preview": "gemini-3-1-flash-lite",
 }
 RELAY_TIMEOUT_S = 1.5
 

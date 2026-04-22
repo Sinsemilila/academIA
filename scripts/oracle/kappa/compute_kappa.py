@@ -26,7 +26,9 @@ DIMS = ["cf_move_set_valid", "register_cefr_alignment"]
 JUDGES = {
     "claude":             "scores_claude.json",
     "gemini_pro":         "scores_gemini_pro_web.json",
-    "gemini_flash":       "scores_gemini_flash_litellm.json",
+    "gemini_2_5_flash":   "scores_gemini_flash_litellm.json",
+    "gemini_3_flash":     "scores_gemini3_flash.json",
+    "gemini_3_1_lite":    "scores_gemini31_flash_lite.json",
     "chatgpt":            "scores_chatgpt_free_web.json",
     "gpt4o_mini":         "scores_gpt4omini.json",
     "groq_llama70b":      "scores_groq_llama70b.json",

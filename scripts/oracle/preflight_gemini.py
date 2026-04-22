@@ -18,38 +18,38 @@ import argparse
 import subprocess
 import sys
 
-# Observed limits on Sinse's free-tier project, 2026-04-22.
-# Google may raise back to 250 RPD at any time — re-check console.
-DEFAULT_RPD_LIMIT = 20
-DEFAULT_RPM_LIMIT = 5
-MODEL = "gemini-flash"
-
-# Oracle run cost approximations (per scripts/oracle/config.yaml) :
-#   lint : 0 judge calls
-#   smoke : 6 scenarios × 1 vote × 3 LLM dims = 18 judge calls
-#   full : 26 scenarios × 3 votes × 3 LLM dims = 234 judge calls
-MODE_CALL_ESTIMATES = {
-    "lint": 0,
-    "smoke": 18,
-    "full": 234,
-}
+# Observed per-model limits on Sinse's free-tier project, 2026-04-22.
+# Limits are SEPARATE buckets per model → we sum them to get total budget.
+GEMINI_CHAIN = [
+    ("gemini-flash",           20),  # gemini-2.5-flash
+    ("gemini-3-flash",         20),  # gemini-3-flash-preview
+    ("gemini-3-1-flash-lite", 500),  # gemini-3.1-flash-lite-preview
+]
+CUMULATED_RPD = sum(lim for _, lim in GEMINI_CHAIN)
 
 
-def _rpd_used_today() -> int:
+def _rpd_used_today() -> dict[str, int]:
+    """Return dict {model_alias → requests today} from litellm_cache_stats."""
+    used = {m: 0 for m, _ in GEMINI_CHAIN}
     try:
+        models_csv = ",".join(f"'{m}'" for m, _ in GEMINI_CHAIN)
         out = subprocess.check_output(
             [
                 "docker", "exec", "-i", "postgres-academie",
                 "psql", "-U", "sinse", "-d", "academie_db", "-tAc",
-                f"SELECT COUNT(*) FROM litellm_cache_stats "
-                f"WHERE model = '{MODEL}' AND started_at::date = CURRENT_DATE;",
+                f"SELECT model, COUNT(*) FROM litellm_cache_stats "
+                f"WHERE model IN ({models_csv}) AND started_at::date = CURRENT_DATE "
+                f"GROUP BY model;",
             ],
             text=True,
         ).strip()
-        return int(out or 0)
+        for line in out.split("\n"):
+            if "|" in line:
+                m, n = line.split("|", 1)
+                used[m.strip()] = int(n.strip() or 0)
     except Exception:
-        # No litellm_cache_stats → probably no Gemini calls yet today
-        return 0
+        pass
+    return used
 
 
 def main() -> int:
@@ -59,8 +59,6 @@ def main() -> int:
     g.add_argument("--calls", type=int, help="Raw planned calls count")
     ap.add_argument("--n-votes", type=int, default=3,
                     help="Override N-majority votes (default 3, smoke uses 1)")
-    ap.add_argument("--rpd-limit", type=int, default=DEFAULT_RPD_LIMIT,
-                    help=f"Daily request cap (default {DEFAULT_RPD_LIMIT})")
     args = ap.parse_args()
 
     if args.calls is not None:
@@ -68,29 +66,31 @@ def main() -> int:
     elif args.mode == "lint":
         planned = 0
     elif args.mode == "smoke":
-        # smoke mode in scripts/oracle/config.yaml uses n_votes=1 by design
         planned = 6 * 1 * 3
-    else:  # full
+    else:
         planned = 26 * args.n_votes * 3
 
     used = _rpd_used_today()
-    remaining = max(args.rpd_limit - used, 0)
-    headroom = remaining - planned
+    total_used = sum(used.values())
+    total_remaining = CUMULATED_RPD - total_used
+    headroom = total_remaining - planned
 
-    print(f"Gemini Flash — today's budget check")
-    print(f"  limit  : {args.rpd_limit} RPD (adjust --rpd-limit if Google raised yours)")
-    print(f"  used   : {used}")
-    print(f"  remain : {remaining}")
-    print(f"  planned: {planned} ({args.mode if args.mode else 'custom'})")
+    print("Gemini judge chain — budget check (limits are per-model)")
+    for model, limit in GEMINI_CHAIN:
+        u = used.get(model, 0)
+        print(f"  {model:<24} {u:>4} / {limit} RPD")
+    print(f"  {'TOTAL':<24} {total_used:>4} / {CUMULATED_RPD} RPD  "
+          f"({total_remaining} remaining)")
+    print(f"  planned run : {planned} calls ({args.mode or 'custom'}, n_votes={args.n_votes})")
     print(f"  headroom after run : {headroom}")
     if headroom < 0:
         print()
-        print(f"  ❌ BLOCK : planned run would exceed RPD by {-headroom} calls.")
+        print(f"  ❌ BLOCK : planned run would exceed cumulated RPD by {-headroom}.")
         print(f"     Options : reduce --n-votes, wait till 00:00 UTC reset,")
         print(f"     or upgrade to Tier 1 (pay-as-you-go, ~$0.15 per full run).")
         return 1
-    elif headroom < args.rpd_limit * 0.1:
-        print(f"  ⚠️  TIGHT : you'll have <10% of daily RPD left after this run.")
+    elif headroom < CUMULATED_RPD * 0.1:
+        print(f"  ⚠️  TIGHT : <10% of total RPD left after this run.")
         return 0
     else:
         print(f"  ✓ CLEAR : safe to launch.")
