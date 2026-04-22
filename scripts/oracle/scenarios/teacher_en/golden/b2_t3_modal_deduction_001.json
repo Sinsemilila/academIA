@@ -1,24 +1,24 @@
 {
   "scenario_id": "b2_t3_modal_deduction_001",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:28:50Z",
-  "response": "Almost there! It should be: \"He must have forgotten the meeting; he is always so responsible.\" \n\nRemember, we use \"forgotten\" instead of \"forgot\" in this case because of the perfect aspect of the modal verb \"must have.\" Keep up the good work!",
-  "dify_conversation_id": "2a545a0d-d2be-432e-be5d-bc31113bfd1c",
-  "dify_message_id": "4e223493-8ab4-41a6-84b7-9355dc04e551",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:32:35Z",
+  "response": "It seems like you're trying to express that he forgot the meeting, even though he is usually responsible. A more accurate way to say this would be: \"He must have forgotten the meeting; he always is so responsible.\" \n\nRemember to use \"forgotten\" instead of \"forgot\" in this context. Keep up the good work! Do you want to try another sentence?",
+  "dify_conversation_id": "46378651-a780-47ce-9f5f-caa69a054312",
+  "dify_message_id": "9855ed55-fcab-4084-bceb-4aa2688d35b6",
   "usage": {
     "prompt_tokens": 1761,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 57,
+    "completion_tokens": 75,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1818,
+    "total_tokens": 1836,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.051,
-    "time_to_first_token": 1.635,
+    "latency": 1.653,
+    "time_to_first_token": 2.022,
     "time_to_generate": 0.0
   }
 }

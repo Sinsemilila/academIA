@@ -1,24 +1,24 @@
 {
   "scenario_id": "el_a1_t2_misc_001",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:29:03Z",
-  "response": "It looks like your question is incomplete. Can you please finish your sentence? What would you like to know about what I would do?",
-  "dify_conversation_id": "954c0712-80f2-4148-a9a0-89de84b71747",
-  "dify_message_id": "2b5dcbb6-49aa-4ccd-aa67-1a601f29b3c6",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:32:49Z",
+  "response": "It looks like your sentence is incomplete. You can say, \"What would you do if you were...?\" and then finish with a situation. For example, \"What would you do if you were a superhero?\" \n\nCan you give me the full question?",
+  "dify_conversation_id": "b9a62b2c-6618-43f5-98bd-d9b509433a0a",
+  "dify_message_id": "11ef1882-b96d-47d4-9c27-77d65f599be7",
   "usage": {
     "prompt_tokens": 1754,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 27,
+    "completion_tokens": 52,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1781,
+    "total_tokens": 1806,
     "total_price": "0",
     "currency": "USD",
-    "latency": 0.956,
-    "time_to_first_token": 1.331,
+    "latency": 1.6,
+    "time_to_first_token": 2.01,
     "time_to_generate": 0.0
   }
 }

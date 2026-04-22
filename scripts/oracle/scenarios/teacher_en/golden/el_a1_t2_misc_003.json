@@ -1,24 +1,24 @@
 {
   "scenario_id": "el_a1_t2_misc_003",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:29:07Z",
-  "response": "It's \"for a long time.\" You use \"for\" to talk about a duration. For example, \"I have lived here for a long time.\" Keep practicing! What else would you like to learn?",
-  "dify_conversation_id": "9789129b-3a3c-45aa-bef0-7f69b63fbc32",
-  "dify_message_id": "d54d9620-9f54-4e24-818a-dd9d1d2086e3",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:32:53Z",
+  "response": "The correct phrase is \"for a long time.\" You can say, \"I haven't seen you for a long time.\" Keep practicing!",
+  "dify_conversation_id": "c075b1d4-f6f6-48ca-a65b-1c5088b27be1",
+  "dify_message_id": "037c83df-0b77-419d-8f6c-d8437240f501",
   "usage": {
     "prompt_tokens": 1751,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 42,
+    "completion_tokens": 27,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1793,
+    "total_tokens": 1778,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.033,
-    "time_to_first_token": 1.415,
+    "latency": 1.066,
+    "time_to_first_token": 1.44,
     "time_to_generate": 0.0
   }
 }

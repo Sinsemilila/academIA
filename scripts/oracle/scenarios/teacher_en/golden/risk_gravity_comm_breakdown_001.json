@@ -1,24 +1,24 @@
 {
   "scenario_id": "risk_gravity_comm_breakdown_001",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:29:29Z",
-  "response": "It seems like you're trying to express a thought, but the sentence is a bit unclear. You might want to say something like, \"The thing that the person was doing for a reason.\" Can you tell me more about what you want to express?",
-  "dify_conversation_id": "0d9a06b5-54d2-4d8d-97f9-9c6a16e8b5da",
-  "dify_message_id": "33a76ffc-bc2f-406b-ba35-ff8019d7e9ad",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:33:09Z",
+  "response": "I see what you’re trying to express, but it needs some corrections. You could say: \"The thing that the person was doing for a reason.\" \n\nWhat message are you trying to convey? Let me help you clarify it!",
+  "dify_conversation_id": "a3ab3b17-1e1b-4003-876e-c826f18efbfd",
+  "dify_message_id": "06966518-ded5-4b7f-b1a5-771be8a41bea",
   "usage": {
     "prompt_tokens": 1759,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 50,
+    "completion_tokens": 47,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1809,
+    "total_tokens": 1806,
     "total_price": "0",
     "currency": "USD",
-    "latency": 6.281,
-    "time_to_first_token": 6.65,
+    "latency": 1.056,
+    "time_to_first_token": 1.42,
     "time_to_generate": 0.0
   }
 }

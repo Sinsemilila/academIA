@@ -1,24 +1,24 @@
 {
   "scenario_id": "risk_priority_leak_b1_001",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:29:33Z",
-  "response": "I don't have weekends like you do, but if I did, I would probably enjoy relaxing, maybe reading a book or going for a walk. How about you? What did you do last weekend?",
-  "dify_conversation_id": "73bbc4dd-b93e-404e-8d1e-38408d699eff",
-  "dify_message_id": "c46e5e9a-95d7-44f9-b2bf-33bead5b3546",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:33:13Z",
+  "response": "I don't have weekends like people do, but I can help you practice talking about yours! What did you do last weekend?",
+  "dify_conversation_id": "7f20c907-4ae6-43a7-b69d-55089630e299",
+  "dify_message_id": "d2641d26-5b24-43f2-9698-d5d74a701d94",
   "usage": {
     "prompt_tokens": 1754,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 40,
+    "completion_tokens": 25,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1794,
+    "total_tokens": 1779,
     "total_price": "0",
     "currency": "USD",
-    "latency": 0.988,
-    "time_to_first_token": 1.35,
+    "latency": 0.969,
+    "time_to_first_token": 1.347,
     "time_to_generate": 0.0
   }
 }

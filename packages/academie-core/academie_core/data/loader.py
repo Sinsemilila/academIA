@@ -34,6 +34,21 @@ def load_fewshots(lang: str) -> list[dict] | None:
     return data.get("fewshots") if data else None
 
 
+@lru_cache(maxsize=16)
+def load_anti_patterns(lang: str) -> list[dict] | None:
+    """Session 45 P2c — load the anti-pattern bank (what NOT to do).
+    Schema per entry : id, level, wrong_type, learner, wrong_teacher,
+    why_wrong, correct_teacher. Used to contrast-train the LLM out of
+    forbidden CF moves at A1/A2 when rubric-level bans alone aren't
+    enough. Returns None when no entry is defined."""
+    path = _DATA_DIR / "fewshots" / f"{lang}.yaml"
+    if not path.exists():
+        return None
+    with open(path) as f:
+        data = yaml.safe_load(f)
+    return (data.get("anti_patterns") or None) if data else None
+
+
 @lru_cache(maxsize=1)
 def load_l1_names() -> dict[str, str]:
     """Load ISO-639-1 → English language name mapping."""

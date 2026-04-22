@@ -108,3 +108,24 @@ def test_a1_bans_elicit_and_metalinguistic_in_mapping():
     a1 = TIER_TO_FEEDBACK_BY_LEVEL["A1"]
     assert "elicitation" not in a1.values(), "A1 mapping leaks elicitation"
     assert "metalinguistic" not in a1.values(), "A1 mapping leaks metalinguistic"
+
+
+# ── Anti-pattern contrast examples (P2c) ──
+
+from academie_core.pedagogy.teacher_prompt import render_fewshots_block
+
+
+@pytest.mark.parametrize("level", ["A1", "A2"])
+def test_fewshots_includes_anti_patterns_at_a1_a2(level):
+    block = render_fewshots_block(level)
+    assert "ANTI-PATTERNS" in block
+    assert "DO NOT PRODUCE" in block
+    assert "❌ WRONG" in block
+    assert "✅ CORRECT" in block
+
+
+@pytest.mark.parametrize("level", ["B1", "B2", "C1", "C2"])
+def test_fewshots_no_anti_patterns_at_b1plus(level):
+    """B1+ learners can handle metalinguistic — no need for anti-pattern shock therapy."""
+    block = render_fewshots_block(level)
+    assert "ANTI-PATTERNS" not in block

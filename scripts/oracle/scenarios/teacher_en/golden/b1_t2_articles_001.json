@@ -1,24 +1,24 @@
 {
   "scenario_id": "b1_t2_articles_001",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:28:42Z",
-  "response": "Great job! Just a small correction: it should be \"the history of Europe.\" So you would say, \"I went to school yesterday and learned about the history of Europe.\" Keep it up! What else did you learn?",
-  "dify_conversation_id": "f5af3ed5-abe9-4f1b-ade0-995feeebd34e",
-  "dify_message_id": "36db3572-054f-4744-8681-cf0564041453",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:32:21Z",
+  "response": "That's great! Just a small correction: it should be \"the history of Europe.\" So your sentence would be: \"I went to school yesterday and learned about the history of Europe.\" Keep up the good work! What specific topic in European history did you learn about?",
+  "dify_conversation_id": "14f73d0c-b667-4e3c-8c4b-fd3a1d6b608d",
+  "dify_message_id": "0b8fe623-064a-4718-94b1-015330e5a2b6",
   "usage": {
     "prompt_tokens": 1759,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 46,
+    "completion_tokens": 54,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1805,
+    "total_tokens": 1813,
     "total_price": "0",
     "currency": "USD",
-    "latency": 2.096,
-    "time_to_first_token": 2.476,
+    "latency": 1.668,
+    "time_to_first_token": 2.054,
     "time_to_generate": 0.0
   }
 }

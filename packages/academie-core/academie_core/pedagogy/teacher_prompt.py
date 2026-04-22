@@ -30,6 +30,7 @@ from typing import Literal
 from academie_core.data.loader import (
     load_rubrics as _load_rubrics,
     load_fewshots as _load_fewshots,
+    load_anti_patterns as _load_anti_patterns,
     load_l1_names as _load_l1_names,
     load_l1_transfers,
 )
@@ -692,19 +693,55 @@ def select_fewshots(level: str, max_examples: int = 3, lang_data: LanguageData |
 
 
 def render_fewshots_block(level: str, max_examples: int = 3, lang_data: LanguageData | None = None) -> str:
-    """Returns a markdown-flavored block listing the few-shots for the given level."""
+    """Returns a markdown-flavored block listing the few-shots for the given level.
+
+    Session 45 P2c — at A1/A2 (where LLM compliance is weakest), appends
+    an ANTI-PATTERN block showing wrong_teacher side-by-side with
+    correct_teacher for the same learner turn. Contrast-training helps
+    gpt-4o-mini override its grammar-correction priors more than
+    rubric directives alone.
+    """
     fewshots = select_fewshots(level, max_examples=max_examples, lang_data=lang_data)
-    if not fewshots:
-        return ""
-    lines = ["=== FEW-SHOT EXAMPLES ==="]
-    for i, fs in enumerate(fewshots, 1):
-        lines.append(
-            f"\nExample {i} ({fs['type']}):\n"
-            f"  Learner: \"{fs['learner']}\"\n"
-            f"  Teacher: \"{fs['teacher']}\""
-        )
-    lines.append("\n=== END EXAMPLES ===")
+    lines: list[str] = []
+    if fewshots:
+        lines.append("=== FEW-SHOT EXAMPLES ===")
+        for i, fs in enumerate(fewshots, 1):
+            lines.append(
+                f"\nExample {i} ({fs['type']}):\n"
+                f"  Learner: \"{fs['learner']}\"\n"
+                f"  Teacher: \"{fs['teacher']}\""
+            )
+        lines.append("\n=== END EXAMPLES ===")
+
+    level_upper = level.upper().rstrip("+")
+    if level_upper in ("A1", "A2"):
+        anti = _anti_patterns_for(level_upper, lang_data)
+        if anti:
+            lines.append("")
+            lines.append(f"=== ANTI-PATTERNS — WRONG AT {level_upper}, DO NOT PRODUCE ===")
+            for a in anti:
+                lines.append(
+                    f"\nLearner : \"{a['learner']}\"\n"
+                    f"  ❌ WRONG ({a['wrong_type']}) : \"{a['wrong_teacher']}\"\n"
+                    f"      Why wrong : {a['why_wrong']}\n"
+                    f"  ✅ CORRECT : \"{a['correct_teacher']}\""
+                )
+            lines.append("\n=== END ANTI-PATTERNS ===")
+
     return "\n".join(lines)
+
+
+def _anti_patterns_for(level: str, lang_data: LanguageData | None = None) -> list[dict]:
+    """Return anti-pattern entries matching the given level, or empty list."""
+    bank = None
+    if lang_data and hasattr(lang_data, "anti_patterns"):
+        bank = lang_data.anti_patterns
+    if bank is None:
+        # default to English (Teacher EN) — other agents can override via lang_data
+        bank = _load_anti_patterns("en")
+    if not bank:
+        return []
+    return [a for a in bank if a.get("level") == level]
 
 
 # ── JSON output schema + parsing ────────────────────────────────────

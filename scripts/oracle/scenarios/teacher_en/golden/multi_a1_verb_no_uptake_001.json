@@ -1,24 +1,24 @@
 {
   "scenario_id": "multi_a1_verb_no_uptake_001",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:29:11Z",
-  "response": "You did well to use \"yesterday,\" but the verb should be in the past tense. It should be: \"Yesterday I went to the park with my mum.\" Keep practicing! What do you like to do in the park?",
-  "dify_conversation_id": "3691f618-ffcf-4a4e-a669-643612cb879a",
-  "dify_message_id": "96bdaeb8-bcbb-4dcc-a8b8-e77f395d509f",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:32:58Z",
+  "response": "Yesterday, I went to the park with my mum. \n\nYou used the present tense \"go\" instead of the past tense \"went.\" Keep up the practice! What did you do at the park?",
+  "dify_conversation_id": "fb58a4d2-7c1d-4fa5-8250-dcfa9b060a6e",
+  "dify_message_id": "aad301ce-dcb8-4e19-bbab-94a63cc652fb",
   "usage": {
     "prompt_tokens": 1757,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 47,
+    "completion_tokens": 41,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1804,
+    "total_tokens": 1798,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.315,
-    "time_to_first_token": 1.72,
+    "latency": 1.682,
+    "time_to_first_token": 2.054,
     "time_to_generate": 0.0
   }
 }

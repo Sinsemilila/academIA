@@ -1,24 +1,24 @@
 {
   "scenario_id": "multi_b1_cond_partial_001",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:29:17Z",
-  "response": "Great try! Just a small correction: it should be \"If I won the lottery, I would buy a house.\" You're using the second conditional here, which is perfect for unreal situations. Keep going! Would you like to try another sentence?",
-  "dify_conversation_id": "0272e436-361c-4786-a915-7e92b5599730",
-  "dify_message_id": "03fcfc05-8f2f-49a8-bd07-d4c43131460c",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:33:02Z",
+  "response": "Great effort in trying to formulate a conditional sentence! It should be: \"If I won the lottery, I would buy a house.\" You need to use \"won\" for the past tense and \"would\" for the future result. Keep practicing! \n\nNow, can you try another sentence using the second conditional?",
+  "dify_conversation_id": "01ab08f5-8cd6-4157-91aa-1eda47337575",
+  "dify_message_id": "6dd9af19-670e-4c0b-9fc7-f51da2e3e42f",
   "usage": {
     "prompt_tokens": 2381,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 49,
+    "completion_tokens": 63,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 2430,
+    "total_tokens": 2444,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.372,
-    "time_to_first_token": 1.814,
+    "latency": 1.34,
+    "time_to_first_token": 1.717,
     "time_to_generate": 0.0
   }
 }

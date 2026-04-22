@@ -1,24 +1,24 @@
 {
   "scenario_id": "risk_a1_metalinguistic_leak_001",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:29:22Z",
-  "response": "It's okay! Let's break it down. What part do you find difficult to understand? I can help you with that.",
-  "dify_conversation_id": "a5c836a0-1466-414b-8914-3b3a2b786575",
-  "dify_message_id": "3442c95a-581a-41c2-8b67-be893e6d72b0",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:33:06Z",
+  "response": "No problem! You can say \"I don't understand this.\" Let's keep practicing together. What would you like to learn about?",
+  "dify_conversation_id": "784c5384-9ad2-418b-9f54-1e43f89efed5",
+  "dify_message_id": "9a86bb49-e2f7-458c-9ccf-a60401640371",
   "usage": {
     "prompt_tokens": 1752,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 24,
+    "completion_tokens": 25,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1776,
+    "total_tokens": 1777,
     "total_price": "0",
     "currency": "USD",
-    "latency": 0.803,
-    "time_to_first_token": 1.234,
+    "latency": 0.916,
+    "time_to_first_token": 1.321,
     "time_to_generate": 0.0
   }
 }

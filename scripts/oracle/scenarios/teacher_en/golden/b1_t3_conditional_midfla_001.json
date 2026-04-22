@@ -1,24 +1,24 @@
 {
   "scenario_id": "b1_t3_conditional_midfla_001",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:28:44Z",
-  "response": "It's great that you want to travel to Japan! However, the sentence needs a little correction. You should say: \"If I had more money, I would travel to Japan.\" This is because we use the past simple \"had\" with \"would\" in conditional sentences. Keep it up!",
-  "dify_conversation_id": "79b01db8-a9f9-4576-ba09-9b4e2689d128",
-  "dify_message_id": "3fd6f685-3533-4953-aa04-e6c0934c9f44",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:32:23Z",
+  "response": "Good try! It should be: \"If I had more money, I would travel to Japan.\" This is an example of the second conditional, which is used for hypothetical situations. Keep practicing!",
+  "dify_conversation_id": "c8ba91ae-e54f-4d28-a2f0-cbf74b314e9f",
+  "dify_message_id": "6ef6f5e7-24ba-4c1c-a2ca-f7145c749c7f",
   "usage": {
     "prompt_tokens": 1760,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 59,
+    "completion_tokens": 39,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1819,
+    "total_tokens": 1799,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.116,
-    "time_to_first_token": 1.489,
+    "latency": 1.793,
+    "time_to_first_token": 2.146,
     "time_to_generate": 0.0
   }
 }

@@ -1,24 +1,24 @@
 {
   "scenario_id": "c1_t3_subjunctive_001",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:29:01Z",
-  "response": "The correct form should be: \"It is essential that he be present at the meeting tomorrow.\" In this case, you need the subjunctive mood after \"essential.\" Keep it up! Would you like to try another sentence?",
-  "dify_conversation_id": "d6c5e215-8432-42c5-a52f-507b67f49f2b",
-  "dify_message_id": "921200fd-d0ef-496b-bc6f-18bf7ed78239",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:32:46Z",
+  "response": "The sentence should use \"be\" instead of \"is\" after \"that.\" The correct version is: \"It is essential that he be present at the meeting tomorrow.\" This construction is known as the subjunctive mood, which is often used after expressions of necessity, importance, or suggestion. Would you like to practice more with the subjunctive?",
+  "dify_conversation_id": "c5064829-57ee-43a9-a1fa-c9dae4b024d5",
+  "dify_message_id": "71b5fff7-c6f7-4fe0-ab0b-877ed81a4c9e",
   "usage": {
     "prompt_tokens": 1759,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 46,
+    "completion_tokens": 71,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1805,
+    "total_tokens": 1830,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.255,
-    "time_to_first_token": 1.622,
+    "latency": 2.036,
+    "time_to_first_token": 2.405,
     "time_to_generate": 0.0
   }
 }

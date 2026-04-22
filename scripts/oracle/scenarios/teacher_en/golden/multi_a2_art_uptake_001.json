@@ -1,24 +1,24 @@
 {
   "scenario_id": "multi_a2_art_uptake_001",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:29:15Z",
-  "response": "You need to add \"a\" before \"car.\" It should be: \"I bought a car last week.\" Good job using the past tense! What else can you tell me about your car?",
-  "dify_conversation_id": "25476633-8499-4093-b204-218499c75a93",
-  "dify_message_id": "329b5244-5820-4b79-bfdf-6c70d7289a36",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:33:00Z",
+  "response": "Good job on using the past tense! Just a small correction: it should be \"I bought a car last week.\" You need the article \"a\" before \"car.\" Keep it up!",
+  "dify_conversation_id": "a0ab5d30-bc88-4102-bb24-df69c31c9d90",
+  "dify_message_id": "6cef67a1-9f28-4426-abb1-574410294071",
   "usage": {
     "prompt_tokens": 1753,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 40,
+    "completion_tokens": 39,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1793,
+    "total_tokens": 1792,
     "total_price": "0",
     "currency": "USD",
-    "latency": 3.034,
-    "time_to_first_token": 3.404,
+    "latency": 1.18,
+    "time_to_first_token": 1.556,
     "time_to_generate": 0.0
   }
 }

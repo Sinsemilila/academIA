@@ -1,24 +1,24 @@
 {
   "scenario_id": "el_a1_t2_misc_002",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:29:05Z",
-  "response": "It should be \"for a long time.\" We use \"for\" to talk about a duration. Keep practicing!",
-  "dify_conversation_id": "99450414-8bcc-4cf6-8199-1fdb2d1962a4",
-  "dify_message_id": "72163a67-4c7a-46fa-b8e4-cd512f2d224c",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:32:51Z",
+  "response": "It should be \"for a long time.\" We use \"for\" to talk about a period of time. \n\nCan you make a sentence using \"for a long time\"?",
+  "dify_conversation_id": "8b64f72a-becb-4b95-aa45-89cc89802ed7",
+  "dify_message_id": "e59bc092-cbbd-42c7-aff7-683a6ba3485d",
   "usage": {
     "prompt_tokens": 1751,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 23,
+    "completion_tokens": 35,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1774,
+    "total_tokens": 1786,
     "total_price": "0",
     "currency": "USD",
-    "latency": 0.83,
-    "time_to_first_token": 1.244,
+    "latency": 0.981,
+    "time_to_first_token": 1.357,
     "time_to_generate": 0.0
   }
 }

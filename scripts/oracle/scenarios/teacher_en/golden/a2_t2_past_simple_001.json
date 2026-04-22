@@ -1,24 +1,24 @@
 {
   "scenario_id": "a2_t2_past_simple_001",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:28:32Z",
-  "response": "Great effort in sharing your experience! Just a couple of corrections: it should be \"I went to the cinema\" instead of \"I goed,\" and \"I took many photos\" instead of \"I taked.\" \n\nSo, the correct sentence is: \"Last weekend, I went to the cinema and I took many photos.\" \n\nKeep it up! What movie did you see?",
-  "dify_conversation_id": "2b857932-1499-46b8-85fe-852f625c57a9",
-  "dify_message_id": "578e8f82-9379-4d10-a2b0-5dcfa6f2d09e",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:32:09Z",
+  "response": "Great effort in expressing your past activities! Just a couple of corrections: it should be \"I went to the cinema\" instead of \"I goed\" and \"I took many photos\" instead of \"I taked.\" \n\nSo it would be: \"Last weekend I went to the cinema and I took many photos.\" \n\nKeep it up! What movie did you see?",
+  "dify_conversation_id": "3b36267d-fce9-4282-a542-46203ae26d0c",
+  "dify_message_id": "83168c57-dab5-49a5-bfce-31d33a7888e2",
   "usage": {
     "prompt_tokens": 2392,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 77,
+    "completion_tokens": 75,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 2469,
+    "total_tokens": 2467,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.573,
-    "time_to_first_token": 1.998,
+    "latency": 2.558,
+    "time_to_first_token": 2.964,
     "time_to_generate": 0.0
   }
 }

@@ -1,24 +1,24 @@
 {
   "scenario_id": "a2_t2_plural_high_fla_001",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:28:34Z",
-  "response": "The children play with dogs in the garden every day. \n\nRemember, we use \"children\" (not \"childrens\") and \"day\" (not \"days\") in this context. Keep practicing! What else would you like to work on?",
-  "dify_conversation_id": "97e078d5-66f8-4ba1-abeb-d3a717a0e526",
-  "dify_message_id": "fd2e167a-cc42-4404-a293-9335261ff16f",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:32:11Z",
+  "response": "The sentence should be corrected to: \"The children play with dogs in the garden every day.\" \n\nRemember that \"children\" is plural and \"every day\" is the correct expression to indicate frequency. Keep practicing!",
+  "dify_conversation_id": "8b1ac0c4-2df8-48b1-9f83-0eaea91d737a",
+  "dify_message_id": "78575734-c906-4c31-a353-f4d9754c8806",
   "usage": {
     "prompt_tokens": 1758,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 50,
+    "completion_tokens": 43,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1808,
+    "total_tokens": 1801,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.526,
-    "time_to_first_token": 1.892,
+    "latency": 1.221,
+    "time_to_first_token": 1.61,
     "time_to_generate": 0.0
   }
 }

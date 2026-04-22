@@ -1,24 +1,24 @@
 {
   "scenario_id": "b1_edge_t2t3_prepositions_001",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:28:38Z",
-  "response": "It's great that you're expressing interests! Just a small correction: instead of \"interested on,\" you should say \"interested in.\" So, it should be: \"She is interested in learning French and in playing piano.\" Keep up the good work! What other interests do you have?",
-  "dify_conversation_id": "d98b46ff-3647-4baa-8368-adf8bba945e4",
-  "dify_message_id": "d8080c24-22d6-4217-88fa-259b607409bd",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:32:18Z",
+  "response": "She is interested in learning French and playing the piano. Remember to use \"interested in\" instead of \"interested on.\" Keep it up! What would you like to practice next?",
+  "dify_conversation_id": "f8cf53ec-ed72-4ebd-a102-e75997e9d588",
+  "dify_message_id": "45e33d87-4092-48b1-b1c7-e55e99f85a15",
   "usage": {
     "prompt_tokens": 1758,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 58,
+    "completion_tokens": 38,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1816,
+    "total_tokens": 1796,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.09,
-    "time_to_first_token": 1.453,
+    "latency": 2.401,
+    "time_to_first_token": 2.94,
     "time_to_generate": 0.0
   }
 }

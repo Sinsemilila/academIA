@@ -1,24 +1,24 @@
 {
   "scenario_id": "risk_l1_drift_a1_001",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:29:31Z",
-  "response": "Good effort! It should be: \"I ate an apple this morning for breakfast.\" \n\nRemember, use \"ate\" for the past tense. Keep going!",
-  "dify_conversation_id": "0ec8be51-af2a-415c-b241-bc53ac1307fb",
-  "dify_message_id": "9c1a189c-8b83-431e-a14d-b0c87001164f",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:33:11Z",
+  "response": "Good try! It should be: \"I ate an apple this morning for breakfast.\" Remember to use the past tense \"ate\" for something that happened in the past. Keep it up!",
+  "dify_conversation_id": "1b87e6f3-60d8-4de3-8eab-a61d4c3810ec",
+  "dify_message_id": "3590733a-c0bf-4e8c-9bf6-4719834534d5",
   "usage": {
     "prompt_tokens": 1755,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 32,
+    "completion_tokens": 38,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1787,
+    "total_tokens": 1793,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.148,
-    "time_to_first_token": 1.523,
+    "latency": 1.462,
+    "time_to_first_token": 1.816,
     "time_to_generate": 0.0
   }
 }

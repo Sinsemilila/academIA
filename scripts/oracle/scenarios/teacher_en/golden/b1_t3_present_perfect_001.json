@@ -1,24 +1,24 @@
 {
   "scenario_id": "b1_t3_present_perfect_001",
-  "sha": "7f20d3aeaf61",
-  "recorded_at": "2026-04-22T11:28:46Z",
-  "response": "You should say, \"I saw this film yesterday, and it was really good.\" The verb \"saw\" is the simple past tense of \"see,\" which is correct here. Keep up the good work! What's another film you've enjoyed lately?",
-  "dify_conversation_id": "210e54e3-e931-4a64-a91b-f7b4d098cdda",
-  "dify_message_id": "e3b77bab-f493-448d-9458-ac7185fd00e7",
+  "sha": "83fccdade4b0",
+  "recorded_at": "2026-04-22T20:32:25Z",
+  "response": "You should say, \"I saw this film yesterday, and it was really good.\" The verb \"saw\" is the correct past tense for \"see.\" Keep going!",
+  "dify_conversation_id": "d9f1b0e8-6838-4b13-acdd-e1584327f6f7",
+  "dify_message_id": "92b4ac7f-a94d-486c-8b7f-0c9f0c3dbf28",
   "usage": {
     "prompt_tokens": 1759,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 50,
+    "completion_tokens": 35,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 1809,
+    "total_tokens": 1794,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.311,
-    "time_to_first_token": 1.674,
+    "latency": 0.988,
+    "time_to_first_token": 1.358,
     "time_to_generate": 0.0
   }
 }
