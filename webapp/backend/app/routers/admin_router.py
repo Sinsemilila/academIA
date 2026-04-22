@@ -228,3 +228,61 @@ async def delete_user(user_id: int, admin: dict = Depends(require_admin)):
 
     logger.info("User %s (id=%d) deleted by admin %s", user["username"], user_id, admin["username"])
     return {"ok": True, "message": f"User {user['username']} deleted"}
+
+
+# ── Phase D v2 — cache stats dashboard ────────────────────
+
+@router.get("/api/admin/cache-stats")
+async def cache_stats(hours: int = 24, admin: dict = Depends(require_admin)):
+    """Aggregate OpenAI prompt-caching telemetry from the litellm_cache_stats
+    sidecar. Returns summary + per-hour time series + per-model breakdown.
+    Feeds the /admin dashboard cache section (Phase D v2)."""
+    hours = max(1, min(hours, 24 * 30))  # clamp [1h, 30d]
+    async with db.pool.acquire() as conn:
+        summary = await conn.fetchrow(
+            """
+            SELECT
+              COUNT(*) AS requests,
+              COALESCE(SUM(prompt_tokens), 0)::int AS prompt_tokens,
+              COALESCE(SUM(cached_tokens), 0)::int AS cached_tokens,
+              COALESCE((SUM(cached_tokens)::float / NULLIF(SUM(prompt_tokens), 0) * 100)::int, 0) AS cache_pct
+            FROM litellm_cache_stats
+            WHERE started_at > NOW() - ($1 || ' hours')::interval
+            """,
+            str(hours),
+        )
+        by_hour = await conn.fetch(
+            """
+            SELECT
+              date_trunc('hour', started_at) AS bucket,
+              COUNT(*)::int AS requests,
+              COALESCE(SUM(prompt_tokens), 0)::int AS prompt_tokens,
+              COALESCE(SUM(cached_tokens), 0)::int AS cached_tokens
+            FROM litellm_cache_stats
+            WHERE started_at > NOW() - ($1 || ' hours')::interval
+            GROUP BY bucket
+            ORDER BY bucket
+            """,
+            str(hours),
+        )
+        by_model = await conn.fetch(
+            """
+            SELECT
+              model,
+              COUNT(*)::int AS requests,
+              COALESCE(SUM(prompt_tokens), 0)::int AS prompt_tokens,
+              COALESCE(SUM(cached_tokens), 0)::int AS cached_tokens,
+              COALESCE((SUM(cached_tokens)::float / NULLIF(SUM(prompt_tokens), 0) * 100)::int, 0) AS cache_pct
+            FROM litellm_cache_stats
+            WHERE started_at > NOW() - ($1 || ' hours')::interval
+            GROUP BY model
+            ORDER BY prompt_tokens DESC
+            """,
+            str(hours),
+        )
+    return {
+        "hours": hours,
+        "summary": dict(summary or {}),
+        "by_hour": [dict(r) for r in by_hour],
+        "by_model": [dict(r) for r in by_model],
+    }
