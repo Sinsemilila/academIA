@@ -1,0 +1,24 @@
+{
+  "scenario_id": "c1_t3_register_drift_001",
+  "sha": "15abc4b17dee",
+  "recorded_at": "2026-04-22T11:01:51Z",
+  "response": "Je suis là pour t'aider, mais pourrais-tu me dire comment tu t'appelles et pourquoi tu souhaites apprendre l'anglais ? Est-ce pour le travail, les voyages, la culture, un examen ou par curiosité ?",
+  "dify_conversation_id": "5566c3e6-6e92-4443-a841-cc79e947840d",
+  "dify_message_id": "44d54937-e391-4900-871a-7a167ff8450e",
+  "usage": {
+    "prompt_tokens": 2828,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 46,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2874,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 1.247,
+    "time_to_first_token": 1.519,
+    "time_to_generate": 0.0
+  }
+}

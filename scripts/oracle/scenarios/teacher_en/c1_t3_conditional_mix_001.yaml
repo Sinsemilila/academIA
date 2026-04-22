@@ -1,0 +1,43 @@
+id: c1_t3_conditional_mix_001
+source: handcrafted_c1c2_session41
+scenario_key:
+  agent: teacher_en
+  cefr: C1
+  target_tier: T3
+  error_category: conditional
+  fla: mid
+  style_profile: direct
+multi_turn: false
+turns:
+- role: learner
+  text: If I would have known about the meeting earlier, I would have prepared differently.
+  turn_number: 8
+  expected_errors:
+  - V:COND
+expected_dimensions:
+  cf_move_set_valid:
+    mode: set_membership
+    acceptable:
+    - elicitation
+    - metalinguistic
+    - partial_recast
+    - clarification_request
+    forbidden: []
+  scaffolding_flags_honored:
+    mode: all_required
+    l2_ratio_band:
+    - 0.95
+    - 1.0
+  register_cefr_alignment:
+    mode: within_sublevel
+    target: C1
+    tolerance: 1
+  recast_saliency_and_dosage:
+    mode: structural
+    max_lines: 7
+    max_questions: 2
+    error_form_isolated: true
+    mini_lesson_allowed: true
+  semantic_fidelity_pairwise:
+    mode: llm_pairwise
+    vs_golden: true

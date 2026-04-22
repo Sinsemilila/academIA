@@ -1,0 +1,24 @@
+{
+  "scenario_id": "c1_t3_false_friend_assister_001",
+  "sha": "15abc4b17dee",
+  "recorded_at": "2026-04-22T11:01:47Z",
+  "response": "Merci pour ta réponse ! Pour continuer, pourrais-tu me dire ce que tu as appris lors de cette présentation ? Cela m'aidera à mieux comprendre tes intérêts.",
+  "dify_conversation_id": "25a5c903-5664-4474-b9b5-eab2f7a471a4",
+  "dify_message_id": "300c9a59-62d0-40c9-9996-28e68499a175",
+  "usage": {
+    "prompt_tokens": 2824,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 32,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2856,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 1.099,
+    "time_to_first_token": 1.427,
+    "time_to_generate": 0.0
+  }
+}

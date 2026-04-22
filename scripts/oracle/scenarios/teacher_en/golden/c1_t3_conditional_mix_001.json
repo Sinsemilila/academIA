@@ -1,0 +1,24 @@
+{
+  "scenario_id": "c1_t3_conditional_mix_001",
+  "sha": "15abc4b17dee",
+  "recorded_at": "2026-04-22T11:01:49Z",
+  "response": "Merci pour ta phrase ! Je vois que tu es capable de formuler des idées conditionnelles. Pour continuer, peux-tu me dire : What do you think is the most important skill to have in your job?",
+  "dify_conversation_id": "bd902df2-2f83-4c07-bbc3-042337f6912b",
+  "dify_message_id": "6d84b3cf-7414-4bc2-9283-e0cf715c8049",
+  "usage": {
+    "prompt_tokens": 2826,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 42,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 2868,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 1.248,
+    "time_to_first_token": 1.535,
+    "time_to_generate": 0.0
+  }
+}

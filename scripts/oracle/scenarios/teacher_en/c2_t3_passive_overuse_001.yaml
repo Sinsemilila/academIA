@@ -1,0 +1,45 @@
+id: c2_t3_passive_overuse_001
+source: handcrafted_c1c2_session41
+scenario_key:
+  agent: teacher_en
+  cefr: C2
+  target_tier: T3
+  error_category: vocabulary
+  fla: low
+  style_profile: direct
+multi_turn: false
+turns:
+- role: learner
+  text: It is believed that the economy will recover; it is said that inflation is
+    decreasing; it is hoped that unemployment drops.
+  turn_number: 8
+  expected_errors:
+  - REG:LEVEL
+  - LEX:COLLOC
+expected_dimensions:
+  cf_move_set_valid:
+    mode: set_membership
+    acceptable:
+    - elicitation
+    - metalinguistic
+    - partial_recast
+    forbidden:
+    - full_recast
+  scaffolding_flags_honored:
+    mode: all_required
+    l2_ratio_band:
+    - 0.97
+    - 1.0
+  register_cefr_alignment:
+    mode: within_sublevel
+    target: C2
+    tolerance: 1
+  recast_saliency_and_dosage:
+    mode: structural
+    max_lines: 7
+    max_questions: 2
+    error_form_isolated: true
+    mini_lesson_allowed: true
+  semantic_fidelity_pairwise:
+    mode: llm_pairwise
+    vs_golden: true
