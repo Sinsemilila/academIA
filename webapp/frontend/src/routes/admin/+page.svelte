@@ -251,6 +251,22 @@
       <p class="text-xs text-text-muted italic">Aucune donnée pour cette fenêtre.</p>
     {:else}
       {@const s = cacheStats.summary}
+      {@const alerts = cacheStats.alerts ?? []}
+
+      <!-- Phase D v3 alerts banner (Session 41) -->
+      {#if alerts.length > 0}
+        <div class="space-y-2">
+          {#each alerts as a (a.code)}
+            {@const color = a.level === 'critical' ? 'bg-maestro/20 border-maestro text-maestro'
+              : a.level === 'warning' ? 'bg-lehrer/20 border-lehrer text-lehrer'
+              : 'bg-elevated border-border-subtle text-text-muted'}
+            <div class="rounded-lg border px-3 py-2 text-xs {color}">
+              <p class="font-semibold uppercase tracking-wider mb-0.5">{a.level}</p>
+              <p>{a.message}</p>
+            </div>
+          {/each}
+        </div>
+      {/if}
       <div class="grid grid-cols-3 gap-3">
         <div class="bg-elevated rounded-lg p-3">
           <p class="text-[10px] uppercase tracking-wider text-text-muted">Requêtes</p>

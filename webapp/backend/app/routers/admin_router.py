@@ -280,9 +280,65 @@ async def cache_stats(hours: int = 24, admin: dict = Depends(require_admin)):
             """,
             str(hours),
         )
+        # Session 41 Phase D v3 — alerting on hit rate drop vs rolling 7d baseline
+        alerts = []
+        try:
+            baseline = await conn.fetchrow(
+                """
+                SELECT
+                  COALESCE((SUM(cached_tokens)::float / NULLIF(SUM(prompt_tokens), 0) * 100)::int, 0) AS cache_pct,
+                  COUNT(*) AS requests
+                FROM litellm_cache_stats
+                WHERE started_at > NOW() - INTERVAL '7 days'
+                  AND started_at <= NOW() - ($1 || ' hours')::interval
+                """,
+                str(hours),
+            )
+            current_pct = (summary or {}).get("cache_pct") or 0
+            baseline_pct = (baseline or {}).get("cache_pct") or 0
+            baseline_req = (baseline or {}).get("requests") or 0
+            # Only alert when baseline has enough samples (statistical significance)
+            if baseline_req >= 20 and baseline_pct >= 10:
+                delta = current_pct - baseline_pct
+                if delta <= -20:
+                    alerts.append({
+                        "level": "critical",
+                        "code": "cache_hit_drop",
+                        "message": (
+                            f"Cache hit rate dropped {abs(delta)}pp vs rolling 7d baseline "
+                            f"({baseline_pct}% → {current_pct}%). Possible prompt drift."
+                        ),
+                        "baseline_pct": baseline_pct,
+                        "current_pct": current_pct,
+                        "delta_pp": delta,
+                    })
+                elif delta <= -10:
+                    alerts.append({
+                        "level": "warning",
+                        "code": "cache_hit_soft_drop",
+                        "message": (
+                            f"Cache hit rate soft-dropped {abs(delta)}pp vs 7d baseline "
+                            f"({baseline_pct}% → {current_pct}%). Monitor."
+                        ),
+                        "baseline_pct": baseline_pct,
+                        "current_pct": current_pct,
+                        "delta_pp": delta,
+                    })
+            # No requests recently (cache telemetry quiet) — soft signal
+            if (summary or {}).get("requests", 0) == 0:
+                alerts.append({
+                    "level": "info",
+                    "code": "no_traffic",
+                    "message": f"No LiteLLM requests in last {hours}h. Cache telemetry quiet.",
+                })
+        except Exception as e:
+            # Alerting is best-effort; never break the dashboard
+            logger.warning("cache-stats alert compute failed: %s", e)
+
     return {
         "hours": hours,
         "summary": dict(summary or {}),
         "by_hour": [dict(r) for r in by_hour],
         "by_model": [dict(r) for r in by_model],
+        "alerts": alerts,
     }
