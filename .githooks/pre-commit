@@ -1,9 +1,58 @@
 #!/bin/bash
-# Pre-commit: block secrets via gitleaks
-# Installed repo-tracked. Enable via: git config core.hooksPath .githooks
-gitleaks protect --staged --verbose || {
-  echo ""
-  echo "❌ gitleaks detected potential secret in staged changes."
-  echo "   Review findings above. To bypass (NOT RECOMMENDED), use 'git commit --no-verify'."
-  exit 1
-}
+# Pre-commit hooks — repo-tracked. Enable via `git config core.hooksPath .githooks`.
+#
+# 1. gitleaks : block secrets (hard fail)
+# 2. docs-consistency : SOFT warning if structural code changes without a docs/ touch
+#    (streams the /handoff "docs consistency check" inline)
+
+set -u
+
+# ── 1. gitleaks ────────────────────────────────────────────────────────
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks protect --staged --verbose || {
+    echo ""
+    echo "❌ gitleaks detected potential secret in staged changes."
+    echo "   Review findings above. To bypass (NOT RECOMMENDED), use 'git commit --no-verify'."
+    exit 1
+  }
+fi
+
+# ── 2. docs-consistency soft check (Session 41) ────────────────────────
+# If staged changes touch structural code areas (pedagogy/taxonomy modules,
+# sprint6 orchestrators, data schemas, router logic) AND no docs/ file is
+# staged, print a warning — not a block. Author decides per-commit whether
+# a doc update is warranted (a typo fix or internal refactor may legitimately
+# skip docs).
+STAGED="$(git diff --cached --name-only)"
+
+needs_docs_check=0
+for path in $STAGED; do
+  case "$path" in
+    packages/academie-core/academie_core/pedagogy/*|\
+    packages/academie-core/academie_core/taxonomy/*|\
+    packages/academie-core/academie_core/data/schemas.py|\
+    webapp/backend/app/routers/consolidation_router.py|\
+    webapp/backend/app/routers/error_analysis_router.py|\
+    scripts/sprint6/01_consolidation_schema.sql|\
+    scripts/sprint6/11_micro_lesson_log_schema.sql|\
+    scripts/sprint6/16_litellm_cache_stats_schema.sql|\
+    scripts/oracle/schemas.py|\
+    scripts/oracle/lint.py|\
+    scripts/oracle/judges/*.py)
+      needs_docs_check=1
+      ;;
+  esac
+done
+
+if [ "$needs_docs_check" = "1" ]; then
+  if ! echo "$STAGED" | grep -qE '^docs/|^docs/01-pedagogy/|^docs/05-decisions/'; then
+    echo ""
+    echo "⚠️  [docs-consistency] Staged changes touch structural code but no docs/ file is staged."
+    echo "   Consider whether a docs/*.md (pedagogy policy, ADR, pattern) should be updated."
+    echo "   This is a soft reminder — proceeding anyway. To suppress : set SKIP_DOCS_CHECK=1."
+    echo ""
+    # No exit — warning only
+  fi
+fi
+
+exit 0
