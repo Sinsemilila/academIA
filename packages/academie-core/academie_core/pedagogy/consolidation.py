@@ -37,6 +37,43 @@ NiveauStatus = Literal[
 TriggerReason = Literal["n_turns", "error_threshold", "dormancy_regression"]
 
 
+# ── Dormancy regression activation ────────────────────────────────────
+
+def should_activate_dormancy_watch(
+    niveau_status: NiveauStatus,
+    regression_watch_active: bool,
+    niveau_validated_at,
+    last_seen_at,
+    now,
+    threshold_days: int = DORMANCY_THRESHOLD_DAYS,
+) -> bool:
+    """Session 42 P2 — pure decision : should we flip regression_watch_active=true
+    because the learner validated their level ≥ threshold_days ago and is
+    returning after a dormant window ?
+
+    Inputs are datetimes OR None. If niveau_validated_at is None or the
+    status isn't 'validé', no watch. If watch is already active, no-op
+    (caller shouldn't re-activate).
+    """
+    if regression_watch_active:
+        return False
+    if niveau_status != "validé":
+        return False
+    if niveau_validated_at is None:
+        return False
+    # Gap since validation — learner must have been "stable validated" for long enough
+    gap_days = (now - niveau_validated_at).days
+    if gap_days < threshold_days:
+        return False
+    # Last seen gap — only fire if there's been silence recently (dormant)
+    # (prevents re-firing when learner chats daily after validation)
+    if last_seen_at is not None:
+        silence_days = (now - last_seen_at).days
+        if silence_days < 7:  # active recently → not dormant
+            return False
+    return True
+
+
 # ── Domain types ──────────────────────────────────────────────────────
 
 @dataclass(frozen=True)

@@ -1084,7 +1084,8 @@ async def _consolidation_post_turn(
         # 3. Fetch consolidation state
         pe = await conn.fetchrow(
             """SELECT niveau_status, last_consolidation_turn,
-                      regression_watch_active, regression_watch_started_turn
+                      regression_watch_active, regression_watch_started_turn,
+                      niveau_validated_at
                FROM profils_eleves
                WHERE eleve_id = $1 AND domain = $2""",
             eleve_id, domain,
@@ -1093,12 +1094,45 @@ async def _consolidation_post_turn(
         last_consolidation_turn = (pe and pe["last_consolidation_turn"]) or 0
         regression_active = bool(pe and pe["regression_watch_active"])
         regression_start = pe and pe["regression_watch_started_turn"]
+        niveau_validated_at = pe and pe["niveau_validated_at"]
 
         # 4. Fetch error_log count for this learner+domain
         err_count = await conn.fetchval(
             "SELECT COUNT(*) FROM error_log WHERE eleve_id = $1 AND domain = $2",
             eleve_id, domain,
         ) or 0
+
+        # Session 42 P2 — dormancy regression watch activation.
+        # Fires when learner validated their level ≥30 days ago AND is
+        # returning after silence. Skeleton in consolidation.py exists but
+        # nothing SET the flag until this hook.
+        from academie_core.pedagogy.consolidation import should_activate_dormancy_watch
+        from datetime import datetime, timezone
+        last_seen = await conn.fetchval(
+            "SELECT last_seen_at FROM users WHERE eleve_id = $1 LIMIT 1", eleve_id,
+        )
+        _now = datetime.now(timezone.utc)
+        if should_activate_dormancy_watch(
+            niveau_status=niveau_status,
+            regression_watch_active=regression_active,
+            niveau_validated_at=niveau_validated_at,
+            last_seen_at=last_seen,
+            now=_now,
+        ):
+            await conn.execute(
+                """UPDATE profils_eleves
+                   SET regression_watch_active = true,
+                       regression_watch_started_turn = $3
+                   WHERE eleve_id = $1 AND domain = $2""",
+                eleve_id, domain, message_count,
+            )
+            regression_active = True
+            regression_start = message_count
+            import logging
+            logging.getLogger("consolidation").info(
+                "dormancy regression watch activated for eleve=%s domain=%s turn=%s",
+                eleve_id, domain, message_count,
+            )
 
     decision = evaluate_trigger(
         message_count=message_count, error_log_count=int(err_count),

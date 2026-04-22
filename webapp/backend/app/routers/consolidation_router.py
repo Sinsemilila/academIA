@@ -207,7 +207,10 @@ async def mini_exam_submit(
                    SET niveau_global = COALESCE(niveau_global, $1),
                        niveau_status = 'validé',
                        niveau_validated_at = NOW(),
-                       consolidation_decision_pending = NULL
+                       consolidation_decision_pending = NULL,
+                       -- Session 42 P2 : clear dormancy regression watch
+                       regression_watch_active = false,
+                       regression_watch_started_turn = NULL
                    WHERE eleve_id = $2 AND domain = $3""",
                 qcm, eleve_id, domain,
             )
@@ -298,7 +301,10 @@ async def consolidation_decide(
                SET niveau_global = $1,
                    niveau_status = $2,
                    niveau_validated_at = NOW(),
-                   consolidation_decision_pending = NULL
+                   consolidation_decision_pending = NULL,
+                   -- Session 42 P2 : clear dormancy regression watch on resolution
+                   regression_watch_active = false,
+                   regression_watch_started_turn = NULL
                WHERE eleve_id = $3 AND domain = $4""",
             final_level, new_status, eleve_id, domain,
         )
