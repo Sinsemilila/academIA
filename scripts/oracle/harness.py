@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import logging
 import sys
 from datetime import datetime
@@ -31,6 +32,71 @@ ROOT = Path(__file__).resolve().parent
 
 def load_config() -> dict:
     return yaml.safe_load((ROOT / "config.yaml").read_text())
+
+
+def _persist_run_to_db(agent: str, mode: str, results: list) -> None:
+    """Session 42 O2 — INSERT one row per (scenario, dim) into oracle_run_log.
+
+    Groups rows by a run_hash = sha1(agent + mode + started_at iso). Lint
+    rows use dim='lint_<check>' for per-check granularity. Swallow errors
+    in caller ; this function may raise on connection issues.
+    """
+    import hashlib
+    import subprocess
+    from datetime import datetime, timezone
+
+    started_at = datetime.now(timezone.utc).isoformat()
+    run_hash = hashlib.sha1(f"{agent}|{mode}|{started_at}".encode()).hexdigest()[:16]
+
+    # Git SHA at run time (best-effort)
+    try:
+        sha = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd="/opt/academie",
+            capture_output=True, text=True, check=True,
+        ).stdout.strip()[:12]
+    except Exception:
+        sha = ""
+
+    # Build multi-row INSERT
+    rows = []
+    for r in results:
+        scenario_id = r.scenario_id
+        # Lint rows (structural check verdicts)
+        for lr in r.lint:
+            verdict = "pass" if lr.passed else "fail"
+            rows.append((run_hash, started_at, agent, mode, scenario_id,
+                         f"lint_{lr.check}", verdict, None, None, lr.detail or "", sha))
+        # LLM dim rows
+        for dv in r.dims:
+            votes_json = json.dumps(dv.judge_votes) if dv.judge_votes else None
+            rows.append((run_hash, started_at, agent, mode, scenario_id,
+                         dv.dim, dv.verdict, dv.score, votes_json, dv.reasoning or "", sha))
+
+    if not rows:
+        return
+
+    # psycopg lazy import (harness lint mode doesn't need DB)
+    try:
+        import psycopg2
+    except Exception:
+        # psycopg2 not installed — skip persistence silently in minimal envs
+        return
+
+    dsn = os.environ.get("DATABASE_URL", "").replace("postgres-academie", "127.0.0.1")
+    if not dsn:
+        return
+    with psycopg2.connect(dsn) as conn:
+        with conn.cursor() as cur:
+            cur.executemany(
+                """
+                INSERT INTO oracle_run_log
+                  (run_hash, started_at, agent, mode, scenario_id, dim,
+                   verdict, score, judge_votes, reasoning, sha)
+                VALUES (%s, %s::timestamptz, %s, %s, %s, %s, %s, %s, %s::jsonb, %s, %s)
+                """,
+                rows,
+            )
+    _log.info("oracle_run_log : inserted %d rows (run_hash=%s)", len(rows), run_hash)
 
 
 def discover_scenarios(agent: str, mode: str, cfg: dict) -> list[ScenarioSchema]:
@@ -181,6 +247,14 @@ def main() -> int:
          "results": [r.model_dump() for r in results]},
         indent=2,
     ))
+
+    # Session 42 O2 — persist run to oracle_run_log sidecar for dashboard trends.
+    # Best-effort : any DB error is logged and swallowed so the harness itself
+    # never fails because of telemetry.
+    try:
+        _persist_run_to_db(args.agent, args.mode, results)
+    except Exception as e:
+        _log.warning("oracle_run_log persist failed (non-fatal): %s", e)
 
     # Markdown report + stdout
     report = render_report(results, args.mode, args.agent)
