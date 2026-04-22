@@ -1,0 +1,32 @@
+{
+  "clean": {
+    "flagged": 21,
+    "total": 26,
+    "rate": 0.8076923076923077
+  },
+  "force_long_response": {
+    "flagged": 18,
+    "total": 26,
+    "rate": 0.6923076923076923
+  },
+  "remove_one_question_rule": {
+    "flagged": 18,
+    "total": 26,
+    "rate": 0.6923076923076923
+  },
+  "swap_implicit_to_explicit": {
+    "flagged": 22,
+    "total": 26,
+    "rate": 0.8461538461538461
+  },
+  "force_metalinguistic_always": {
+    "flagged": 21,
+    "total": 26,
+    "rate": 0.8076923076923077
+  },
+  "disable_self_answer_rule": {
+    "flagged": 21,
+    "total": 26,
+    "rate": 0.8076923076923077
+  }
+}

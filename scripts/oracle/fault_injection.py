@@ -94,19 +94,37 @@ def _extract_prompt(agent: str) -> str:
     return raw
 
 
-def _stub_placeholders(prompt: str, cefr: str, style: str = "direct") -> str:
-    """Replace Dify placeholders with minimal stubs so the prompt is
-    semantically valid when fed directly to gpt-4o-mini."""
+def _stub_placeholders(prompt: str, cefr: str, style: str = "direct", agent: str = "teacher_en") -> str:
+    """Replace Dify placeholders with stubs that force the bot into a
+    realistic tutoring posture when fed directly to gpt-4o-mini.
+
+    agent (teacher_en | maestro_es) picks the L2 target language."""
+    if agent == "teacher_en":
+        language = "English"
+        lang_target_prof = "d'anglais"
+    elif agent == "maestro_es":
+        language = "Spanish"
+        lang_target_prof = "d'espagnol"
+    else:
+        language = "English"
+        lang_target_prof = "d'anglais"
     return (prompt
-            .replace("{{#code_turn_check.lang_target_prof#}}", "d'anglais")
+            .replace("{{#code_turn_check.lang_target_prof#}}", lang_target_prof)
             .replace("{{#code_turn_check.rubric_for_level#}}",
-                     f"Niveau cible : {cefr}. Style : {style}.")
+                     f"Niveau cible CEFR : {cefr}. Style : {style}. "
+                     f"ALWAYS reply to the learner IN {language.upper()} "
+                     f"(L2 target language), never in French.")
             .replace("{{#code_turn_check.promotion_msg#}}", "")
             .replace("{{#code_profil_check.profil_text#}}",
-                     f"Profil : apprenant {cefr} FR-native, style {style}.")
-            .replace("{{#conversation.session_snapshot#}}", "")
-            .replace("{{#code_turn_check.error_feedback#}}", "")
-            .replace("{{#code_turn_check.scaffolding_block#}}", "")
+                     f"Profil apprenant : CEFR {cefr}, FR-native. "
+                     f"Style : {style}. L2 cible : {language}. "
+                     f"Reply IN {language.upper()} always.")
+            .replace("{{#conversation.session_snapshot#}}",
+                     f"Tour conversation 5-7. Learner niveau {cefr}.")
+            .replace("{{#code_turn_check.error_feedback#}}",
+                     "Aucune erreur pré-détectée (live analysis only).")
+            .replace("{{#code_turn_check.scaffolding_block#}}",
+                     f"Apply CEFR {cefr} scaffolding policy standard.")
             .replace("{{#code_turn_check.micro_lesson_block#}}", "")
             .replace("{{#code_turn_check.priority_concepts_block#}}", ""))
 
@@ -209,7 +227,7 @@ def run_condition(agent: str, label: str, prompt: str, scenarios: list[ScenarioS
             if not learner:
                 continue
             system = _stub_placeholders(prompt, sc.scenario_key.cefr,
-                                        sc.scenario_key.style_profile)
+                                        sc.scenario_key.style_profile, agent=agent)
             response = _call_litellm(client, system, learner.text, cfg)
             is_flagged = _score(agent, sc, response or "", cfg) if response else True
             marker = "⚠" if is_flagged else "·"
