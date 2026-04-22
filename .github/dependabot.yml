@@ -1,0 +1,71 @@
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /webapp/backend
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Paris
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - python
+    groups:
+      python-minor-patch:
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: pip
+    directory: /packages/academie-core
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies
+      - python
+
+  - package-ecosystem: npm
+    directory: /webapp/frontend
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - javascript
+    groups:
+      js-minor-patch:
+        update-types:
+          - minor
+          - patch
+      svelte-ecosystem:
+        patterns:
+          - "@sveltejs/*"
+          - "svelte*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    labels:
+      - dependencies
+      - ci
+
+  - package-ecosystem: docker
+    directory: /webapp/backend
+    schedule:
+      interval: monthly
+    labels:
+      - dependencies
+      - docker
+
+  - package-ecosystem: docker
+    directory: /webapp/frontend
+    schedule:
+      interval: monthly
+    labels:
+      - dependencies
+      - docker
