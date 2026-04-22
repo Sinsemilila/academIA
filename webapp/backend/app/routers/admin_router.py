@@ -342,3 +342,98 @@ async def cache_stats(hours: int = 24, admin: dict = Depends(require_admin)):
         "by_model": [dict(r) for r in by_model],
         "alerts": alerts,
     }
+
+
+# ── Session 42 P3 — consolidation events analytics ────────────────────
+
+@router.get("/api/admin/consolidation-events")
+async def consolidation_events_stats(domain: str = "en", hours: int = 168,
+                                     admin: dict = Depends(require_admin)):
+    """Session 42 P3 — aggregate consolidation_events for admin dashboard.
+
+    Returns summary (pending count, closed count, mini_exam pass rate),
+    by_decision (GROUP BY user_decision), by_user (top 10 event count)
+    over a configurable window (default 7 days).
+    """
+    hours = max(1, min(hours, 24 * 90))
+    async with db.pool.acquire() as conn:
+        # Summary
+        summary = await conn.fetchrow(
+            """
+            SELECT
+              COUNT(*) AS total,
+              COUNT(*) FILTER (WHERE user_decision IS NULL) AS pending,
+              COUNT(*) FILTER (WHERE user_decision IS NOT NULL) AS closed,
+              COUNT(*) FILTER (WHERE mini_exam_triggered = true) AS mini_exam_count,
+              COALESCE(AVG(mini_exam_score_pct) FILTER (WHERE mini_exam_score_pct IS NOT NULL), 0)::int AS avg_mini_exam_score,
+              COUNT(*) FILTER (WHERE mini_exam_score_pct >= 75) AS mini_exam_pass,
+              COUNT(*) FILTER (WHERE mini_exam_score_pct IS NOT NULL AND mini_exam_score_pct < 75) AS mini_exam_fail
+            FROM consolidation_events
+            WHERE domain = $1
+              AND triggered_at > NOW() - ($2 || ' hours')::interval
+            """,
+            domain, str(hours),
+        )
+
+        # By decision
+        by_decision = await conn.fetch(
+            """
+            SELECT
+              COALESCE(user_decision, '(pending)') AS decision,
+              COUNT(*)::int AS count,
+              COALESCE(AVG(mini_exam_score_pct) FILTER (WHERE mini_exam_score_pct IS NOT NULL), 0)::int AS avg_score
+            FROM consolidation_events
+            WHERE domain = $1
+              AND triggered_at > NOW() - ($2 || ' hours')::interval
+            GROUP BY user_decision
+            ORDER BY count DESC
+            """,
+            domain, str(hours),
+        )
+
+        # Top users by event count
+        by_user = await conn.fetch(
+            """
+            SELECT
+              u.username,
+              COUNT(ce.id)::int AS event_count,
+              COUNT(*) FILTER (WHERE ce.user_decision IS NULL)::int AS pending_count,
+              MAX(ce.triggered_at) AS latest_event
+            FROM consolidation_events ce
+            LEFT JOIN eleves e ON e.id = ce.eleve_id
+            LEFT JOIN users u ON u.eleve_id = e.id
+            WHERE ce.domain = $1
+              AND ce.triggered_at > NOW() - ($2 || ' hours')::interval
+            GROUP BY u.username
+            ORDER BY event_count DESC
+            LIMIT 10
+            """,
+            domain, str(hours),
+        )
+
+        # By trigger reason
+        by_trigger = await conn.fetch(
+            """
+            SELECT
+              COALESCE(trigger_reason, '(unknown)') AS reason,
+              COUNT(*)::int AS count
+            FROM consolidation_events
+            WHERE domain = $1
+              AND triggered_at > NOW() - ($2 || ' hours')::interval
+            GROUP BY trigger_reason
+            ORDER BY count DESC
+            """,
+            domain, str(hours),
+        )
+
+    return {
+        "domain": domain,
+        "hours": hours,
+        "summary": dict(summary or {}),
+        "by_decision": [dict(r) for r in by_decision],
+        "by_user": [
+            {**dict(r), "latest_event": r["latest_event"].isoformat() if r["latest_event"] else None}
+            for r in by_user
+        ],
+        "by_trigger": [dict(r) for r in by_trigger],
+    }
