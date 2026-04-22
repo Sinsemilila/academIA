@@ -14,7 +14,7 @@ from .. import totp as totp_helper
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/login", response_model=TokenResponse)
+@router.post("/login")
 async def login(req: LoginRequest, request: Request):
     # Rate limit: 5 login attempts per minute per IP
     limiter.check(request, max_requests=5, window_seconds=60)
