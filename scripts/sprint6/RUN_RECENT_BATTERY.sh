@@ -80,6 +80,10 @@ run_block "E2E micro-lesson (scripts/sprint6/10_*)" \
 
 # ── 5. n8n webhooks liveness ───────────────────────────────────────────
 # Get a real Teacher conversation_id to feed the webhooks with valid data.
+# SKIP_N8N_BLOCK=1 lets callers (e.g. RUN_ISOLATION_MATRIX) opt out : the
+# flags exercised by the matrix don't affect n8n, and this block is the
+# one with measurable infra flakiness (~17% fail rate, Session 38 smoke).
+if [[ "${SKIP_N8N_BLOCK:-0}" != "1" ]]; then
 run_block "n8n webhooks (diagnostic/exam-scoring/snapshot)" \
     bash -c "
       CONV=\$(docker exec -i postgres-academie psql -U sinse -d academie_db -t -A -c \"SELECT id FROM conversations WHERE app_id = '39565197-c9d1-4d5b-b66f-18925de236d9' ORDER BY updated_at DESC LIMIT 1;\" 2>/dev/null | head -1)
@@ -98,6 +102,7 @@ run_block "n8n webhooks (diagnostic/exam-scoring/snapshot)" \
       echo \"  recent (5min) failed exec count on these 3 workflows : \${RECENT_ERR:-?}\"
       [ \"\$FAIL\" = '0' ]
     "
+fi  # SKIP_N8N_BLOCK gate
 
 # ── 6. smoke-test --quick (host services) ──────────────────────────────
 run_block "smoke-test --quick (services + ports)" \
