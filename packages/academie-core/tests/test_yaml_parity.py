@@ -198,10 +198,13 @@ def test_curriculum_all_concepts_grouped(lang, level):
 
 
 def test_curriculum_en_total_concepts_reasonable():
-    """Session 37 sanity: EN should have ~45-60 concepts (ES has 52)."""
+    """Session 41 sanity: EN curriculum merged from DB taxonomy (53→~105).
+
+    Updated range after Session 41 merge (script 19_curriculum_en_apply_merge.py).
+    ES still at 52 (pre-merge); matching merge for ES is Session 42+."""
     curr = _load_curriculum("en")
     total = sum(len(curr[lvl]["concept_keys"]) for lvl in ["A1","A2","B1","B2","C1","C2"])
-    assert 45 <= total <= 65, f"curriculum_en total concepts out of range: {total}"
+    assert 80 <= total <= 130, f"curriculum_en total concepts out of range: {total}"
 
 
 # ── LanguageData ─────────────────────────────────────────────────────
