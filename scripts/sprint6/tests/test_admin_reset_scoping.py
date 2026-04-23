@@ -1,10 +1,15 @@
 """Integration test — admin reset_profile domain-scoped (Session 37 Fix 1).
 
+⚠️  Refactor 2026-H2 Phase A1-cleanup (2026-04-23) : JWT auth removed.
+This test needs a full refactor to cookie-session before it runs again
+(Authorization Bearer headers must be replaced by Set-Cookie + X-CSRF-Token).
+Marked obsolete; kept as reference for future port.
+
 Verifies the P0 data-loss bug fix: calling reset_profile with ?domain=en must
 leave ES rows intact, and calling without domain must wipe everything.
 
 Runs via: docker exec academie-api python3 /tmp/test_admin_reset_scoping.py
-Requires live DB + backend container (uses DATABASE_URL + JWT_SECRET_KEY env).
+Requires live DB + backend container (uses DATABASE_URL env).
 """
 from __future__ import annotations
 
@@ -15,10 +20,8 @@ from datetime import datetime, timedelta, timezone
 
 import asyncpg
 import httpx
-from jose import jwt
 
 DATABASE_URL = os.environ["DATABASE_URL"]
-JWT_SECRET_KEY = os.environ["JWT_SECRET_KEY"]
 API_BASE = os.environ.get("E2E_API_BASE", "http://localhost:8000")
 
 TEST_USERNAME = "admin_reset_scoping_bot"
@@ -27,11 +30,10 @@ ADMIN_USERNAME = "admin_reset_scoping_adm"
 
 
 def _forge_token(user_id: int, username: str) -> str:
-    payload = {
-        "sub": str(user_id), "username": username, "type": "access",
-        "exp": datetime.now(timezone.utc) + timedelta(minutes=30),
-    }
-    return jwt.encode(payload, JWT_SECRET_KEY, algorithm="HS256")
+    """A1-cleanup : JWT removed, this test needs cookie-session refactor."""
+    raise NotImplementedError(
+        "_forge_token: JWT auth removed in A1 (2026-04-23). Refactor required."
+    )
 
 
 async def _cleanup(conn):
