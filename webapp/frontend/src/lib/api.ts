@@ -489,6 +489,42 @@ class ApiClient {
     await this.fetch('/auth/logout-all-sessions', { method: 'POST' });
     if (typeof window !== 'undefined') window.location.href = '/login';
   }
+
+  // ── DSAR (Phase A6) ───────────────────────
+  async exportMyData() {
+    const res = await this.fetch('/me/export-data');
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.detail || 'Export indisponible');
+    }
+    const blob = await res.blob();
+    const cd = res.headers.get('Content-Disposition') || '';
+    const match = cd.match(/filename="?([^"]+)"?/);
+    const filename = match ? match[1] : 'academie-export.json';
+    if (typeof window !== 'undefined') {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+    return filename;
+  }
+
+  async deleteMyAccount(confirmUsername: string) {
+    const res = await this.fetch('/me/delete-account', {
+      method: 'DELETE',
+      body: JSON.stringify({ confirm_username: confirmUsername }),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.detail || 'Suppression \u00e9chou\u00e9e');
+    }
+    return await res.json();
+  }
 }
 
 export const api = new ApiClient();

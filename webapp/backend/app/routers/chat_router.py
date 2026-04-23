@@ -590,8 +590,10 @@ async def _persist_spaced_retrieval(
 @router.post("/api/chat/send")
 async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get_current_user)):
     """Stream a chat message through Dify API."""
-    # Rate limit: 30 messages per minute per IP
-    limiter.check(request, max_requests=30, window_seconds=60)
+    # Refactor 2026-H2 Phase A5 — per-user rate-limit (was 30/60 per-IP).
+    # 100/60s/user covers normal pedagogical use (heavy session ~3-4 msg/min)
+    # while capping cost-runaway / abuse scenarios.
+    await limiter.check_user(request, max_requests=100, window_seconds=60)
     dify_key = get_dify_key(req.agent)
     domain, lang = _get_domain(req.agent)
     # Use existing Dify UUID if set, otherwise generate a stable ID
@@ -602,11 +604,20 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
     turn_response_secs = 0
     if req.conversation_id:
         async with db.pool.acquire() as conn:
-            last_msg = await conn.fetchval(
+            sess_row = await conn.fetchrow(
                 """SELECT last_message_at FROM user_sessions
                    WHERE user_id = $1 AND agent_name = $2 AND dify_conversation_id = $3""",
                 user["id"], req.agent, req.conversation_id,
             )
+            # Refactor 2026-H2 Phase A5 — reject conversation_id that doesn't
+            # belong to the caller. Without this check Alice could append
+            # to Bob's Dify conversation by guessing his conv UUID.
+            if sess_row is None:
+                raise HTTPException(
+                    status_code=403,
+                    detail="Conversation introuvable ou non accessible",
+                )
+            last_msg = sess_row["last_message_at"]
             if last_msg:
                 delta = datetime.now() - last_msg
                 minutes_since_last = int(delta.total_seconds() / 60)
@@ -979,6 +990,14 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         "response_mode": "streaming",
         "conversation_id": req.conversation_id or "",
     }
+
+    # Refactor 2026-H2 Phase A5 — strip PII before payload leaves to Dify/LLM.
+    # Defense in depth ; cf. docs/99-runbooks/dpia.md §3.1 + a5 design notes.
+    from ..security.pii_scrubber import scrub_payload_strings
+    pii_hits = scrub_payload_strings(payload, fields=("query",))
+    if any(pii_hits.values()):
+        log_extra = ", ".join(f"{k}={v}" for k, v in pii_hits.items() if v)
+        print(f"[pii_scrub] user={user['id']} hits {log_extra}", flush=True)
 
     collected_answer = []
 

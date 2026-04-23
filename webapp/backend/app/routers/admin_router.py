@@ -818,3 +818,86 @@ async def judge_budget(admin: dict = Depends(require_admin)):
         "total_remaining": max(total_limit - total_used, 0),
         "preflight_cmd": "python3 scripts/oracle/preflight_gemini.py --mode full",
     }
+
+
+# ── Phase A5 — per-user cost runaway alerting ─────────────────────────
+
+@router.get("/api/admin/cost-runaway-users")
+async def cost_runaway_users(window: str = "7d", admin: dict = Depends(require_admin)):
+    """Top 20 users by token consumption over a window + outlier flag.
+
+    A user is flagged `runaway=True` when their total tokens exceed
+    5× the median across all attributed users (signals abuse, runaway loop,
+    or mis-billed Oracle judge run).
+    """
+    window = window.lower()
+    days_map = {"24h": 1, "7d": 7, "30d": 30}
+    days = days_map.get(window, 7)
+
+    async with db.pool.acquire() as conn:
+        rows = await conn.fetch(
+            """
+            SELECT
+              u.id, u.username, u.display_name,
+              COALESCE(SUM(m.input_tokens), 0)::bigint  AS input_tokens,
+              COALESCE(SUM(m.output_tokens), 0)::bigint AS output_tokens,
+              COALESCE(SUM(m.input_tokens + m.output_tokens), 0)::bigint AS total_tokens,
+              COUNT(DISTINCT m.model)::int AS models_used
+            FROM users u
+            LEFT JOIN model_usage_daily m
+              ON m.user_id = u.id
+             AND m.usage_date >= CURRENT_DATE - ($1::int - 1)
+            GROUP BY u.id, u.username, u.display_name
+            HAVING COALESCE(SUM(m.input_tokens + m.output_tokens), 0) > 0
+            ORDER BY total_tokens DESC
+            LIMIT 20
+            """,
+            days,
+        )
+
+    items = [
+        {
+            "user_id": r["id"],
+            "username": r["username"],
+            "display_name": r["display_name"],
+            "input_tokens": r["input_tokens"],
+            "output_tokens": r["output_tokens"],
+            "total_tokens": r["total_tokens"],
+            "models_used": r["models_used"],
+        }
+        for r in rows
+    ]
+
+    # Median + 5× outlier threshold
+    if items:
+        tokens = sorted(i["total_tokens"] for i in items)
+        n = len(tokens)
+        median = tokens[n // 2] if n % 2 == 1 else (tokens[n // 2 - 1] + tokens[n // 2]) // 2
+    else:
+        median = 0
+    threshold = max(median * 5, 100_000)  # absolute floor 100K tokens
+
+    for it in items:
+        it["runaway"] = it["total_tokens"] > threshold
+
+    # System-attributable rows (user_id NULL)
+    async with db.pool.acquire() as conn:
+        system_total = await conn.fetchval(
+            """
+            SELECT COALESCE(SUM(input_tokens + output_tokens), 0)::bigint
+            FROM model_usage_daily
+            WHERE user_id IS NULL
+              AND usage_date >= CURRENT_DATE - ($1::int - 1)
+            """,
+            days,
+        )
+
+    return {
+        "window": window,
+        "days": days,
+        "median_tokens": median,
+        "outlier_threshold": threshold,
+        "users": items,
+        "system_attributable_tokens": system_total or 0,
+        "as_of": datetime.utcnow().isoformat() + "Z",
+    }

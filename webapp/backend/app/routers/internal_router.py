@@ -67,28 +67,62 @@ class ModelUsagePayload(BaseModel):
     model: str = Field(..., max_length=200)
     input_tokens: int = 0
     output_tokens: int = 0
+    # Phase A5 — opaque user identifier from LiteLLM callback. Resolved
+    # backend-side to an integer users.id (NULL = system / non-attributable).
+    user: Optional[str] = Field(None, max_length=200)
+
+
+async def _resolve_user_id(raw_user: str | None) -> int | None:
+    """Resolve a Dify-style user string to an academie users.id.
+
+    Accepted forms (in priority order) :
+      * "user_42"             → 42
+      * "<int>"               → int
+      * <dify uuid string>    → SELECT id FROM users WHERE dify_user_id = $1
+
+    Returns None for unknown strings (logged as system-attributable).
+    """
+    if not raw_user:
+        return None
+    s = str(raw_user).strip()
+    if s.startswith("user_"):
+        try:
+            return int(s[5:])
+        except (TypeError, ValueError):
+            pass
+    if s.isdigit():
+        return int(s)
+    try:
+        async with database.pool.acquire() as conn:
+            row = await conn.fetchrow(
+                "SELECT id FROM users WHERE dify_user_id = $1", s,
+            )
+            return row["id"] if row else None
+    except Exception:
+        return None
 
 
 @router.post("/model-usage", status_code=202)
 async def ingest_model_usage(payload: ModelUsagePayload):
-    """UPSERT today's token counts for a given model. Called by the
+    """UPSERT today's token counts for a (model, user) pair. Called by the
     LiteLLM callback for every successful completion. Swallow errors to
     keep the proxy hot path free."""
     if payload.input_tokens <= 0 and payload.output_tokens <= 0:
         return {"ok": True}
+    user_id = await _resolve_user_id(payload.user)
     try:
         async with database.pool.acquire() as conn:
             await conn.execute(
                 """
                 INSERT INTO model_usage_daily
-                  (usage_date, model, input_tokens, output_tokens, updated_at)
-                VALUES (CURRENT_DATE, $1, $2, $3, NOW())
-                ON CONFLICT (usage_date, model) DO UPDATE SET
+                  (usage_date, model, user_id, input_tokens, output_tokens, updated_at)
+                VALUES (CURRENT_DATE, $1, $2, $3, $4, NOW())
+                ON CONFLICT (usage_date, model, user_id) DO UPDATE SET
                   input_tokens  = model_usage_daily.input_tokens  + EXCLUDED.input_tokens,
                   output_tokens = model_usage_daily.output_tokens + EXCLUDED.output_tokens,
                   updated_at    = NOW()
                 """,
-                payload.model, payload.input_tokens, payload.output_tokens,
+                payload.model, user_id, payload.input_tokens, payload.output_tokens,
             )
     except Exception as e:
         _log.warning("model-usage insert failed: %s", e)

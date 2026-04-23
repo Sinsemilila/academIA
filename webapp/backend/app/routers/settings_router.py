@@ -1,14 +1,17 @@
-"""Profile settings, password change, active sessions, recommendations."""
+"""Profile settings, password change, active sessions, recommendations, DSAR."""
 
 import json
 import secrets
 from datetime import datetime, date, timedelta
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 from ..models import UpdateProfileRequest, ChangePasswordRequest, ModeChangeRequest
-from ..auth import get_current_user, verify_password, hash_password
+from ..auth import COOKIE_CSRF, COOKIE_SESSION, get_current_user, verify_password, hash_password
 from ..rate_limit import limiter
 from ..domain_registry import chat_url_for_domain
 from .. import database as db
+from .. import dsar as _dsar
 
 router = APIRouter(tags=["settings"])
 
@@ -153,6 +156,56 @@ async def revoke_all_sessions(user: dict = Depends(get_current_user)):
     current = user.get("_session_token")
     deleted = await _sessions.delete_all_sessions_for_user(user["id"], except_token=current)
     return {"ok": True, "deleted": deleted}
+
+
+# ── DSAR endpoints (Phase A6) ─────────────────────────
+class DeleteAccountRequest(BaseModel):
+    confirm_username: str
+
+
+@router.get("/api/me/export-data")
+async def export_my_data(request: Request, user: dict = Depends(get_current_user)):
+    """RGPD art. 15 + 20 — full data export as a JSON download."""
+    limiter.check(request, max_requests=3, window_seconds=300)
+    async with db.pool.acquire() as conn:
+        payload = await _dsar.export_user_data(conn, user)
+
+    body = json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")
+    fname = f"academie-export-{user['username']}-{date.today().isoformat()}.json"
+    return Response(
+        content=body,
+        media_type="application/json",
+        headers={
+            "Content-Disposition": f'attachment; filename="{fname}"',
+            "Cache-Control": "no-store",
+        },
+    )
+
+
+@router.delete("/api/me/delete-account")
+async def delete_my_account(
+    req: DeleteAccountRequest,
+    request: Request,
+    response: Response,
+    user: dict = Depends(get_current_user),
+):
+    """RGPD art. 17 — hard delete cascade. Requires retype-confirmation of username."""
+    limiter.check(request, max_requests=3, window_seconds=300)
+    if req.confirm_username != user["username"]:
+        raise HTTPException(
+            status_code=400,
+            detail="Confirmation incorrecte : retape exactement ton nom d'utilisateur.",
+        )
+
+    user_id = user["id"]
+    await _sessions.delete_all_sessions_for_user(user_id)
+
+    async with db.pool.acquire() as conn:
+        counts = await _dsar.delete_user_account(conn, user)
+
+    response.delete_cookie(COOKIE_SESSION, path="/")
+    response.delete_cookie(COOKIE_CSRF, path="/")
+    return {"ok": True, "deleted": counts}
 
 
 # ── Recommendation engine (unified — error-based) ─────
