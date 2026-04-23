@@ -234,14 +234,18 @@
           {/if}
         </div>
       </div>
-      <div class="text-sm text-text-secondary">
-        <p>
-          <strong>{status.recovery_codes_remaining}</strong> code{status.recovery_codes_remaining > 1 ? 's' : ''} de récupération restant{status.recovery_codes_remaining > 1 ? 's' : ''}.
-        </p>
-        {#if status.recovery_codes_remaining < 3}
-          <p class="text-maestro mt-1">⚠️ Stock faible — régénère tes codes ci-dessous.</p>
-        {/if}
-      </div>
+      {#if status}
+        {@const remaining = status.recovery_codes_remaining}
+        {@const plural = remaining > 1 ? 's' : ''}
+        <div class="text-sm text-text-secondary">
+          <p>
+            <strong>{remaining}/10</strong> code{plural} de récupération restant{plural}.
+          </p>
+          {#if remaining < 3}
+            <p class="text-maestro mt-1">⚠️ Stock faible — régénère tes codes ci-dessous.</p>
+          {/if}
+        </div>
+      {/if}
 
       {#if regenMode}
         <form onsubmit={doRegen} class="space-y-3 pt-4 border-t border-border-subtle">
