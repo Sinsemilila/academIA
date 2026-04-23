@@ -521,12 +521,12 @@
       <div class="flex items-center gap-1.5 sm:gap-2">
         <!-- Quiz indicator -->
         {#if quizActive}
-          <span class="text-[10px] sm:text-xs font-mono bg-amber-500/20 text-amber-400 px-1.5 sm:px-2 py-0.5 rounded">
+          <span class="text-[10px] sm:text-xs font-mono bg-warning/20 text-warning-text px-1.5 sm:px-2 py-0.5 rounded">
             {quizQuestionNum}/{quizTotalQuestions}
           </span>
           <button
             onclick={() => cancelQuiz()}
-            class="text-xs text-text-muted hover:text-red-400 transition-colors"
+            class="text-xs text-text-muted hover:text-danger-text transition-colors"
             title="Arrêter le quiz"
           >✕</button>
         {/if}
@@ -536,8 +536,8 @@
           onclick={() => openModeModal()}
           class="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs px-1.5 sm:px-2.5 py-1 rounded-full border transition-colors
                  {currentMode === 'structure'
-                   ? 'border-blue-500/30 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20'
-                   : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'}"
+                   ? 'border-info/30 bg-info/10 text-info-text hover:bg-info/20'
+                   : 'border-success/30 bg-success/10 text-success-text hover:bg-success/20'}"
           title="Changer le mode d'apprentissage"
         >
           {#if currentMode === 'structure'}
@@ -573,7 +573,7 @@
     {#if quizActive}
       <div class="h-1 bg-surface-hover">
         <div
-          class="h-full bg-amber-500 transition-all duration-500"
+          class="h-full bg-warning transition-all duration-500"
           style="width: {(quizQuestionNum / quizTotalQuestions) * 100}%"
         ></div>
       </div>
@@ -626,7 +626,7 @@
       <div class="px-4 py-2 bg-surface border-t border-border-subtle flex justify-center">
         <button
           onclick={() => nextQuizQuestion()}
-          class="px-4 py-2 bg-amber-500 text-black text-sm font-medium rounded-lg hover:bg-amber-400 transition-colors"
+          class="px-4 py-2 bg-warning text-black text-sm font-medium rounded-lg hover:bg-warning/90 transition-colors"
         >
           {quizQuestionNum >= quizTotalQuestions ? 'Voir le bilan' : `Question ${quizQuestionNum + 1}/${quizTotalQuestions} →`}
         </button>
@@ -648,24 +648,24 @@
         <h3 class="text-lg font-semibold mb-4">Changer de mode ?</h3>
 
         <div class="space-y-3 mb-6">
-          <div class="p-3 rounded-lg {currentMode === 'structure' ? 'bg-blue-500/10 border border-blue-500/30' : 'bg-surface-hover'}">
+          <div class="p-3 rounded-lg {currentMode === 'structure' ? 'bg-info/10 border border-info/30' : 'bg-surface-hover'}">
             <div class="flex items-center gap-2 mb-1">
-              <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+              <svg class="w-4 h-4 text-info-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
               <span class="font-medium text-sm">Structuré</span>
-              {#if currentMode === 'structure'}<span class="text-[10px] text-blue-400 ml-auto">actuel</span>{/if}
+              {#if currentMode === 'structure'}<span class="text-[10px] text-info-text ml-auto">actuel</span>{/if}
             </div>
             <p class="text-xs text-text-muted leading-relaxed">Examen de passage quand tu maitrises 80% du niveau. Progression par paliers valides.</p>
-            {#if currentMode === 'libre'}<p class="text-[10px] text-blue-400 mt-1">Un examen te sera propose des que tu seras pret.</p>{/if}
+            {#if currentMode === 'libre'}<p class="text-[10px] text-info-text mt-1">Un examen te sera propose des que tu seras pret.</p>{/if}
           </div>
 
-          <div class="p-3 rounded-lg {currentMode === 'libre' ? 'bg-emerald-500/10 border border-emerald-500/30' : 'bg-surface-hover'}">
+          <div class="p-3 rounded-lg {currentMode === 'libre' ? 'bg-success/10 border border-success/30' : 'bg-surface-hover'}">
             <div class="flex items-center gap-2 mb-1">
-              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"/></svg>
+              <svg class="w-4 h-4 text-success-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"/></svg>
               <span class="font-medium text-sm">Libre</span>
-              {#if currentMode === 'libre'}<span class="text-[10px] text-emerald-400 ml-auto">actuel</span>{/if}
+              {#if currentMode === 'libre'}<span class="text-[10px] text-success-text ml-auto">actuel</span>{/if}
             </div>
             <p class="text-xs text-text-muted leading-relaxed">Pas d'examen impose. Concepts du niveau suivant introduits naturellement. Progression fluide.</p>
-            {#if currentMode === 'structure'}<p class="text-[10px] text-emerald-400 mt-1">Tu ne passeras plus d'examens de niveau. Tes scores continuent de progresser.</p>{/if}
+            {#if currentMode === 'structure'}<p class="text-[10px] text-success-text mt-1">Tu ne passeras plus d'examens de niveau. Tes scores continuent de progresser.</p>{/if}
           </div>
         </div>
 
@@ -684,8 +684,8 @@
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onclick={() => { showQuizConfirm = false; }}>
       <div class="bg-surface border border-border-subtle rounded-xl shadow-2xl max-w-sm w-full mx-4 p-6" onclick={(e) => e.stopPropagation()}>
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
-            <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <div class="w-10 h-10 rounded-full bg-warning/20 flex items-center justify-center">
+            <svg class="w-5 h-5 text-warning-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           </div>
           <div>
             <h3 class="font-semibold">Quiz rapide</h3>
@@ -695,16 +695,16 @@
 
         <div class="bg-surface-hover rounded-lg p-3 mb-4">
           <ul class="text-xs text-text-muted space-y-1.5">
-            <li class="flex items-start gap-2"><span class="text-amber-400 mt-0.5">✓</span> 10 questions sur tes concepts actuels</li>
-            <li class="flex items-start gap-2"><span class="text-amber-400 mt-0.5">✓</span> Feedback immédiat après chaque réponse</li>
-            <li class="flex items-start gap-2"><span class="text-amber-400 mt-0.5">✓</span> Bilan personnalisé à la fin</li>
+            <li class="flex items-start gap-2"><span class="text-warning-text mt-0.5">✓</span> 10 questions sur tes concepts actuels</li>
+            <li class="flex items-start gap-2"><span class="text-warning-text mt-0.5">✓</span> Feedback immédiat après chaque réponse</li>
+            <li class="flex items-start gap-2"><span class="text-warning-text mt-0.5">✓</span> Bilan personnalisé à la fin</li>
             <li class="flex items-start gap-2"><span class="text-text-muted mt-0.5">•</span> Aucun impact sur ta progression — c'est un entraînement</li>
           </ul>
         </div>
 
         <div class="flex gap-3">
           <button onclick={() => { showQuizConfirm = false; }} class="flex-1 px-4 py-2 text-sm rounded-lg bg-surface-hover hover:bg-border-subtle transition-colors">Annuler</button>
-          <button onclick={() => startQuiz()} class="flex-1 px-4 py-2 text-sm rounded-lg bg-amber-500 text-black font-medium hover:bg-amber-400 transition-colors">
+          <button onclick={() => startQuiz()} class="flex-1 px-4 py-2 text-sm rounded-lg bg-warning text-black font-medium hover:bg-warning/90 transition-colors">
             {#if quizLoading}
               <span class="inline-block w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></span>
             {:else}

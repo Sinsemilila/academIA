@@ -88,12 +88,12 @@
   </div>
 
   {#if success}
-    <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3 text-sm text-emerald-300">
+    <div class="bg-success/10 border border-success/30 rounded-lg p-3 text-sm text-success-text">
       {success}
     </div>
   {/if}
   {#if error}
-    <div class="bg-rose-500/10 border border-rose-500/30 rounded-lg p-3 text-sm text-rose-300">
+    <div class="bg-danger/10 border border-danger/30 rounded-lg p-3 text-sm text-danger-text">
       {error}
     </div>
   {/if}
@@ -110,7 +110,7 @@
       type="button"
       onclick={downloadExport}
       disabled={exporting}
-      class="px-4 py-2 bg-blue-500/15 border border-blue-500/40 text-blue-200 text-sm font-medium rounded-lg hover:bg-blue-500/25 transition disabled:opacity-50"
+      class="px-4 py-2 bg-info/15 border border-info/40 text-info-text text-sm font-medium rounded-lg hover:bg-info/25 transition disabled:opacity-50"
     >
       {exporting ? 'Préparation…' : '⬇ Télécharger mes données'}
     </button>
@@ -148,8 +148,8 @@
   </section>
 
   <!-- Section : Suppression compte -->
-  <section class="bg-surface border border-rose-500/30 rounded-xl p-6 space-y-3">
-    <h2 class="font-semibold text-lg text-rose-300">Supprimer mon compte</h2>
+  <section class="bg-surface border border-danger/30 rounded-xl p-6 space-y-3">
+    <h2 class="font-semibold text-lg text-danger-text">Supprimer mon compte</h2>
     <p class="text-sm text-text-secondary leading-relaxed">
       <strong>Action irréversible.</strong> Cette opération supprime immédiatement
       et définitivement ton compte et toutes les données associées (profil,
@@ -161,7 +161,7 @@
     <button
       type="button"
       onclick={openDeleteModal}
-      class="px-4 py-2 bg-rose-500/15 border border-rose-500/40 text-rose-200 text-sm font-medium rounded-lg hover:bg-rose-500/25 transition"
+      class="px-4 py-2 bg-danger/15 border border-danger/40 text-danger-text text-sm font-medium rounded-lg hover:bg-danger/25 transition"
     >
       🗑 Supprimer mon compte
     </button>
@@ -176,7 +176,7 @@
   >
     <div class="bg-surface border border-border-subtle rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4">
       {#if deleteStep === 1}
-        <h3 class="text-lg font-semibold text-rose-300">Confirmer la suppression</h3>
+        <h3 class="text-lg font-semibold text-danger-text">Confirmer la suppression</h3>
         <div class="space-y-2 text-sm text-text-secondary">
           <p>Tu es sur le point de supprimer définitivement :</p>
           <ul class="list-disc pl-5 space-y-1">
@@ -186,7 +186,7 @@
             <li>L'historique de tes sessions et de tes erreurs</li>
             <li>Ta configuration MFA si activée</li>
           </ul>
-          <p class="pt-2 text-rose-300 font-medium">
+          <p class="pt-2 text-danger-text font-medium">
             Cette opération est irréversible et immédiate.
           </p>
         </div>
@@ -201,13 +201,13 @@
           <button
             type="button"
             onclick={() => { deleteStep = 2; }}
-            class="px-4 py-2 text-sm rounded-lg bg-rose-500/20 border border-rose-500/40 text-rose-200 hover:bg-rose-500/30 transition"
+            class="px-4 py-2 text-sm rounded-lg bg-danger/20 border border-danger/40 text-danger-text hover:bg-danger/30 transition"
           >
             Je comprends, continuer
           </button>
         </div>
       {:else}
-        <h3 class="text-lg font-semibold text-rose-300">Dernière confirmation</h3>
+        <h3 class="text-lg font-semibold text-danger-text">Dernière confirmation</h3>
         <p class="text-sm text-text-secondary">
           Pour confirmer, retape exactement ton nom d'utilisateur :
           <code class="px-1.5 py-0.5 bg-elevated rounded text-text-primary">{username}</code>
@@ -220,10 +220,10 @@
           autocapitalize="off"
           spellcheck="false"
           placeholder="Retape ton nom d'utilisateur"
-          class="w-full px-3 py-2 bg-elevated border border-border-subtle rounded-lg text-text-primary focus:outline-none focus:border-rose-500/50"
+          class="w-full px-3 py-2 bg-elevated border border-border-subtle rounded-lg text-text-primary focus:outline-none focus:border-danger/50"
         />
         {#if error}
-          <p class="text-sm text-rose-300">{error}</p>
+          <p class="text-sm text-danger-text">{error}</p>
         {/if}
         <div class="flex justify-end gap-2 pt-2">
           <button
@@ -238,7 +238,7 @@
             type="button"
             onclick={confirmDelete}
             disabled={deleting || confirmInput !== username}
-            class="px-4 py-2 text-sm rounded-lg bg-rose-500 text-black font-medium hover:bg-rose-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            class="px-4 py-2 text-sm rounded-lg bg-danger text-black font-medium hover:bg-danger/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {deleting ? 'Suppression…' : 'Supprimer définitivement'}
           </button>
