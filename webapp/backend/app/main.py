@@ -94,6 +94,7 @@ _CSRF_EXEMPT_PATHS = {
     "/api/auth/login-mfa",
     "/api/csp-report",
     "/api/telemetry/onboarding-event",
+    "/api/sentry-tunnel",  # Phase B4 — Sentry SDK envelope ingestion proxy
 }
 _CSRF_SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
 
@@ -185,3 +186,45 @@ async def health():
         return {"status": "ok", "service": "academie-api", "db": "connected"}
     except Exception:
         return {"status": "degraded", "service": "academie-api", "db": "disconnected"}
+
+
+# ── Phase B4 — Sentry tunnel proxy (browser → FastAPI → glitchtip-web) ─
+# Reuses the existing /api/* path so sinse's CF Access cookie covers it.
+# Avoids the path-precedence bug we hit with a CF Access bypass app
+# at academie.petit-pont.com/sentry-tunnel.
+import httpx as _httpx
+from fastapi import Response as _Response
+
+_GLITCHTIP_INTERNAL_BASE = (
+    os.environ.get("SENTRY_DSN_BACKEND", "")
+    .replace("//", "//::").split("//::")[1].split("@")[1].split("/")[0]
+    if os.environ.get("SENTRY_DSN_BACKEND") else "glitchtip-web:8000"
+)
+
+
+@app.post("/api/sentry-tunnel")
+async def sentry_tunnel(request: Request):
+    """Forward Sentry envelope to glitchtip-web internally. Bypasses CF Access
+    + CSP `connect-src 'self'` injected by Cosmos."""
+    body = await request.body()
+    text = body.decode("utf-8", errors="replace")
+    first_line = text.split("\n", 1)[0]
+    project_id = None
+    try:
+        import json as _json
+        header = _json.loads(first_line)
+        if header.get("dsn"):
+            from urllib.parse import urlparse
+            project_id = urlparse(header["dsn"]).path.lstrip("/")
+    except Exception:
+        pass
+    if not project_id:
+        return _Response(content="missing project id", status_code=400)
+    target = f"http://{_GLITCHTIP_INTERNAL_BASE}/api/{project_id}/envelope/"
+    async with _httpx.AsyncClient(timeout=10.0) as client:
+        r = await client.post(
+            target,
+            content=body,
+            headers={"Content-Type": "application/x-sentry-envelope"},
+        )
+    return _Response(status_code=r.status_code)
