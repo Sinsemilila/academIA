@@ -603,7 +603,15 @@
       {:else}
         {#each messages as msg, i}
           {#if msg.content}
-            <ChatBubble role={msg.role} content={msg.content} accentColor={agent.colorHex} streaming={streaming && i === streamingIdx} agentFlag={agent.flagSrc} agentName={agent.name} />
+            <ChatBubble
+              role={msg.role}
+              content={msg.content}
+              accentColor={agent.colorHex}
+              streaming={streaming && i === streamingIdx}
+              agentFlag={agent.flagSrc}
+              agentName={agent.name}
+              font={msg.role === 'assistant' && ['en','es','ja','de','it'].includes(agent?.domain ?? '') ? 'serif' : 'sans'}
+            />
           {/if}
         {/each}
       {/if}

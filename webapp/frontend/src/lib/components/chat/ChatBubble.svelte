@@ -6,13 +6,17 @@
   import { userAppearance } from '$lib/stores/user';
 
   let { role, content, accentColor = '#3b82f6', streaming = false,
-        agentFlag = '', agentName = '' } = $props<{
+        agentFlag = '', agentName = '', font = 'sans' } = $props<{
     role: 'user' | 'assistant' | 'system_consolidation';
     content: string;
     accentColor?: string;
     streaming?: boolean;
     agentFlag?: string;
     agentName?: string;
+    /* Phase B1.4 — 'serif' marks the bubble as L2 (target language). Caller
+       passes 'serif' for assistant messages of language-teaching agents
+       (Maestro, Teacher, Sensei, etc.). User L1 messages stay 'sans'. */
+    font?: 'sans' | 'serif';
   }>();
 
   let mounted = $state(false);
@@ -133,7 +137,7 @@
       </div>
     {:else}
       <div
-        class="px-4 py-2.5 rounded-2xl rounded-bl-md bg-surface border border-border-subtle text-sm leading-relaxed markdown-body"
+        class="px-4 py-2.5 rounded-2xl rounded-bl-md bg-surface border border-border-subtle text-sm leading-relaxed markdown-body {font === 'serif' ? 'font-serif' : 'font-sans'}"
         class:streaming-bubble={streaming}
         style="border-left: 2px solid {accentColor}"
       >
