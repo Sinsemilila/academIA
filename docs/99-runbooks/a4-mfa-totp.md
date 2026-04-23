@@ -113,6 +113,12 @@ docker exec postgres-academie psql -U sinse -d academie_db -c \
 
 ## Prochaines étapes Phase A4
 
-- **A4b** : UI frontend (settings + login flow + recovery codes management) + Fernet encryption + WebAuthn/Passkeys scaffolding
+- **A4b polish (livré Session 47)** : Fernet at-rest pour TOTP secret (`TOTP_FERNET_KEY` env, backward-compat plain detection via prefix `gAAAAA`), endpoint `POST /api/security/totp/regenerate-recovery-codes` + UI bouton "Régénérer mes recovery codes", WebAuthn scaffolding (table `webauthn_credentials` + 4 endpoints stub 501 derrière `WEBAUTHN_ENABLED=false`).
 - **Étendre à TOUS les users** : invitation email "Activez 2FA" + opt-in dashboard `/settings/security`. Pas de force-enroll en alpha.
-- **Admin policy stricte** : `users.is_admin = TRUE` ne peut pas SE désactiver MFA via UI (DELETE force via DB). Implémentation A4b.
+- **Admin policy stricte** : `users.is_admin = TRUE` ne peut pas SE désactiver MFA via UI (DELETE force via DB). À implémenter quand un 2e admin existera.
+
+## Future enhancements (non implémentées en alpha)
+
+- **Force-reset 90j inactivité** : daily cron qui flag `users.password_reset_required = true` pour `last_seen_at < NOW() - 90d`. Login flow détecte le flag et redirect `/reset-password` avant chat. Pas implémenté en alpha (1 user actif = sinse, dogfood quotidien). À activer quand ≥10 users actifs.
+- **Rotation `TOTP_FERNET_KEY`** : pas implémentée. Si compromise → générer nouvelle key, decrypt tous les rows avec ancienne, re-encrypt avec nouvelle, swap env. Manuel script à écrire.
+- **WebAuthn / Passkeys real impl (Phase 2 post-beta)** : table + router stubs en place, activation via `WEBAUTHN_ENABLED=true` + impl complète des 4 endpoints (`register-options`, `register-verify`, `auth-options`, `auth-verify`).

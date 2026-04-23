@@ -149,7 +149,8 @@ async def login_mfa(req: LoginMfaRequest, request: Request, response: Response):
     if not totp_row:
         raise HTTPException(status_code=400, detail="MFA non active pour cet utilisateur")
 
-    code_ok = totp_helper.verify_code(totp_row["secret"], req.code)
+    secret_plain = totp_helper.decrypt_secret(totp_row["secret"])  # A4b polish
+    code_ok = totp_helper.verify_code(secret_plain, req.code)
     used_recovery = False
     if not code_ok:
         ok, new_codes = totp_helper.verify_and_consume_recovery_code(

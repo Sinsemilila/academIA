@@ -4,6 +4,7 @@ asyncpg==0.31.0
 passlib[bcrypt,argon2]==1.7.4
 bcrypt==4.0.1
 argon2-cffi==23.1.0
+cryptography>=42.0.0  # A4b polish — Fernet at-rest TOTP
 pydantic==2.13.3
 httpx==0.28.1
 python-multipart==0.0.26

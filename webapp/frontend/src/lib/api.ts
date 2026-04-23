@@ -105,6 +105,18 @@ class ApiClient {
     return res.json();
   }
 
+  async totpRegenerateRecoveryCodes(password: string, code: string) {
+    const res = await this.fetch('/security/totp/regenerate-recovery-codes', {
+      method: 'POST',
+      body: JSON.stringify({ password, code }),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.detail || 'R\u00e9g\u00e9n\u00e9ration \u00e9chou\u00e9e');
+    }
+    return res.json();
+  }
+
   async totpDisable(password: string, code: string) {
     const res = await this.fetch('/security/totp/disable', {
       method: 'POST',

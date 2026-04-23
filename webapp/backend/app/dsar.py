@@ -212,8 +212,8 @@ async def delete_user_account(conn: asyncpg.Connection, user_row: dict) -> dict[
                     f"DELETE FROM {table} WHERE eleve_id = $1", eleve_id,
                 ))
 
-        # — user_id-keyed tables —
-        for table in ("xp_log", "streaks", "user_sessions", "active_sessions", "user_totp"):
+        # — user_id-keyed tables (active_sessions DROPped in A1-cleanup) —
+        for table in ("xp_log", "streaks", "user_sessions", "user_totp"):
             counts[table] = _count(await conn.execute(
                 f"DELETE FROM {table} WHERE user_id = $1", user_id,
             ))

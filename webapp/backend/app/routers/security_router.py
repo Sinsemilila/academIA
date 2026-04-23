@@ -187,12 +187,61 @@ async def totp_enroll_confirm(req: TotpEnrollConfirmRequest, user: dict = Depend
         raise HTTPException(status_code=409, detail="TOTP deja active.")
     plain_codes = totp_helper.generate_recovery_codes()
     hashed = totp_helper.hash_recovery_codes(plain_codes)
+    # A4b polish — encrypt secret at rest before INSERT.
+    enc_secret = totp_helper.encrypt_secret(req.secret)
     await db.pool.execute(
         "INSERT INTO user_totp (user_id, secret, recovery_codes) VALUES ($1, $2, $3)",
-        user["id"], req.secret, json.dumps(hashed),
+        user["id"], enc_secret, json.dumps(hashed),
     )
     logger.info("totp_enrolled user_id=%d", user["id"])
     return TotpEnrollConfirmResponse(enrolled=True, recovery_codes=plain_codes)
+
+
+class RegenRecoveryRequest(BaseModel):
+    password: str
+    code: str = Field(..., min_length=6, max_length=10)
+
+
+class RegenRecoveryResponse(BaseModel):
+    recovery_codes: list[str]
+
+
+@router.post("/security/totp/regenerate-recovery-codes", response_model=RegenRecoveryResponse)
+async def totp_regenerate_recovery(
+    req: RegenRecoveryRequest, request: Request, user: dict = Depends(get_current_user),
+):
+    """A4b polish — re-issue 10 fresh recovery codes. Requires re-auth (password +
+    TOTP code OR existing recovery code). Old codes are invalidated atomically."""
+    limiter.check(request, max_requests=3, window_seconds=3600)  # 3/hour/IP
+
+    full_user = await db.pool.fetchrow(
+        "SELECT password_hash FROM users WHERE id = $1", user["id"]
+    )
+    if not full_user or not verify_password(req.password, full_user["password_hash"]):
+        raise HTTPException(status_code=401, detail="Mot de passe incorrect")
+
+    row = await db.pool.fetchrow(
+        "SELECT secret, recovery_codes FROM user_totp WHERE user_id = $1", user["id"]
+    )
+    if not row:
+        raise HTTPException(status_code=404, detail="TOTP non active")
+
+    secret_plain = totp_helper.decrypt_secret(row["secret"])
+    code_ok = totp_helper.verify_code(secret_plain, req.code)
+    if not code_ok:
+        ok, _ = totp_helper.verify_and_consume_recovery_code(row["recovery_codes"], req.code)
+        code_ok = ok
+    if not code_ok:
+        raise HTTPException(status_code=401, detail="Code TOTP/recovery invalide")
+
+    plain_codes = totp_helper.generate_recovery_codes()
+    hashed = totp_helper.hash_recovery_codes(plain_codes)
+    await db.pool.execute(
+        "UPDATE user_totp SET recovery_codes = $1, recovery_codes_used = 0 WHERE user_id = $2",
+        json.dumps(hashed), user["id"],
+    )
+    logger.info("totp_recovery_regenerated user_id=%d", user["id"])
+    return RegenRecoveryResponse(recovery_codes=plain_codes)
 
 
 @router.post("/security/totp/disable", status_code=204)
@@ -207,7 +256,8 @@ async def totp_disable(req: TotpDisableRequest, user: dict = Depends(get_current
     )
     if not row:
         raise HTTPException(status_code=404, detail="TOTP non active")
-    code_ok = totp_helper.verify_code(row["secret"], req.code)
+    secret_plain = totp_helper.decrypt_secret(row["secret"])  # A4b polish
+    code_ok = totp_helper.verify_code(secret_plain, req.code)
     if not code_ok:
         ok, _ = totp_helper.verify_and_consume_recovery_code(row["recovery_codes"], req.code)
         code_ok = ok

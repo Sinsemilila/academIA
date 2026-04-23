@@ -78,7 +78,7 @@ async def _make_user(pool: asyncpg.Pool, prefix: str) -> dict:
 async def _delete_user(pool: asyncpg.Pool, user: dict) -> None:
     async with pool.acquire() as conn:
         async with conn.transaction():
-            for table in ("xp_log", "streaks", "user_sessions", "active_sessions", "user_totp"):
+            for table in ("xp_log", "streaks", "user_sessions", "user_totp"):
                 await conn.execute(f"DELETE FROM {table} WHERE user_id = $1", user["id"])
             if user.get("eleve_id"):
                 for table in (
