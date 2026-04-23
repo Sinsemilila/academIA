@@ -10,6 +10,8 @@ services:
     depends_on:
       academie-api:
         condition: service_healthy
+    env_file:
+      - .env   # Phase B4 — PUBLIC_SENTRY_DSN_FRONTEND + SENTRY_DSN_SSR pour SvelteKit
     environment:
       - ORIGIN=https://academie.petit-pont.com
       - PROTOCOL_HEADER=x-forwarded-proto
