@@ -1,6 +1,6 @@
 # B4 — GlitchTip self-hosted observability + bundle budget CI
 
-**Status** : livré Session 47 — stack Docker up + SDK frontend/backend + workflow CI bundle budget. **Setup user manuel à faire par sinse via SSH tunnel.**
+**Status** : livré Session 47 — stack Docker up + SDK frontend/backend + workflow CI bundle budget + dashboard public via Cloudflare Access. Backend capture validée live.
 **Last updated** : 2026-04-23
 **Related** : ADR-001 §B4
 
@@ -20,29 +20,30 @@
 
 **Network** : tous sur `academie-net-bridge` (external).
 
-**Accès** : SSH tunnel only — pas de DNS public exposé.
+**Accès public** : `https://glitchtip.petit-pont.com` via Cloudflare Tunnel `proxmox-tunnel` (UUID `a57431d7-...`) → ingress vers Cosmos host (192.168.1.181:80) → Cosmos route `glitchtip.petit-pont.com` → `http://localhost:8001` (host network → glitchtip-web container).
+
+**Auth** : Cloudflare Access avec 2 apps (path-based, plus spécifique gagne) :
+- **App "GlitchTip Dashboard"** (path `/`) — Allow `email = segura_clement@hotmail.fr`, IdP One-time PIN, session 24h. Couvre l'UI dashboard.
+- **App "GlitchTip SDK ingestion (bypass)"** (path `/api`) — Bypass Everyone. Couvre les endpoints Sentry SDK ingestion (`/api/<project>/envelope/`, `/api/<project>/store/`). Sans cette app de bypass, le SDK frontend reçoit 403 Cloudflare au lieu de poster les events.
 
 ---
 
-## Setup initial (one-shot, manuel sinse)
+## Setup initial (one-shot, **livré Session 47** — référence)
 
-### 1. SSH tunnel
+### 1. Accès dashboard
 
-```bash
-ssh -L 8001:localhost:8001 sinse@academie.petit-pont.com
-```
+Ouvrir `https://glitchtip.petit-pont.com` dans le browser → Cloudflare Access challenge → entrer `segura_clement@hotmail.fr` → recevoir un PIN par email → entrer le PIN → redirigé vers GlitchTip Django login → `segura_clement@hotmail.fr` + password → dashboard.
 
-Ouvrir `http://localhost:8001` dans le navigateur.
+Session Cloudflare Access valide 24h. Session GlitchTip Django valide jusqu'à logout explicite.
 
-### 2. Création du superuser
-
-Option A : registration UI (si la page de login propose "Sign up")
-
-Option B : CLI
+### 2. Création du superuser (déjà fait Session 47)
 
 ```bash
-docker exec -it glitchtip-web ./manage.py createsuperuser
-# email, password, etc.
+docker exec -it glitchtip-web ./manage.py createsuperuser  # interactif (legacy ref)
+# OU non-interactive (Session 47 a utilisé celle-là) :
+docker exec -e DJANGO_SUPERUSER_EMAIL='segura_clement@hotmail.fr' \
+            -e DJANGO_SUPERUSER_PASSWORD='<password>' \
+            glitchtip-web ./manage.py createsuperuser --noinput
 ```
 
 ### 3. Création de l'organisation + projects
