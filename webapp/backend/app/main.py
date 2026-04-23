@@ -205,26 +205,33 @@ _GLITCHTIP_INTERNAL_BASE = (
 @app.post("/api/sentry-tunnel")
 async def sentry_tunnel(request: Request):
     """Forward Sentry envelope to glitchtip-web internally. Bypasses CF Access
-    + CSP `connect-src 'self'` injected by Cosmos."""
+    + CSP `connect-src 'self'` injected by Cosmos. Extracts sentry_key from
+    the envelope DSN to pass auth via query param (GlitchTip ingest expects
+    ?sentry_key=... or X-Sentry-Auth header)."""
     body = await request.body()
     text = body.decode("utf-8", errors="replace")
     first_line = text.split("\n", 1)[0]
     project_id = None
+    sentry_key = None
     try:
         import json as _json
+        from urllib.parse import urlparse
         header = _json.loads(first_line)
         if header.get("dsn"):
-            from urllib.parse import urlparse
-            project_id = urlparse(header["dsn"]).path.lstrip("/")
+            parsed = urlparse(header["dsn"])
+            project_id = parsed.path.lstrip("/")
+            sentry_key = parsed.username
     except Exception:
         pass
-    if not project_id:
-        return _Response(content="missing project id", status_code=400)
-    target = f"http://{_GLITCHTIP_INTERNAL_BASE}/api/{project_id}/envelope/"
+    if not project_id or not sentry_key:
+        return _Response(content="missing project_id or sentry_key", status_code=400)
+    target = (
+        f"http://{_GLITCHTIP_INTERNAL_BASE}/api/{project_id}/envelope/"
+        f"?sentry_version=7&sentry_key={sentry_key}&sentry_client=academie-tunnel/1.0"
+    )
     async with _httpx.AsyncClient(timeout=10.0) as client:
         r = await client.post(
-            target,
-            content=body,
+            target, content=body,
             headers={"Content-Type": "application/x-sentry-envelope"},
         )
     return _Response(status_code=r.status_code)
