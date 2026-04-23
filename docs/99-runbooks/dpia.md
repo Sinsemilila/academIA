@@ -18,7 +18,7 @@ Tutorat IA personnalisé pour l'apprentissage de langues étrangères (français
 - **Art. 6(1)(b)** — exécution du contrat de service (fourniture du tutorat).
 
 ### 1.3 Catégories de personnes concernées
-- Apprenant·es adultes (≥15 ans pour la version alpha — voir [`minors-flow-roadmap.md`](minors-flow-roadmap.md) pour le flow mineurs prévu Phase B1).
+- Apprenant·es adultes (≥15 ans pour la version alpha — voir [`minors-flow-roadmap.md`](minors-flow-roadmap.md) pour le flow mineurs prévu post-beta publique).
 - Public actuel : 1 utilisateur actif (Sinse, dogfood). 141 comptes legacy en base (anciens tests, à purger lors de la beta).
 
 ### 1.4 Catégories de données collectées

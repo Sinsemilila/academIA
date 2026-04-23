@@ -1,9 +1,11 @@
 # Roadmap — Flow consentement parental mineurs (RGPD art. 8)
 
-**Status** : roadmap — implémentation prévue Phase B1 (post-beta privée)
+**Status** : roadmap — implémentation prévue **post-beta publique** (≠ ADR-001 Phase B1 = design tokens OKLCH)
 **Last updated** : 2026-04-23
 **Auteur** : Sinse
 **Related** : [`dpia.md`](dpia.md), ADR-001 décision #6
+
+> **Note naming** : ADR-001 Phase B1 = design tokens OKLCH (fondations visuelles). Le flow mineurs est planifié pour la **phase d'ouverture publique payante**, distincte de toute phase ADR-001. Référez-vous à ce label "post-beta" partout dans la doc.
 
 ---
 
@@ -28,7 +30,7 @@ Rationale :
 - Effort full flow ≈ 1.5 sem (table `parental_consents` + magic-link tokens + UI parent + email transactionnel + relance + révocation) — disproportionné face au risque réel actuel (0 inscription publique).
 - Conformité RGPD acceptable pour une alpha **uniquement si l'auto-attestation est de bonne foi** et qu'aucun mineur <15 n'est invité.
 
-## Roadmap Phase B1 — flow complet (~1.5 semaine)
+## Roadmap post-beta — flow complet (~1.5 semaine)
 
 ### Étape 1 — modèle données
 
@@ -109,7 +111,7 @@ Si âge <15 → page "Consentement parental requis"
 
 ### Étape 6 — Infra email
 
-Pré-requis avant Phase B1 :
+Pré-requis avant post-beta :
 - **Cloudflare Email Routing** configuré (`security@`, `dmarc-reports@`, `dsar@`, `parents@` → forwarding Sinse). Manuel TODO Sinse.
 - **Provider SMTP transactionnel gratuit** (≤100 emails/jour) : choix entre [Resend](https://resend.com) free tier (3000/mois), [Brevo](https://www.brevo.com) free tier (300/jour), [Mailjet](https://www.mailjet.com) free tier (200/jour).
 - **DKIM/SPF/DMARC** déjà en place (Phase A7 — DMARC `p=none` actuel, bump `quarantine` 2026-05-07).
@@ -124,7 +126,7 @@ Pré-requis avant Phase B1 :
 - `/legal/mineurs` mise à jour avec le flow réel, plus le placeholder "à venir".
 - CGU mise à jour : section dédiée minors RGPD art. 8.
 
-## Estimation effort total Phase B1
+## Estimation effort total post-beta
 
 | Étape | Effort |
 |---|---|
@@ -142,11 +144,12 @@ Pré-requis avant Phase B1 :
 
 - ✅ A1 sessions Redis (livré Session 46) — réutilisé pour reset session sur révocation
 - ✅ A6 endpoints DSAR (Session 47) — `/api/me/delete-account` réutilisé pour purge `revoked_by_parent`
+
 - ⚠️  Cloudflare Email Routing setup (manuel Sinse)
 - ⚠️  Choix + intégration provider SMTP transactionnel
 - ⚠️  Validation juridique du wording consentement (idéalement avis CNIL ou avocat ; à défaut, template CNIL "consentement parental" + auto-validation)
 
-## Hors-scope Phase B1
+## Hors-scope post-beta
 
 - **Vérification d'identité parentale forte** (carte d'identité, FranceConnect parent, etc.) — disproportionné pour un service éducatif gratuit, le double opt-in email est conforme aux recommandations CNIL pour ce type de service.
 - **Consentement multilingue** (autres langues que FR) — différé à l'internationalisation post-beta.
