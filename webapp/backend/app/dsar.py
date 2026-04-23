@@ -112,7 +112,7 @@ async def export_user_data(conn: asyncpg.Connection, user_row: dict) -> dict[str
         )
         payload["onboarding_telemetry_events"] = _rows_to_dicts(
             await conn.fetch(
-                "SELECT * FROM onboarding_telemetry_events WHERE eleve_id = $1 ORDER BY ts DESC",
+                "SELECT * FROM onboarding_telemetry_events WHERE eleve_id = $1 ORDER BY created_at DESC",
                 eleve_id,
             )
         )

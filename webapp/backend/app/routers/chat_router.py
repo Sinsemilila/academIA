@@ -604,11 +604,20 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
     turn_response_secs = 0
     if req.conversation_id:
         async with db.pool.acquire() as conn:
-            last_msg = await conn.fetchval(
+            sess_row = await conn.fetchrow(
                 """SELECT last_message_at FROM user_sessions
                    WHERE user_id = $1 AND agent_name = $2 AND dify_conversation_id = $3""",
                 user["id"], req.agent, req.conversation_id,
             )
+            # Refactor 2026-H2 Phase A5 — reject conversation_id that doesn't
+            # belong to the caller. Without this check Alice could append
+            # to Bob's Dify conversation by guessing his conv UUID.
+            if sess_row is None:
+                raise HTTPException(
+                    status_code=403,
+                    detail="Conversation introuvable ou non accessible",
+                )
+            last_msg = sess_row["last_message_at"]
             if last_msg:
                 delta = datetime.now() - last_msg
                 minutes_since_last = int(delta.total_seconds() / 60)
