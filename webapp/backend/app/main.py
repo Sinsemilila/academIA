@@ -157,12 +157,6 @@ from .routers import webauthn_router  # noqa: E402
 app.include_router(webauthn_router.router)
 
 
-# ── Phase B4 — temporary Sentry test endpoint (remove after dogfood validation) ─
-@app.get("/api/debug/sentry-test")
-async def _sentry_test():
-    raise RuntimeError("B4 sentry test — if you see this in GlitchTip, capture works")
-
-
 # ── Request logging middleware ────────────────────
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
