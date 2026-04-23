@@ -10,6 +10,10 @@ const _DSN = env.PUBLIC_SENTRY_DSN_FRONTEND;
 if (_DSN) {
   Sentry.init({
     dsn: _DSN,
+    // Phase B4 — tunnel via SvelteKit /sentry-tunnel pour bypass CSP
+    // `connect-src 'self'` injecté par Cosmos. SDK POST same-origin,
+    // SvelteKit forward server-side vers glitchtip-web.
+    tunnel: '/sentry-tunnel',
     tracesSampleRate: 0.10,
     replaysSessionSampleRate: 0,
     replaysOnErrorSampleRate: 0,
