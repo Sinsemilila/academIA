@@ -26,7 +26,7 @@
 |---|---|
 | **Finalité** | Fournir un service de tutorat IA personnalisé pour l'apprentissage de langues étrangères |
 | **Base légale** | Consentement (art. 6(1)(a)) + exécution contrat (art. 6(1)(b)) |
-| **Catégories de personnes** | Apprenant·es ≥15 ans (alpha — flow mineurs Phase B1) |
+| **Catégories de personnes** | Apprenant·es ≥15 ans (alpha — flow mineurs post-beta publique, cf. [`minors-flow-roadmap.md`](minors-flow-roadmap.md)) |
 | **Catégories de données** | cf. [`dpia.md`](dpia.md) §1.4 — identification, auth, profil pédagogique, conversations, télémétrie |
 | **Destinataires** | Sous-processeurs §3 ci-dessous |
 | **Transferts hors UE** | OUI (US — DPF) — voir [`transfert-impact-assessment.md`](transfert-impact-assessment.md) |

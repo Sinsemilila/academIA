@@ -1,10 +1,15 @@
 """Helpers for E2E consolidation test (Session 36 follow-up).
 
-Reusable utilities to seed a test user, forge JWT, reset DB scope, seed
-pending consolidation state, build scripted mini-exam answers, and assert
-final DB state. Designed to be imported from 05_e2e_consolidation_test.py
-and run inside the academie-api container (DATABASE_URL, JWT_SECRET_KEY
-available in env).
+⚠️  Refactor 2026-H2 Phase A1-cleanup (2026-04-23) — JWT auth removed in
+favour of opaque Redis sessions. `forge_access_token()` is now a stub that
+raises NotImplementedError. To revive these helpers, refactor to use
+sessions.create_session() directly (bypasses login, returns cookies dict)
+or call /api/auth/login with a real password and capture Set-Cookie.
+
+Reusable utilities to seed a test user, reset DB scope, seed pending
+consolidation state, build scripted mini-exam answers, and assert final
+DB state. Designed to be imported from 05_e2e_consolidation_test.py and
+run inside the academie-api container (DATABASE_URL available in env).
 """
 from __future__ import annotations
 
@@ -16,12 +21,10 @@ from typing import Any
 
 import asyncpg
 import httpx
-from jose import jwt
 
 # ── Config ─────────────────────────────────────────────────────────────
 
 DATABASE_URL = os.environ["DATABASE_URL"]
-JWT_SECRET_KEY = os.environ["JWT_SECRET_KEY"]
 API_BASE = os.environ.get("E2E_API_BASE", "http://localhost:8000")
 
 TEST_USER_USERNAME = "e2e_consolidation_bot"
@@ -51,12 +54,17 @@ async def close_pool() -> None:
         _pool = None
 
 
-# ── JWT forge ──────────────────────────────────────────────────────────
+# ── Auth forge (NEEDS REFACTOR — see module docstring) ─────────────────
 
 def forge_access_token(user_id: int, username: str) -> str:
-    expire = datetime.now(timezone.utc) + timedelta(minutes=30)
-    payload = {"sub": str(user_id), "username": username, "type": "access", "exp": expire}
-    return jwt.encode(payload, JWT_SECRET_KEY, algorithm="HS256")
+    """A1-cleanup : JWT auth dropped. Refactor to sessions.create_session()
+    + return cookies dict, then update all callers to pass cookies+CSRF
+    instead of Authorization Bearer header. Until then, this file's
+    networked tests are effectively skipped."""
+    raise NotImplementedError(
+        "forge_access_token: JWT auth removed in A1 (2026-04-23). "
+        "Refactor to cookie-session — see module docstring."
+    )
 
 
 # ── Test user lifecycle ────────────────────────────────────────────────
@@ -97,8 +105,6 @@ async def teardown_test_user() -> None:
                 "DELETE FROM streaks WHERE user_id = $1", user_id)
             await conn.execute(
                 "DELETE FROM xp_log WHERE user_id = $1", user_id)
-            await conn.execute(
-                "DELETE FROM active_sessions WHERE user_id = $1", user_id)
         await conn.execute(
             "DELETE FROM profils_eleves WHERE eleve_id = $1", TEST_USER_ELEVE_ID)
         await conn.execute(

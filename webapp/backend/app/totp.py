@@ -1,16 +1,19 @@
 """
 Refactor 2026-H2 Phase A4 — TOTP MFA helpers.
+Phase A4b polish (Session 47) — Fernet at-rest encryption for stored secrets.
 
 Wraps pyotp + qrcode for enrollment, verify, and recovery codes.
 """
 
 import base64
 import io
+import os
 import secrets
 import string
 
 import pyotp
 import qrcode
+from cryptography.fernet import Fernet, InvalidToken
 from passlib.context import CryptContext
 
 ISSUER = "AcademIA"
@@ -19,6 +22,43 @@ RECOVERY_CODE_LENGTH = 10  # 10 base32 chars = 50 bits entropy
 
 # Same scheme as auth — recovery codes hashed with argon2id (bcrypt fallback).
 _recovery_pwd = CryptContext(schemes=["argon2", "bcrypt"], deprecated="auto", argon2__type="ID")
+
+# ── Fernet at-rest encryption for TOTP secret (A4b polish) ─────────────
+# Stored ciphertext is base64-Fernet — detection via magic prefix `gAAAAA`
+# (Fernet token version byte 0x80 → base64 starts with 'g'). Backward-compat :
+# legacy plain secrets without that prefix are returned as-is on decrypt.
+_FERNET_PREFIX = "gAAAAA"
+
+
+def _fernet() -> Fernet | None:
+    key = os.environ.get("TOTP_FERNET_KEY")
+    if not key:
+        return None
+    return Fernet(key.encode())
+
+
+def encrypt_secret(plain: str) -> str:
+    """Encrypt a TOTP secret for at-rest storage. If TOTP_FERNET_KEY is not
+    set, returns the plain secret unchanged (warn-only — code path used in
+    dev/test where the key may be absent)."""
+    f = _fernet()
+    if f is None:
+        return plain
+    return f.encrypt(plain.encode()).decode()
+
+
+def decrypt_secret(stored: str) -> str:
+    """Decrypt if the stored value looks Fernet-encrypted ; otherwise return
+    as-is (legacy compatibility for rows enrolled before A4b polish)."""
+    if not stored or not stored.startswith(_FERNET_PREFIX):
+        return stored
+    f = _fernet()
+    if f is None:
+        raise RuntimeError("TOTP secret is encrypted but TOTP_FERNET_KEY is missing")
+    try:
+        return f.decrypt(stored.encode()).decode()
+    except InvalidToken as e:
+        raise RuntimeError("TOTP secret decrypt failed (wrong key?)") from e
 
 
 def generate_secret() -> str:

@@ -115,6 +115,8 @@ app.include_router(internal_router.router)
 from .routers import agents_router  # noqa: E402
 app.include_router(agents_router.router)
 app.include_router(security_router.router)
+from .routers import webauthn_router  # noqa: E402
+app.include_router(webauthn_router.router)
 
 
 # ── Request logging middleware ────────────────────

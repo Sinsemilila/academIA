@@ -6,6 +6,7 @@
   import { get } from 'svelte/store';
   import ModelBudgetBar from '$lib/components/admin/ModelBudgetBar.svelte';
   import JudgeBudgetBar from '$lib/components/admin/JudgeBudgetBar.svelte';
+  import CostRunawayCard from '$lib/components/admin/CostRunawayCard.svelte';
 
   const availableAgents = $derived(agents.filter(a => a.available));
   const initialDomain = get(currentDomain);
@@ -26,6 +27,18 @@
   let judgeBudget = $state<any>(null);
   async function loadJudgeBudget() {
     try { judgeBudget = await api.adminJudgeBudget(); } catch { judgeBudget = null; }
+  }
+
+  // ── Session 47 A5 — per-user cost runaway ────────────────────
+  let costRunaway = $state<any>(null);
+  let costRunawayWindow = $state('7d');
+  async function loadCostRunaway() {
+    try { costRunaway = await api.adminCostRunawayUsers(costRunawayWindow); } catch { costRunaway = null; }
+  }
+  function switchCostRunawayWindow(w: string) {
+    costRunawayWindow = w;
+    costRunaway = null;
+    loadCostRunaway();
   }
 
   // ── Prompt caching (global, windowed) ───────────────────────
@@ -91,6 +104,7 @@
   onMount(() => {
     loadTokenUsage(); loadCacheStats(); loadModelBudgets(); loadJudgeBudget();
     loadConsolidationStats(); loadOracleStats(); loadFunnelStats();
+    loadCostRunaway();
   });
 </script>
 
@@ -165,6 +179,21 @@
         preflightCmd={judgeBudget.preflight_cmd}
       />
     {/if}
+  </div>
+
+  <!-- Per-user cost runaway (Phase A5 — Session 47) -->
+  <div class="bg-surface border border-border-subtle rounded-xl p-4 space-y-3">
+    <div>
+      <h2 class="text-sm font-semibold text-text-primary">Telemetry coût per-user</h2>
+      <p class="text-xs text-text-muted">
+        Top consumers de tokens — flag rouge si > 5× la médiane (signal abuse / runaway loop).
+      </p>
+    </div>
+    <CostRunawayCard
+      data={costRunaway}
+      window={costRunawayWindow}
+      onWindowChange={switchCostRunawayWindow}
+    />
   </div>
 
   <!-- REGRESSION ROW — Consolidation + Oracle side-by-side -->
