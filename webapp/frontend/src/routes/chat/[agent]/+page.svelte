@@ -10,6 +10,7 @@
   import OnboardingModal from '$lib/components/onboarding/OnboardingModal.svelte';
   import MiniExamModal from '$lib/components/MiniExamModal.svelte';
   import ConsolidationDecisionModal from '$lib/components/ConsolidationDecisionModal.svelte';
+  import AIBanner from '$lib/components/AIBanner.svelte';
   import { toastXP, toastError, toastSuccess } from '$lib/stores/toasts';
 
   // Session 37 — extended role vocabulary to support persistent consolidation
@@ -627,6 +628,10 @@
     <!-- Input -->
     <ChatInput onSend={sendMessage} disabled={streaming || loadingHistory} />
   </div>
+
+  <!-- AI Act art. 50 mention -->
+  <AIBanner />
+
 
   <!-- Mode change modal -->
   {#if showModeModal}
