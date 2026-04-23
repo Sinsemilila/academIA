@@ -278,6 +278,22 @@
     >
       {savingPw ? 'Mise \u00E0 jour...' : 'Changer le mot de passe'}
     </button>
+
+    <div class="pt-3 border-t border-border-subtle flex flex-wrap gap-3">
+      <a
+        href="/settings/security"
+        class="text-sm text-teacher hover:underline inline-flex items-center gap-1.5"
+      >
+        🔐 Authentification 2FA (TOTP)
+      </a>
+      <span class="text-text-muted">·</span>
+      <a
+        href="/settings/privacy"
+        class="text-sm text-teacher hover:underline inline-flex items-center gap-1.5"
+      >
+        🛡 Confidentialité & RGPD
+      </a>
+    </div>
   </section>
 
   <!-- ── Active sessions ─────────────────── -->
@@ -318,11 +334,6 @@
     {/if}
   </section>
 
-  <!-- Footer -->
-  <div class="text-center pt-2">
-    <a href="/legal" class="text-xs text-text-muted hover:text-text-secondary transition-colors">
-      Mentions l&#233;gales & Confidentialit&#233;
-    </a>
-  </div>
+  <!-- Footer link removed Session 47 — duplicate du global footer (+layout.svelte:206) -->
 </div>
 {/if}

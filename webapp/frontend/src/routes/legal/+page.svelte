@@ -65,8 +65,34 @@
     <h2 class="font-semibold text-lg">Droits (RGPD)</h2>
     <p class="text-sm text-text-secondary leading-relaxed">
       Tu disposes d'un droit d'acc&#232;s, de rectification et de suppression de tes donn&#233;es.
-      Pour exercer ces droits, contacte sinseproduction@gmail.com.
+      Pour exercer ces droits, exporte ou supprime ton compte directement depuis
+      <a href="/settings/privacy" class="text-teacher hover:underline">Param&#232;tres &rarr; Confidentialit&#233;</a>,
+      ou contacte sinseproduction@gmail.com.
     </p>
+  </section>
+
+  <section class="bg-surface border border-border-subtle rounded-xl p-6 space-y-3">
+    <h2 class="font-semibold text-lg">En savoir plus</h2>
+    <ul class="space-y-2 text-sm">
+      <li>
+        <a href="/legal/ia" class="text-teacher hover:underline inline-flex items-center gap-1.5">
+          🤖 Mention IA &amp; sous-processeurs
+        </a>
+        <span class="text-text-muted ml-1">— quels mod&#232;les LLM, quelles donn&#233;es leur sont envoy&#233;es</span>
+      </li>
+      <li>
+        <a href="/legal/mineurs" class="text-teacher hover:underline inline-flex items-center gap-1.5">
+          👶 Mineurs (RGPD art. 8)
+        </a>
+        <span class="text-text-muted ml-1">— restriction &#8805;15 ans alpha + roadmap consentement parental</span>
+      </li>
+      <li>
+        <a href="/settings/privacy" class="text-teacher hover:underline inline-flex items-center gap-1.5">
+          🛡 Confidentialit&#233; &amp; RGPD
+        </a>
+        <span class="text-text-muted ml-1">— exporter ou supprimer ton compte</span>
+      </li>
+    </ul>
   </section>
 
   <p class="text-xs text-text-muted text-center">Derni&#232;re mise &#224; jour : avril 2026</p>
