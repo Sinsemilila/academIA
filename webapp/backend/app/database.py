@@ -1,4 +1,6 @@
+import json
 import os
+
 import asyncpg
 from contextlib import asynccontextmanager
 
@@ -13,11 +15,30 @@ pool: asyncpg.Pool | None = None
 litellm_pool: asyncpg.Pool | None = None
 
 
+async def _register_jsonb_codec(conn: asyncpg.Connection) -> None:
+    """Decode jsonb columns to native Python list/dict instead of raw str.
+
+    Without this, asyncpg returns jsonb as a string, and code that iterates
+    `row["recovery_codes"]` ends up iterating characters (silent bug, e.g.
+    A4 totp status reported `len(json_str)` instead of `len(array)`).
+    """
+    await conn.set_type_codec(
+        "jsonb",
+        encoder=json.dumps,
+        decoder=json.loads,
+        schema="pg_catalog",
+    )
+
+
 async def init_pool():
     global pool, litellm_pool
-    pool = await asyncpg.create_pool(DATABASE_URL, min_size=2, max_size=10)
+    pool = await asyncpg.create_pool(
+        DATABASE_URL, min_size=2, max_size=10, init=_register_jsonb_codec,
+    )
     try:
-        litellm_pool = await asyncpg.create_pool(LITELLM_DATABASE_URL, min_size=1, max_size=4)
+        litellm_pool = await asyncpg.create_pool(
+            LITELLM_DATABASE_URL, min_size=1, max_size=4, init=_register_jsonb_codec,
+        )
     except Exception:
         litellm_pool = None  # SpendLogs unavailable → endpoints fall back to local estimate
 
