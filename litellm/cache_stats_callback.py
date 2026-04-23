@@ -250,7 +250,19 @@ class CacheStatsLogger(CustomLogger):
         pt, ct = int(pt or 0), int(ct or 0)
         if pt == 0 and ct == 0:
             return None
-        return {"model": group, "input_tokens": pt, "output_tokens": ct}
+        # Phase A5 — forward the Dify-side `user` field so per-user attribution
+        # of token spend lands in model_usage_daily.user_id.
+        user_raw = (
+            (kwargs.get("litellm_params") or {}).get("metadata", {}).get("user_api_key_user_id")
+            or kwargs.get("user")
+            or ""
+        )
+        return {
+            "model": group,
+            "input_tokens": pt,
+            "output_tokens": ct,
+            "user": str(user_raw) if user_raw else None,
+        }
 
     def _dispatch(self, kwargs, response_obj, start_time):
         cache_payload = self._payload(kwargs, response_obj, start_time)
