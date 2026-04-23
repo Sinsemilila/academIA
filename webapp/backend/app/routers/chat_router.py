@@ -980,6 +980,14 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
         "conversation_id": req.conversation_id or "",
     }
 
+    # Refactor 2026-H2 Phase A5 — strip PII before payload leaves to Dify/LLM.
+    # Defense in depth ; cf. docs/99-runbooks/dpia.md §3.1 + a5 design notes.
+    from ..security.pii_scrubber import scrub_payload_strings
+    pii_hits = scrub_payload_strings(payload, fields=("query",))
+    if any(pii_hits.values()):
+        log_extra = ", ".join(f"{k}={v}" for k, v in pii_hits.items() if v)
+        print(f"[pii_scrub] user={user['id']} hits {log_extra}", flush=True)
+
     collected_answer = []
 
     async def stream():
