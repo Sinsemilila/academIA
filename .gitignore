@@ -5,6 +5,8 @@ dist/
 .next/
 .svelte-kit/
 .env
+.env.glitchtip
+.env.glitchtip.sops
 *.log
 *.bak
 .dify_admin_key

@@ -1,4 +1,5 @@
 import logging
+import os
 import time
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
@@ -17,6 +18,43 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 logger = logging.getLogger("academie-api")
+
+# ── Phase B4 — Sentry / GlitchTip error tracking (no-op si DSN absent) ───
+_SENTRY_DSN = os.environ.get("SENTRY_DSN_BACKEND", "").strip()
+if _SENTRY_DSN:
+    import sentry_sdk
+    from sentry_sdk.integrations.fastapi import FastApiIntegration
+    from sentry_sdk.integrations.starlette import StarletteIntegration
+
+    def _scrub_pii(event, hint):
+        """Drop session cookies, CSRF headers, password from request body."""
+        req = event.get("request") or {}
+        if "cookies" in req:
+            req["cookies"] = {}
+        headers = req.get("headers") or {}
+        for h in ("cookie", "Cookie", "x-csrf-token", "X-CSRF-Token", "authorization", "Authorization"):
+            headers.pop(h, None)
+        data = req.get("data")
+        if data and isinstance(data, (dict, str)):
+            data_str = str(data).lower()
+            if "password" in data_str or "secret" in data_str:
+                req["data"] = "<scrubbed>"
+        if "user" in event:
+            event["user"] = {"id": "<redacted>"}
+        return event
+
+    sentry_sdk.init(
+        dsn=_SENTRY_DSN,
+        traces_sample_rate=0.10,
+        environment=os.environ.get("ENV", "production"),
+        integrations=[
+            FastApiIntegration(transaction_style="endpoint"),
+            StarletteIntegration(transaction_style="endpoint"),
+        ],
+        send_default_pii=False,
+        before_send=_scrub_pii,
+    )
+    logger.info("Sentry/GlitchTip backend tracking enabled")
 
 
 @asynccontextmanager
@@ -117,6 +155,12 @@ app.include_router(agents_router.router)
 app.include_router(security_router.router)
 from .routers import webauthn_router  # noqa: E402
 app.include_router(webauthn_router.router)
+
+
+# ── Phase B4 — temporary Sentry test endpoint (remove after dogfood validation) ─
+@app.get("/api/debug/sentry-test")
+async def _sentry_test():
+    raise RuntimeError("B4 sentry test — if you see this in GlitchTip, capture works")
 
 
 # ── Request logging middleware ────────────────────

@@ -58,6 +58,51 @@ services:
           memory: 512M
           cpus: "1.0"
 
+  # ── Phase B4 — GlitchTip self-hosted observability (SSH tunnel access only) ──
+  redis-glitchtip:
+    image: redis:7-alpine
+    container_name: redis-glitchtip
+    restart: unless-stopped
+    networks:
+      - academie-net-bridge
+    deploy:
+      resources:
+        limits:
+          memory: 96M
+
+  glitchtip-web:
+    image: glitchtip/glitchtip:v5.0
+    container_name: glitchtip-web
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8001:8000"   # bind localhost — SSH tunnel only
+    networks:
+      - academie-net-bridge
+    env_file:
+      - .env.glitchtip
+    depends_on:
+      - redis-glitchtip
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  glitchtip-worker:
+    image: glitchtip/glitchtip:v5.0
+    container_name: glitchtip-worker
+    restart: unless-stopped
+    networks:
+      - academie-net-bridge
+    env_file:
+      - .env.glitchtip
+    depends_on:
+      - redis-glitchtip
+    command: ["./bin/run-celery-with-beat.sh"]
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+
 networks:
   academie-net-bridge:
     external: true
