@@ -40,12 +40,8 @@
   const isPublicPage = $derived(isLoginPage || isLegalPage);
 
   async function loadUser() {
-    const token = api.loadToken();
-    if (!token) {
-      goto('/login');
-      return;
-    }
-
+    // Phase A1 — auth via cookie (HttpOnly, server-side). No JS-readable token.
+    // api.me() will redirect to /login on 401 via the shared fetch wrapper.
     try {
       user = await api.me();
       const [streakData, xpData, dpData] = await Promise.all([

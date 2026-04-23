@@ -246,7 +246,9 @@
     streamingIdx = messages.length - 1;
 
     try {
-      const token = api.loadToken();
+      // Phase A1 — auth via cookie + CSRF double-submit (no Bearer token).
+      const csrfMatch = document.cookie.match(/(?:^|;\s*)csrf_token=([^;]+)/);
+      const csrfToken = csrfMatch ? decodeURIComponent(csrfMatch[1]) : '';
 
       // Build request body with optional extra inputs
       const body: Record<string, any> = {
@@ -268,8 +270,9 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'X-CSRF-Token': csrfToken,
         },
+        credentials: 'include',
         body: JSON.stringify(body),
       });
 
