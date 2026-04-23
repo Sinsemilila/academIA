@@ -1,0 +1,75 @@
+name: bundle-budget
+
+on:
+  pull_request:
+    paths:
+      - 'webapp/frontend/**'
+      - '.github/workflows/bundle-budget.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'webapp/frontend/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: webapp/frontend/package-lock.json
+
+      - name: Install + build
+        working-directory: webapp/frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Measure (gzipped)
+        id: m
+        working-directory: webapp/frontend
+        run: |
+          ENTRY_KB=$(find build/client/_app/immutable/entry -name '*.js.gz' -exec du -bc {} + | tail -1 | awk '{print int($1/1024)}')
+          CHUNKS_KB=$(find build/client/_app/immutable/chunks -name '*.js.gz' -exec du -bc {} + | tail -1 | awk '{print int($1/1024)}')
+          NODES_KB=$(find build/client/_app/immutable/nodes -name '*.js.gz' -exec du -bc {} + | tail -1 | awk '{print int($1/1024)}')
+          TOTAL_KB=$(find build/client/_app/immutable -name '*.js.gz' -exec du -bc {} + | tail -1 | awk '{print int($1/1024)}')
+          echo "entry_kb=$ENTRY_KB"   >> "$GITHUB_OUTPUT"
+          echo "chunks_kb=$CHUNKS_KB" >> "$GITHUB_OUTPUT"
+          echo "nodes_kb=$NODES_KB"   >> "$GITHUB_OUTPUT"
+          echo "total_kb=$TOTAL_KB"   >> "$GITHUB_OUTPUT"
+          {
+            echo "## bundle-budget (gzipped)"
+            echo
+            echo "| Section | Size | Budget | Status |"
+            echo "|---|---|---|---|"
+            echo "| Entry (\`app.*\`+\`start.*\`) | ${ENTRY_KB} KB | 80 KB | $( [ $ENTRY_KB -le 80 ] && echo '✅' || echo '⚠️ over' ) |"
+            echo "| Lazy chunks total          | ${CHUNKS_KB} KB | 500 KB | $( [ $CHUNKS_KB -le 500 ] && echo '✅' || echo '⚠️ over' ) |"
+            echo "| Page nodes total           | ${NODES_KB} KB | — | reference |"
+            echo "| **Total \`_app/immutable\`** | **${TOTAL_KB} KB** | — | reference |"
+            echo
+            echo "_Soft warning only — see \`docs/99-runbooks/b4-glitchtip-observability.md\` to flip strict gate._"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment PR
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: bundle-budget
+          message: |
+            ## 📦 bundle-budget (gzipped)
+
+            | Section | Size | Budget | Status |
+            |---|---|---|---|
+            | Entry (`app.*`+`start.*`) | ${{ steps.m.outputs.entry_kb }} KB | 80 KB | ${{ steps.m.outputs.entry_kb <= 80 && '✅' || '⚠️ over' }} |
+            | Lazy chunks total | ${{ steps.m.outputs.chunks_kb }} KB | 500 KB | ${{ steps.m.outputs.chunks_kb <= 500 && '✅' || '⚠️ over' }} |
+            | Page nodes total | ${{ steps.m.outputs.nodes_kb }} KB | — | reference |
+            | **Total `_app/immutable`** | **${{ steps.m.outputs.total_kb }} KB** | — | reference |
+
+            *Soft warning only — see `docs/99-runbooks/b4-glitchtip-observability.md` to flip strict gate.*
