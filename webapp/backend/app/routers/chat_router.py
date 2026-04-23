@@ -590,8 +590,10 @@ async def _persist_spaced_retrieval(
 @router.post("/api/chat/send")
 async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get_current_user)):
     """Stream a chat message through Dify API."""
-    # Rate limit: 30 messages per minute per IP
-    limiter.check(request, max_requests=30, window_seconds=60)
+    # Refactor 2026-H2 Phase A5 — per-user rate-limit (was 30/60 per-IP).
+    # 100/60s/user covers normal pedagogical use (heavy session ~3-4 msg/min)
+    # while capping cost-runaway / abuse scenarios.
+    await limiter.check_user(request, max_requests=100, window_seconds=60)
     dify_key = get_dify_key(req.agent)
     domain, lang = _get_domain(req.agent)
     # Use existing Dify UUID if set, otherwise generate a stable ID

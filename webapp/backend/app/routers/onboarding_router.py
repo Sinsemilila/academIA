@@ -17,10 +17,11 @@ import re
 import statistics
 from typing import Any, Literal
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field, model_validator
 
 from ..auth import get_current_user
+from ..rate_limit import limiter
 from .. import database as db
 
 
@@ -448,9 +449,11 @@ async def get_learner_profile(domain: str, user: dict = Depends(get_current_user
 async def submit_learner_profile(
     domain: str,
     payload: LearnerProfileSubmit,
+    request: Request,
     user: dict = Depends(get_current_user),
 ):
     """Submit QCM → validate, compute derived + tutor hints + NL summary, persist."""
+    await limiter.check_user(request, max_requests=10, window_seconds=300)  # A5
     _validate_domain(domain)
     eleve_id = user.get("eleve_id")
     if not eleve_id:

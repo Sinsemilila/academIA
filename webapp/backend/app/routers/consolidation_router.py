@@ -17,10 +17,11 @@ import re
 from pathlib import Path
 from typing import Any, Literal
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from ..auth import get_current_user
+from ..rate_limit import limiter
 from .. import database as db
 
 router = APIRouter(tags=["consolidation"])
@@ -94,8 +95,11 @@ async def get_consolidation_state(domain: str, user: dict = Depends(get_current_
 # ── POST /mini-exam/start/{domain} ────────────────────────────────────
 
 @router.post("/api/consolidation/mini-exam/start/{domain}")
-async def mini_exam_start(domain: str, user: dict = Depends(get_current_user)) -> dict:
+async def mini_exam_start(
+    domain: str, request: Request, user: dict = Depends(get_current_user),
+) -> dict:
     """Return 8-item mini-exam for the learner's pending target level."""
+    await limiter.check_user(request, max_requests=20, window_seconds=300)  # A5
     if not _CONSOLIDATION_ENABLED:
         raise HTTPException(status_code=503, detail="Consolidation disabled")
     state = await get_consolidation_state(domain, user)
@@ -137,9 +141,13 @@ async def _llm_judge_item(prompt: str, learner_answer: str, hint: str) -> bool:
 
 @router.post("/api/consolidation/mini-exam/submit/{domain}")
 async def mini_exam_submit(
-    domain: str, body: MiniExamSubmission, user: dict = Depends(get_current_user),
+    domain: str,
+    body: MiniExamSubmission,
+    request: Request,
+    user: dict = Depends(get_current_user),
 ) -> dict:
     """Grade answers, record score, return outcome (decision pending or auto-validate)."""
+    await limiter.check_user(request, max_requests=20, window_seconds=300)  # A5
     if not _CONSOLIDATION_ENABLED:
         raise HTTPException(status_code=503, detail="Consolidation disabled")
     eleve_id = user.get("eleve_id")
@@ -259,9 +267,13 @@ async def mini_exam_submit(
 
 @router.post("/api/consolidation/decide/{domain}")
 async def consolidation_decide(
-    domain: str, body: ConsolidationDecision, user: dict = Depends(get_current_user),
+    domain: str,
+    body: ConsolidationDecision,
+    request: Request,
+    user: dict = Depends(get_current_user),
 ) -> dict:
     """Persist user's choice and close the pending consolidation."""
+    await limiter.check_user(request, max_requests=30, window_seconds=300)  # A5
     if not _CONSOLIDATION_ENABLED:
         raise HTTPException(status_code=503, detail="Consolidation disabled")
     eleve_id = user.get("eleve_id")
