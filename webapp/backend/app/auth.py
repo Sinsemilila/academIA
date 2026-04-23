@@ -18,7 +18,7 @@ from passlib.context import CryptContext
 from . import database as db
 from . import sessions as session_store
 
-COOKIE_SESSION = "__Host-as_session"
+COOKIE_SESSION = "as_session"
 COOKIE_CSRF = "csrf_token"
 
 # Refactor 2026-H2 Phase A2 — Argon2id + bcrypt rehash-on-login.

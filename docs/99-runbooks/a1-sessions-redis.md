@@ -18,7 +18,7 @@ Suppression de la vulnérabilité XSS structurelle (JWT en localStorage) en migr
   - `list_sessions_for_user(uid, current_token)` — purge stale entries
 - **`webapp/backend/app/auth.py`** :
   - JWT helpers supprimés (`create_access_token`, `decode_token`, etc.)
-  - Constants `COOKIE_SESSION = "__Host-as_session"`, `COOKIE_CSRF = "csrf_token"`
+  - Constants `COOKIE_SESSION = "as_session"` (préfixe `__Host-` retiré pour compat Cloudflare/browser, Secure+HttpOnly+SameSite restent), `COOKIE_CSRF = "csrf_token"`
   - `get_current_user(request)` — lit cookie, lookup Redis, charge user PG, expose `_session_token`
   - `require_admin`, `hash_password`, `verify_password`, `verify_and_rehash` (A2) conservés
 - **`webapp/backend/app/main.py`** :
