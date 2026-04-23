@@ -128,48 +128,31 @@ async def get_settings(domain: str = "en", user: dict = Depends(get_current_user
     }
 
 
-# ── Active sessions ──────────────────────────────────
+# ── Active sessions (refactor 2026-H2 Phase A1 — Redis-backed) ──────
+from .. import sessions as _sessions
+
+
 @router.get("/api/me/sessions")
 async def list_sessions(user: dict = Depends(get_current_user)):
-    async with db.pool.acquire() as conn:
-        rows = await conn.fetch(
-            """SELECT id, device_info, ip_address, last_active, created_at
-               FROM active_sessions WHERE user_id = $1
-               ORDER BY last_active DESC""",
-            user["id"],
-        )
-    return {
-        "sessions": [
-            {
-                "id": r["id"],
-                "device": r["device_info"],
-                "ip": r["ip_address"],
-                "last_active": r["last_active"].isoformat() if r["last_active"] else None,
-                "created_at": r["created_at"].isoformat() if r["created_at"] else None,
-            }
-            for r in rows
-        ]
-    }
+    current = user.get("_session_token")
+    return {"sessions": await _sessions.list_sessions_for_user(user["id"], current_token=current)}
 
 
 @router.delete("/api/me/sessions/{session_id}")
-async def revoke_session(session_id: int, user: dict = Depends(get_current_user)):
-    async with db.pool.acquire() as conn:
-        result = await conn.execute(
-            "DELETE FROM active_sessions WHERE id = $1 AND user_id = $2",
-            session_id, user["id"],
-        )
+async def revoke_session(session_id: str, user: dict = Depends(get_current_user)):
+    """session_id is the 16-char SHA1 short_id returned by GET /me/sessions."""
+    found = await _sessions.delete_session_by_short_id(user["id"], session_id)
+    if not found:
+        raise HTTPException(status_code=404, detail="Session introuvable")
     return {"ok": True}
 
 
 @router.delete("/api/me/sessions")
 async def revoke_all_sessions(user: dict = Depends(get_current_user)):
-    async with db.pool.acquire() as conn:
-        await conn.execute(
-            "DELETE FROM active_sessions WHERE user_id = $1",
-            user["id"],
-        )
-    return {"ok": True}
+    """Revoke all sessions EXCEPT the current one (use /auth/logout-all-sessions for total wipe)."""
+    current = user.get("_session_token")
+    deleted = await _sessions.delete_all_sessions_for_user(user["id"], except_token=current)
+    return {"ok": True, "deleted": deleted}
 
 
 # ── Recommendation engine (unified — error-based) ─────

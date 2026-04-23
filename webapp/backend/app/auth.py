@@ -1,35 +1,32 @@
-import os
-from datetime import datetime, timedelta, timezone
-from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from jose import JWTError, jwt
-from passlib.context import CryptContext
-from . import database as db
+"""
+Refactor 2026-H2 Phase A1 — auth via opaque session cookie.
 
-# ── Config ──────────────────────────────────────────────
-# Fail-fast : refuse to start if JWT secrets aren't provided via env
-# (webapp/.env.sops → DIFY_KEY_* / JWT_*). No guessable defaults.
-SECRET_KEY = os.environ["JWT_SECRET_KEY"]
-REFRESH_SECRET = os.environ["JWT_REFRESH_SECRET"]
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-REFRESH_TOKEN_EXPIRE_DAYS = 7
+JWT helpers removed (kept only password hashing). Session storage in Redis,
+HttpOnly cookie __Host-as_session, CSRF double-submit via csrf_token cookie.
+
+Public surface :
+  hash_password, verify_password, verify_and_rehash  (A2 unchanged)
+  get_current_user(request)                          (NEW : cookie-based)
+  require_admin(user)                                (unchanged)
+  COOKIE_SESSION, COOKIE_CSRF                        (cookie names)
+"""
+from __future__ import annotations
+
+from fastapi import Depends, HTTPException, Request, status
+from passlib.context import CryptContext
+
+from . import database as db
+from . import sessions as session_store
+
+COOKIE_SESSION = "__Host-as_session"
+COOKIE_CSRF = "csrf_token"
 
 # Refactor 2026-H2 Phase A2 — Argon2id + bcrypt rehash-on-login.
-# argon2 = default for new hashes (RFC 9106 winner, OWASP 2026 recommendation).
-# bcrypt kept for backward-compat verify of legacy hashes.
-# `deprecated="auto"` → `pwd_context.needs_update(hash)` returns True for any
-# scheme that's NOT the first one (bcrypt). Login path checks this and
-# rehashes silently to argon2 on successful verify.
-#
-# argon2id parameters (passlib defaults are RFC 9106 compliant):
-#   memory_cost = 65536 KiB (64 MiB), time_cost = 3, parallelism = 4
 pwd_context = CryptContext(
     schemes=["argon2", "bcrypt"],
     deprecated="auto",
     argon2__type="ID",
 )
-security = HTTPBearer()
 
 
 # ── Password helpers ────────────────────────────────────
@@ -42,85 +39,34 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 
 def verify_and_rehash(plain: str, hashed: str) -> tuple[bool, str | None]:
-    """Verify password ; return (ok, new_hash_if_rehash_needed_else_None).
-
-    Used on login path : if the stored hash uses a deprecated scheme
-    (bcrypt under the new policy), passlib transparently re-hashes
-    with argon2id and we UPDATE the row. Migration is gradual and
-    invisible to users — at most one extra UPDATE per login.
-    """
-    ok, new_hash = pwd_context.verify_and_update(plain, hashed)
-    return ok, new_hash
+    """Verify ; if scheme deprecated, return new hash for silent UPDATE."""
+    return pwd_context.verify_and_update(plain, hashed)
 
 
-# ── JWT helpers ─────────────────────────────────────────
-def create_access_token(user_id: int, username: str) -> str:
-    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    payload = {
-        "sub": str(user_id),
-        "username": username,
-        "type": "access",
-        "exp": expire,
-    }
-    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-
-
-def create_refresh_token(user_id: int, username: str) -> str:
-    expire = datetime.now(timezone.utc) + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
-    payload = {
-        "sub": str(user_id),
-        "username": username,
-        "type": "refresh",
-        "exp": expire,
-    }
-    return jwt.encode(payload, REFRESH_SECRET, algorithm=ALGORITHM)
-
-
-def decode_token(token: str) -> dict:
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        if payload.get("type") != "access":
-            raise JWTError("Not an access token")
-        return payload
-    except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token invalide ou expire",
-        )
-
-
-def decode_refresh_token(token: str) -> dict:
-    try:
-        payload = jwt.decode(token, REFRESH_SECRET, algorithms=[ALGORITHM])
-        if payload.get("type") != "refresh":
-            raise JWTError("Not a refresh token")
-        return payload
-    except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Refresh token invalide ou expire",
-        )
-
-
-# ── Dependency: current user ────────────────────────────
-async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-):
-    payload = decode_token(credentials.credentials)
-    user_id = int(payload["sub"])
+# ── Dependency: current user via session cookie ─────────
+async def get_current_user(request: Request) -> dict:
+    token = request.cookies.get(COOKIE_SESSION)
+    if not token:
+        raise HTTPException(status_code=401, detail="Non authentifie")
+    sess = await session_store.get_session(token)
+    if not sess:
+        raise HTTPException(status_code=401, detail="Session expiree ou invalide")
 
     async with db.pool.acquire() as conn:
-        row = await conn.fetchrow("SELECT * FROM users WHERE id = $1", user_id)
+        row = await conn.fetchrow("SELECT * FROM users WHERE id = $1", sess["user_id"])
         if not row:
             raise HTTPException(status_code=401, detail="Utilisateur introuvable")
-        # Track last seen (debounced: only update if >5 min since last update)
         await conn.execute(
-            "UPDATE users SET last_seen_at = NOW() WHERE id = $1 AND (last_seen_at IS NULL OR last_seen_at < NOW() - INTERVAL '5 minutes')",
-            user_id)
-        return dict(row)
+            "UPDATE users SET last_seen_at = NOW() WHERE id = $1 "
+            "AND (last_seen_at IS NULL OR last_seen_at < NOW() - INTERVAL '5 minutes')",
+            sess["user_id"],
+        )
+        user = dict(row)
+        user["_session_token"] = token  # exposed for logout-all "keep current"
+        return user
 
 
-async def require_admin(user: dict = Depends(get_current_user)):
+async def require_admin(user: dict = Depends(get_current_user)) -> dict:
     if not user.get("is_admin"):
         raise HTTPException(status_code=403, detail="Admin requis")
     return user

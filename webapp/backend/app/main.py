@@ -3,8 +3,11 @@ import time
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from .database import init_pool, close_pool
 from .rate_limit import limiter
+from . import sessions as session_store
+from .auth import COOKIE_CSRF
 from .routers import auth_router, profile_router, chat_router, settings_router, error_analysis_router, admin_router, onboarding_router, internal_router, security_router
 
 # ── Structured logging ────────────────────────────
@@ -20,10 +23,13 @@ logger = logging.getLogger("academie-api")
 async def lifespan(app: FastAPI):
     await init_pool()
     limiter.start_cleanup()
-    logger.info("API started — DB pool + rate limiter ready")
+    # A1 — open Redis connection pool
+    session_store._client()
+    logger.info("API started — DB pool + Redis pool + rate limiter ready")
     yield
     await close_pool()
-    logger.info("API shutdown — DB pool closed")
+    await session_store.close_pool()
+    logger.info("API shutdown — DB pool + Redis pool closed")
 
 
 app = FastAPI(
@@ -38,8 +44,34 @@ app.add_middleware(
     allow_origins=["http://localhost:3001", "http://localhost:5173", "https://academie.petit-pont.com"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type"],
+    allow_headers=["Content-Type", "X-CSRF-Token"],
 )
+
+
+# A1 — CSRF double-submit cookie protection.
+# Bootstrap endpoints (login flows + un-authed telemetry) are exempted ;
+# the rest enforces strict header == cookie equality on mutations.
+_CSRF_EXEMPT_PATHS = {
+    "/api/auth/login",
+    "/api/auth/login-mfa",
+    "/api/csp-report",
+    "/api/telemetry/onboarding-event",
+}
+_CSRF_SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
+
+
+@app.middleware("http")
+async def csrf_protect(request: Request, call_next):
+    if request.method in _CSRF_SAFE_METHODS or request.url.path in _CSRF_EXEMPT_PATHS:
+        return await call_next(request)
+    cookie_token = request.cookies.get(COOKIE_CSRF)
+    header_token = request.headers.get("X-CSRF-Token")
+    if not cookie_token or not header_token or cookie_token != header_token:
+        return JSONResponse(
+            status_code=403,
+            content={"detail": "CSRF token manquant ou invalide"},
+        )
+    return await call_next(request)
 
 # Security headers — refactor 2026-H2 Phase A3.
 # CSP itself is set on HTML responses by SvelteKit hooks.server.ts (HTML pages

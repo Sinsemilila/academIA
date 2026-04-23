@@ -1,90 +1,42 @@
 const API_BASE = '/api';
 
+// Refactor 2026-H2 Phase A1 — auth via opaque session cookie + CSRF
+// double-submit. JWT localStorage logic supprimé. Cookie __Host-as_session
+// (HttpOnly) lu automatiquement par le navigateur via credentials:'include'.
+// Cookie csrf_token (JS-readable) lu ici et envoyé en header X-CSRF-Token
+// sur toute mutation.
+const MUTATION_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
+
+function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(new RegExp('(^|;\\s*)' + name + '=([^;]*)'));
+  return match ? decodeURIComponent(match[2]) : null;
+}
+
 class ApiClient {
-  private token: string | null = null;
-  private refreshToken: string | null = null;
-  private refreshing: Promise<boolean> | null = null;
-
-  setToken(t: string | null) {
-    this.token = t;
-    if (typeof window !== 'undefined') {
-      if (t) localStorage.setItem('token', t);
-      else localStorage.removeItem('token');
-    }
-  }
-
-  setRefreshToken(t: string | null) {
-    this.refreshToken = t;
-    if (typeof window !== 'undefined') {
-      if (t) localStorage.setItem('refresh_token', t);
-      else localStorage.removeItem('refresh_token');
-    }
-  }
-
-  loadToken(): string | null {
-    if (typeof window !== 'undefined') {
-      this.token = localStorage.getItem('token');
-      this.refreshToken = localStorage.getItem('refresh_token');
-    }
-    return this.token;
-  }
-
-  private async tryRefresh(): Promise<boolean> {
-    if (!this.refreshToken) return false;
-
-    // Deduplicate concurrent refresh calls
-    if (this.refreshing) return this.refreshing;
-
-    this.refreshing = (async () => {
-      try {
-        const res = await fetch(`${API_BASE}/auth/refresh`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ refresh_token: this.refreshToken }),
-        });
-        if (!res.ok) return false;
-        const data = await res.json();
-        this.setToken(data.access_token);
-        if (data.refresh_token) this.setRefreshToken(data.refresh_token);
-        return true;
-      } catch {
-        return false;
-      } finally {
-        this.refreshing = null;
-      }
-    })();
-
-    return this.refreshing;
-  }
-
   private async fetch(path: string, options: RequestInit = {}): Promise<Response> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...(options.headers as Record<string, string> || {}),
     };
-    if (this.token) {
-      headers['Authorization'] = `Bearer ${this.token}`;
+
+    const method = (options.method || 'GET').toUpperCase();
+    if (MUTATION_METHODS.has(method)) {
+      const csrf = getCookie('csrf_token');
+      if (csrf) headers['X-CSRF-Token'] = csrf;
     }
 
-    let res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+    const res = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers,
+      credentials: 'include',
+    });
 
-    // Auto-refresh on 401 (except login/refresh endpoints)
-    if (res.status === 401 && !path.includes('/auth/login') && !path.includes('/auth/refresh')) {
-      const refreshed = await this.tryRefresh();
-      if (refreshed) {
-        headers['Authorization'] = `Bearer ${this.token}`;
-        res = await fetch(`${API_BASE}${path}`, { ...options, headers });
-      }
-    }
-
-    if (res.status === 401) {
-      this.setToken(null);
-      this.setRefreshToken(null);
+    if (res.status === 401 && !path.includes('/auth/login')) {
       if (typeof window !== 'undefined') window.location.href = '/login';
       throw new Error('Non authentifi\u00e9');
     }
 
-    // Rate limit handling — emit event so UI can show feedback
     if (res.status === 429) {
       const retryAfter = res.headers.get('Retry-After') || '60';
       if (typeof window !== 'undefined') {
@@ -99,7 +51,9 @@ class ApiClient {
   }
 
   // ── Auth ──────────────────────────────────
-  async login(username: string, password: string): Promise<{ mfa_required?: boolean; access_token?: string; refresh_token?: string }> {
+  // Phase A1 — login response is { user } or { mfa_required, username }.
+  // Session/CSRF cookies are set by the backend ; nothing to store JS-side.
+  async login(username: string, password: string): Promise<{ mfa_required?: boolean; user?: any; username?: string }> {
     const res = await this.fetch('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ username, password }),
@@ -108,14 +62,7 @@ class ApiClient {
       const data = await res.json();
       throw new Error(data.detail || 'Erreur de connexion');
     }
-    const data = await res.json();
-    if (data.mfa_required) {
-      // Phase A4 — second factor required ; do NOT set tokens.
-      return data;
-    }
-    this.setToken(data.access_token);
-    if (data.refresh_token) this.setRefreshToken(data.refresh_token);
-    return data;
+    return await res.json();
   }
 
   async loginMfa(username: string, password: string, code: string) {
@@ -127,10 +74,7 @@ class ApiClient {
       const data = await res.json();
       throw new Error(data.detail || 'Code MFA invalide');
     }
-    const data = await res.json();
-    this.setToken(data.access_token);
-    if (data.refresh_token) this.setRefreshToken(data.refresh_token);
-    return data;
+    return await res.json();
   }
 
   // ── TOTP MFA ──────────────────────────────
@@ -532,9 +476,17 @@ class ApiClient {
     return await res.json();
   }
 
-  logout() {
-    this.setToken(null);
-    this.setRefreshToken(null);
+  async logout() {
+    try {
+      await this.fetch('/auth/logout', { method: 'POST' });
+    } catch {
+      // best-effort ; cookies cleared by backend, fall through to redirect
+    }
+    if (typeof window !== 'undefined') window.location.href = '/login';
+  }
+
+  async logoutAllSessions() {
+    await this.fetch('/auth/logout-all-sessions', { method: 'POST' });
     if (typeof window !== 'undefined') window.location.href = '/login';
   }
 }

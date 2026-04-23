@@ -28,8 +28,14 @@ export const handle: Handle = async ({ event, resolve }) => {
     const targetUrl = `${API_BACKEND}${event.url.pathname}${event.url.search}`;
 
     const headers = new Headers();
+    // Phase A1 — forward `cookie` (session+csrf) and `x-csrf-token` from
+    // browser to FastAPI. `authorization` kept for legacy compat (post-A1
+    // cleanup will remove it once no clients send Bearer).
+    const ALLOWED_REQ = new Set([
+      'content-type', 'authorization', 'accept', 'cookie', 'x-csrf-token',
+    ]);
     for (const [key, value] of event.request.headers) {
-      if (['content-type', 'authorization', 'accept'].includes(key.toLowerCase())) {
+      if (ALLOWED_REQ.has(key.toLowerCase())) {
         headers.set(key, value);
       }
     }
@@ -49,10 +55,19 @@ export const handle: Handle = async ({ event, resolve }) => {
       body,
     });
 
+    // Phase A1 — explicitly forward each Set-Cookie value (Node 20+ getSetCookie).
+    // Avoids accidental consolidation of multiple Set-Cookie into a single
+    // comma-joined header (which browsers reject).
+    const proxiedHeaders = new Headers(response.headers);
+    proxiedHeaders.delete('set-cookie');
+    for (const cookie of response.headers.getSetCookie?.() ?? []) {
+      proxiedHeaders.append('set-cookie', cookie);
+    }
+
     return new Response(response.body, {
       status: response.status,
       statusText: response.statusText,
-      headers: response.headers,
+      headers: proxiedHeaders,
     });
   }
 
