@@ -410,6 +410,12 @@ class ApiClient {
     return await res.json();
   }
 
+  async adminCostRunawayUsers(window: string = '7d') {
+    const res = await this.fetch(`/admin/cost-runaway-users?window=${encodeURIComponent(window)}`);
+    if (!res.ok) throw new Error('Cost runaway fetch failed');
+    return await res.json();
+  }
+
   async adminOnboardingFunnel(domain: string = 'en', hours: number = 720) {
     const res = await this.fetch(`/admin/onboarding-funnel?domain=${encodeURIComponent(domain)}&hours=${hours}`);
     if (!res.ok) throw new Error('Onboarding funnel fetch failed');
