@@ -1,6 +1,9 @@
 services:
   academie-frontend:
-    build: ${WEBAPP_SRC:-.}/frontend
+    build:
+      context: ${WEBAPP_SRC:-.}/frontend
+      args:
+        BUILD_SHA: ${BUILD_SHA:-dev}
     container_name: academie-frontend
     restart: unless-stopped
     ports:

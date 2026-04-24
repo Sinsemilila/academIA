@@ -357,9 +357,10 @@
             {#each available as agent}
               <a
                 href="/chat/{agent.slug}"
-                class="bg-surface border border-border-subtle rounded-xl p-4 text-center transition-all hover:border-[var(--agent-color)] hover:scale-[1.02] cursor-pointer"
+                class="relative bg-surface border border-border-subtle rounded-xl p-4 text-center transition-all hover:border-[var(--agent-color)] hover:scale-[1.02] cursor-pointer overflow-hidden"
                 style="--agent-color: {agent.colorHex}"
               >
+                <span class="absolute inset-x-0 top-0 h-0.5 opacity-70" style="background: {agent.colorHex}"></span>
                 <AgentFlag {agent} size="md" />
                 <p class="font-medium text-sm mt-2">{agent.name}</p>
                 <p class="text-xs text-text-muted mt-0.5">{agent.lang}</p>

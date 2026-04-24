@@ -1,5 +1,7 @@
 FROM node:20-alpine AS build
 WORKDIR /app
+ARG BUILD_SHA=dev
+ENV BUILD_SHA=${BUILD_SHA}
 COPY package*.json ./
 RUN npm ci
 COPY . .
