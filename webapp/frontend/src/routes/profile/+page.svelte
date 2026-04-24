@@ -112,6 +112,45 @@
       hour: '2-digit', minute: '2-digit',
     });
   }
+
+  function formatRelative(iso: string): string {
+    if (!iso) return '—';
+    const diffMs = Date.now() - new Date(iso).getTime();
+    const min = Math.floor(diffMs / 60000);
+    if (min < 1) return "à l'instant";
+    if (min < 60) return `il y a ${min} min`;
+    const h = Math.floor(min / 60);
+    if (h < 24) return `il y a ${h} h`;
+    const d = Math.floor(h / 24);
+    if (d === 1) return 'hier';
+    if (d < 7) return `il y a ${d} j`;
+    return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+  }
+
+  function parseUserAgent(ua: string): string {
+    if (!ua) return 'Appareil inconnu';
+    const lc = ua.toLowerCase();
+    let browser = 'Navigateur';
+    if (lc.includes('firefox/')) browser = 'Firefox';
+    else if (lc.includes('edg/')) browser = 'Edge';
+    else if (lc.includes('chrome/') && !lc.includes('edg/')) browser = 'Chrome';
+    else if (lc.includes('safari/') && !lc.includes('chrome/')) browser = 'Safari';
+    else if (lc.includes('node')) browser = 'Script';
+    let os = '';
+    if (lc.includes('iphone') || lc.includes('ipad')) os = 'iOS';
+    else if (lc.includes('android')) os = 'Android';
+    else if (lc.includes('mac os') || lc.includes('macintosh')) os = 'macOS';
+    else if (lc.includes('windows')) os = 'Windows';
+    else if (lc.includes('linux')) os = 'Linux';
+    return os ? `${browser} · ${os}` : browser;
+  }
+
+  function shortIp(ip: string): string {
+    if (!ip) return '—';
+    // IPv6 compact: keep first 4 hextets
+    if (ip.includes(':')) return ip.split(':').slice(0, 4).join(':') + '…';
+    return ip;
+  }
 </script>
 
 <svelte:head>
@@ -316,10 +355,15 @@
       <div class="space-y-2">
         {#each sessions as session}
           <div class="flex items-center justify-between bg-elevated rounded-lg px-4 py-3">
-            <div>
-              <p class="text-sm">{session.device || 'Appareil inconnu'}</p>
-              <p class="text-xs text-text-muted">
-                {session.ip || '—'} · {session.last_active ? formatDate(session.last_active) : '—'}
+            <div class="min-w-0 flex-1">
+              <p class="text-sm truncate">
+                {parseUserAgent(session.user_agent)}
+                {#if session.is_current}
+                  <span class="ml-1.5 text-[10px] uppercase tracking-wider text-teacher font-medium">· actuelle</span>
+                {/if}
+              </p>
+              <p class="text-xs text-text-muted truncate">
+                {shortIp(session.ip)} · {formatRelative(session.last_active)}
               </p>
             </div>
             <button

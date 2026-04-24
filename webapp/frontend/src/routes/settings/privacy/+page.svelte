@@ -110,9 +110,15 @@
       type="button"
       onclick={downloadExport}
       disabled={exporting}
-      class="px-4 py-2 bg-info/15 border border-info/40 text-info-text text-sm font-medium rounded-lg hover:bg-info/25 transition disabled:opacity-50"
+      class="inline-flex items-center gap-2 px-4 py-2 bg-teacher text-white text-sm font-medium rounded-lg hover:brightness-110 transition disabled:opacity-50 disabled:cursor-wait"
     >
-      {exporting ? 'Préparation…' : '⬇ Télécharger mes données'}
+      {#if exporting}
+        <span class="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+        Préparation…
+      {:else}
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+        Télécharger mes données
+      {/if}
     </button>
     <p class="text-xs text-text-muted">
       Limite : 3 exports par 5 minutes. Le fichier exclut le hash de mot de passe et le secret TOTP.
