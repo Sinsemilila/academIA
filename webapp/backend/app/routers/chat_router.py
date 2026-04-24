@@ -612,11 +612,44 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             # Refactor 2026-H2 Phase A5 — reject conversation_id that doesn't
             # belong to the caller. Without this check Alice could append
             # to Bob's Dify conversation by guessing his conv UUID.
+            #
+            # Session 48 fix — local user_sessions mirror can drift (wipe
+            # during testing, missed insert, etc.). Before rejecting, verify
+            # ownership via Dify's authoritative conv list (filtered by
+            # dify_user_id = current user). If Dify confirms ownership,
+            # backfill the user_sessions row and proceed. Alice still can't
+            # impersonate Bob because her dify_user_id wouldn't match.
             if sess_row is None:
-                raise HTTPException(
-                    status_code=403,
-                    detail="Conversation introuvable ou non accessible",
+                try:
+                    async with httpx.AsyncClient(timeout=10.0) as client:
+                        dify_resp = await client.get(
+                            f"{DIFY_API_URL}/conversations",
+                            params={"user": dify_user, "limit": 100},
+                            headers={"Authorization": f"Bearer {dify_key}"},
+                        )
+                    owned = False
+                    if dify_resp.status_code == 200:
+                        owned = any(
+                            c.get("id") == req.conversation_id
+                            for c in (dify_resp.json() or {}).get("data", [])
+                        )
+                except Exception:
+                    owned = False
+                if not owned:
+                    raise HTTPException(
+                        status_code=403,
+                        detail="Conversation introuvable ou non accessible",
+                    )
+                # Backfill missing user_sessions row for this user+agent+conv.
+                await conn.execute(
+                    """INSERT INTO user_sessions
+                         (user_id, agent_name, dify_conversation_id,
+                          started_at, last_message_at, is_active)
+                       VALUES ($1, $2, $3, NOW(), NOW(), true)
+                       ON CONFLICT DO NOTHING""",
+                    user["id"], req.agent, req.conversation_id,
                 )
+                sess_row = {"last_message_at": None}
             last_msg = sess_row["last_message_at"]
             if last_msg:
                 delta = datetime.now() - last_msg

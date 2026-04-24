@@ -96,12 +96,22 @@ _CSRF_EXEMPT_PATHS = {
     "/api/telemetry/onboarding-event",
     "/api/sentry-tunnel",  # Phase B4 — Sentry SDK envelope ingestion proxy
 }
+# Prefix-based exemptions (service-to-service, docker-internal network only).
+# /internal/* = LiteLLM callbacks (cache-stats, rate-limit-snapshot, model-usage,
+# exam-result, analyze-errors). Not reachable from browsers since the FastAPI
+# app is only exposed behind SvelteKit proxy at /api/*.
+_CSRF_EXEMPT_PREFIXES = ("/internal/",)
 _CSRF_SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
 
 
 @app.middleware("http")
 async def csrf_protect(request: Request, call_next):
-    if request.method in _CSRF_SAFE_METHODS or request.url.path in _CSRF_EXEMPT_PATHS:
+    path = request.url.path
+    if (
+        request.method in _CSRF_SAFE_METHODS
+        or path in _CSRF_EXEMPT_PATHS
+        or any(path.startswith(p) for p in _CSRF_EXEMPT_PREFIXES)
+    ):
         return await call_next(request)
     cookie_token = request.cookies.get(COOKIE_CSRF)
     header_token = request.headers.get("X-CSRF-Token")
