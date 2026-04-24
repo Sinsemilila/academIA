@@ -383,13 +383,20 @@
     </div>
   </div>
 
-  <!-- ONBOARDING FUNNEL — full width -->
-  <div class="bg-surface border border-border-subtle rounded-xl p-4 space-y-3">
-    <div class="flex items-start justify-between gap-2">
-      <div>
-        <h2 class="text-sm font-semibold text-text-primary">Onboarding funnel</h2>
-        <p class="text-xs text-text-muted">Step-by-step drop-off — client telemetry (sendBeacon)</p>
+  <!-- ONBOARDING FUNNEL — full width, collapsed by default -->
+  <details class="bg-surface border border-border-subtle rounded-xl group">
+    <summary class="p-4 cursor-pointer flex items-start justify-between gap-2 list-none">
+      <div class="flex items-start gap-2">
+        <svg class="w-4 h-4 mt-0.5 text-text-muted transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <div>
+          <h2 class="text-sm font-semibold text-text-primary">Onboarding funnel</h2>
+          <p class="text-xs text-text-muted">Step-by-step drop-off — client telemetry (sendBeacon)</p>
+        </div>
       </div>
+    </summary>
+    <div class="p-4 pt-0 space-y-3">
       <div class="flex items-center gap-1 shrink-0">
         <select
           value={funnelDomain}
@@ -408,7 +415,6 @@
           >{h === 24 ? '24h' : h === 168 ? '7j' : '30j'}</button>
         {/each}
       </div>
-    </div>
     {#if funnelLoading}
       <div class="skeleton h-20 rounded-lg"></div>
     {:else if !funnelStats || !funnelStats.summary || (funnelStats.summary.sessions_started ?? 0) === 0}
@@ -490,7 +496,8 @@
         </details>
       {/if}
     {/if}
-  </div>
+    </div>
+  </details>
 
   <!-- DIAGNOSTICS — collapsed by default -->
   <details class="bg-surface border border-border-subtle rounded-xl">

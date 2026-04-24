@@ -317,7 +317,8 @@
     </div>
   {/if}
 
-  <!-- Weekly stats — scoped to current agent -->
+  <!-- Weekly stats — scoped to current agent. Hidden when zero to avoid empty clutter. -->
+  {#if stats.sessions > 0 || stats.concepts > 0 || stats.minutes > 0}
   <div class="grid grid-cols-3 gap-3 sm:gap-4">
     <Tooltip text="Sessions avec {currentAgentObj.name} sur les 7 derniers jours">
       <div class="bg-surface border border-border-subtle rounded-xl p-3 sm:p-4 text-center w-full">
@@ -338,34 +339,53 @@
       </div>
     </Tooltip>
   </div>
+  {/if}
 
   <!-- Weekly recap -->
   <WeeklyRecap domain={$currentDomain} />
 
-  <!-- Agents by group -->
+  <!-- Agents by group — available first, upcoming agents folded -->
   <div class="space-y-6">
     <h2 class="text-lg font-semibold">Mes agents</h2>
     {#each agentGroups as group}
+      {@const available = group.items.filter(a => a.available)}
+      {@const upcoming = group.items.filter(a => !a.available)}
       <div>
         <p class="text-[10px] font-medium text-text-muted uppercase tracking-wider mb-2">{group.label}</p>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {#each group.items as agent}
-            <a
-              href={agent.available ? `/chat/${agent.slug}` : '#'}
-              class="bg-surface border border-border-subtle rounded-xl p-4 text-center transition-all
-                     {agent.available
-                       ? 'hover:border-[var(--agent-color)] hover:scale-[1.02] cursor-pointer'
-                       : 'opacity-40 cursor-not-allowed'}"
-              style="--agent-color: {agent.colorHex}"
-            >
-              <AgentFlag {agent} size="md" />
-              <p class="font-medium text-sm mt-2">{agent.name}</p>
-              <p class="text-xs text-text-muted mt-0.5">
-                {agent.available ? agent.lang : 'Bient\u00F4t'}
-              </p>
-            </a>
-          {/each}
-        </div>
+        {#if available.length > 0}
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            {#each available as agent}
+              <a
+                href="/chat/{agent.slug}"
+                class="bg-surface border border-border-subtle rounded-xl p-4 text-center transition-all hover:border-[var(--agent-color)] hover:scale-[1.02] cursor-pointer"
+                style="--agent-color: {agent.colorHex}"
+              >
+                <AgentFlag {agent} size="md" />
+                <p class="font-medium text-sm mt-2">{agent.name}</p>
+                <p class="text-xs text-text-muted mt-0.5">{agent.lang}</p>
+              </a>
+            {/each}
+          </div>
+        {/if}
+        {#if upcoming.length > 0}
+          <details class="mt-3 group">
+            <summary class="text-xs text-text-muted cursor-pointer hover:text-text-secondary transition-colors select-none list-none flex items-center gap-1.5">
+              <svg class="w-3 h-3 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+              {upcoming.length} agent{upcoming.length > 1 ? 's' : ''} à venir
+            </summary>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-3">
+              {#each upcoming as agent}
+                <div class="bg-surface border border-border-subtle rounded-xl p-4 text-center opacity-40">
+                  <AgentFlag {agent} size="md" />
+                  <p class="font-medium text-sm mt-2">{agent.name}</p>
+                  <p class="text-xs text-text-muted mt-0.5">Bient&#244;t</p>
+                </div>
+              {/each}
+            </div>
+          </details>
+        {/if}
       </div>
     {/each}
   </div>
