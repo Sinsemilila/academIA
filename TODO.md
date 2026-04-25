@@ -3,7 +3,14 @@ Last updated: 2026-04-25 — Claude (Session 48 close — Migration Obsidian + v
 
 ## 🔝 EN COURS — RESUME AU PROCHAIN /pickup
 
-**Tester workflow v0.1 Claude-as-vault-cognition + reprendre AcademIA P0**
+**🚨 P0 BLOQUANT AVANT TOUT** — Syncthing Windows persistence
+- Sinse a dû fermer terminal PowerShell qui run `syncthing.exe` → Syncthing Windows down → vault sync cassé
+- **Avant toute autre chose** : install SyncTrayzor (https://github.com/canton7/SyncTrayzor) sur Windows = Syncthing avec tray icon + auto-start au login + pas de terminal visible. ~2 min install + import config existante (Device ID + folder déjà paired côté cosmos).
+- Alternative : install Syncthing comme Windows service via `nssm` ou Task Scheduler at logon.
+- Vérif post-install : Syncthing Windows UI 8384 accessible + folder `sinse-vault` Up to Date vs cosmos.
+- Sans ce fix : vault ne sync plus, Obsidian Windows déconnecté de Claude updates.
+
+**Tester workflow v0.1 Claude-as-vault-cognition + reprendre AcademIA P0** (après fix Syncthing)
 
 Migration Obsidian + Claude-cognition architecture LIVRÉES Session 48 (135 locks, 4 phases, ~5h45 continu). Voir [[hot]] vault pour résumé.
 
