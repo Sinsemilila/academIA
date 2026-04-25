@@ -10,7 +10,12 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:blog.duolingo.com)",
-      "WebSearch"
+      "WebSearch",
+      "WebFetch(domain:www.anthropic.com)",
+      "WebFetch(domain:gist.github.com)",
+      "WebFetch(domain:www.eleanorkonik.com)",
+      "WebFetch(domain:www.kevinvankerckhoven.com)",
+      "WebFetch(domain:www.finout.io)"
     ]
   }
 }
