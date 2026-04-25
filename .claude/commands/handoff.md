@@ -9,12 +9,12 @@ Session end. Execute in order.
 - Fail → STOP + fix before continuing.
 
 ## 2. Update state
-- `/root/sinse-workspace/projects/academie-ia/TODO.md`: mark completed tasks as DONE.
-- `/root/sinse-workspace/projects/academie-ia/CHANGELOG.md`: append via `log <type> "<message>"` tool.
+- `/opt/academie/TODO.md`: mark completed tasks as DONE.
+- `/opt/academie/CHANGELOG.md`: append via `log <type> "<message>"` tool.
 - **Docs consistency check**: for each structural change this session (schema, architecture, pedagogy rules, infra), verify the corresponding `docs/*.md` was updated in the same session. If not, update `last_reviewed` OR flip `status: needs-review`. For new architectural decisions, create `docs/05-decisions/ADR-NNN-<slug>.md` from template.
 
 ## 3. Update SESSION.md
-**Prepend** (don't overwrite) a new session block at the top of `/root/sinse-workspace/projects/academie-ia/SESSION.md`, after the header line.
+**Prepend** (don't overwrite) a new session block at the top of `/opt/academie/SESSION.md`, after the header line.
 Keep previous sessions below.
 
 **Rotation** : SESSION.md ne contient que les **3 dernières sessions**. Après avoir prepended la nouvelle, si le fichier contient >3 sessions, déplacer la plus ancienne (celle en bas) vers le haut de `SESSION_ARCHIVE.md` (aussi newest-on-top). L'archive n'est jamais lue au pickup mais reste disponible pour consultation manuelle.
@@ -35,7 +35,7 @@ Keep previous sessions below.
 
 ## 4. Commit + push
 - `committer "[<type>] <message>" <files...>` for project code (in /opt/academie/)
-- `committer "[docs] Session handoff" <files...>` for workspace state (in ~/sinse-workspace/)
+- `committer "[docs] Session handoff" <files...>` for workspace state (in /opt/academie/)
 - `git push origin main` (both repos if changed)
 
 ## 5. Confirmation

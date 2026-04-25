@@ -77,7 +77,7 @@ Design tokens OKLCH (cf. `docs/99-runbooks/b1-design-tokens.md`).
 - `CHANGELOG.md` append-only via `log` tool
 - `docs/05-decisions/ADR-NNN-*.md` immutable, AI drafts `proposed`, Sinse mark `accepted`
 
-Note : ces fichiers sont dans `/root/sinse-workspace/projects/academie-ia/` actuellement, à migrer dans `/opt/academie/` Phase 2 (cf. coherence audit G12 — handoff.md + pickup.md slash commands à update post-migration).
+Note : ces fichiers vivent dans `/opt/academie/` (live with code, depuis Phase 2 obsidian migration 2026-04-25).
 
 ## STYLE
 
