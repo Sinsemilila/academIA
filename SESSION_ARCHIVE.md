@@ -1,0 +1,1692 @@
+# Sessions Archive — AcademIA
+
+Sessions plus anciennes (hors des 3 dernières conservées dans [`SESSION.md`](SESSION.md)).
+
+
+## Session 43-44 — 2026-04-22 (soir, 14 commits — P5 onboarding telemetry + admin dashboard redesign + model budget waterfall)
+
+### Done
+
+**Session 43 — P5 + O4 + bugfixes (5 commits)** :
+- **P5 onboarding telemetry** — table `onboarding_telemetry_events` + POST `/api/telemetry/onboarding-event` un-authed (sendBeacon-compatible) + GET `/api/admin/onboarding-funnel` + Svelte OnboardingModal instrumenté (UUIDv4 sessionId localStorage, step_enter, complete, abort via beforeunload). Admin dashboard section 4 stats + step table + recent aborts. **Dogfood-validé end-to-end** par Sinse : flow avec abort à step 5 + reprise same session_id + complete → 11 events capturés correctement.
+- **O4 noise floor V2 Teacher EN** — 2 runs × 26 scenarios × 3 dims. Post-O1 call-path parity fix : `semantic_fidelity_pairwise` **33.3% → 7.7%** (4× better), `cf_move_set_valid_partial` 12.5% → 7.7%, `register_cefr_alignment` 20.8% → 19.2%, `recast_saliency` stable 0%. Hypothèse O1 validée.
+- **Fix learner_profile_summary 2000 → 10000** — Dify Start var bumped. Root cause : Session 35 MVP appendait `scaffolding_block` dans le summary pour reach both onboarding/session branches, Sessions 38-42 ont gonflé le block → overflow silencieux. Symptôme : "Erreur de connexion" post-onboarding pour tout nouveau user. Script idempotent + backup pre-patch.
+- **Smoke-test n8n fail rate false alarm** — les 3 workflows hit par RUN_RECENT_BATTERY block 5 (diagnostic/snapshot/exam-scoring) retournent 200 immédiat puis fail downstream sur le payload synthétique → polluaient la fenêtre 48h. Filter `workflowId NOT IN (...)` ajouté → 0.0% clean.
+
+**Session 44 — admin dashboard + model budget waterfall (8 commits)** :
+- **Dashboard redesign** (ops pattern Stripe/Honeycomb/Gitlab research) : hero ModelBudgetBar SVG stacked (3 tiers en activation order, tier actif avec ring + ETA) + regression row 2-col (Consolidation + Oracle, chacun son EN/ES selector + 24h/7j/30j window) + Onboarding funnel full-width + collapsible Prompt caching diagnostic + Users table déplacé vers `/admin/users` route (Gitlab pattern : CRUD ≠ monitoring page).
+- **3-tier waterfall backend** : `_TIER_CHAIN = [(gpt-4o-mini, 2.5M), (groq-standard, 100K), (groq-snapshot, 500K)]`. `_select_active_tier()` check 95% threshold + `_switch_dify_model` chaîne + nouvelles tables `model_usage_daily` / `model_switch_log`. `/internal/model-usage` relay alimenté par LiteLLM callback.
+- **Chain de fixes post-ship** (5 commits) : reconcile current model from actual Dify graph (survives rebuild) ; workflow IDs résolus dynamiquement via `apps.workflow_id` (un republish 04-20 avait rendu l'ID hardcodé c52a451f obsolète, cascade jamais fired → 1.8M tokens gpt-4o-mini payants au lieu de groq free) ; admin endpoint utilise `get_gpt4o_usage()` MAX(local, litellm, openai) ; groq callback normalize provider model → model_group (LiteLLM passe nom provider pas alias) ; safety margin 10% → 2% ; daily cap 1.5M → 2.5M via `OPENAI_COMPLIMENTARY_TPD` env.
+- **V2 header-based tracker** : LiteLLM callback lit `response_obj._response_headers` (x-ratelimit-*), parse les reset values en format `8h32m15s`/`6m0s`/`500ms`/int, POST à `/internal/rate-limit-snapshot` → UPSERT dans `model_rate_snapshot`. ModelBudgetBar affiche `↻ 8h32m` countdown sous chaque tier. Source provider-attestée qui remplace le reconcile Usage API (15-min lag).
+- **Multi-agent switch** : `_switch_dify_model` était Teacher-only (hardcoded `TEACHER_APP_ID`) → Maestro continuait gpt-4o-mini pendant Teacher cascadait. `AgentDef` gains `dify_app_id` field + fail-loud assert. `_all_agent_workflow_ids` itère tous active_agents. Verified live : switch patch 4 workflow IDs (Teacher 006cba2d + Maestro d3df0ef0 × pub/draft).
+
+**Métriques finales** : battery 9/9 green + smoke-test deep 21/21 + 10 pytests verts (5 funnel + 5 model budget) + svelte-check baseline 20 errors inchangé (0 nouvelle error sur nos fichiers).
+
+### Next
+
+- **Session 45 — dogfood sur le nouveau /admin** (~15 min) : vérifier que les countdowns ↻ tier-actif marchent en temps réel après plusieurs chats (gpt-4o-mini actuellement). Puis forcer dépassement tier 1 (2.5M) pour valider la cascade auto sur groq-standard en conditions réelles (actuellement à ~70%).
+- **Session 45 — Oracle fault injection methodology redesign** (Session 42 O3 carryover) : Dify-clone retry avec parallelism cap + 10min timeout, fallback delta gating si hang persist.
+- **Moyen terme** : (a) refactor safety margin 2% → 0% une fois V2 header-based tracker validé sur plusieurs jours, retirer le reconcile Usage API + admin-key dependency ; (b) tier 2 path quand le compte atteint $50 spent — bump `OPENAI_COMPLIMENTARY_TPD` selon le nouveau cap affiché sur /limits.
+
+### Gotchas
+
+- **In-memory state + docker rebuild = race dangereuse** : Session 43 P5 rebuild a reset `_current_dify_model` à "gpt-4o-mini" par défaut, pendant que Dify workflow était réellement sur groq-standard depuis une cascade antérieure. Fix Session 44 `_reconcile_current_dify_model` lit le vrai état depuis le graph au premier call — à garder pour toute state qui traverse un rebuild.
+- **Hardcoded Dify UUIDs = bombe à retardement** : tout republish Dify crée un nouveau workflow_id, les anciens deviennent orphelins. Pattern safe : toujours résoudre via `apps.workflow_id` + `workflows WHERE version='draft'`. Les 2 scripts `scripts/sprint6/08_*.py` + `09_*.py` ont encore des app_id hardcodés (mais c'est OK car ceux-ci ne bougent pas, seuls les workflow_id bougent au republish).
+- **LiteLLM kwargs["model"] = nom provider, pas alias** : le callback doit normaliser (`llama-3.3-70b-versatile` → `groq-standard`, `openai/gpt-4o-mini` → `gpt-4o-mini`) avant de POST aux relays. Dict `_MODEL_GROUP_BY_NAME` en place.
+- **OpenAI tier 1 = 2.5M TPD complimentary shared** (gpt-4o-mini + gpt-5-mini + gpt-5-nano + gpt-4.1-mini + gpt-4.1-nano + o4-mini). Pas 1.5M comme on avait hardcodé. À $50 cumulé (actuellement $5.62), passage tier 2 + cap potentiellement 10M. Env var `OPENAI_COMPLIMENTARY_TPD` override.
+- **Reset quotas = 00:00 UTC (= 02:00 Paris DST)** pour OpenAI ET Groq TPD/RPD. Groq TPM/RPM en rolling 60s. Les headers `x-ratelimit-reset-requests` donnent le countdown exact.
+Ordre : plus récente en haut.
+
+---
+
+
+## Session 42 — 2026-04-22 (11 commits — Autonomous package : 5 dettes + 4 Oracle + 3 pédago)
+
+### Done
+
+**Package autonomous planifié mode plan** : 13 items en 3 blocs séquencés (dettes 0-token first, Oracle finalisation, pédago Phase 2). 11 commits livrés, O4 + P5 déférés Session 43 (budget & value-diffèré).
+
+**Dettes techniques (5 items)** :
+1. **D2 AVAILABLE_AGENTS CSV** — `agents_config.py` central registry + `GET /api/agents` endpoint + `chat_router.py` refactored (5 `ENABLE_MAESTRO` gates removed, DIFY_APP_KEYS derived from active agents). Backward-compat preserved.
+2. **D3 is_valid_domain()** — `domain_utils.py` avec `validate_domain_format()` + `validate_active_domain()` (HTTPException 422). Applied to profile + error_analysis routers. Onboarding now imports from helper.
+3. **D4 n8n investigation** — no-op : 3/4 workflows déjà refacto Sessions 37-38 ; `dify-exam-persist` a zéro Dify API call (pure SQL Update, pas de refacto needed). Plan assumption invalidée, closed clean.
+4. **D1 points_cles** — audit : DROP COLUMN **not safe**, `dify-profil-get` n8n workflow consomme encore la colonne. Documented in TODO comme pré-requis (migrate consumer puis DROP).
+5. **D5 clone_app.py** — `apply_prompts_override()` default AST-scoped (walk nodes → mutate prompt_template[*].text only) + `--validate-data-pack LANG` pre-flight pydantic. Legacy raw replace via `--no-scoped-overrides`.
+
+**Oracle V1 finalisation (4 items, 1 deferred)** :
+- **O1 harness fetch_current_response** — BLOCKER O4 : extracted `build_oracle_profile()` to shared helper in `dify_client.py`, harness now injects learner_profile_summary comme record_golden.py. Call-path parity goldens ↔ live = achieved.
+- **O2 oracle dashboard** — new `oracle_run_log` table + harness post-run persist + `/api/admin/oracle-runs` + dashboard section (3 metric cards + by_dim table + recent runs). 104 rows persisted on lint run.
+- **O3 fault injection run** — GATE ❌ FAIL (expected per Session 41). Clean false_alarm 80.8%, mean detection 76.9%, per-fault 69-85%. Not a regression : confirms LiteLLM-bypass methodology structural limitation. Detection exceeds baseline +5 to +17 pp → faults measurably detectable above noise. Session 43+ options documented (Dify-clone retry, delta gating, distributional invariants).
+- **O4 noise floor V2** — DEFERRED Session 43 (budget restant ~270K < 220K safety margin for 216K run).
+
+**Pédagogie Phase 2 (2 items livrés, 1 deferred)** :
+- **P4 probe LLM fallback** — `webapp/backend/app/llm_judge.py` factored from consolidation_router (judge_passfail + judge_probe_score 0-3). Onboarding POST handler calls LLM fallback after regex miss when overlay `probe.fallback_judge.enabled=true`. Live-validated : perfect answer → 3, off-target → 0. Model corrected `gpt-4.1-mini` → `gpt-4o-mini` (not in LiteLLM config).
+- **P2 dormancy regression watch** — pure helper `should_activate_dormancy_watch(status, watch_active, validated_at, last_seen, now, threshold_days=30)` + chat_router activation hook + clear logic on resolution (POST /decide + mini-exam submit). Session 36 had columns + trigger skeleton, activation call site was missing. Fires when validé ≥30j + silence ≥7j, watch actif 5 tours.
+- **P3 admin consolidation-events** — `/api/admin/consolidation-events` (summary + by_decision + by_user + by_trigger) + /admin dashboard section. Mirror cache-stats pattern. Dev shows "Aucune donnée" (0 events).
+- **P5 onboarding telemetry** — DEFERRED Session 43 (3-4h infra + value differed until weeks of traffic).
+
+### Next
+
+**Session 43 — Oracle final validation + P5** :
+- O4 noise floor V2 Teacher EN (~216K tokens, ~40min wall) — now unblocked by O1 call-path parity fix, expect lower FPR than Session 40 baseline.
+- Fault injection methodology redesign : prefer Dify-clone retry with parallelism cap + 10min timeout, fall back to delta gating if still hangs.
+- P5 onboarding telemetry drop-off (~3-4h infra).
+
+**Moyen terme** : (inherited from Session 41 Next) Cohen's κ calibration Sinse manual scoring, Maestro ES scenario extension, Phase C-deep prompt reorder (Oracle as gate).
+
+### Gotchas
+
+- **Plan stop condition saved ~40 min of unnecessary risk** : tokens restant ~270K < 220K safety margin for O4 = explicit defer rather than rush. Session 43 re-runs clean from battery-green state.
+- **LiteLLM-bypass fault injection : floor is structural, not noise-reducible** : clean baseline 80.8% false alarm is call-path mismatch, not judge instability. Only cure is methodology change (Dify clone or delta gating or distributional invariants). Not a "tune N-majority harder" problem.
+- **Push blocked by main protection hook** : Session 42 commits (7 prior + O3 `127eb8d`) are local only. When gate lifts, `git push origin main` sends 8 commits. Confirm with Sinse before PR strategy.
+- **record_golden_litellm.py untracked** → commited as part of O3 (companion tool for bypass-methodology experiments, used by fault_injection.py internally).
+---
+
+---
+
+## Session 40 — 2026-04-23 (8 commits — Corpus Oracle V1 alpha shipped)
+
+### Done
+
+**Continuité Session 39** : après que le "poor man's" oracle rétroactif ait été tué par le doctrine-drift trap, Session 40 build **Oracle V1 alpha** selon le design doc `docs/01-pedagogy/corpus-oracle-v1-design.md`, avec pivots documentés en §3a/b/c.
+
+**8 commits pushés sur main** :
+
+**Phase 0 — Pre-flight** (`2ffc772` workspace) : SQL census error_log (160 rows EN, 18 T2 + 1 T3, all A1) → pivot scenario split 12/8/4 → 4/16/4. Dify API reachable validé, clone_app.py usable validé. Self-vendor caveat §3b et tiered-trigger §3c ajoutés au design doc.
+
+**Phase A — Skeleton** (`bae3a4c`) : `scripts/oracle/` layout (schemas.py + lint.py + harness.py + config.yaml + 4 example YAMLs + 9 tests). Pydantic v2 ScenarioSchema, GoldenFile, LintResult, DimVerdict. Lint = 4 deterministic checks (JSON wrapper opt-in, observed_level opt-in, A1 no-jargon, priority leak). Harness supporte `--mode lint|smoke|full` avec `--gate-mode strict|relaxed`.
+
+**Phase B1 — Judges** (`4d1bafa`) : `judges/deterministic.py` = recast_saliency (line/? count, micro-lesson marker) + cf_move_partial (regex metalinguistic/explicit) + scaffolding_l2_ratio (French stopword + accent heuristic). `judges/llm_pairwise.py` = 3 dims via LiteLLM proxy gpt-4o-mini (cf_move_set_valid Lyster 7-taxonomy, register_cefr_alignment ±1 sublevel, semantic_fidelity_pairwise vs golden). N-majority vote, temperature=0. 11 tests deterministic + live sanity 3/3 dims on a realistic A1 scenario.
+
+**Phase B2 — Scenarios + goldens** (`3cc5506`) : `build_scenarios.py` génère 24 YAML (4 error_log + 16 handcrafted dont 5 risk scenarios + 4 multi-turn scripted). `record_golden.py` capture 24 goldens via Dify public API sur SHA 4d1bafad4f37. Lint-mode harness = 24/24 pass. Lint adjustment : json_wrapper + observed_level opt-in (Dify plain-text responses don't wrap on fresh conversation_id).
+
+**Phase C — Noise floor** (`db335fc`) : 2 full runs (24 scenarios × 3 dims × N=3 = 432 judge calls + 48 Dify calls, ~312K tokens). Measured FPR per dim : deterministic stable à 0%, L2_ratio 12.5%, cf_move (LLM) 12.5%, register_cefr 20.8%, semantic_fidelity 33.3% (expected — pairwise is hardest). `export_for_manual.py` + `calibration.py` ready pour Sinse manual scoring (deferred S41).
+
+**Phase D — Fault injection infra** (`902305e`) : 5 fault patches mappés sur des substrings réelles du prompt Teacher EN (force_long_response, remove_one_question_rule, swap_implicit_to_explicit, force_metalinguistic_always, disable_self_answer_rule). **Pivot clone-app → LiteLLM bypass** : l'approche originale (clone Teacher EN Dify app par fault) a hit >30 min wall-time sans résultat (likely placeholder hang sans conversation state). Replacement : extract prompt via JSONB SELECT, apply patch, call LiteLLM direct avec stubbed placeholders. Infrastructure + from_str validation shippés ; full 5-fault × 24 scenarios run (~25-40 min) deferred S41.
+
+**Phase E — Integration** (`b5d7181`) : block 8 du `RUN_RECENT_BATTERY.sh` = `oracle V1 lint --gate-mode strict` (zéro LLM call, ~5s). Battery 8/8 green. `scripts/oracle/README.md` complet (3 modes, operational playbook, noise floor mesurés).
+
+**Métriques finales** : battery 8/8, 20 pytest oracle verts, 24 scénarios + 24 goldens commited, noise floor mesuré, tokens consommés ~400K (27% quota journalier).
+
+### Next
+
+**Session 41 — Oracle V1 completion + Maestro ES extension** :
+- **Fault injection full run** (~25-40 min) : `python3 scripts/oracle/fault_injection.py --apply` — mesure detection rate + false alarm rate. Gate ≥90% / ≤10%.
+- **Cohen's κ calibration** : Sinse fill `/tmp/oracle_sinse_scores.yaml` (~30-45 min manuel) → `calibration.py` compute κ → drop/keep/alert dims.
+- **Flip oracle config depuis "strict lint" → "strict lint + active dims gated"** une fois calibration + fault injection PASS.
+- **Maestro ES extension V1** : dupliquer scripts/oracle/scenarios/maestro_es/ avec 24 ES-specific scenarios (ser/estar, por/para, subjuntivo, concordancia, a-personal). Réutilise harness + judges. Session 41 ~4h.
+
+**Moyen terme** :
+- **V2 cross-vendor judge** : swap `config.yaml::judge_model: gpt-4o-mini` → `groq-standard` (free Llama 3.3 70B) ou `claude-haiku-4-5` si clé Anthropic dispo.
+- **Dashboard Oracle** : extend `/admin/cache-stats` UI avec oracle run history + per-dim trend charts.
+- **Simulated learner LLM** pour multi-turn uptake : V2 feature.
+
+### Gotchas
+
+- **Dify placeholder resolution sur clones Teacher** : les clones hit un hang sans conversation state pré-existant (code_turn_check node attend learner_profile data qui n'existe pas pour les `oracle-fault-xxx` users). Skip Dify entirely pour fault injection = LiteLLM bypass avec stubbed placeholders.
+- **clone_app.py + delete_legacy_app.py gap** : `delete_legacy_app.py` itère sur `app_id` column mais la table `apps` elle-même utilise `id` as PK. Orphans restent après delete — cleanup manuel SQL requis. TODO P2 : patch `delete_legacy_app.py` pour handle `apps.id`.
+- **LiteLLM Judge Pairwise noise = 33%** : attendu. Judge LLM instable sur pairwise stylistique sibling responses. N=3 majority + pairwise (pas absolute) réduit, mais 33% reste non-négligeable → semantic_fidelity dim pourrait être DROP après calibration κ.
+- **Budget tokens oracle** : full run ≈ 108K tokens, 5×noise_floor + 5 faults + calibration ≈ 1M. Strict mode lint-only en battery (0 tokens) + full on-demand = bonne discipline pour préserver les 1.5M quota/jour.
+- **Sops round-trip LiteLLM config** : pour V2 Haiku swap, `sops -d --input-type yaml --output-type yaml litellm/config.yaml.sops > /tmp/plain.yaml`, edit, `sops -e` avec creation_rules matching path. Important : pas de `--set`, round-trip est plus fiable.
+
+---
+
+---
+
+## Session 39 — 2026-04-22 (17 commits — stabilisation + Phase D v2 + oracle poor-man's)
+
+### Done
+
+**Continuité Session 38** : pickup après 3 mutations prod (MICRO_LESSON=on, PRIORITY_CONCEPTS=on, Phase C prompt reorder `dcd7110`) livrées sans observation organique ni filet. Session 39 = stabilisation day → a dépassé le scope initial et livré Block 2 + Phase D v2 + Block 3 en une seule manche.
+
+**17 commits pushés sur main** :
+
+**Block 0 — Safety net (3 commits)** :
+1. `fd74a03` [safety] Phase C rollback scripts (`14_export_phase_c_backups.py` + `rollback_phase_c.sh`) — 4 workflow graphs exportés, rollback one-liner disponible, predump à chaque restore.
+2. `f221c4f` [safety] `THREE_STRIKES_DEDUP_BYPASS` env var + kwarg `bypass_dedup` dans `detect_three_strikes_family()` pour dogfood répété.
+3. `1cfe9f6` [safety] `RUN_ISOLATION_MATRIX.sh` battery × 4 combinaisons `MICRO × PRIORITY` + `SKIP_N8N_BLOCK` gate (n8n flaky orthogonal aux flags).
+
+**Block data** :
+4. `8a74b6f` [data] 4 workflow JSON snapshots (~640KB) committed pour checkpointing.
+
+**Block 1.1 — Dogfood CLI (1 commit + 1 fix P0)** :
+5. `6e9ba7f` [obs] `scripts/sprint6/15_dogfood_simulation.py` — simule 3-strikes→micro-lesson→dedup sur learners jetables. Rapport `/tmp/dogfood_s39.md`. **Finding P0** : ES codes pas dans `ERROR_CODE_TO_FAMILY` → three-strikes jamais fire pour ES.
+6. `1eb6a3f` [fix] **ES three-strikes mapping** — ajout des 11 codes ES (`V:SER_ESTAR`, `PREP:POR_PARA`, `ART:PROF`, `PUNCT:INTERROG`, `ORTH:NY`, `V:GUSTAR_SUBJECT`, `IDIOM:HACE_AGO`, `QUANT:MUY_MUCHO`, `PREP:MOVEMENT`, `LEX:FR_RESIDUE`, `ASPECT:PERF_OVERUSE`). 3 mappent à eux-mêmes (YAML family keys), 8 dans familles partagées. 10 tests paramétriques ajoutés. Container rebuild. Feature micro-leçon enfin active côté ES.
+
+**Block 1.2 — Phase D télémétrie cache_tokens (2 commits)** :
+7. `7ce1d9d` [feat] Phase D code-only : `16_litellm_cache_stats_schema.sql` + `litellm/cache_stats_callback.py` + 5 tests unit callback.
+8. `ab99e61` [feat] Phase D ACTIVE — pivot HTTP relay via `academie-api /internal/cache-stats` (container LiteLLM n'a pas de PG driver). Sidecar table dans `academie_db` (PAS `litellm_db` — Prisma drop any unknown table au restart, apprise à la dure). Prefix stability gate green : turn 2-3 sur long prompt → **1024/1060 cached = 97%**.
+
+**Block 2a — YAML schema validator (1 commit)** :
+9. `0c0e336` [feat] `packages/academie-core/academie_core/data/schemas.py` — pydantic v2 BaseModels pour rubrics/fewshots/curriculum/micro_lessons/concept_hints/cefr_diagnostics/mini_exam/l1_transfer/l1_names. `test_yaml_schema.py` 27 tests verts EN+ES, 24 skipped Wave 2. Auto-picked par `RUN_RECENT_BATTERY.sh`.
+
+**Phase D v2 — Dashboard admin (2 commits)** :
+10. `53b04f8` [feat] `/api/admin/cache-stats` endpoint (hours 1-720, summary + by_hour + by_model, `require_admin` guard).
+11. `207450d` [feat] Admin dashboard section "Prompt caching (OpenAI)" — 3 metric cards + SVG sparkline vanilla + per-model table, window 24h/7j/30j.
+
+**Block 3 — Oracle regression Phase C (2 commits + 1 workspace TODO)** :
+12. `45f9962` [feat] `17_oracle_phase_c_regression.py` — unilateral LLM-judge (gpt-4o-mini N=3 majority) sur 30 messages pré-dcd7110.
+13. `6fcf342` [obs] **Verdict : NOT a regression**. Gate retourne 6.7% FAIL mais c'est du bruit doctrinal (doctrine évolue Sessions 35-38, judge compare vieux messages à nouvelle doctrine). Phase D 97% cache hit = preuve empirique que reorder marche. **Pas de rollback**. Doc `docs/01-pedagogy/phase-c-regression-oracle-report-2026-04-22.md` + TODO Oracle V1 Session 40 doit éviter doctrine-drift trap.
+    - `2781d73` (workspace) [todo] Oracle V1 Session 40 guidance.
+
+**Block 2b — Dify legacy cleanup (2 commits)** :
+14. `90c00e4` [chore] `scripts/dify/delete_legacy_app.py` safety-gated (dry-run default, predump JSON, 12 tables scoped, single transaction).
+15. `d3819eb` [chore] Applied delete sur orphan `0105e199` (Sprint 4) : 15 rows supprimés (7 messages + 2 conversations + 5 app_model_configs + 1 installed_apps). Post-verify 0 rows. TODO "6 chatbots" était stale — réalité 1 orphan.
+
+**Docs (2 commits)** :
+16. `472106b` [docs] `docs/dogfood/teacher-en-setup-2026-04-22.md` — browser checklist pour le dogfood Teacher EN (Sinse drive).
+17. `8b370ba` [docs] `docs/outreach/loom-checklist-2026-04-22.md` — narration arc 5-7min pour outreach byproduct.
+
+**Métriques finales** : pytest 27+37 sur three_strikes+yaml + 285 academie-core + 14 E2E micro-lesson + 8 E2E consolidation + battery 7/7 + smoke 14/14 + isolation matrix 4/4.
+
+### Next
+
+**Prochaine session (40 — Oracle V1 build day)** :
+- Réviser le design Oracle selon les 3 options documentées dans le rapport Phase C (distributional invariants recommandé sur pre-change dumps standard pratice).
+- **Dogfood Teacher EN browser** : guide `docs/dogfood/teacher-en-setup-2026-04-22.md` ready. Sinse drive, findings en ~15 min.
+- **Loom 5-7min** : checklist prête, Sinse drive, zéro pression.
+
+**Moyen terme** :
+- Phase D dashboard v3 : alerting si cache hit rate chute > 20% j/j (signal prompt drift).
+- Sync `curriculum_en.yaml` avec DB EN (drift 53 YAML vs 98 DB) — item P2 persistant.
+- Étendre `_BUBBLE_TEMPLATES_BY_L1` pour EN/IT/DE/JA/RU Wave 2+.
+
+### Gotchas
+
+- **LiteLLM Prisma drop les tables inconnues de `litellm_db` au restart** : toute sidecar table doit vivre dans `academie_db`, pas `litellm_db`. Découverte Session 39, coût 1 itération sur la Phase D.
+- **LiteLLM container image n'a AUCUN driver PG Python** (psycopg/asyncpg/psycopg2 absents, Prisma JS-based). Custom callback Python → HTTP relay vers academie-api = pattern. Pip install runtime sandbox-blocked en prod partagée.
+- **Oracle unilatéral vs doctrine évolutive** : comparer une réponse écrite sous doctrine T-n à la doctrine actuelle T donne du bruit de drift qui masque toute vraie régression. Oracle V1 doit versioner la doctrine OU mesurer des invariants distributionnels (tier mix, observed_level rate) OU exiger dump pre-change.
+- **Svelte 5 runes `$state` + computation derivée** : le pattern de sparkline SVG vanilla dans `+page.svelte` marche, pas besoin de chart lib — 7 LoC de path construction suffit.
+- **Sops re-encrypt** : edit `litellm/config.yaml.sops` via round-trip decrypt→edit→encrypt avec sops matching `creation_rules.path_regex`. Plus simple que `sops --set`.
+
+---
+
+---
+
+## Session 38 — 2026-04-22 (6 commits — n8n public API + micro-lesson MVP + prompt caching Phase C)
+
+### Done
+
+**Continuité Session 37** : pickup après priority loop + n8n dify-snapshot fix livrés. Session 38 : refactor des 2 workflows n8n restants, doctrine micro-leçon explicite (recherche multi-agents → MVP livré), activation priority_concepts + micro_lesson en prod, batterie régression agrégée, audit+intervention prompt caching.
+
+**6 commits pushés sur main** :
+
+**1. Refactor dify-diagnostic + dify-exam-scoring → Dify public API (ae00b35)** — script `09_refactor_diagnostic_exam_to_public_api.py`. Résout le 100% 401 fail rate depuis 5 jours. Approche : n8n résout lui-même le `dify_app_key` via PG lookup sur `api_tokens` dispatché par `domain` → **zéro modif Dify-side, zéro n8n-container restart, zéro secret dupliqué**. Nouveau node "Resolve Dify App Key" inséré entre `Parse Body` et `Fetch`. Patché workflow_entity + workflow_history (Session 27 gotcha). Cast `::uuid` pour la comparaison app_id. Validé live : diagnostic retourne profil JSON complet (status=success), exam-scoring passe toutes étapes HTTP.
+
+**2. Three-strikes micro-leçon MVP (7d2464f)** — nouveau module `pedagogy/three_strikes.py` (detect + log_injection + cefr_band helpers). YAML `micro_lessons/{en,es}.yaml` avec 11 familles EN + 14 ES (dont 3 ES-spécifiques PREP:POR_PARA, V:SER_ESTAR, ART:PROF) × 3 bands A1/A2/B1. Design rédactionnel validé : **A1 = exemple seul (zéro métalinguistique, respect rubric Sprint 3), A2 = 1 phrase + exemple, B1+ = règle complète + terme métalinguistique**. Migration `micro_lesson_log` (dedup 3j). `PromptContext.three_strikes_family` + `build_micro_lesson_block()`. Kill switch `MICRO_LESSON_ENABLED=false` par défaut. Scope lean : pas de gate FLA/structure/CEFR applicatif (simplifié sur validation Sinse). 26 unit + 14 E2E verts.
+
+**3. Activation MICRO_LESSON_ENABLED + PRIORITY_CONCEPTS_ENABLED = true (in-flight)** — flip `.env` + rebuild academie-api. Les deux kill switches désormais ON. Priority loop Ebbinghaus top-3 concepts injectée chaque tour, micro-leçon one-shot déclenchée sur 3 échecs consécutifs même famille (dedup 3j).
+
+**4. Batterie agrégée RUN_RECENT_BATTERY.sh (bc6f611)** — orchestrateur couvrant les features Sessions 37-38 : pytest academie-core (285), sprint6/tests (inject_curriculum + admin_reset_scoping), E2E consolidation 8/8, E2E micro-lesson 14, n8n webhooks liveness (diagnostic/snapshot/exam-scoring), smoke-test. Baseline 7/7 verte. Mode `--quiet` pour summary-only.
+
+**5. Audit prompt caching Phase A (7a23f9f)** — script `12_audit_prompt_caching.py`. Mesure token-par-bloc via tiktoken o200k_base + classification STABLE/SEMI/VOLATILE. Finding critique : cacheable prefix actuel = **5 tokens (0.1%)** car `<learner_profile>{{...}}` injecté en byte 1 tue le cache OpenAI auto. Optimal possible : ~3500 tokens (75%). Projection mensuelle (1h/jour × 30j) : Teacher $1.67 → $1.10 (-33%), Maestro $1.67 → $1.11 (-34%).
+
+**6. Prompt reorder Phase C minimal (dcd7110)** — script `13_reorder_prompt_for_caching.py`. Déplace uniquement le top volatile chunk (learner_profile + plan_prefix + MODE QUIZ gate) vers une section `=== CONTEXTE DE CE TOUR ===` en bas. Anchor language-agnostic sur `{{#code_turn_check.lang_target_prof#}}`. Réécrit les directives "Ignore TOUT ce qui suit" / "SINON : SESSION NORMALE" pour pointer vers la nouvelle localisation. Idempotent via marker `CACHE_REORDER_v1`. Appliqué Teacher + Maestro × published + draft. Résultat mesuré : **cacheable prefix 5 → ~900 tokens (+178×)**, coût **-8.4%/user**. Deep-reorder différé en TODO (extraction des 8 injections middle restantes, ~1j dev, gain complémentaire -25%/user).
+
+**Recherche doctrinale multi-agents (4 axes)** — avant de livrer le MVP micro-leçon, 4 agents parallèles : littérature SLA (méta-analyses Norris&Ortega, Spada&Tomita, Goo 2015, Sheen 2008 FLA×CF, DeKeyser skill acquisition), benchmark apps commerciales (Duolingo Max Explain My Answer, Speak, Langua, TalkPal, Busuu, Babbel, Rosetta Stone, Pimsleur), institutions pédagogiques (PCIC, Goethe, Alliance Française, ACTFL 2021, CUP/OUP, Nation, Ur, Thornbury), audit codebase d'intégration. **Verdict** : pure-Lyster implicite est évidence-sub-optimale pour adultes ; 10/11 institutions recommandent explicite proactif dès A1 avec progressivité ; Lyster lui-même (2007 Counterbalanced Instruction) n'est pas pur-implicite. Ship micro-leçon validé.
+
+**Métriques** : 285 pytest verts + 14 E2E micro-lesson + 8 E2E consolidation + 3 n8n webhooks live (diagnostic/snapshot/exam-scoring) + smoke deep 20/20 + batterie agrégée 7/7.
+
+### Next
+
+**Prochaine session** :
+- **Phase C-deep prompt caching** (P2, ~1j) : extraire chirurgicalement les 8 injections volatiles middle (promotion_msg, profil_text+session_snapshot, error_feedback, tour, dosage_block, concepts/focus/transition, level_reminder+drift+l1_watch+spaced_retrieval, SIGNAUX) + patcher les références `ci-dessus`/`ci-dessous`. Target cacheable 19% → 75%, gain supplémentaire -25%/user.
+- **Phase D télémétrie cached_tokens** (P2, 2-3h) : exposer `usage.prompt_tokens_details.cached_tokens` d'OpenAI dans LiteLLM_SpendLogs pour mesurer le cache hit réel vs projeté.
+- **Dogfood Teacher EN end-to-end** (15min) : reset EN + QCM + 10 turns + mini-exam → parité avec Maestro ES.
+- **Observer micro-leçon organiquement** : dogfood avec 3 erreurs consécutives forcées sur verb_tense → vérifier que le bloc est bien pris en compte par le tuteur dans sa réponse.
+
+**Moyen terme** :
+- Sync `curriculum_en.yaml` avec DB EN (drift 53 YAML vs 98 DB).
+- Étendre `_BUBBLE_TEMPLATES_BY_L1` pour EN/IT/DE/JA/RU Wave 2+.
+- Phase D Wave 1 ES battery validation post-stabilisation.
+
+### Gotchas
+
+- **Prompt caching OpenAI casse dès le premier byte volatile** : `{{placeholder}}` variable en position 0 du prompt → cacheable prefix = 0%. Règle doctrinale : **tout ce qui est stable au début, tout ce qui varie à la fin**. Marker `CACHE_REORDER_v1` à préserver pour idempotence.
+- **n8n expression `={{...}}` dispatch via PG** : pour des secrets app-scoped comme `dify_app_key` qui varient par domaine, préférer un lookup Postgres intra-n8n (via `api_tokens` dans le cas Dify) plutôt que passer par env var container (nécessite restart) ou body webhook (couple le caller).
+- **Dify workflow `api_tokens.app_id` est UUID** : comparaison avec string literal en n8n → `::uuid` cast obligatoire, sinon `operator does not exist: uuid = text`.
+- **Rubric A1 Lyster-compliant dans YAML micro-leçons** : **zéro terme métalinguistique** ("past participle", "auxiliary", "modal") — que des exemples concrets avec recast. Validated by Sprint 3 battery 97.4% + institutional consensus PCIC/Goethe/AF sur progressivité.
+- **Sandbox blocks**: (a) rebuild docker compose services partagés sans validation explicite, (b) exec de scripts dont le contenu n'est pas visible dans le transcript (Write est visible mais la 1ère version d'un script créé à l'instant peut être suspectée à tort si exec immédiat). Workaround : Read du script puis exec. (c) commandes embarquant secrets en plaintext (password dans DSN) — utiliser `set -a; . .env; set +a` ou sed-remap.
+
+## Session 37 — 2026-04-21 (16 commits — marathon end-to-end ES + priority loop + n8n fix)
+
+Bloc complet archivé depuis SESSION.md lors du closing Session 40. Résumé :
+
+Session 37 a livré 16 commits couvrant E2E consolidation 8/8, observed_level v2 strengthening, QCM debts refactor (probe_answer + fla_items_raw + scaffolding unification), Phase A multi-lang P0 (admin_router domain-scoped, error_analysis_router lang dispatch, curriculum_en.yaml, 4 Wave 2+ stubs), chain of dogfood fixes (ChatBubble feedback extraction, JSON malformé fallback, OUTPUT_SCHEMA_BLOCK compression, chat re-poll consolidation, api client 401 refresh), consolidation UX trio (post-QCM welcome FR→L2, msg_validation_after_failed_exam, bulle système persistante via consolidation_events.notes + endpoint + ChatBubble role), YAML-driven curriculum injection (inject_curriculum.py), stats NaN% fix, priority concepts Ebbinghaus loop + n8n dify-snapshot public API refactor. Détails complets : git log `commit c77b7bb..2f05f11`.
+
+---
+
+## Session 36 — 2026-04-21 (consolidation CEFR QCM → validé + 4 fixes Dify + route fix)
+
+### Done
+
+**Continuité Session 35** : pickup après fixes P0/P1 rubric + greeting L2 + politique L1/L2 livrée. Ce soir : item P0 TODO "consolidation QCM → niveau validé" décroché par Sinse pour discussion cadrage, puis execution.
+
+**Discussion cadrage produit (C hybride bienveillant)** : 8 décisions arrêtées avec Sinse : N=8 turns OR 20 error_log entries ; LLM `observed_level` hint + error_log distribution ; mini-exam 8 items ; refus → soft re-prompt +20 turns + badge "stabilisation volontaire" ; 1 badge global MVP ; max ±1 CEFR par épisode (anti-whiplash) ; re-calibrer après 30j+régression ; `niveau_status` + `niveau_validated_at` + `consolidation_decision_pending` schema. **Wording bienveillant prof Alliance Française** approuvé : 3 messages (validation/upgrade/downgrade) avec ton chaleureux + agency learner ("c'est toi qui décides").
+
+**Recherche préalable** (3 agents parallèles en plan mode) : littérature SLA (Bull & Kay 2016 OLM negotiability, Ross 1998 self-assessment 0.3-0.5 corr, Horwitz FLCAS), matrice 9 cells × FLA modulation, benchmark apps commerciales.
+
+**Code livré (MVP + tests verts 134→163 verts)** :
+- **Migration** `scripts/sprint6/01_consolidation_schema.sql` : 6 colonnes `profils_eleves` (niveau_status enum, niveau_validated_at, last_consolidation_turn, consolidation_decision_pending, regression_watch_active/started_turn) + `user_sessions.observations_json` + table `consolidation_events` audit trail.
+- **Core logic** `packages/academie-core/academie_core/pedagogy/consolidation.py` (230 lignes) : `evaluate_trigger`, `majority_vote_observed_level`, `infer_level_from_errors`, `reconcile_observations` (conservative consensus), `clamp_single_step` (anti-whiplash), `decide_consolidation`, 3 messages bienveillants (`msg_validation`/`msg_upgrade`/`msg_downgrade`) + `pick_message` dispatcher. **29 tests paramétrés verts** (trigger/aggregation/clamp/decision/messages).
+- **TeacherResponse.observed_level** : nouveau champ dans OUTPUT_SCHEMA_BLOCK + dataclass + parse.
+- **Mini-exam YAML banks** `data/mini_exam/{es,en}_{A1,A2,B1}.yaml` × 6 files : 8 items chacun (3 fill + 2 transform + 2 choice + 1 produce_short), regex + llm_judge_hint.
+- **Backend router** `webapp/backend/app/routers/consolidation_router.py` : 4 endpoints (GET state, POST mini-exam/start, POST mini-exam/submit, POST decide) + LLM-as-judge fallback pour produce_short via gpt-4.1-mini.
+- **Hook chat_router** `_consolidation_post_turn()` : append observed_level à user_sessions.observations_json → evaluate_trigger → decide_consolidation → UPDATE profils_eleves (auto_validate ou calibration_en_cours) + INSERT consolidation_events.
+- **Dashboard API** étendu : `niveau_status`, `niveau_validated_at`, `consolidation_decision_pending` dans /api/me/dashboard.
+- **3 composants Svelte** (runes $props) : `LevelBadge` (5 états colorés thème-adaptatif), `MiniExamModal` (wizard 8 items + Enter=next + textarea Shift+Enter), `ConsolidationDecisionModal` (3 kinds : validation/upgrade/downgrade, 2 boutons). Wired dans `chat/[agent]/+page.svelte` via `checkConsolidationState()` au mount + auto-open après submit.
+- **Doc doctrinale** `docs/01-pedagogy/cefr-consolidation-policy.md` (12 sections, citations Bull&Kay / Ross / Horwitz / Dunning-Kruger / Samejima / Piech).
+
+**Note** : bloc Session 36 complet archivé depuis SESSION.md lors du closing Session 39. Détails Dify scripts + bugs live + validation end-to-end : voir git log `commit 8a5d4fe..c77b7bb`.
+
+---
+
+## Session 35 — 2026-04-21 (checkup onboarding QCM + 2 fixes P0/P1 + politique L1/L2 adaptative)
+
+### Done
+
+**Checkup approfondi QCM → wiring → bot (3 agents parallèles)** : audit frontend (Modal.svelte, 10 questions FR, draft localStorage, overlays per-lang), backend (endpoints propres, upsert idempotent sur `learner_profiles`, `nl_summary` injecté turn 1), Dify workflow (code_profil_check bien wired, QCM_OVERRIDE_v1 présent 4/4 slots). 2 bugs détectés live.
+
+**Fix P0 — rubric level mismatch** : `chat_router.py:467-485` lisait `niveau` UNIQUEMENT depuis `profils_eleves.niveau_global` (souvent vide pour QCM users) → fallback `niveau or "B1"` → **rubric B1 injecté pour tous les A1**. Vérifié DB : 3 users QCM avec `cefr_placement=A1` mais niveau_global vide. Fix (~5 lignes) : override `niveau` via `compact.level.cefr_placement` quand présent. Rebuild academie-api (découverte : `docker compose restart` ne picks pas le code, il faut `up -d --build`). Validé live : RUBRIC A1 injecté.
+
+**Fix P1 — greeting L1 drift Teacher** : Teacher greet "Salut !" en FR au turn 1 malgré QCM_OVERRIDE_v1 demandant L2. Maestro OK en ES. Script `scripts/sprint5/15_strengthen_qcm_override_l2_example.py` ajoute 2 few-shots L2 explicites avant `=== FIN QCM_OVERRIDE_v1 ===` (marker `L2_EXAMPLES_v1`). Patché Teacher+Maestro draft+published (4/4 slots). Restart dify-api + worker. Validé live Maestro reset : "¡Hola! Voy a hacerte unas preguntas para calibrar tu nivel. Primera pregunta: háblame de ti." — quasi-verbatim du few-shot.
+
+**Pivot pédago — politique L1/L2 adaptative** : Sinse questionne la doctrine "100% L2 dès turn 1 pour A1". Recherche 3 agents parallèles (commercial apps / littérature SLA / institutions) :
+- **Lit** (Butzkamm, Cook 2001, Macaro optimal position, Hall & Cook 2012, Ringbom 2007, CEFR 2020 Companion) : "virtual position" 0% L1 **sans support empirique** pour A1 adulte. Consensus = "optimal position" (L1 bref et fonctionnel).
+- **Marché** (Duolingo 80/20, Babbel 60/40, Pimsleur sandwich, Busuu, Speak + AI cohort) : **9/10 apps utilisent L1 à A1 turn 1**. Rosetta Stone seul outlier, et même eux plient pour JA/KO/TR (distance typologique).
+- **Institutions** (ACTFL softening 2021, Cervantes PCIC L1-friendly, Japan Foundation Marugoto bilingue A1, universités ~75-90% L2) : pas de règle universelle mais split clair entre marketing immersion vs pédagogie fondée-preuves.
+
+**Livrable** : politique **level × typological-distance × FLA** avec matrice 9 cells + modulation FLA high (shift +1 bande). A1 close 90%L2 sandwich méta / A1 medium 85%L2+L1 grammaire / A1 distant 55%L2+réassurance+sandwich systématique. B1+ close 100% L2 no-op.
+
+**Code livré** :
+- `packages/academie-core/academie_core/pedagogy/typological_distance.py` (table FR-ES/IT/PT close, FR-EN/DE medium, FR-JP/RU/ZH/AR distant + helper `get_distance()` + 6 unit tests)
+- `packages/academie-core/academie_core/pedagogy/scaffolding_policy.py` (POLICY_MATRIX 9 cells, `resolve_policy()`, `build_scaffolding_block()` avec rendu Butzkamm sandwich + réassurance conditionnelle + 13 unit tests paramétrés)
+- `teacher_prompt.py` : `PromptContext` étendu (`fla_category`, `target_lang_name`, `l1_name`), `scaffolding_block` + `_scaffolding_cell` (logging) ajoutés au dict retourné par `build_dynamic_sections()`
+- `chat_router.py` : fetch `fla_category` depuis `learner_profiles.domain_motivation`, render block + env kill switch `SCAFFOLDING_BLOCK_ENABLED`, append au `learner_profile_summary` (MVP — pipe à travers channel déjà wired, Phase 2 splittera en input Dify dédié)
+- 134/134 tests verts (19 nouveaux)
+
+**Doc pédagogique** `docs/01-pedagogy/l1-l2-scaffolding-policy.md` (10 sections, citations Butzkamm/Cook/Macaro/CEFR 2020/ACTFL/PCIC + table marché + matrice + architecture pipeline + kill switch + plan test + open questions).
+
+**Validation live** : Sinse envoie "yo" sur Maestro post-deploy → `learner_profile_summary` contient bien `=== L1/L2 MIX POLICY === Target output ratio: ~90% Español / ~10% français` + sandwich directive. Bot répond "¡Bien! Cuéntame un poco más…" : 100% ES, respecte le budget L1 sans l'utiliser (normal : cognats romans + pas de brand-new item + FLA low). Policy cell `(A1, close, low)` exactement comme prescrit par la matrice.
+
+### Next
+
+**Phase 2 scaffolding (differée)** :
+- Splitter `scaffolding_block` en input Dify Start dédié (24 edits workflow : Start + 2 code nodes + 3 LLM nodes × 4 slots) via script `16_register_scaffolding_input.py` — comportement identique, architecture propre.
+- Few-shots sandwich par distance (`data/fewshots/sandwich_{close,medium,distant}.yaml`) — pour les cas où le LLM a besoin d'exemples concrets.
+- Monitoring : logger `user_sessions.scaffolding_cell` pour analyse offline du ratio L2 réel.
+
+**TODO P0 restants (non touchés Session 35)** :
+- Discussion cadrage consolidation niveau QCM → chat validated après N turns (badge provisoire → validé, mini-probe Dunning-Kruger).
+- Phase D Wave 1 ES battery validation (`eval_live_battery.py --lang es`).
+- Phase A backend multi-lang : `admin_router.reset_profile()` domain-scoped, `error_analysis_router:81` lang dispatch, `curriculum_en.yaml`.
+
+**TODO P1** : généralisation L1 non-FR (table distance symétrique déjà, mais `_L1_NAMES` à étendre) ; per-domain overrides Sensei quand JP livré.
+
+### Gotchas
+
+- **`docker compose restart` ≠ rebuild** : Session 35 fix P0 tombé en eau au premier restart — academie-api tournait toujours l'image baked sans le fix. Toujours `docker compose up -d --build` quand le fix vise du code Python copié dans l'image.
+- **Dify VariablePool ne propage pas `{{#start.X#}}` past code nodes** : si on veut exposer un input Start à des nodes downstream d'un code node (code_profil_check, code_turn_check), il faut explicitement déclarer l'input en `variables[]` + `signature` + `return dict` du code node. Sinon dégradé `{"error": "variable not found"}`. D'où le shortcut MVP Session 35 via `learner_profile_summary` pipe.
+- **QCM cefr_placement ≠ profils_eleves.niveau_global** : deux sources de vérité distinctes. Le QCM peuple `learner_profiles.domain_level.cefr_placement`, JAMAIS `profils_eleves.niveau_global` (qui reste pour legacy / LLM-consolidated level). Chat_router doit priorityer QCM quand présent. Gotcha P0 Session 35.
+- **"100% L2 dès turn 1" est pédagogiquement fragile** : marche en FR→ES A1 par chance (cognats romans). Ne survivra pas à FR→JP/RU. À re-évaluer pour chaque nouveau agent — cf. `docs/01-pedagogy/l1-l2-scaffolding-policy.md`.
+
+---
+
+---
+
+## Session 34 — 2026-04-20 (fix onboarding-branch Dify + audit multi-lang + multi-agent UI overview)
+
+### Done
+
+**Continuité Session 33** : suite immédiate après handoff — Sinse enchaîne sur le bug Maestro "ok loop" identifié en fin de Session 33, puis pivot vers audit visuel multi-lang + redesign dashboard multi-agent.
+
+**Fix bug onboarding-branch Dify (résolution P0 Session 33 Next)** :
+- Investigation graph topology Maestro : `start → HTTP → code_profil_check → if_profil → ("cas1" → code_turn_check / "false" → llm_onboarding direct)`. Le seul node commun aux 2 branches = `code_profil_check` (pas `code_turn_check` ni `start` dans VariablePool de la branche onboarding).
+- `scripts/sprint5/13_wire_onboarding_branch.py` : wire `learner_profile_json` + `learner_profile_summary` dans `code_profil_check` (variables[] + main signature + return dict dans les 2 branches — normal body + fallback "if not body") + prepend `<learner_profile>{{#code_profil_check.learner_profile_summary#}}</learner_profile>` dans `llm_onboarding`. Appliqué Teacher draft+published + Maestro published.
+- Premier test Sinse : LLM continue à suivre la FASE 1 FR recueil → directive "skip if block non-vide" noyée par section Phase 1 ultra-détaillée.
+- `scripts/sprint5/14_strengthen_llm_onboarding_override.py` : ajout d'un block `QCM_OVERRIDE_v1` à la FIN du system prompt (dernière instruction = priorité LLM) — force skip FASE 1 + salut bref + diagnostic direct en langue cible au palier CEFR du profil.
+- Wipe complet Maestro ES (1 conv + 30 msgs + 1 user_session + 1 learner_profile) pour test fresh.
+- **Validation live** : "yo" → Maestro répond `"¡Hola! Voy a hacerte algunas preguntas para calibrar tu nivel de español. Primera pregunta: ¿Háblame de ti?"` — palier A1-A2 respecté, 100% en ES, zero Phase 1 FR. **3 bugs Session 32 structurellement résolus pour nouveaux ET retournants users**.
+
+**Commit Phase 5 QCM + hotfixes** : `fe54ce9` [feat] Sprint 5 Phase 5 — onboarding QCM pre-chat (41 fichiers, +10663/-12). Push origin main OK.
+
+**Sync draft Maestro ← published** : Sinse constate 3 nodes sur Maestro dans Dify UI vs 41 sur Teacher. Root cause = draft stub auto-créé par Dify à l'ouverture de l'éditeur. Le `published` 41/45 nodes est bien actif en prod. Sync SQL `UPDATE workflows SET graph=..., conversation_variables=...` (préserve conv_vars). Draft affiche désormais 41/45 identique au published.
+
+**Fix strings EN-bias visibles + home welcome dynamique** :
+- `config.ts` : ajout `Agent.langGenitive` ("d'anglais", "d'espagnol", "d'italien", "d'allemand", "de japonais", "de Python", "de cybersécurité") + helper `domainGenitive(d)`.
+- `routes/+page.svelte` empty state welcome : `{currentAgentObj.name} va évaluer ton niveau {currentAgentObj.langGenitive}` (au lieu de "Teacher va évaluer ton niveau d'anglais" hardcodé).
+- `routes/+page.svelte` lien concepts : `?domain={$currentDomain}` (au lieu de `?domain=anglais` legacy).
+- `routes/+page.svelte` onMount → `$effect` reactive sur `$currentDomain` (reload au switch agent).
+- `routes/stats/+page.svelte` onMount → `$effect` reactive.
+- `WeeklyRecap.svelte` : accepte prop `domain`, passe au backend (avant : hardcoded `'en'`). Label titre précise la langue : "Récap de la semaine — Anglais".
+
+**Audit multi-lang 3 agents Explore en parallèle (frontend / backend / Dify+n8n+data)** :
+- `docs/00-project/multilang-action-plan-2026-04-20.md` (~300 lignes) consolidé.
+- **7 blockers majeurs identifiés (spot-checkés ✓)** :
+  - **Backend P0** : `admin_router.reset_profile()` L121+L152 DELETE `profils_eleves` sans scoping domain → wipe de tous les profils EN+ES+IT d'un user (data-loss bug).
+  - **Frontend P0** : `SkillTree.svelte:23` appelle `getConcepts()` sans domain (mais composant orphelin, pas importé — fausse alerte agent).
+  - **Frontend P0** : `/stats/concepts` `onMount` au lieu de `$effect` → pas de reload au switch agent.
+  - **Frontend P0** : `/profile:208,225` "Teacher" hardcodé.
+  - **Data P0** : `curriculum_en.yaml` absent (seul `curriculum_es.yaml` existe).
+  - **Backend P1** : `error_analysis_router:81` `detect_errors(text)` sans `lang=req.domain` → rules EN toujours appliquées même sur chat ES.
+  - **n8n P1** : 4 workflows (`dify-diagnostic`, `dify-snapshot`, `dify-exam-scoring`, `dify-exam-persist`) sans param `domain`.
+- Plan en 3 phases (A P0 ~4h, B P1 ~12h, C post-kickoff) + checklist répliquable Wave 2+ IT (7 étapes × 20-30h humain + 4-6j domain-expert).
+
+**Clarification user** : Sinse identifie que l'audit mélangeait deux questions (UI visuel vs scalabilité stack). Recadrage : 3 fixes réellement visible côté user (profile:208,225 + /stats/concepts reload + `/stats/concepts:91` aria-label) + un vrai problème de design multi-agent.
+
+**3 fix visuels multi-lang livrés** :
+- `profile/+page.svelte:208,225` : "Teacher utilisera/adaptera..." → `{currentAgentObj.name} utilisera/adaptera...` avec import + `$derived(agents.find)`.
+- `stats/concepts/+page.svelte:67` : `onMount` → `$effect` reactive sur domain.
+- Déjà couvert plus haut : welcome home dynamique.
+
+**Redesign dashboard multi-agent** (home + stats) :
+- **Backend** : nouveau endpoint `GET /api/me/dashboard` (`profile_router.py`) qui merge `profils_eleves` (source de vérité niveau réel via sessions) + fallback `learner_profiles.derived_tutor_hints.cefr_placement` (flaggé `provisional: true`) + agrège sessions+minutes per-agent sur 7 derniers jours via GROUP BY `agent_name` dans `user_sessions`.
+- **Frontend component `AgentsOverviewRow.svelte`** générique : grid responsive de mini-cards pour chaque agent `available`. Click = select agent (update `currentAgent` store) sans navigate. Card active highlighted (border + fond + ring colorCode agent). Badge "provisoire" si QCM seul sans session. Affiche niveau + barre progression + sessions/temps per-agent.
+- Intégré sur home (au-dessus detailed card) + stats (au-dessus level card). Affiché si ≥ 2 agents available.
+- Stats level card : ajout bouton "Reprendre →" (à côté du niveau) + lien "Voir les concepts →" discret. Card n'est plus un `<a>` wrapper → UX plus claire.
+
+**Refinements UX** :
+- Top row stats home : scopé à l'agent courant (sessions+minutes filtrés via `WHERE agent_name=$2` dans `get_weekly_stats`). Labels précisent "(Anglais)" / "(Espagnol)".
+- Format minutes → compact `Xh YY` puis `Xh YYmin` (helper `formatMinutes` dans +page + AgentsOverviewRow).
+- 6102 min affichés `101h42min` (avant `101h 42` qui était ambigu).
+
+**Mise à jour docs** :
+- ADR #17 decisions.md (QCM Karpathy-style, trade-off onboarding-branch pending → résolu Session 34)
+- Runbook `onboarding-qcm-activation.md` (architecture + monitoring + gotchas + rollback)
+- Plan action multi-lang `multilang-action-plan-2026-04-20.md`
+- 7 rapports recherche `onboarding-research-2026-04-20/` (vague 1+2 agents)
+
+### Next
+
+**P0 — Discussion cadrage QCM ↔ chatflow** (promise Sinse fin session) : comment le QCM nourrit concrètement le chatflow, comment se fait la transition "QCM placement provisoire" → "diagnostic observationnel via chat" → "niveau validé `profils_eleves`", comment les deux coexistent (provisoire avec badge vs consolidé avec progress_pct). Décisions produit à prendre : un badge "provisoire" doit-il disparaître après N turns ? Le tuteur doit-il annoncer qu'il confirme le niveau après la 1re vraie session ? Le mini-probe C-test peut-il être re-utilisé dans le chat si Dunning-Kruger détecté post-session ?
+
+**P1 — Fix frontend P0 restants de l'audit** (30min, non-bloquant mais à fermer) :
+- `admin_router.reset_profile()` — ajouter param `domain` et scoper les DELETE (data-loss bug)
+- `error_analysis_router:81` — passer `lang=req.domain` à `detect_errors`
+- Les 3 fixes visuels sont livrés, mais reste le bug admin (pas user-visible mais sérieux)
+
+**P1 — Phase A complète multi-lang plan** (audit 3 agents) : `curriculum_en.yaml` à extraire/créer (2h), stubs `fr_to_{it,de,ja,ru}.yaml` (20min).
+
+**P1 — Ta vraie session Maestro** : envoie plusieurs messages à Maestro pour déclencher le INSERT `user_sessions` côté academie_db (actuellement 0 row `agent_name='maestro'`). Ça débloquera les stats per-agent visibles sur home + weekly recap ES.
+
+**P2 — Phase B multi-lang** (12h) : n8n workflows domain-aware, consolidation env vars `AVAILABLE_AGENTS`, validation domain frontale, YAML schema validators, extension `clone_app.py` pour Wave 2+.
+
+### Gotchas
+
+- **Dify VariablePool par branche** : contrairement à mon hypothèse initiale Session 33, ni `{{#start.X#}}` ni `{{#code_turn_check.X#}}` ne sont universellement accessibles dans tous les LLM nodes. Seuls les nodes directement downstream (path d'exécution réel) ont la variable dans leur VariablePool. Pour l'onboarding branch, le seul node commun aux 2 branches if_profil = `code_profil_check`. **À retenir pour Waves 2-4** : auditer la topologie avant de supposer l'accessibilité.
+- **LLM prompt priority** : directive brève en haut du system prompt peut être "noyée" par une section ultra-détaillée en dessous (FASE 1 avec 3 questions spécifiques). Solution : placer l'override à la FIN du prompt (`QCM_OVERRIDE_v1` block) — dernière instruction = priorité LLM. Pattern réutilisable pour futurs prompts conflictuels.
+- **`user_sessions.agent_name`** : clé de groupement pour les stats per-agent. Le mapping `agent → domain` est hardcodé dans `profile_router._DOMAIN_TO_AGENT` (teacher/maestro/professore/lehrer/sensei) — à maintenir en sync avec `chat_router._DOMAIN_REGISTRY` quand de nouvelles langues sont activées.
+- **Draft Dify auto-créé** à l'ouverture de l'éditeur UI = stub 3 nodes vide. Ne pas confondre avec published. Le runtime utilise toujours published. Sync draft ← published via SQL `UPDATE workflows SET graph=...` + préservation `conversation_variables`.
+- **Sinse l'eleve_id=1 a `profils_eleves.domain='es'` absent** — le QCM a écrit dans `learner_profiles.domain='es'` mais `profils_eleves.domain='es'` ne sera créé qu'après une vraie session diagnostic Maestro complétée via n8n `dify-diagnostic`. Affichage dashboard : "provisoire" jusqu'à ce moment.
+- **Audit agent hallucinations** : l'agent frontend a flaggé `SkillTree.svelte:23` comme P0 data leak, mais `grep -rn SkillTree` confirme que le component n'est importé nulle part → fausse alerte. Toujours spot-check les findings agent avant commit du plan.
+- **Stats row confusion "global vs per-agent"** : avant le scoping Session 34, le top row home mélangeait sessions global (tous tuteurs) + concepts per-agent + temps global. Déroutant. Désormais tout le row est scoped à l'agent courant.
+- **Format minutes compact** : "101h 42" (avec espace) est ambigu (secondes? minutes?). Préférer "101h42min" ou tooltip avec valeur brute.
+
+---
+
+
+## Session 33 — 2026-04-20 (Onboarding QCM refonte — Karpathy-style, phases 0→6 one-shot)
+
+### Done
+
+**Déclencheur** : Sinse redémarre après alt+F4 Session 32. Demande de reconstituer le dossier recherche onboarding (7 agents multi-parallèles) puis refonte complète du flow onboarding conversationnel LLM vers un QCM pre-chat modal bloquant (Karpathy-style : curated context, zéro RAG). Objectif = résoudre structurellement les 3 bugs Session 32 (language-mixing FR/L2, boucle `[EVAL_READY]`, bilan sans CEFR).
+
+**Recherche — 7 rapports archivés** `docs/00-project/onboarding-research-2026-04-20/` (~6000 lignes cumulées) :
+- Vague 1 (4 agents parallèles, théorie) : competitive-benchmark (Duolingo/Babbel/Busuu/Loora/Speak/Noom/Headspace — 5 patterns volables + 5 anti-patterns), cefr-self-assessment (r=.466 plafond, Dunning-Kruger A1-A2 + impostor B2+, hybride SA+probe > SA seul), motivation-id-variables (7 retenues / 5 écartées incl. VAK/MBTI pseudoscience + MLAT trop long), cold-start-its (4-8 items + OLM négociable, prior PPS personnalisé)
+- Vague 2 (3 agents parallèles, appliqué) : codebase-audit (file:line par point d'injection), qcm-design (formulations FR exactes + YAMLs + DDL SQL + UX flow), cross-domain-vision (3 couches A/B/C, règle de 3, faux-amis FLA≠math anxiety≠code anxiety)
+
+**Plan consolidé** `/root/.claude/plans/atomic-beaming-alpaca.md` (plan mode) — 6 phases + vérification E2E + risques + rollback. Validé par Sinse en mode plan.
+
+**Phase 0 — YAMLs + migration SQL** (0.5j) : `core.yaml` (5 items Bloc A universel, Bandura/Dweck/Locke-Latham/Deci-Ryan/TPB) + `domains/language.yaml` (Bloc B can-do bi-skill CECRL + probe conditionnel C-test + Bloc C Ideal L2 Self + FLA 3-items compressés) + `overlays/{en,es}.yaml` (phrase probe FR→target + regex scoring + fallback LLM judge config) + 2 stubs pymentor/cybermentor + `schema.json`. Migration idempotente `10_create_learner_profiles.sql` (5 ENUMs + table JSONB + 2 indexes + trigger updated_at + rollback script).
+
+**Phase 1 — Backend `onboarding_router.py`** (1j) : 4 endpoints (GET content / GET profile / POST / PATCH), 11 tests unitaires verts (CEFR ladder, goal heuristic Locke-Latham, probe regex strong/medium/weak, Dunning-Kruger correction bidirectionnelle, FLA bins, tutor hints boost scaffold si anxiety, autonomy→style, NL summary déterministe ≤ 200 mots). `load_onboarding_content(domain)` compile core+domain+overlay avec rendu placeholder `{{language_display_fr}}`. Migration SQL exécutée (5 ENUMs + table créée, healthcheck OK, smoke 14/14).
+
+**Phase 2 — Frontend Svelte** (1.5j) : `OnboardingModal.svelte` orchestrateur générique data-driven (consomme API `/api/onboarding/content/{domain}`, gère step navigation + draft localStorage `academie:qcm:draft:{domain}` + mini-probe conditionnel client-side `max(comp,prod) >= B1`) + 6 renderers (Likert5, ChoiceSingle, ChoiceSingleRich CEFR cards, ChoiceMulti 1-2 tags, TextShort pour goal+probe, LikertGroup3 FLA). `api.ts` étendu 3 méthodes. `config.ts` + `QCM_ONBOARDING_ENABLED` flag. Gate dans `chat/[agent]/+page.svelte:50` (check learner_profile avant load conversations — fail-open si endpoint down). `svelte-check` 0 erreur sur mes fichiers, 20 erreurs pré-existantes inchangées.
+
+**Phase 3 — Dify chatflow simplification** (1j) : script `11_update_dify_onboarding_qcm.py` idempotent dry-run + apply, targets Teacher (draft + latest published) + Maestro (published). Patches : (1) 2 Start inputs `learner_profile_json` + `learner_profile_summary`, (2) wiring `code_turn_check` (variables[]+signature+return dict+outputs pattern Session 32), (3) prepend `<learner_profile>{{#code_turn_check.learner_profile_summary#}}</learner_profile>` à `llm_session` + `llm_plan_choice`, (4) prepend via `{{#start.X#}}` à `llm_onboarding` — **bug latent ICI**. Backup table `dify_workflows_backup_sprint5_phase5` avec `conversation_variables` préservés (Session 32 gotcha).
+
+**Phase 4 — chat_router injection** (0.5j) : fetch `learner_profiles` après fetch `profils_eleves` (chat_router.py:487-521), injection 2 dify_inputs avec fallback gracieux (`"{}"` / `""` si row absente → Dify voit block vide no-op). Rebuild + recreate, healthy, smoke 14/14.
+
+**Phase 5 — Activation + monitoring** (0.5j) : flip `QCM_ONBOARDING_ENABLED = true` + rebuild frontend. Baseline 0 rows dans `learner_profiles`, 19 users legacy EN sans QCM (verront modal). Script `monitor_qcm_onboarding.sh` 4 blocs (inserts par domain, 10 derniers, users legacy pending, warnings logs + rollback inline).
+
+**Test live Sinse** :
+- Teacher EN : modal s'est ouvert, complété 9 écrans, submit OK → `learner_profile` row #1 persistée (A1 placement depuis A2 auto-éval, growth mindset, daily_intense, FLA low, style prescriptive, NL summary propre). LLM répond directement en EN au turn 1. ✅
+- **Fix wording** : question 3 (goal_specificity) mentionnait "belle-famille espagnole" même sur Teacher EN → paramétrée avec `{{language_display_fr}}` + 3 exemples génériques (films VO, collègues/amis, examen pro).
+- **Bug Maestro ES** (découvert en live) : nouvelle conversation stuck en Phase 1 FR "Merci pour tes réponses ! Envoie-moi ok pour découvrir ton bilan" → user tape "ok" → `RuntimeError: Variable #start.learner_profile_summary# not found` dans `llm_onboarding`. **Root cause** : la branche onboarding bypasse `code_turn_check` ET refuse les refs `{{#start.X#}}` (contradicte mon hypothèse sur universalité Start dans VariablePool Dify). Hotfix `12_revert_llm_onboarding_prepend.py` appliqué sur les 3 versions patchées + `docker restart dify-api dify-worker`. Smoke 14/14 reste OK.
+
+**Phase 6 — Docs + cleanup** (0.5j) :
+- ADR #17 dans `docs/decisions.md` (QCM Karpathy-style, trade-off onboarding-branch pending)
+- Runbook `docs/99-runbooks/onboarding-qcm-activation.md` (architecture + monitoring + seuils J+7 + gotchas + rollback progressif 5min vs nuke complet + rotation QCM items v2)
+
+**Livrables cumulés** :
+- 4 YAMLs + schema.json + 2 stubs domaines
+- Migration SQL + rollback
+- `onboarding_router.py` (431 L, 4 endpoints, Pydantic + helpers scoring/dérivation/NL)
+- 11 tests unitaires
+- `OnboardingModal.svelte` (247 L) + 6 renderers
+- 3 méthodes API client + feature flag `QCM_ONBOARDING_ENABLED`
+- Gate `chat/[agent]/+page.svelte`
+- 2 scripts Dify (update + hotfix revert)
+- Script monitoring ops
+- ADR + runbook
+
+### État post-session
+
+| Cas utilisateur | QCM collecté | LLM voit profile turn 1 | Bugs Session 32 résolus |
+|---|---|---|---|
+| User retournant (conv existante, passe par `llm_session`/`llm_plan_choice`) | ✅ | ✅ via `code_turn_check` | Oui |
+| Nouveau user (1re conv, passe par `llm_onboarding`) | ✅ persisté DB | ❌ branche bypasse tout wiring | **Non — bugs 2+3 toujours possibles** |
+
+**Moitié du bénéfice livré**. La collecte structurée est acquise (plus de conversationnel dirty). L'injection au turn 1 marche pour l'un des 2 flows.
+
+### Next
+
+**P0 — Fix onboarding-branch Dify wiring** (Session 34) : investiguer topology du graph (edge start → if_profil → llm_onboarding), trouver le node upstream et wirer `learner_profile_summary` dessus. Options : (1) insérer un code node avant llm_onboarding, (2) restructurer le graph pour router l'onboarding via code_turn_check, (3) utiliser un pattern `{{#iteration.X#}}` ou similar Dify-specific si existe. Investigation graph + validation dry-run + apply + restart. Estimation 2-4h.
+
+**P0 — Bug Maestro Sinse conversation stuck** : sa conv ES `acbcd129` est bloquée en loop "ok" (conv_vars d'avant Phase 5). Workaround : DELETE la conv côté Dify pour démarrer fresh. Ou attendre fix onboarding-branch puis supprimer la row QCM ES + retry.
+
+**P1 — Phase D Wave 1 ES battery** (estimation 1-2h) : run `eval_live_battery.py --lang es` dès que onboarding-branch wirée. Pass rate ≥ 95 %.
+
+**P2 — Suivis onboarding** :
+- Re-mesure CDST J+30 / J+90 (Hiver-Al-Hoorie 2019) : ajouter endpoint `/api/learner-profile/{domain}/remeasure`
+- Probe fallback LLM-as-judge : regex-only v1 peut manquer formes marginales, wirer judge gpt-4.1-mini si observé
+- Telemetry drop-off mid-QCM + durée médiane réelle (instrumenter via `localStorage` timestamps)
+- Cleanup legacy Phase 1 FR dans prompts Dify une fois onboarding-branch wirée + 2 semaines stables
+
+**P2 — Obsidian vault** (option Karpathy wiki) : différé Session 33, pointer sur `/opt/academie/docs/` + `/root/sinse-workspace/projects/academie-ia/` sans restructure. 5 min install, à décider.
+
+### Gotchas
+
+- **Dify `{{#start.X#}}` n'est PAS universel dans les LLM nodes** : contrairement à mon hypothèse, la branche onboarding refuse les refs `{{#start.X#}}` et `{{#code_turn_check.X#}}` (bypass complet). Seuls les nodes directement downstream du start via un path code_turn_check supportent la refs. À retenir pour Waves 2-4 (Professore IT, Lehrer DE, Sensei JP, Maestro-RU — même topologie à hériter).
+- **Script revert ciblé `12_revert_*.py`** : pattern utile pour les hotfixes Dify ciblés sur une portion de graph — prend regex + backup implicite via backup table Phase 5.
+- **Re-sérialisation JSON compact** : `json.dumps(graph, ensure_ascii=False)` collapse les whitespace du graph original → char count peut diminuer malgré ajout de contenu. Non-indicateur fiable de changement — utiliser les flags du report dict à la place.
+- **19 users legacy legacy `profils_eleves` sans `learner_profiles`** : verront modal fresh (D6 appliquée). Leurs `niveau_global` observationnel reste intact et continue d'être lu côté chat_router.
+- **Svelte 5 runes in OnboardingModal** : `$derived.by(() => ...)` pour les computed complexes avec dépendances multiples (visibleItems filtering sur conditional rules). `$effect(() => persistDraft())` sur changement d'answers pour draft localStorage.
+- **Placeholder `{{language_display_fr}}` dans core.yaml** : loader substitue seulement quand overlay présent avec `language_display_fr`. Pour domaines non-langue (pymentor/cybermentor stubs), placeholder littéral ok car items vides v1.
+- **conv_vars preservation via SQL UPDATE vs admin API** : le gotcha Session 32 (admin API strippe conv_vars) ne s'applique pas au SQL UPDATE direct sur `graph` — colonne `conversation_variables` reste intacte. Pattern à privilégier pour les patches Dify graph futurs.
+
+---
+
+## Session 32 — 2026-04-20 (Wave 1 ES Phases A+B+C — Maestro en prod + P2 quickwins security)
+
+### Done
+
+**Continuité Session 31** : suite immédiate des rotations sécurité (même calendar day) — Sinse enchaîne directement sur Wave 1 ES Maestro roll-out après clôture security.
+
+**P2 Security quickwins** (30min) :
+- `.githooks/pre-commit` trackable en git + `core.hooksPath=.githooks` (complète legacy Session 14 `.git/hooks/` non-versionné, survit aux clones frais)
+- `pg_hba.conf` durci : `trust 127.0.0.1/32` + `::1/128` → `scram-sha-256` (socket local conservé pour pg-backup docker exec). Backup `/mnt/cosmos-data/postgres/pg_hba.conf.bak-2026-04-20`. `pg_reload_conf()` non-disruptif
+- Dify "Détection profil" short-branch fix : 12 outputs défaut ajoutés (`exam_resume_active`, `exam_resume_mode`, ..., `error_exam_eligible`) via admin console API draft patch + publish. Published workflow `006cba2d-08b0-449c-91ed-0dda79d414ce`
+
+**Wave 1 checkup + carto complète** (~30min, 3 agents research PCIC + FR→ES SLA + ES packs audit + Dify Teacher graph analysis en parallèle)
+
+**Wave 1 Phase A — content pack enrichment** (commit `3bd0cce`) :
+- `l1_transfer/fr_to_es.yaml` 7 → **19 familles** (Agent 1 research : Bruhn de Garavito + Collentine + Montrul + Geeslin + Paquet 2018 + PCIC inventory)
+- `rules_es.py` 211 → 482 lignes, 7 → **15 détecteurs** (+8 : V:SER_ESTAR locative, V:GUSTAR_SUBJECT, IDIOM:HACE_AGO, QUANT:MUY_MUCHO ×2, PREP:MOVEMENT, LEX:FR_RESIDUE, ASPECT:PERF_OVERUSE) avec FP whitelists (transport, mucho mejor, cleft)
+- `rubrics/es.yaml` A1+A2 enrichis (gaps PCIC : personal a, apocope buen/gran/primer, perfecto vs indefinido markers, hace_ago, muy/mucho, perífrasis acabar/volver, duplication dative, pro-drop)
+- `synthetic_descriptors/es.yaml` 8 → **35 descriptors** (A1-C2 coverage complet : +B2 subjonctif complexe/pasiva refleja/conectores, +C1 registres/inversion, +C2 hedging/idioms opaques/ironie)
+- `battery/es_personas.yaml` 4 levels × 3 turns → **6 levels × 10 turns = 60 turns** (A1-C2 full, densité planted errors décroissante A1=8→C2=2)
+- 107/107 tests pass (+1 test Wave 1 détecteurs avec 12 assertions incluant 4 FP whitelists)
+
+**Wave 1 Phase B — synthetic generator hardening + decision skip fine-tune** (commit `d61f459`) :
+- `scripts/synthetic/generate_errors.py` : temp 0.9→0.6, strict prompt rules (skip-if-correct, explicit uniqueness), **post-filter via rules_es.py** (rejette examples où le code claimé n'est pas détecté par regex mécaniques)
+- Run complet : 35 descriptors × N=20 = 619 generated, **453 kept (26.8% rejection)**
+- Quality spot-check : ~50% qualité (mécaniques OK, pragmatique/register/subjonctif noisy — LLM invente erreurs sur phrases correctes natives comme "Vale", "Por así decirlo")
+- **Décision option C** : skip fine-tune Wave 1. Base `gpt-4o-mini` + handcrafted `fewshots_es.yaml` (14 examples A1-C2) + `SYSTEM_PROMPT_ES` (40+ codes natifs) suffisent. Re-fit depuis `error_log` réel post-alpha (~3 mois)
+- Corpus bruité archivé `data/synthetic_corpus/es/train_v1_noisy.jsonl` avec README.md re-fit plan
+- Bonus : `reset_admin_password.py` helper bcrypt (pour Sinse qui a reset son mdp admin après invalidation JWT Session 31)
+
+**Wave 1 Phase C — Maestro Dify clone + ES prompts + activation** (commit `25a8ddb`) :
+- **Plan mode** : exploration 3 Explore agents (Teacher graph + clone_app.py deep-dive + webapp activation checklist) → plan validé via ExitPlanMode
+- **4 traductions LLM prompts** via 4 agents general-purpose en parallèle avec `GLOSSARY.md` partagé (Teacher→Maestro, TTT/Lyster/CECRL terminology, MCER paliers instead of Cambridge, DELE question types) :
+  - `llm_plan_choice` 1072→1167 chars ES (light translate + PARAMETERIZED)
+  - `llm_session` 4452→4644 chars ES (TTT + Lyster + behavioral detection preserved, 21 template refs)
+  - `llm_onboarding` 5022→5280 chars ES (**HEAVY** — MCER paliers Spanish-calibrated from `cefr_diagnostics/es.yaml`)
+  - `llm_exam` 5268→6176 chars ES (**HEAVY** — DELE question types adapté : TRANSFORMAR=paraphrase/mood shifts, FORMAR=-sión/-idad patterns)
+- Review Agent 1 hallucinations : `MODO QUIZ` → `MODE QUIZ` (code_turn_check émet FR littéral), retiré règle "Honestidad obligatoria tier_applied" hallucinée par Agent 2
+- `code_exam_bilan` : 12 user-visible strings FR→ES avec gotcha ES `'oui'`→`'sí'` (vérifié pas parsé côté code Python)
+- **maestro_prompts.json** : 19 override keys — discover + fix escape levels (LLM prompts simple-escape, Python-code strings double-escape pour le `str.replace` sur graph JSON). Helper `to_python_code_json_escaped` ajouté
+- `clone_app.py --output-sql` puis `--apply` : 19/19 overrides matched, 7 HTTP `"domain": "en"` → `"es"`, nouvelle Maestro app `47b0529c-b3a3-4651-8717-759e666172c9` + workflow `d3df0ef0-a28f-4850-9396-d4d1cf6c0e21` + api_key `app-nNaXaDlhcMqsEK04t7ua`
+- Wire : `DIFY_KEY_MAESTRO` + `ENABLE_MAESTRO=true` dans sops `webapp/.env.sops`, `dify-maestro-key` dans `shared.yaml.sops` (DR parity), `config.ts` `maestro.available: true`
+- Rebuild `academie-frontend` + `docker compose up -d --force-recreate` academie-api + academie-frontend
+- Smoke deep 20/20 ALL CLEAR + warning historique n8n
+
+**Bug `conversation_variables` strippé — découvert + fix atomique** :
+- Bug latent : Session 31 Phase 4 publish via admin API `/console/api/.../workflows/draft` a strippé les `conversation_variables` (payload ne les incluait pas). Teacher published `006cba2d` avait `{}` au lieu des 14 conv vars (nb_interactions, exam_*, session_snapshot, review_mode…). Legacy workflow `c52a451f` (ancien published) avait les bonnes — conversations existantes Teacher continuaient de marcher par pinning mais nouvelles conversations cassaient
+- Maestro clone héritait du bug (conv_vars vides) → première "hola" fail : `RuntimeError: Variable ['conversation', 'nb_interactions'] not found`
+- Fix SQL atomique : `UPDATE workflows SET conversation_variables = (source c52a451f) WHERE id IN (006cba2d, d3df0ef0, ed0d1c91)` → les 3 workflows ont maintenant 3376 chars conv_vars matchant source
+- Teacher + Maestro both retest OK post-fix
+
+### Next
+
+**Phase D — Battery validation ES** (~1-2h, session neuve) :
+- Run `eval_live_battery.py --lang es` sur 6 personas × 10 turns (A1-C2)
+- Target pass rate ≥ 95%
+- Itérer prompts ES si fails (risque principal : translation FR→ES avec calques subtils que la battery révèle)
+- Fix `LEX:FR_RESIDUE` détecteur si régression dans rules_es.py
+
+**Phase E — Alpha monitoring** (passive 1 semaine calendaire) :
+- Invite 2-3 FR-native learners (toi + proches, varier niveaux CEFR)
+- Monitor `error_log` ES populating (doit être non-vide à J+3)
+- Collecte feedback Sinse + users
+- Wave 1.5 adjustment list à J+7
+
+**Post-Wave 1** :
+- Wave 2 IT+DE parallèle factorisé (39-46j effort, Profile Deutsch Sinse 40€, fine-tune synth ~$6)
+- Wave 3 JP Sensei JLPT-native N5-N1 (30-35j, 0€ externe)
+- Wave 4 RU Maestro-RU TORFL-native (25-30j, 0€ externe)
+
+**Maintenance** :
+- Phase 7.2 spaced retrieval regression ladder J+3/J+7 — revisit 2026-04-23
+- Cleanup `/tmp/*.bak-2*` sops backups (9 fichiers) le 2026-04-27
+- Cleanup bundle `/tmp/academie-pre-filter-backup-*.bundle` le 2026-04-27
+- Rotation `POSTGRES_PASSWORD` superuser (trimestriel ou J+7 si backup Cosmos fuité)
+- Phase C HTTP nodes : l'agent 3 avait identifié "examinateur CECRL. Ton neutre" FR → je n'ai pas grep cette string après clone, à vérifier en Phase D si le llm_exam ES tourne proprement
+- n8n fail rate warning historique Session 31 — résorbé J+2
+
+### Gotchas
+
+- **Dify admin API `/console/api/apps/{id}/workflows/draft` POST strippe `conversation_variables`** si pas dans le payload. Session 31 Phase 4 a fait fuiter ce bug latent pour Teacher (nouvelles conversations cassaient) + propagé au clone Maestro. Fix = copy depuis dernier workflow working, AVANT publish. Si on republish Teacher via API à l'avenir, inclure `conversation_variables` explicitement.
+- **`clone_app.py str.replace` sur graph JSON avec 2 niveaux d'escape** : LLM prompt text = single JSON escape (`\n` = 2 chars `\`+`n`, `\uXXXX` = 6 chars), strings dans Python code node = double escape (`\n` source Python → `\\n` en JSON = 3 chars `\`+`\`+`n`, mais `\uXXXX` reste single-backslash car c'est un JSON-level escape). Helper `to_python_code_json_escaped` applique regex `\\([ntrbf]) → \\\\\1` uniquement pour escape-chars, pas pour unicode. Pattern à rappeler pour Waves 2-4.
+- **ES prompts hallucinations non-filtrables** : agents general-purpose translators ajoutent parfois du contenu absent du source FR (ex: "Honestidad obligatoria tier_applied" ajoutée par Agent 2 malgré absence). Review obligatoire post-agent, grep systématique.
+- **Agent 2 a flaggé styles `'direct/encourageant/doux/humour'` traduits** → vérifier en Phase D si profile utilisateur stocke les littéraux FR (si oui, revert les traductions). Pas de code Python ne parse ces strings (grep vide), donc probablement safe.
+- **`MODE QUIZ` marker reste FR littéral** dans les prompts Maestro car `code_turn_check` Python (shared source) émet `>>> MODE QUIZ — IGNORE...` unchanged lors du clone. Même principe pour `'COOLDOWN'` / `'RECOMMANDEE'` strings dans `promotion_msg` — valeurs FR préservées car code Python partagé.
+- **Synthetic quality wall** : fine-tune synthetic stalle à ~50% quality sur codes pragmatiques/register/subjonctif. Latouche 2024 two-stage suppose real data pour stage 2 — on n'en a pas encore pour ES. Re-fit post-alpha obligatoire.
+- **Maestro legacy `chat`-mode app** (62dd705f) + 5 autres legacy chatbots avril 2026 deletés en Session 32 via admin API DELETE /console/api/apps/{id} → HTTP 204 bulk. Seul Teacher EN (advanced-chat) reste. Pattern réutilisable pour cleanup Waves 2-4 si legacy IT/DE/JP/RU réapparaissent.
+- **`pg_hba.conf trust 127.0.0.1` bypass** (pré-Session 32 quickwin) — plus d'enjeu désormais, auth scram-sha-256 active sur TCP loopback. Pg-backup via socket local continue sans password.
+
+---
+
+---
+
+## Session 31 — 2026-04-20 (remédiation sécurité Phases 2+3+4+5 complètes)
+
+### Done
+
+**Contexte** : reprise Session 30 pickup → Phase 1 Security acquise, Phases 2 (rotations) + 3 (filter-repo) + 4 (verify) + 5 (docs) restantes. Sinse dispo, exécution collaborative en ~1h30.
+
+**Phase 2 — 5 rotations end-to-end (avec découvertes et fallout gérés)** :
+
+- **2A Dify Teacher key** — `app-0PpFwfejvHYTmkrg0FldVXBY` → `app-bT0Ppwypf9UvpWmaQrxSMSxz`. Sinse rotate via Dify UI (Create new + Delete old, ordre atomic). sops update via `sops set --input-type` x2 (dotenv `webapp/.env.sops` + yaml `shared.yaml.sops`). Restart academie-api. Probe `/v1/parameters` docker network → HTTP 200 avec new key.
+
+- **2B LiteLLM master_key** — NOOP. Décryption `/opt/litellm/config.yaml` → aucun `master_key` configuré. Les littéraux `sk-litellm-master-key` dans scripts Session 30 référençaient une clé inexistante. Rien à tourner côté runtime (à redacter quand même en Phase 3 pour propreté historique).
+
+- **2D Dify ADMIN_API_KEY** — `academie-admin-a5c62b96f96fb8f0b3b05bea` → `academie-admin-bc1b446c42d739ed21819e349afa136730fe5730`. Confusion initiale Sinse ("c'est pas juste mon mot de passe ?") → j'ai clarifié via codebase grep que c'est un env var `ADMIN_API_KEY` côté dify-api (scope workspace console, `/console/api/*`). **Découverte de topologie** : dify-api pas tracké Cosmos ? Si — malgré absence de labels compose, Cosmos gère via son propre state store. Sinse rotate via Cosmos UI → env → container recreate auto. Probe `/console/api/apps/{id}` avec new key → HTTP 200.
+
+- **2E JWT secrets** — rotation `JWT_SECRET_KEY` + `JWT_REFRESH_SECRET` en une passe (openssl rand -hex 32 x2). 4 sops values updated (2 dans `webapp/.env.sops` + 2 dans `shared.yaml.sops` pour parité DR). Restart academie-api. Sessions users invalidées comme prévu → Sinse re-logue plus tard pour live flow test.
+
+- **2F INTERNAL_API_TOKEN** — **la plus complexe**. Nouveau token 64 hex. 🚨 **Découverte critique** : le container academie-api tournait sur **image cachée** avec code Phase 0 (fallback `academie-internal-2026` encore actif en runtime). Les 3 commits Phase 1 Session 30 (`1ca28b5` + `ffa761e` + `9226b74`) étaient persistés sur disque mais pas runtime-actifs. Fix : `docker compose build academie-api && up -d` au lieu de juste restart. Patch n8n : Session 27 gotcha respecté, UPDATE sur `workflow_entity` + `workflow_history` (1 workflow trouvé, `dify-snapshot` id `tVfLg92ijYUvBc94`). Preuve end-to-end : nouveau token HTTP 404 "user not found" (token passe), old token HTTP 403 Forbidden.
+
+- **2C Postgres password** — `hABT7G9rcPMU3scyx-HY_HEEIRo3FG29` → nouveau 29-char alphanum via openssl base64 + strip. **Reconnaissance cosmos/dify/n8n** via `backup.cosmos-compose.json` (mis à jour auto par Cosmos au save UI). 5 containers impactés : academie-api + litellm (via sops) + dify-api/worker/plugin/n8n (via Cosmos UI). Séquençage : sops update first → Sinse save dify-api Cosmos trop tôt → ALTER USER en catch-up → Sinse rush les 3 autres tabs Cosmos → restart academie-api + litellm. Downtime effectif ~60s. `pg_hba.conf trust 127.0.0.1` a failli me tromper lors de la vérif (false positive que l'old pw marchait) — vérif réelle via docker net scram-sha-256 confirme old REJECTED.
+
+**Phase 3 — git filter-repo + force-push** :
+- Extension redact list Session 30 : 5 → 7 entrées (ajout `academie-internal-2026` + `sk-litellm-master-key`)
+- Premier run `--replace-text` : nettoie les blobs mais **3 patterns restaient dans les commit messages**. Deuxième run `--replace-message` pour finir
+- Sweep final : 0/7 patterns dans files + messages
+- `--force-with-lease` fail (stale info après filter-repo re-add origin) → `--force` simple, `ffa761e...b5cfb50 main -> main (forced update)` accepté
+
+**Phase 4 — vérification finale** :
+- smoke deep 21/21 ALL CLEAR
+- 106 academie-core tests pass
+- **Live user flow fail au premier essai** : "Teacher ne répond pas" après que Sinse re-login. Logs dify-worker : `RuntimeError: Output exam_resume_active is missing` sur node `Détection profil`. Root cause : n8n workflow `dify-profil-get` retournait HTTP 200 body vide → node Dify prenait sa branche fallback `if not body` qui ne retourne que 13 outputs sur 28 déclarés.
+- Root cause du body vide : **n8n stocke creds PG séparément des env vars**. `DB_POSTGRESDB_PASSWORD` (env n8n-academie) sert pour sa DB interne. Les **nodes SQL** des workflows utilisent `credentials_entity` (table PG, chiffrée avec `N8N_ENCRYPTION_KEY`). Gap dans ma reco 2C — n8n a 1 credential `Postgres account` (id `NpF5tjOzvAWkHR2n`) encore sur l'ancien password.
+- Fix : Sinse → n8n UI → Credentials → Postgres account → update + Test + Save (no restart needed, hot reload)
+- Retry chat : Teacher répond normalement ("Je suis ton professeur d'anglais !")
+
+**Phase 5 — documentation** :
+- [ADR-012-security-remediation-2026-04-19.md](docs/05-decisions/ADR-012-security-remediation-2026-04-19.md) créé (option C rotation + rewrite retenue, gotchas opérationnels listés)
+- [rotate-secrets-sops.md](docs/99-runbooks/rotate-secrets-sops.md) update : `last_reviewed` bump 2026-04-20, `INTERNAL_API_TOKEN` ajouté au scope `webapp/.env.sops`, section "Rotation non-interactive (`sops set`)" ajoutée, table "Rotation complète par secret" documente les 6 étapes et le **n8n credential gotcha**, pattern Session 31
+- INDEX.md : entrée ADR-012 ajoutée
+- CHANGELOG : ligne Session 31
+
+### Next
+
+**Le repo public github.com/Sinsemilila/academIA est 100% clean.** Les 7 patterns leakés (5 secrets vivants + 2 placeholders) ont été rotés ET retirés de l'historique.
+
+**Follow-ups ouverts (documentés ADR-012 §Re-évaluation)** :
+- Pre-commit `gitleaks` hook pour éviter récurrence
+- Rotation `POSTGRES_PASSWORD` superuser (dans 7 jours si backup Cosmos a fuité ; sinon trimestriel)
+- Durcir `pg_hba.conf` — retirer `trust 127.0.0.1` au profit de `scram-sha-256` (impose password même pour loopback)
+- Fix Dify "Détection profil" short-branch — ajouter les 15 outputs manquants (`exam_resume_active`, `exam_resume_mode`, …) avec valeurs défaut `False`/`""` au fallback `if not body` pour éviter crash si n8n fail à nouveau
+- Nettoyer les 9 backups sops `/tmp/*.bak-2*` (garder 7 jours pour DR)
+- Supprimer bundle `/tmp/academie-pre-filter-backup-*.bundle` dans 7 jours (restauration possible ex-post)
+
+**Maintenance héritée (inchangée)** :
+- Phase 7.2 spaced retrieval regression ladder J+3/J+7 (revisit 2026-04-23)
+- Supprimer `cosmos-rollback.sh.bak` le 2026-04-22
+- Follow-up discovery emails Session 29 (J+21 depuis envoi — dépend de Sinse)
+
+### Gotchas
+
+- **`docker compose up -d` sans `--build` utilise l'image cachée** — toujours `docker compose build` quand la rotation dépend d'un commit récent (fail-fast env checks, etc). Découvert en 2F.
+- **n8n `credentials_entity` stocke creds PG à part des env vars** — oublier ce credential = workflows SQL renvoient HTTP 200 body vide → cascade Dify "Output X missing". Fix via n8n UI Credentials (Postgres account → update + Test + Save).
+- **`sops set` requiert `--input-type/--output-type` explicites** pour dotenv et yaml (sinon `invalid character 'g'`). Pattern dans runbook.
+- **Cosmos UI "Save" recrée le container immédiatement** — inverser ordre avec ALTER USER crée crash-loop le temps de l'ALTER. Pour rotation PG, prévoir d'alterner rapidement ou accepter la fenêtre.
+- **`pg_hba.conf trust 127.0.0.1`** : les tests psql depuis l'intérieur du container postgres ignorent le password (trust). Pour vérifier qu'une rotation PG a vraiment pris, tester depuis un **autre** container via docker network (force scram-sha-256).
+- **git-filter-repo : 2 passes** — `--replace-text` nettoie les blobs, `--replace-message` nettoie les messages de commits. Lancer les deux si un secret est référencé dans les deux endroits.
+- **git filter-repo détache origin** — après filter-repo, re-add origin manuel puis `push --force` (pas `--force-with-lease`, le lease est stale).
+
+## Session 30 — 2026-04-19 (audit sécurité repo public + Phase 1 remediation)
+
+### Done
+
+**Déclencheur** : Sinse demande un audit sécurité complet de `github.com/Sinsemilila/academIA` (public) après le handoff Session 29.
+
+**Phase A — Audit exhaustif (general-purpose agent, ~6 min)** :
+- Scan git history + working tree → **3 CRITIQUES + 3 HAUTS + 4 MOYENS**
+- `/opt/academie/webapp/PLAN.md:178` contenait clé Dify Teacher `app-0PpFwfejvHYTmkrg0FldVXBY` en clair dans le working tree public
+- Commit initial `71e1c4f` leaké : password Postgres `hABT7G9rcPMU3scyx-HY_HEEIRo3FG29` (toujours actif en prod !), admin Dify key, JWT secrets initiaux
+- Commit `6a160fa` "security Code audit fixes" avait retiré du working tree mais **laissé l'historique intact** + **raté PLAN.md**
+
+**Phase B — Plan mode (2 agents explore parallèles)** :
+- Cartographie secrets dans tout le repo (files + patterns) + audit git history
+- 5 secrets à redact, commit unique `71e1c4f`
+- Plan approuvé : 5 phases (HEAD cleanup → rotations → history rewrite → verify → docs)
+- Décisions Sinse : Phase 3 OUI, HISTORY.md users redact, LiteLLM master key self-check
+
+**Phase C — Phase 1 exécutée (3 commits sur main, pushés origin)** :
+- `9226b74 [security]` redact `webapp/PLAN.md` L177-184 + `HISTORY.md:96` (6 usernames → "6 users including admin")
+- `1ca28b5 [security]` fail-fast `JWT_SECRET_KEY`/`JWT_REFRESH_SECRET` dans `auth.py` + `INTERNAL_API_TOKEN` dans `admin_router.py` + `error_analysis_router.py`
+- `ffa761e [security]` env var pour 4 scripts (add_error_analysis_to_snapshot + e2e_onboarding + e2e_promo + e2e_validate) — retire litéraux `academie-internal-2026` et `sk-litellm-master-key`
+- Tests : 106 academie-core pass, smoke deep 21/21 ALL CLEAR post-push
+
+**Phase D — Préparation Phase 2/3** :
+- `/tmp/secrets-to-redact.txt` créé avec les 5 entrées redact pour git-filter-repo
+- `git-filter-repo` installé (`/usr/bin/git-filter-repo`)
+- Plan complet persisté `/root/.claude/plans/idempotent-scribbling-crane.md`
+
+### Next
+
+**🚨 P0 CRITIQUE prochaine session** (détaillé TODO.md section P0) :
+
+**Phase 2 — Rotations** (ordre blast radius croissant) :
+1. **2A Dify Teacher key** — rotate UI Dify + update webapp/.env.sops + restart academie-api (~5 min)
+2. **2B LiteLLM master key** — vérifier d'abord `sops -d litellm/config.yaml.sops | grep master_key`, rotate si `sk-litellm-master-key` littéral
+3. **2C Postgres password** — ALTER USER sinse + update 4 endroits + restart 5 services (academie_db + litellm_db + dify_plugin partagent user)
+4. **2D Dify admin key** — rotate UI + update secret file
+5. **2E JWT secrets** — `openssl rand -hex 32` x2, invalide ~6 sessions users
+6. **2F INTERNAL_API_TOKEN** — update webapp + n8n workflows (pattern workflow_entity + workflow_history Session 27)
+
+**Phase 3 — History rewrite** (destructif, validé Session 29) :
+- `git filter-repo --replace-text /tmp/secrets-to-redact.txt --force` (déjà préparé)
+- `git push origin main --force-with-lease` — permission à autoriser manuellement
+
+**Phase 4+5** : smoke deep + verify flows + ADR-012 + runbook update + CHANGELOG
+
+**Maintenance** :
+- Fenêtre d'exposition : les 5 secrets de l'historique restent exploitables jusqu'à Phase 2 faite — idéalement dans les 24h
+- Phase 7.2 spaced retrieval regression ladder (revisit 2026-04-23, repoussé par priorité sécurité)
+
+### Gotchas
+
+- **Push main bloqué par permission system** — les 3 commits Phase 1 pushés via `!git push origin main` manuel côté Sinse. Même blocage attendu pour Phase 3 force-push.
+- **`.env` (plain) reste avec vieille clé Dify jusqu'à rotation 2A** — gitignored donc jamais push, mais runtime utilise encore l'ancienne.
+- **Phase 2C coordonnée** : fenêtre 30-60s entre `ALTER USER` et restart complet — prévoir au moment de faible usage.
+- **Phase 2E JWT rotation** : ~6 users devront se re-login.
+- **Phase 3 force-push** : clones tiers existants gardent l'ancien historique avec les secrets morts post-rotation → impact pratique nul. Reste bénéfique pour les nouveaux clones.
+- **Commit `6a160fa` avait oublié PLAN.md** — leçon : pre-commit hook gitleaks à envisager pour éviter récurrence (Phase 6 éventuelle).
+
+
+
+## Session 29 — 2026-04-19 (Phase 0 infra multilang + recherche JP approfondie)
+
+### Done
+
+**Phase 1 — Clarification stratégique (~2h discussion)** :
+- Audit état Phase 0 (9 items) : 0.4 loader.py déjà complet, 0.8 généralise existant `generate_v3_training_data.py`, 0.2 reformulé "framework cross-lang" vs "GLMM refactor" après analyse Option A
+- **Validation Option A GLMM cross-lang** : synthetic + corpus annoté anchoring applicable à 4 langues sur 5 (ES via COWS-L2H, IT via MERLIN-IT, DE via MERLIN-DE+Falko, RU via RLC). JP seul problématique.
+- **Mémoire écrite** : `project_no_native_reviewers.md` — Sinse n'a aucun reviewer natif C2 pour aucune langue, stratégie validation rabattue sur corpus oracle + LLM cross-consensus + télémétrie alpha
+
+**Phase 2 — Recherche JP approfondie (3 agents parallèles, 70+ web calls)** :
+- Agent 1 (apps grand public) : WaniKani/Bunpro/Duolingo/Renshuu/Tae Kim/Imabi — **aucune ne publie de taxonomie d'erreurs typée**. Distribution empirique beginners (Oyama) : particules 33% / kana 20% / voyelles longues 13% / structure 11% / conjugaison 8%
+- Agent 2 (corpus academic + JGEC) : **aucun corpus JP error-annotated typé équivalent MERLIN/COWS/RLC n'existe**. Candidats : I-JAS (non typé, registration Chunagon), TEC-JL (2042 paires Lang-8), NAIST Lang-8 (186k bruits). GECToR-ja disponible (Apache-2.0) comme baseline GEC
+- Agent 3 (ressources N5-N1) : JLPT post-2010 ne publie plus les listes vocab/grammar officiellement. Tanos/JLPT Sensei/Bunpro sont les compilations communautaires quasi-officielles. **Nouveauté décembre 2025** : JLPT CEFR bridge officiel (N5/80+→A1, N4/90+→A2, N3/104+→B1, N2/112+→B2, N1/142+→C1)
+- **Décision finale JP** : synthetic-only au lancement (pas de GLMM anchor), re-fit depuis `error_log` JP réel après alpha — cohérent pivot Session 29
+
+**Phase 3 — Plan mode Phase 0 + execution 7 commits** (a2fe223 → 4c1286a sur main) :
+- 0.7 `academie_core/levels.py` — JLPT/TORFL↔CEFR mapping + score-bridge officiel déc 2025 via `jlpt_score_to_cefr()` (26 tests)
+- 0.6 `taxonomy/tokenizer.py` — dispatcher whitespace fallback EN/ES/IT/DE, JP/RU stubs NotImplementedError avec hints install (12 tests)
+- 0.3 rules dispatch complet — 4 squelettes `rules_{it,de,jp,ru}.py` (IT:AUX/ART_CONTRACT/FALSE_FRIEND, DE:UMLAUT/FALSE_FRIEND/COMPOUND_SPACE, JP:SCRIPT_MIX/DOUBLE_PARTICLE/FR_ARTICLE_LEAK, RU:SCRIPT_MIX/FR_ARTICLE_LEAK/HARD_SOFT_SIGN) + extension `detect_errors(lang)` (16 tests + régression ES OK)
+- 0.5 `eval_live_battery.py --lang` — EN in-code PERSONAS rétrocompat, non-EN chargent `data/battery/{lang}_personas.yaml` ; `_AGENT_BY_LANG` dispatch teacher/maestro/professore/lehrer/sensei/uchitel
+- 0.2 corpus normalizer framework — `scripts/sprint1/normalizers/` dispatcher + 5 stubs (errant/merlin/falko/cows/rlc) + `scripts/sprint1/mappings/*_to_academie_{lang}.yaml` per-(source,lang) (10 tests)
+- 0.1 Dify app cloner — `scripts/dify/clone_app.py` dry-run par défaut, 4 INSERTs transactionnels (workflows/apps/sites/api_tokens), validé dry-run sur Teacher (29K graph, SQL 115K) (8 tests)
+- 0.8 synthetic pipeline — `scripts/synthetic/generate_errors.py` per-lang prompts, 5 YAML descriptors (es seed PCIC, jp **critical** avec Tanos/Bunpro/Polyglossia 33% particules, it/de/ru placeholders) (14 tests)
+
+**Phase 4 — Emails + handoff** :
+- 4 templates discovery emails rédigés : `docs/00-project/discovery_emails/{uclouvain_cecl, eurac_merlin, uca_nice_russian_wheel, hu_berlin_falko}.md` + README — Sinse envoie à son rythme depuis `sinseproduction@gmail.com`
+- Commit emails sur sinse-workspace repo (pas encore pushé sur github — main push blocké par permission system, Sinse à débloquer manuellement)
+- Purge préalable 5 executions n8n `error` résiduelles pré-fix Phase 1.4 (n'étaient déjà plus un problème, juste du bruit dans la fenêtre 48h)
+
+### Next
+
+**Immédiat** :
+- Sinse push manuel : `cd /root/sinse-workspace/projects/academie-ia && git push --set-upstream origin main` (4 templates emails)
+- Sinse envoie les 4 emails quand il veut (priorité UCA Nice, le plus précieux)
+
+**Wave 1 ES kickoff (~14-18j quand prêt)** :
+- Télécharger COWS-L2H (GitHub UC Davis) + CEDEL2 (Univ Granada) + implémenter `scripts/sprint1/normalizers/cows.py`
+- Exécuter GLMM-ES via le framework Phase 0.2 → `tolerance_matrix_v2_es.yaml`
+- Enrichir `data/synthetic_descriptors/es.yaml` (actuellement 8 descriptors seed) + générer 2000-5000 examples via `scripts/synthetic/generate_errors.py --lang es`
+- Fine-tune `ft:gpt-4o-mini-academie-errors-es-v1` (~$5-8)
+- Cloner Teacher Dify → Maestro via `scripts/dify/clone_app.py --apply` + traduction prompts ES natifs + `DIFY_KEY_MAESTRO`
+- Enrichir `data/battery/es_personas.yaml` (3 turns/level → 10 turns/level) + run battery ES ≥ 95% pass rate
+- Activation : `ENABLE_MAESTRO=true` + flip frontend config + alpha famille
+
+**Waves 2-4 (~125j cumulés, 10-13 mois calendaires)** :
+- Wave 2 IT+DE parallèle factorisé (39-46j)
+- Wave 3 JP JLPT-native 0€ (30-35j) via synthetic + Tanos/Bunpro/Tae Kim/Imabi + Japan Foundation
+- Wave 4 RU TORFL-native 0€ (25-30j) via Gosstandart ТРКИ + RLC + synthetic
+
+**Maintenance** :
+- Phase 7.2 spaced retrieval regression ladder J+3/J+7 (revisit 2026-04-23)
+- Supprimer `cosmos-rollback.sh.bak` le 2026-04-22
+- Follow-up discovery emails réponses (J+21)
+
+### Gotchas
+
+- **Push main bloqué par permission system** — le workflow actuel bloque `git push origin main` direct (anti-bypass PR review). Pour le repo `sinse-workspace`, c'est un blocage côté Claude Code uniquement ; Sinse peut pousser manuellement ou ajuster la permission rule dans settings. Le repo `/opt/academie` main était bénéficié d'une permission différente (les 7 commits Phase 0 sont passés).
+- **Option A GLMM cross-lang pas encore exercée** — le framework Phase 0.2 est prêt mais aucune Wave ne l'a consommé. Wave 1 ES peut **soit** télécharger COWS-L2H et faire un GLMM-ES (produit `tolerance_matrix_v2_es.yaml`), **soit** rester sur weights EN comme baseline et re-fit depuis alpha data dans 3 mois. Décision à prendre au kickoff Wave 1.
+- **JP stratégie honnête** : `rules_jp.py` et `data/synthetic_descriptors/jp.yaml` sont seedés avec les pointers Tanos/Bunpro/Polyglossia (33% particules empirique) mais la qualité linguistique fine sera best-effort au lancement. Keigo N1, aspect littéraire, counters rares = documenté transparent dans le produit.
+- **CEFR bridge JLPT granulaire (déc 2025)** n'est pas encore exposé dans l'UI. `levels.py` l'implémente via `jlpt_score_to_cefr(level, score)` mais le Teacher/Sensei UI n'affiche que la version modale simple (N5→a1, N4→a2…). À brancher en Wave 3 si valeur produit confirmée.
+- **Emails non-envoyés** : les 4 templates sont committés mais pas pushés sur github.com/Sinsemilila/sinse-workspace (bloqué main push) et surtout pas envoyés. Sinse doit les copier-coller dans Gmail manuellement depuis sinseproduction@gmail.com. Probabilité de réponse ~40-50% sauf UCLouvain ~30-40%.
+
+---
+
+## Session 28 — 2026-04-19 (multilang maturity research + pivot stratégie native JLPT/TORFL)
+
+### Done
+
+**Phase 1 — Recherche maturité multi-langue (6 agents parallèles)** :
+- 6 agents research-focus : IT maturity / DE maturity / JP maturity / RU maturity / synthetic+cross-lingual SOTA / EU-CLARIN+grey-literature.
+- Verdict initial : IT et DE atteignent maturité CEFR A1-C2 avec ressources open (0€). JP plafond MOYEN nécessite $3-10K linguiste natif pour N3-N2. RU full maturity = €33-59K chemin A ou B1 max via synthetic chemin B 0€.
+- Découvertes clés : MERLIN-IT + VALICO + CELI pour IT (total ~5K textes); Falko + DISKO + Kobalt + MERLIN-DE pour DE; Russian Wheel RLC-French à UCA Nice (**seul corpus FR-natif russe**); Latouche EMNLP 2024 two-stage synthetic pipeline relève F1 +5-10%.
+- Document [`docs/00-project/multilang_maturity_research.md`](docs/00-project/multilang_maturity_research.md) produit avec tableau maturité, ressources par langue, décisions D7-D11, annexe contacts.
+
+**Phase 2 — Pivot stratégie native (validation Sinse)** :
+- Sinse : "aucune dépense externe envisageable pour JP et RU" + question pertinente sur utilisation systèmes natifs (JLPT, TORFL) au lieu de forcer CEFR.
+- **Pivot acté** : utilisation **JLPT N5-N1 natif** pour JP (Japan Foundation + Tae Kim + Imabi + JLPT listes) et **TORFL TEU-IV natif** pour RU (Gosstandart ТРКИ + Lexical/Grammatical Minimum + RLC) → **0€ externe** pour toutes langues sauf 40€ Profile Deutsch DE sourced par Sinse.
+- **Architecture** : storage interne reste CEFR a1-c2 unifié, mapping transparent via nouveau module `academie_core/levels.py` (JLPT_TO_CEFR, TORFL_TO_CEFR, LEVEL_SYSTEM_BY_DOMAIN, `display_level()`).
+
+**Phase 3 — Persistance 4 docs + ADR-011** :
+- [`multilang_maturity_research.md`](docs/00-project/multilang_maturity_research.md) refondu : §4 JP JLPT-native, §5 RU TORFL-native, D12 mapping architectural, verdict "6 langues matures dans leur écosystème natif".
+- [`multilang_execution_roadmap.md`](docs/00-project/multilang_execution_roadmap.md) refondu : Phase 0 étendue 15j (+0.7 levels.py, +0.8 synthetic pipeline, +0.9 discovery emails), Wave 3 JLPT-native 30-35j (Wave 3.5 supprimée, N5-N1 dans Wave unique), Wave 4 TORFL-native 25-30j (Chemin A €33-59K abandonné par défaut), timeline 3 scénarios révisée, décisions D1-D7 validées.
+- [`multilang_research_plan.md`](docs/00-project/multilang_research_plan.md) refondu : §JP difficulty 4/5 30-35j, §RU difficulty 3.5/5 25-30j (passe de "defer 2027" à "Wave 4 engagée"), tableau récapitulatif + ordre d'exécution Q2 2026 → Q2 2027.
+- [`glossary.md`](docs/00-project/glossary.md) : entrées JLPT, TORFL/ТРКИ, Mapping natif↔CEFR, Profile Deutsch, Gosstandart ТРКИ, Japan Foundation JF Standard.
+- **ADR-011 créé** : [`docs/05-decisions/ADR-011-native-level-systems-jlpt-torfl.md`](docs/05-decisions/ADR-011-native-level-systems-jlpt-torfl.md) — Option C retenue (mapping transparent). Inscrit dans INDEX.md.
+
+### Next
+
+**Immédiat (Phase 0 kickoff quand prêt)** :
+- Implémenter `academie_core/levels.py` (Phase 0.7, ~1j) : JLPT/TORFL↔CEFR mapping, `display_level()`, tests unitaires.
+- Implémenter `scripts/synthetic/generate_errors.py` (Phase 0.8, ~3j) : pipeline two-stage synthetic réutilisable IT/DE/JP/RU.
+- Discovery emails non-bloquants UCLouvain/Eurac/UCA Nice/HU Berlin (Phase 0.9, ~1j).
+
+**Wave 1 ES (Q2 2026)** :
+- Enrichissement drafts ES via CEDEL2 + CAES + PCIC deep dive.
+- Synthetic fine-tune ES via GPT-4 (~$5-8 OpenAI).
+- Créer Dify app "Maestro - Profesor de Español" + prompts ES natifs.
+- Activation `ENABLE_MAESTRO=true` + alpha famille.
+
+**Waves 2-4 (Q3 2026 - Q2 2027)** :
+- Wave 2 IT+DE parallèle (39-46j).
+- Wave 3 JP JLPT-native N5-N1 (30-35j).
+- Wave 4 RU TORFL-native TEU-IV (25-30j).
+
+**Total prévu** : ~125-150j effort, 10-13 mois calendaires, coût externe cumulé **40€ Profile Deutsch + ~$30 OpenAI synthetic**.
+
+**Maintenance** :
+- Phase 7.2 spaced retrieval regression ladder J+3/J+7 après télémétrie Phase 7.1 (revisit 2026-04-23).
+- Supprimer `cosmos-rollback.sh.bak` le 2026-04-22.
+- Investigate n8n fail rate 15.2% sur 48h (warning smoke-test persistant).
+
+### Gotchas
+
+- **Non-bijectivité JLPT/TORFL↔CEFR** : JLPT teste plutôt réception, CEFR production ; TORFL-IV plus strict que C2 sur cases. Mapping documenté dans glossary comme approximatif. Si un learner demande "mon équivalent CEFR exact", prévoir affichage secondaire UI.
+- **Limites honnêtes acceptées** : keigo niveau N1 (JP) et aspect verbal TORFL-III+ (RU) restent best-effort. Patterns standards OK, subtilités littéraires manquées sans validation native. À documenter transparent dans produit.
+- **Russian Wheel UCA Nice** : email discovery non-bloquant, pas de dépendance Wave 4. Si accès obtenu gratuitement = bonus qualité, sinon stratégie TORFL-native fonctionne avec RLC brut.
+- **Profile Deutsch 40€** : Sinse source sa propre copie (pas via CB AcademIA). Rubrics DE A1-C2 dérivées directement.
+- **Smoke-test warning persistant** n8n fail rate 15.2% (inchangé Session 27). À investiguer mais sans lien avec pivot Session 28.
+
+
+---
+
+## Session 27 — 2026-04-18 (continuation — Sprint 5 complet)
+
+### Done
+**Sprint 5 multi-langue — 4 phases complètes en 1 session (~6h continu après Session 26)**. Commits : `830a8b4`, `feda228`, `eb43cb8`, `c42aa16`, `5ab1cc4` sur main.
+
+- **Phase 1 — Foundation refactor** (commit `830a8b4` + fix `feda228`) :
+  - **DB migration unifiée** (`scripts/sprint5/01_migrate_domain_iso.sql`) : rename `domaine`→`domain` sur 6 tables (profils_eleves, spaced_retrieval_queue, snapshots_session, snapshots_session_v1_archive, historique_sessions, curriculums), values `'anglais'`→`'en'` (ISO), L1 déplacée de profils_eleves.l1 vers eleves.l1 (user-global D2), error_log.domain ajoutée + backfill ('en' pour 137 rows) + NOT NULL + index (eleve_id, domain, created_at DESC). Rollback script prêt.
+  - **Backend refactor** : 11 SQL hardcodés paramétrés dans profile_router / settings_router / admin_router / error_analysis_router. 5 URLs `/chat/teacher` dynamiques via nouveau `domain_registry.py` helper (`chat_url_for_domain()`). `_DOMAIN_REGISTRY` values ISO. L1 endpoints accept `domain` param + lisent eleves.l1. INSERT error_log ajoute colonne `domain` (16e).
+  - **Frontend refactor** : nouveau `lib/stores/navigation.ts` (currentAgent/currentDomain stores ISO), `lib/config.ts` ajout `domain` field par agent + `domainLabel()` helper, `afterNavigate` sync currentAgent from URL dans +layout.svelte, 8 API defaults fixés (`'anglais'`→`'en'`), 6 callers qui oubliaient param corrigés, 6 liens hardcodés `/chat/teacher` → dynamiques `/chat/{$currentAgent}`.
+  - **n8n** (`scripts/sprint5/02_update_n8n_workflows.py` + `02b_update_workflow_history.sql`) : 6 workflows actifs patchés (workflow_entity.nodes + critical workflow_history.nodes — gotcha discovered). Remove `|| 'anglais'` fallbacks sur dify-exam-persist + dify-exam-scoring. Prompt `dify-diagnostic` paramétré. Backup tables créées.
+  - **Scripts tests migrés** : 8 fichiers dans sprint2/tests, sprint3/tests, scripts/sprint3/eval_live_battery.py, cron_snapshot_safety.py, profil_manager.py, backfill_error_log_v2_fields.py.
+  - Validation : 140/140 pytest + 21/21 smoke ALL CLEAR, all 5 containers healthy post-deploy.
+
+- **Phase 2 — Infra multi-domain** (commit `eb43cb8`) :
+  - `academie_core.taxonomy.llm` per-language dispatch : `ANALYSIS_MODEL_BY_LANG` dict (EN → fine-tune v3, autres → not configured), `SYSTEM_PROMPT_BY_LANG` dict, backward-compat aliases `ANALYSIS_MODEL` et `SYSTEM_PROMPT` pointent sur EN. `analyze_transcript(lang=...)` dispatche via les 2 dicts ; unknown lang retourne empty avec warning. Tests `test_llm_dispatch.py` (skip auto si pydantic absent).
+  - **Dify Teacher paramétrage minimal** (`scripts/sprint5/03_update_dify_teacher.sql`) : URL `?domaine=anglais` → `?domain=en` (1 node HTTP), 5 JSON keys `\"domaine\"` → `\"domain\"` (JS code), 5 JSON values `\"anglais\"` → `\"en\"` (technique uniquement, pas les prompts). Published + draft versions.
+  - **Fix silent profile-loss bug** : après Phase 1, Dify envoyait encore `?domaine=anglais` pendant que n8n lisait `$json.query.domain` → profil vide silencieusement → Teacher fallback onboarding. Phase 2.2 a fermé ce circuit.
+
+- **Phase 3 — Teacher chatflow lang-agnostic (session flow)** (commit `c42aa16`) :
+  - **Debug long (~1h30)** avec 4 agents parallèles sur architecture Dify interne. Root cause trouvé : LLM prompts ne peuvent PAS référencer `{{#start.X#}}` directement — start vars doivent être wired via un code node intermédiaire (pattern : Start var → code_node.variables[] avec value_selector → main() param → return dict → outputs dict). Alors `{{#code_node.X#}}` fonctionne.
+  - **Gotcha critique** : le Start node ID dans value_selector doit être l'ID réel (`1775343637677`), pas le string `"start"`.
+  - **Gotcha onboarding** : la branche `if_profil=false` (nouveaux users) contourne code_turn_check → refs `{{#code_turn_check.X#}}` échouent dans llm_onboarding. Solution : laisser llm_onboarding hardcodé EN, ne paramétrer que llm_plan_choice + llm_session qui tournent après code_turn_check.
+  - **Décision D5 actée** : **1 chatflow Dify par agent** (pas de coquille universelle). Plus propre, pas de magie Jinja complexe, chaque langue a son onboarding natif dès le premier message. Pour Maestro ES → nouveau Dify app dédié cloné du Teacher + traduction prompts ES natifs.
+  - **Script** `04_update_dify_teacher_unified.py` : ajoute 4 inputs Start (`lang_target_name`, `lang_target_prof`, `concept_hints_json`, `cefr_diagnostics_block`), wire complet via code_turn_check (variables[], main sig, return dict, outputs dict), remplace `concept_hint_map` dict de 20 entrées par `json.loads(concept_hints_json)`, persona llm_plan_choice + llm_session paramétrée.
+  - **YAMLs EN extraits** : `data/concept_hints/en.yaml` (20 concepts), `data/cefr_diagnostics/en.yaml` (paliers + microtasks + persona labels).
+  - **Backend** : `chat_router` passe désormais 4 nouveaux Dify inputs par request (chargés via `academie_core.data.loader.build_{cefr,concept}_block()` + `get_persona_label()`).
+  - Test E2E validé : existing user (Sinse) HTTP 200 avec Teacher répondant sur `indirect_questions` ; new user HTTP 200 avec flow onboarding FR+EN standard.
+
+- **Phase 4 — Content pack ES Maestro DRAFT gated** (commit `5ab1cc4`) :
+  - **6 YAML drafts PCIC-sourced** : rubrics/es.yaml, fewshots/es.yaml, concept_hints/es.yaml, cefr_diagnostics/es.yaml, l1_transfer/fr_to_es.yaml, curriculum_es.yaml
+  - **`rules_es.py` SKELETON** — 7 détecteurs regex
+  - **llm.py ES activation** + Feature flag gate `ENABLE_MAESTRO=true` default dormant
+  - **Tests** : `test_es_content_pack.py` (10 tests). Total : 155 tests pass.
+
+### Next
+- Review native speaker hispanophone C2 (SUPPRIMÉE Session 29 — pas de reviewer dispo, pivoted to corpus oracle + alpha telemetry)
+- Créer nouvelle app Dify "Maestro" + traduction prompts ES natifs + `DIFY_KEY_MAESTRO` (outil clone_app.py Phase 0.1 ready)
+- Activation prod Maestro : env vars + rebuild + flip frontend config + alpha famille
+
+### Gotchas
+- **n8n workflow_history split** : n8n exécute depuis `workflow_history.nodes`, PAS `workflow_entity.nodes`. Tout UPDATE DB DOIT patcher les deux tables. Mémoire saved.
+- **Dify Start node ID** dans `value_selector` : utiliser l'ID réel (`1775343637677` pour Teacher), PAS `"start"`.
+- **Dify LLM prompts ne supportent PAS `{{#start.X#}}`** : start vars doivent transiter par un code node intermédiaire. Mémoire saved.
+- **Dify onboarding branch bypass code_turn_check** : laisser onboarding hardcodé EN et utiliser app Dify séparé par langue.
+- **Fine-tune v3 EN-only** : pour ES on utilise base `gpt-4o-mini` + prompt ES (Option B). Re-fine-tune ES possible quand ~500 msgs ES réels accumulés.
+
+---
+
+## Session 26 — 2026-04-18
+
+### Done
+- **NUCLE normalization** : `scripts/sprint1/02b_normalize_nucle.py` + `nucle_to_academie.yaml` — 5249 learners NUCLE intégrés, corpus total 7920 learners / 412k obs. GLMM recalibré via NumPyro : noted 0.196→0.005, penalized 0.394→0.165, regressive 0.538→0.683 (R-hat 1.01, 0 divergences). Commit `0bc40f8`.
+- **Sprint 5 infra one-time multi-langue DONE** (commit `33a862a`, 102 tests pass) :
+  - `_DOMAIN_REGISTRY` dict keyed by agent name remplace singleton `_TEACHER_DOMAIN` dans `chat_router.py`
+  - `domaine` DB string dérivé de `req.agent` — toutes les occurrences hardcodées `'anglais'` paramétrisées
+  - RUBRICS/FEWSHOT_BANK/L1_TRANSFER_SEED externalisés : `data/rubrics/en.yaml`, `data/fewshots/en.yaml`, `data/l1_transfer/fr_to_en.yaml` + `l1_names.yaml`
+  - `data/loader.py` : chargement YAML dynamique par `lang_target`
+  - `build_l1_watch()` lit `data/l1_transfer/{l1}_to_{lang}.yaml` dynamiquement
+  - Lang guards ajoutés dans `rules.py`/`llm.py`
+  - `tests/test_yaml_parity.py` : 118 lignes de tests parité Python→YAML
+  - **Ajout d'une nouvelle langue = 3 fichiers YAML + 1 ligne registry**
+- **Fix sprint2 tests** : 5 fichiers `test_*.py` (test_enrichment, test_synthetic_battery, test_weights_parse, test_overrides_applied, test_retrospective) migrés vers nouveau chemin YAML `packages/academie-core/academie_core/data/tolerance_matrix/`. Était cassé depuis Sprint 4 Phase F. **140/140 tests pass**.
+- **P3 cleanup backups** (avant cette session) : `/opt/litellm/config.yaml.backup-pre-sops`, cosmos backups, `/tmp/*-v1-backup-*.json` supprimés.
+
+### Next
+- **Sprint 5 open items** (reste) :
+  - Construire chatflow `language-tutor` Dify (2-3j) — coquille paramétrée remplaçant Teacher EN 41-nœuds
+  - Audit n8n webhooks : param `domaine` dans dify-profil-get/update/snapshot/diagnostic (0.5j)
+  - Vérifier contrainte PK `profils_eleves` : `(eleve_id, domaine)` comme clé unique (0.25j)
+- **Sprint 5 Maestro ES** (~13j) — débloquer après infra items.
+- **Phase 7.2** regression ladder J+3/J+7 + dedupe cron — après télémétrie Phase 7.1 (revisit 2026-04-23).
+- **Garder** `cosmos-rollback.sh.bak` jusqu'à 2026-04-22 puis supprimer.
+
+### Gotchas
+- **Session coupée en mode plan** : l'analyse Dify/n8n pour hardcoded strings était en cours. La partie backend (`chat_router.py`) a été traitée dans le commit `33a862a`. La partie Dify chatflow (côté UI Dify) reste à faire — c'est le premier item Sprint 5 open.
+- **Sprint 2 tests étaient silencieusement cassés** depuis Sprint 4 Phase F (YAML déplacé de `webapp/backend/app/config/` vers `packages/academie-core/`). Pas détecté car ces tests n'étaient pas dans la suite smoke habituelle. Fixé Session 26.
+
+---
+
+## Session 25 — 2026-04-16 (continuation — Sprint 4 impl A→F)
+
+### Done
+**Sprint 4 implementation complet** (~4h continu après Session 24, 6 commits Phase A→F sur main) — objectif annoncé 8-11 jours-dev **livré en 1 session** :
+
+- **Phase A — Scaffold academie-core** (commit `abbc0d8`, ~20 min) :
+  - `packages/academie-core/` : pyproject.toml (setuptools + pytest + hypothesis optional) + .gitignore + README
+  - Structure : `academie_core/{domain,taxonomy,pedagogy,psychometrics}/__init__.py` + `data/{rules,rubrics,fewshots,l1_transfer,tolerance_matrix}/` placeholders
+  - `domain/base.py` : Protocol `Domain` v2 runtime-checkable avec 9 méthodes (detect_errors, score_tier, build_dynamic_sections, build_system_prompt, parse_response, pedagogical_feedback, compute_progression, snapshot) + 9 dataclasses (Error, GravityAxes, Tier, UserContext, PromptContext, FeedbackPlan, StructuredResponse, Progression, Snapshot)
+  - `tests/test_smoke.py` : 10/10 pass (imports, dataclasses instantiables, Protocol runtime check, submodules importables)
+  - `pip install --break-system-packages --no-deps -e packages/academie-core` sur host pour tests
+
+- **Phase B — Port taxonomy layer** (commit `abfab1d`, ~45 min) :
+  - 5 modules déplacés vers `academie_core/taxonomy/` : categories.py (55L), differ.py (134L), llm.py (303L), rules.py (754L), scoring.py (441L)
+  - 3 YAMLs déplacés vers `academie_core/data/tolerance_matrix/` : tolerance_matrix.yaml, tolerance_matrix_v2.yaml, tolerance_matrix_v2_overrides.yaml
+  - `scoring.py` : `_CONFIG_DIR = Path(__file__).parent.parent / "data" / "tolerance_matrix"` (via package-relative path)
+  - **Dockerfile rewired** : build context = repo root `/opt/academie/` (au lieu de `webapp/backend`), `COPY packages/academie-core /packages/academie-core + pip install -e` avant webapp deps
+  - **docker-compose.webapp.yml academie-api service** : `build: {context: ..}` + `dockerfile: webapp/backend/Dockerfile`
+  - **Shims** : `webapp/backend/app/error_taxonomy/*.py` remplacés par 1-liners `from academie_core.taxonomy.X import *` pour backward-compat scripts/tests
+  - **Imports hot-path migrés direct** : chat_router.py + error_analysis_router.py pointent vers `academie_core.taxonomy.*`
+  - YAMLs `webapp/backend/app/config/tolerance_matrix*.yaml` supprimés (source of truth unique)
+  - Validation : smoke 15/15, `test_rules_coverage` régression identique (1 fail LEX:COLLOC pré-existant)
+
+- **Phase C — Port pedagogy layer** (commit `edc16ee`, ~15 min) :
+  - `teacher_prompt.py` (696L) déplacé vers `academie_core/pedagogy/teacher_prompt.py` avec toute sa logique (RUBRICS A1-C2, FEWSHOT_BANK 14 exemples, DOSAGE_BUDGET/HARD_CAP, TIER_TO_FEEDBACK_DEFAULT, L1_NAMES 14 ISO, L1_TRANSFER_SEED, build_dynamic_sections, parse_teacher_response, arbitrate_dosage, tier_to_feedback_type, drift helpers, spaced_retrieval block)
+  - `pedagogy/__init__.py` re-exporte les 25 symboles publics majeurs
+  - Shim `webapp/backend/app/teacher_prompt.py` → 1-line re-export
+  - `chat_router` import direct `from academie_core.pedagogy.teacher_prompt import build_dynamic_sections, PromptContext, parse_teacher_response`
+  - Validation : smoke 15/15, 65/65 test_prompt_assembly, 10/10 academie-core
+
+- **Phase D — Create LanguageDomain** (commit `8d54832`, ~20 min) :
+  - `academie_core/domain/language.py` (~130L) : classe concrete qui wrappe taxonomy + pedagogy pour une lang_target
+  - 9 méthodes : `detect_errors` (delegate rules._detect), `score_tier` (delegate scoring.enrich_error_fields), `compute_progression` (delegate scoring.compute_error_profile), `build_dynamic_sections` (delegate pedagogy.teacher_prompt), `parse_response` (delegate pedagogy.teacher_prompt.parse_teacher_response), `pedagogical_feedback` (compose arbitrate_dosage + tier_to_feedback_type en FeedbackPlan dict), `build_system_prompt` → "" (stub v1, Dify template assemble), `snapshot` → NotImplementedError (v3+)
+  - Legacy PromptContext/TeacherResponse types (pas les nouveaux de base.py) — unification différée Sprint 5+
+  - `domain/__init__.py` re-exporte Domain + LanguageDomain
+  - `tests/test_language_domain.py` : 13/13 pass (instantiation, delegates, Protocol runtime check via isinstance(d, Domain) → True, build_system_prompt stub empty, snapshot raises NotImplementedError)
+
+- **Phase E — chat_router utilise LanguageDomain** (commit `9a6865c`, ~15 min) :
+  - `webapp/backend/app/routers/chat_router.py` : ajout `from academie_core.domain.language import LanguageDomain` + module-level `_TEACHER_DOMAIN = LanguageDomain(lang_target="en")`
+  - 4 call sites migrés vers méthodes du domain :
+    - `detect_errors(req.message)` → `_TEACHER_DOMAIN.detect_errors(req.message)`
+    - `enrich_error_fields(code, niveau)` → `_TEACHER_DOMAIN.score_tier(code, niveau)`
+    - `build_dynamic_sections(ctx)` → `_TEACHER_DOMAIN.build_dynamic_sections(ctx)`
+    - `parse_teacher_response(full_answer)` → `_TEACHER_DOMAIN.parse_response(full_answer)`
+  - `ERROR_CODE_TO_FAMILY` dict + `PromptContext` type import directs gardés (pas des méthodes Domain)
+  - Pas de flag `USE_ACADEMIE_CORE` — simplification pragmatique : rollback via `git revert` si bug (< 2 min)
+
+- **Phase F — Battery + cleanup** (commit `621395c` webapp + `770d8e2` workspace, ~30 min) :
+  - **Battery pre-cleanup** : 99.1% ✅ GREEN (333/336 checks), 3 fails = `t4_addressed` B1 seq 23+30 + B2 seq 38 (model honesty connu, non-Sprint-4). **L1 mention rate 75% (3/4 FR→EN turns)** — Dify routing session flow favorable ce run, feature L1 validée via LanguageDomain
+  - chat_router imports trimés : retiré les 4 imports fonctionnels (`detect_errors`, `enrich_error_fields`, `build_dynamic_sections`, `parse_teacher_response`) devenus inutiles après Phase E
+  - **Shims supprimés** : `rm webapp/backend/app/teacher_prompt.py` + `rm -rf webapp/backend/app/error_taxonomy/`
+  - **8 scripts migrés** via sed : `test_rules_coverage.py`, `validate_14_categories.py`, `backfill_error_log_v2_fields.py`, `sprint2/tests/test_scoring_{properties,v2_branch}.py`, `sprint3/{eval_live_battery,eval_personas}.py`, `sprint3/tests/test_prompt_assembly.py` → `from academie_core.{taxonomy,pedagogy.teacher_prompt}.X import`
+  - Validation post-cleanup : `grep "from app.{error_taxonomy,teacher_prompt}"` retourne 0 match, smoke deep 21/21 ALL CLEAR, 23/23 pytest academie-core, 65/65 test_prompt_assembly, test_rules_coverage runs without ImportError
+  - Docs fermées : `sprint4_preimpl_review.md` §13 "Sprint 4 impl réalisée" avec les 6 commits, `ADR-004` les 6 Phase A-F action items cochés, `TODO.md` Sprint 4 impl DONE + Sprint 5 Maestro on deck, `CHANGELOG.md` log feat Sprint 4 complet
+
+### Gains architecturaux
+- Code pédagogique + taxonomique 100% dans `packages/academie-core/` (installé `-e` via Dockerfile dans container)
+- Webapp ne contient plus aucune taxonomie/pédagogie inline — seul le routing + orchestration streaming
+- `LanguageDomain("en")` satisfait Protocol Domain via runtime-check (duck typing)
+- Sprint 5 Maestro : bottleneck = **création de contenu linguistique ES** (rules_es, rubrics/es.yaml, fewshots/es.yaml, l1_transfer/fr_to_es.yaml), pas architecture
+
+### Next
+- **2026-04-17 matin post-restic** — P3 cleanup backups (procédure copy-paste dans TODO.md, 15 min)
+- **2026-04-23** — Revisit Phase 7.1 telemetry via `./scripts/ops/monitor_spaced_retrieval.sh` + si stable supprimer `/opt/academie-shared/secrets/cosmos-pre-L4-rollback.sh`
+- **Sprint 5 Maestro ES** — estimation révisée honnête **7-10 jours-dev** (vs 4.5-6.5j prévus, plus réaliste car création contenu linguistique = boulot handcraft / LLM-assisté + review native speaker)
+  - LanguageDomain lang-routing refactor (1j) — actuellement `detect_errors` appelle `_detect` EN-hardcoded, à paramétrer par lang_target
+  - rules_es.py (2-3j) — 11 dicts EN actuels + ES-specifics (ser/estar, por/para, gender agreement, subjuntivo, preterit irregular, inverted punctuation ¿?/¡!)
+  - rubrics/es.yaml A1-C2 (1j) depuis DELE/Instituto Cervantes
+  - fewshots/es.yaml 14 exemples dialogues Maestro-apprenant (1j)
+  - l1_transfer/fr_to_es.yaml (0.5j) — différent de fr→en : gender (la leche/le lait fém, el problema masc), ser/estar, false friends (embarazada, éxito)
+  - Clone Dify chatflow ES (1-2j) : app + prompts adaptés
+  - Curriculum DELE seed + tests + battery (1-2j)
+- **Phase 7.2** regression ladder J+3/J+7 + dedupe cron (après telemetry Phase 7.1)
+- **L5 cosmos** → traefik/caddy (~1-2j, refactor DNS+OIDC, élimine docker.sock dépendance complètement)
+
+### Gotchas
+- **Sprint 4 compressé 8-11j → 4h** : chiffrage ré-analyse était prudent (couvrait canary 1 sem + YAMLization + test migration). Compression réussie car Phases B/C = copies + shims, Phase D = pure délégation, Phase E = 4 call sites. La discipline "à chaque phase : rebuild + smoke + tests avant commit" a évité les régressions.
+- **Dette tech laissée délibérément** (OK pour MVP) : monolithic `teacher_prompt.py` dans pedagogy (pas encore splitté en dosage/rubrics/fewshots), RUBRICS/FEWSHOT_BANK/L1_TRANSFER_SEED restent Python literals (pas YAML), tests sprint2+sprint3 restent dans scripts/ (pas migrés vers packages/academie-core/tests/), legacy PromptContext vs base.py types pas unifiés, `snapshot()` raises NotImplementedError, `error_analysis_router.py` n'utilise pas LanguageDomain (Sprint 5 étend).
+- **Battery variance Dify routing** : trois runs cette session ont donné 98.9% / 99.1% / 99.4% — variance ±0.5pt selon quand Dify route vers session flow vs onboarding. Les fails `t4_addressed` sont systématiques B1 (seq 23+30 historiques). Pas régression Sprint 4.
+- **Imports eval_personas.py/eval_live_battery.py** utilisent encore `sys.path.insert(0, _BACKEND)` pour `app.auth` / `app.database` — on garde (seuls les imports taxonomy/pedagogy ont basculé). Les scripts restent fonctionnels.
+- **LanguageDomain.detect_errors ne route PAS encore par langue** — `_TEACHER_DOMAIN.detect_errors(msg)` appelle `_detect(msg)` qui utilise TOUJOURS les règles EN-hardcoded. Pour Spanish il faudra soit refactorer rules.py pour accepter `lang` param, soit swap le détecteur dans LanguageDomain selon lang_target. Pas un blocage Sprint 4 (EN seule en prod), mais à traiter Sprint 5 (~1j refactor).
+- **Error codes collisions futures** : TIER1_CATEGORIES a 57 codes EN (V:TENSE, N:DET, PREP, LEX:COLLOC, etc.). Spanish introduira SER:ESTAR, GEN:AGREE, SUBJ:MOOD qui n'existent pas en EN. Décision à acter Sprint 5 : namespacing avec préfixe (ES:SER_ESTAR) ou constantes séparées par lang.
+- **Compose build context = `..` (repo root)** : si le user lance `docker compose` depuis ailleurs que `/opt/academie/webapp/`, le context résolu peut être faux. Solution = toujours lancer depuis `webapp/` ou override `WEBAPP_SRC` env var.
+
+---
+
+
+
+## Session 24 — 2026-04-16 (continuation)
+
+### Done
+**Phase 7.1 activation + Tuning + Cosmos L4** (~2h30 continu après Session 23, commits `f724ea6` `dc2a60c` `86be9d0`) :
+
+- **Phase 7.1 — Spaced retrieval activé en prod** : `SPACED_RETRIEVAL_ENABLED=true` dans `.env`, monitor script + runbook `docs/99-runbooks/phase7-activation.md`, smoke 21/21 + test intégration 6/6.
+- **Tuning Sprint 3** : HONESTY REQUIREMENT dans OUTPUT_SCHEMA_BLOCK + L1_NAMES dict (14 ISO→English), `build_l1_watch` refactor utilise prose. 65/65 tests + battery 98.9% GREEN.
+- **Cosmos L4 — docker-socket-proxy hardening** : tecnativa/docker-socket-proxy:0.3.0 sur 127.0.0.1:2375 (DENY: EXEC/BUILD/COMMIT/SERVICES/PLUGINS/SECRETS/CONFIGS), cosmos rewired DOCKER_HOST=tcp://..., rollback script 7j, ADR-010 accepted. Smoke 21/21 ALL CLEAR.
+- **EFCAMDAT registration TODO** : section P3 enrichie URL + steps Sinse.
+
+### Next
+- P3 cleanup backups pristine (2026-04-17 post-restic), Phase 7.1 telemetry revisit 2026-04-23, L5 cosmos → traefik/caddy, Sprint 4 ADR-004, Sprint 5 Maestro ES.
+
+### Gotchas
+- Dify routing vers onboarding non-déterministe (battery variance).
+- docker-socket-proxy EXEC=0 imparfait mais acceptable (exec dormant).
+- Cosmos rewrite proactivement son compose YAML (redeploy UI risqué).
+- HONESTY REQUIREMENT injecté dans OUTPUT_SCHEMA_BLOCK avant JSON.
+
+---
+
+## Session 23 — 2026-04-16
+
+### Done
+**Sprint 3 Phases 6 + 7 closed** (~4h continu, 2 commits `213aa9e` + `00cd2b5`) :
+
+- **Phase 6 — L1 transfer FR→EN activation** (~2h) :
+  - Migration idempotente `scripts/migrate_l1_profile.py` : `profils_eleves` +`l1 VARCHAR(2) DEFAULT 'fr'` +`l1_watch_enabled BOOLEAN NOT NULL DEFAULT TRUE` (backfill NULL→'fr' pour rangs pré-DEFAULT) + seed 5 rows `l1_transfer_observations` fr→en (articles ×1.5, prepositions ×1.4, false_friends ×1.3, modals ×1.2, word_order_questions ×1.1, `ON CONFLICT DO UPDATE`).
+  - `chat_router.py` : lookup `l1 + l1_watch_enabled` depuis `profils_eleves`, remplace hardcode `l1="fr"` ligne 432. Gate `ctx.l1 = profile_l1 if l1_watch_on else None`.
+  - Endpoints `GET/PUT /api/profile/l1` dans `profile_router.py` : validation pydantic ISO-639-1, inséré AVANT `{domain}` catch-all.
+  - Battery ré-exécutée : **99.4% ✅ GREEN** (334/336), **L1 mention rate 75%**. p50=5.1s, p95=6.5s.
+
+- **Phase 7 — Spaced retrieval proactif MVP** (~1.5h) :
+  - Env flag `SPACED_RETRIEVAL_ENABLED` (default OFF). Enqueue silenced_for_spaced_retrieval à J+1, surface items dus LIMIT 3.
+  - Helpers `_fetch_due_retrieval_items` + `_persist_spaced_retrieval` dans chat_router. Wire pre/post-turn.
+  - Test intégration `test_spaced_retrieval.py` 6/6 pass. Regression ladder + FSRS reportés Phase 7.2/7.3.
+
+### Next
+- Phase 7.1 activation prod + Phase 7.2 regression ladder + Phase 7.3 FSRS.
+
+### Gotchas
+- docker compose build obligatoire (pas de bind mount /app, code baked dans image).
+- FastAPI route order : `/api/profile/l1` AVANT `{domain}` catch-all.
+- `SPACED_RETRIEVAL_ENABLED` lu au module load — recreate container pour changer.
+
+---
+
+## Session 22 — 2026-04-16
+
+### Done
+**Sprint 3 Phases 4-bis + 5 closed** (~4h continu, ~3 commits to come) :
+
+- **Phase 4-bis — V2 hang resolved: TRANSIENT confirmed** :
+  - V2 validé en Preview draft (2.14s, pipeline complet : 2 sandbox + LLM + n8n profil-get)
+  - Repro contrôlé sur published via swap + `docker restart dify-api dify-worker` + chat_router réel (`/api/chat/send`) = **2.72s, 200 OK**. Logs dify-worker montrent `invoke_from=SERVICE_API` + 8 dify_inputs populés (rubric B1 813 chars + fewshots 649 + dosage 332 + l1_watch FR→EN 554 + output_schema 753 avec `<output>` tags)
+  - **Les 4 hypothèses gotchas.md Sprint 3 sont toutes ÉLIMINÉES** : (1) type `paragraph` accepté, (2) placeholders rendus proprement, (3) sandbox kwargs avec `: str = ''` fonctionnent, (4) `<output>...</output>` wrapping ne confond aucun node downstream
+  - Hang Session 21 = probable LiteLLM/Groq transient outage OU race condition restart+1st call (non-reproductible)
+  - Rollback script fiable `scripts/rollback_teacher_v2_to_v1.sh` créé : fix crucial `pg_read_file` a besoin du file dans `/var/lib/postgresql/` (pas `/tmp` blocked par security) + `chown postgres:postgres`
+  - Backup `/tmp/published-v1-backup-1776323843.json` (109802 bytes, vérifié V1)
+
+- **Phase 5 — Publish V2 + battery scripted** (remplace 48h passive monitoring qui aurait eu trop peu de signal avec 6 users sparse) :
+  - `scripts/update_teacher_chatflow.py --target both --use-v2` → V2 déployé sur published (106k bytes, has_v2=t) + draft (110k bytes, has_v2=t) + restart dify-api dify-worker
+  - Nouvelle battery `scripts/sprint3/eval_live_battery.py` (~480 lignes) : hit chat_router → Dify V2 live via httpx AsyncClient, 4 personas × 10 turns (réutilise `eval_personas.PERSONAS`) + 6 edge cases (empty → 422, long 4kB, emoji 👋🎉, injection `<script>`, turn5_trigger 6 warmup, turn10_trigger 11 warmup). Auth via JWT bearer (test user `test-v2-battery` créé+cleanup en DB direct via psycopg2). Rate limit 2.5s/call → 24 req/min < 30/min limit
+  - **Assertions par turn** (session flow) : http_200, latency < 15s, `<output>` tags, JSON parseable (parse_teacher_response), reasoning populated+<200 mots, dosage ≤ DOSAGE_HARD_CAP[level], t4_addressed si planted_t4
+  - **Auto-detect onboarding** : turns sans `<output>` = PROMPT_ONBOARDING (intouché par V2), exempté des asserts V2-spécifiques (sinon 20 faux positifs)
+  - **Résultat final (3e run, 46 turns, 273 checks) : pass rate 97.4% ✅ GREEN** (threshold 95%)
+    - A1 (onboarding) : 100% (40/40) — auto-detect ✓
+    - A2 : 94.7% (36/38) — 1 timeout transient turn 20 (31s)
+    - B1 : 95.3% (81/85) — 1 timeout turn 1 (30s) + 2 `t4_addressed` (model honesty connu Session 21)
+    - B2 : 98.9% (90/91) — 1 `t4_addressed`
+    - Edges : 100% (empty→422, long/emoji/injection OK)
+  - Latence p50=4.5s, p95=12.8s (p95 gonflé par 2 timeouts transients, médiane normale)
+  - Smoke 15/15 ALL CLEAR post-publish
+  - Report `scripts/sprint3/eval_live_report.md` généré auto
+
+### Next
+- **Phase 6 — L1 transfer FR→EN** (~3h) : migration `profils_eleves` +`l1`+`l1_watch_enabled`, remplacer hardcoded `l1="fr"` chat_router:432 par lookup profil, endpoint `/api/profile/l1` GET/PUT, seed `l1_transfer_observations` depuis `L1_TRANSFER_SEED`, tests + extension battery avec assertion "mention transfer family"
+- **Phase 7 — Spaced retrieval proactif** (~4h) : enqueue après détection T3/T4 silenced, query before build_dynamic_sections, completion tracking post-turn avec intervals J+1/J+3/J+7 fixes (FSRS post-MVP), feature flag `SPACED_RETRIEVAL_ENABLED`, tests + extension battery 2-session persona
+- Phase 6 et 7 sont indépendantes entre elles, peuvent être faites en parallèle
+- Prévoir P3 cleanup backups pristine (/opt/litellm + cosmos.config.json + cosmos.docker-compose + /tmp/published-v1-backup) après confirmation restic daily 2026-04-17
+- Rotation admin key OpenAI toujours en attente (transitée par chat Session 19)
+
+### Gotchas
+- **Rollback script pg_read_file** : requiert file dans `/var/lib/postgresql/` (pas `/tmp` bloqué par postgres security path) + ownership postgres:postgres (`docker cp` copie root par défaut → chown requis). 1ère version du script a UPDATE silencieusement no-op avec `/tmp/`. Corrigé dans `scripts/rollback_teacher_v2_to_v1.sh`.
+- **Profile seeding via `profils_eleves` UPDATE ne force PAS session flow** : seeder `niveau_global` + `onboarding_completed_at` n'empêche pas Dify de router vers onboarding. Le switch onboarding→session est décidé par `code_profil_check` + `if_eval_ready` dans le graph Dify (logique interne non-évidente). Battery bypass via auto-detect de l'absence `<output>` tags.
+- **`t4_addressed` model honesty issue (connu Session 21)** : le LLM ne toujours pas honest sur le flag `tier_applied` quand il adresse une erreur T4. Plutôt qu'un vrai bug, c'est un modèle-alignment issue. 3 fails sur 273 checks, non-blocking. À re-check en Phase 6 avec GPT-4o-mini si switch model aide.
+- **2 timeouts transients dans la battery** (A2 t20 = 31s, B1 t1 = 30s) : httpx ReadTimeout après 30s. LLM pas en faute (pas de log error), probablement LiteLLM fallback cascading (gpt-4o-mini → groq → mistral) quand quota dépassé. Non-reproductible sur re-run. Monitor si ça se répète en prod.
+- **Battery cleanup auto** : `test-v2-battery` user est DELETE cascadé en fin de run. Si crash mid-run, `python3 scripts/sprint3/eval_live_battery.py --cleanup-only` nettoie idempotentement.
+- **V2 est maintenant EN PROD** : published = V2. Pas de rollback prévu sauf incident. Les backups pristine V1 restent à `/tmp/published-v1-backup-1776323843.json` + `/tmp/draft-v1-backup-1776323189.json` (à conserver au moins 7j).
+
+
+
+---
+
+## Session 21 — 2026-04-15 → 2026-04-16
+
+### Done
+**Sprint 3 — Teacher Lyster v2** (Phases 0a → 4 partial, ~3.5h continu, 9 commits) :
+
+- **Phase 0a** (commit `e6a1a2a`) — `docs/01-pedagogy/sprint3_baseline_prompt.md` (523 lignes) : extraction verbatim des 4 prompts Dify (PLAN/SESSION/ONBOARDING/EXAM), table 15 vars Dify injectées, scope analysis (PROMPT_SESSION = cible #1, ONBOARDING + EXAM hors scope), observations pour Phase 0b.
+
+- **Phase 0b** (commit `60df07d`) — `docs/01-pedagogy/sprint3_design.md` (591 lignes) : blueprint complet :
+  - Décisions verrouillées (full pipeline + few-shots synthétiques + CoT caché + 5 autres défauts override-able)
+  - Architecture (5 nouvelles sections greffées sur PROMPT_SESSION existant : RUBRIC, MAPPING TIER→FEEDBACK, DOSAGE, ANTI-DRIFT, OUTPUT JSON SCHEMA + Phase 6 L1 WATCH + Phase 7 SPACED RETRIEVAL)
+  - 6 rubrics per CEFR niveau (~150 mots chacune)
+  - Mapping tier→feedback type avec gravity-axes overrides (T1 + gravity_communicative ≥0.7 → recast ; T2 + gravity_social ≥0.6 → elicitation)
+  - Diversity rule (alterner elicitation/metalinguistic, max 2× consécutifs même type même famille)
+  - Dosage table (A1=1, A2=2, B1=3, B2=3, C1=4, C2=4 par turn ; hard cap si all T4)
+  - JSON schema strict avec `<output>...</output>` wrapping + 9 fields (reasoning hidden, feedback, tier_applied, etc.)
+  - Anti-drift Pak (level reminder turn % 5 + drift self-check turn % 10 + auto-correct decision Phase 5+)
+  - Risk register par phase + critères de succès
+
+- **Phase 1** (commit `60df07d`) — `docs/01-pedagogy/sprint3_fewshots.md` (652 lignes) : 24 examples synthétiques handcraft, 4 par niveau A1-C2 + 4 cas spéciaux (MODE QUIZ override, L1 watch FR, spaced retrieval, drift self-check). Chaque example = learner_turn + errors_detected (tier+gravity) + expected_feedback_type + teacher_response + reasoning_hidden + notes pédagogique. Couvre les 5 patterns Lyster + 3 axes gravité + diversity rule + dosage budget arbitré + T4 regression + silence sur fluency markers.
+
+- **Phase 2** (commit `b85db49`) — `webapp/backend/app/teacher_prompt.py` (407 lignes) :
+  - Constants LEVELS, TIERS, FEEDBACK_TYPES, DOSAGE_BUDGET, DOSAGE_HARD_CAP, TIER_TO_FEEDBACK_DEFAULT
+  - 6 RUBRICS A1-C2 compactes (~150 mots chacune)
+  - `compute_dosage_budget(level, all_t4)` + `arbitrate_dosage(level, errors)` avec règle prio T4>T3>T2 (linguistic ≥0.5)>T1 silent
+  - `tier_to_feedback_type(tier, family, history, gravity)` avec diversity rule + gravity-axes overrides
+  - `should_inject_level_reminder(turn)` every 5, `should_request_drift_check(turn)` every 10
+  - `build_l1_watch(l1)` avec L1_TRANSFER_SEED FR→EN (5 familles : articles ×1.5, prepositions ×1.4, false_friends ×1.3, modals ×1.2, word_order_questions ×1.1)
+  - `build_spaced_retrieval_block(items_due)` (Phase 7 ready)
+  - `select_fewshots(level)` + `render_fewshots_block` + FEWSHOT_BANK 14 examples runtime
+  - `parse_teacher_response(raw)` avec fallback graceful sur JSON malformé (extract `<output>...</output>`)
+  - `update_feedback_history(...)` avec cap diversity history à 4 entries
+  - `build_dynamic_sections(PromptContext)` top-level entry point — calcule 8 sections + dosage_decision metadata
+  - Tests `scripts/sprint3/tests/test_prompt_assembly.py` : **63/63 PASS** (parametrize sur LEVELS, edge cases, diversity rule, gravity overrides, JSON parsing, build_dynamic_sections end-to-end)
+  - `scripts/update_teacher_chatflow.py` : ajout `PROMPT_SESSION_V2` constant (~1100 tokens template avec placeholders pour 8 sections dynamiques)
+
+- **Phase 3** (commit `9c8c870`) — `scripts/sprint3/eval_personas.py` (516 lignes) :
+  - 4 personas scripted (A1 fresh, A2 progressing past_simple_irregular, B1 plateau present_perfect, B2 advanced subjunctive) × 10 turns each = 40 datapoints
+  - Chaque persona : profil + L1=fr + 10 (learner_turn, planted_errors avec tier+gravity)
+  - Build full system prompt offline via `build_dynamic_sections` + manual placeholder substitution
+  - Hit LiteLLM groq-standard temp=0.0 max_tokens=600
+  - Asserts par turn : JSON parseable, dosage ≤ hard_cap, anti-drift level_reminder/drift_self_grade triggers, T4 toujours adressé, T1 silent (sauf override gravity_communicative ≥0.7)
+  - Diversity rule trackée via `update_feedback_history`
+  - Report Markdown auto-généré `eval_report.md` (par-persona breakdown + failed examples)
+  - **Résultat : 263/280 asserts PASS = 93.9%** (A1 97.1%, A2 91.4%, B1 92.9%, B2 94.3%, ~13k tokens/persona)
+  - 17 fails : 7× level_reinjected mal flag par model (model honesty issue), 3× JSON absent quand pas d'erreurs (prompt adherence), 1× T4 article regression mal classé (judgment call), reste = cascade
+
+- **Phase 4 partial** (commit `a9c3c3a`) — script refactor + chat_router wiring :
+  - `update_teacher_chatflow.py` : `if __name__ == "__main__"` guard ajouté + argparse `--target draft|published|both` (default both backward-compat) + `--use-v2` flag (default False safety) + `deploy_chatflow(target, use_v2)` function wrapping main flow
+  - Wire conditional V2 dans `patch_graph()` quand `--use-v2` (PROMPT_SESSION_V2 + prompt_id session-prompt-v2)
+  - Start node : ajout 8 nouvelles vars (rubric_for_level, fewshots_block, dosage_block, level_reminder_inject, drift_validation_request, l1_watch, spaced_retrieval_today, output_schema_block) type `paragraph` max 4000 chars default ""
+  - code_turn_check : 8 nouveaux input mappings depuis start node + 8 outputs string + signature Python kwargs avec defaults + return dict passthrough
+  - `chat_router.py` POST /api/chat/send : import `build_dynamic_sections` + `enrich_error_fields` + `PromptContext` ; après détection erreurs, calcul des sections V2 + ajout aux dify_inputs (try/except graceful avec defaults vides) ; turn_count best-effort depuis user_sessions.message_count ; L1 default "fr" ; spaced_retrieval_due empty Phase 7
+  - Deploy script `python scripts/update_teacher_chatflow.py --target draft --use-v2` → ed0d1c91 patched OK (draft only, prod intacte) + restart dify-api
+  - **Battery indirect tests** (`/tmp/sprint3_test_battery.py`) : 5 tests, **TOUS VERTS** :
+    - CODE_TURN_CHECK Python sandbox compat (backwards compat + V2 forwarding)
+    - PROMPT_SESSION_V2 manual rendering : 10/10 markers présents + 0 placeholder leftover
+    - Token estimate : 1682-1854 tokens (V2 plus efficient que V1 baseline 2431)
+    - Draft DB state : V2 + 14 vars (8 new) ; Published V1 + 6 vars (parfaite isolation)
+    - chat_router import + build_dynamic_sections in-container : OK
+
+- **Phase 4 LIVE TEST option A — V2 a HANG Dify** (commit `e8faef5` post-mortem) :
+  - Backup published V1 graph (109k bytes) → /tmp/published-v1-backup.json
+  - Swap PG : copy draft V2 graph → published row + restart dify-api
+  - Hit `/v1/chat-messages` avec test query → curl timeout 30s, 0 bytes received
+  - Dify n'a PAS crashé (gunicorn started OK, container Up) mais aucune réponse au chat
+  - **Rollback en ~30s** : UPDATE workflows SET graph = backup + restart dify-api → V1 chat répond normalement (validé via curl post-rollback : "Salut ! Comment tu t'appelles..." renvoyé)
+  - Draft restauré aussi en V1 via `python scripts/update_teacher_chatflow.py --target draft` (no --use-v2)
+  - State final : V1 sur les 2 workflows (published + draft), 8 vars V2 restent dans start node config (forward-compat, V1 prompt les ignore gracefully), chat_router envoie 8 dify_inputs (V1 prompt ignore)
+  - Smoke deep 21/21 ALL CLEAR post-rollback
+
+- **9 commits Sprint 3** : `e6a1a2a` baseline, `60df07d` design+fewshots, `b85db49` teacher_prompt+tests, `632d5f4` gotcha update_teacher_chatflow auto-exec, `9c8c870` eval harness, `a9c3c3a` script CLI + chat_router wiring, `e8faef5` post-mortem hang. Tous pushés.
+
+### Next
+- **Phase 4-bis URGENT next session** — debug V2 hang (~1-2h) :
+  1. Test isolation : déployer V2 sur draft AVEC type `text-input` au lieu de `paragraph` pour les 8 nouvelles vars
+  2. Test isolation : déployer V2 sur draft SANS les 8 nouvelles vars (juste static prompt enrichi avec rubric/mapping/JSON inline) pour isoler si c'est le wiring vs le prompt
+  3. Lire `docker logs dify-worker` détaillés pendant un V2 call (l'exec du sandbox + le rendering du prompt template)
+  4. Si toujours hang : binary-search le PROMPT_SESSION_V2 (couper en 2, deploy chacune, voir laquelle hang)
+- **Phase 5** publish V2 (dépend Phase 4-bis OK) + 24-48h passive monitor famille
+- **Phase 6** L1 transfer FR→EN activation
+- **Phase 7** spaced retrieval proactif
+
+### Gotchas
+- **🔴 V2 deploy HANG Dify** (Phase 4 live test) : symptôme = curl timeout 30s, 0 bytes received, dify-api Up mais ne répond plus. Rollback fonctionne en 30s. **Ne PAS tenter Phase 5 publish tant que Phase 4-bis n'a pas isolé la cause + validé V2 fonctionne sur draft via Dify UI test mode**. Documented dans `gotchas.md` Sprint 3 section avec 4 hypothèses.
+- **chat_router envoie 8 dify_inputs même quand V1 actif** : Dify accepte gracefully (vars définies `required: False, default: ""`). Validé via smoke 21/21 + curl test post-rollback. Pas de risque de régression V1.
+- **`update_teacher_chatflow.py` `--target` flag default = both** pour backward compat. Future scripts/cron qui appellent sans flag → patcheraient les 2 workflows. Si tu veux changer le default à `draft` pour safety, c'est un toggle 1-ligne.
+- **Eval harness 93.9% pass** : 17 fails sont surtout du model honesty (level_reinjected flag, drift_self_grade) — pas blocking pour Phase 4. À tuner Phase 5+ avec vraies data.
+- **Few-shots synthétiques** : Sinse n'a pas eu le temps de review en détail. Si certains te paraissent off pédagogiquement, faut les corriger avant Phase 5.
+- **Sandbox Python Dify** : la fonction code_turn_check tourne dans un sandbox restreint. Mes 8 nouveaux kwargs avec defaults doivent y passer (testés indirectement via `exec(code_str)` dans la battery, mais pas dans le vrai sandbox Dify). Si Phase 4-bis révèle que c'est ça le bug → migrer les defaults vers None et handle inside.
+
+---
+
+## Session 20 — 2026-04-15
+
+### Done
+**Token tracking ABCD** — résolution de l'écart `/admin academie-ia` (184k tokens) vs OpenAI dashboard (196,848 input + 3,001 output = 199,849 total, dont 72,320 cachés en prompt cache). Sinse's règle : "/admin doit ne JAMAIS sous-estimer OpenAI" (sinon auto-switch ne se déclenche pas avant de péter le quota).
+
+- **Diagnostic complet** : 5 sources d'écart identifiées via inspection live de `LiteLLM_SpendLogs` :
+  - Headline /admin ignorait les fine-tunes `ft:gpt-4o-mini-*` (même quota OpenAI mais bucket séparé)
+  - Row `manual_backfill` Session 12 daté `00:00:00` injecte 48,111 tokens (snapshot pre-LiteLLM-activation) — intentionnel
+  - Calls perdus entre snapshot pre-activation et début logging effectif (~15k)
+  - Quirk LiteLLM : 274 tokens `gpt-4o-mini` sans `model_group` (config edge case)
+  - OpenAI dashboard montre `input_tokens` only (196,848) alors que le vrai total = input + output (199,849)
+- **A — Inclusion fine-tunes** (commit `0df1edb`) : `_is_openai_billable()` helper + élargissement `base_tokens` à `gpt-4o-mini` + `ft:gpt-4o-mini-*` + COALESCE `model_group` → `model` dans la query LiteLLM (capture les rows sans model_group)
+- **B — Safety margin +10%** : `_DISPLAY_SAFETY_MARGIN = 1.10` constant, payload expose `tokens` (avec marge) et `tokens_raw` (brut). Frontend Svelte tooltip explicite + label `+10% safety` à côté du %
+- **C — Lazy reconciliation OpenAI Usage API** : nouveau module `app/openai_reconcile.py` hit `GET /v1/organization/usage/completions` (admin key, params `start_time` UTC midnight + `bucket_width=1d`). `_maybe_schedule_reconcile` dans `get_gpt4o_usage` check `reconciled_at` — si > 15 min stale, fire-and-forget `asyncio.create_task(_do_reconcile_and_save())`. Pas de cron externe, self-healing à la première requête /admin
+- **D — Triple safety MAX seed** : `_load_daily_tokens` lit `tokens_used + litellm_tokens + openai_tokens` (3 colonnes ajoutées par migration), seed le compteur in-memory avec MAX. `_do_reconcile_and_save` bump le compteur live post-reconcile pour que la bascule auto capture l'update sans attendre restart
+- **Schema migration** : script idempotent `scripts/migrate_token_usage_columns.py` ajoute `litellm_tokens BIGINT DEFAULT 0`, `openai_tokens BIGINT DEFAULT 0`, `reconciled_at TIMESTAMP NULLABLE` à `token_usage_daily`
+- **OpenAI Admin key** : Sinse a généré `sk-admin-...` (perm `Read - Usage` only, principe moindre privilège), Claude l'a ajoutée au bundle `secrets/shared.yaml.sops` programmatiquement (decrypt → append → re-encrypt in place). Décryptée à `/opt/academie-shared/secrets/openai-admin-key` chmod 600 sinse:sinse
+- **Bind RO secrets** : ajout volume `/opt/academie-shared/secrets:/run/academie-secrets:ro` à `docker-compose.webapp.yml` pour exposer la clé au container `academie-api` sans la baker dans l'image. `ADMIN_KEY_PATH` du module configurable via env var `OPENAI_ADMIN_KEY_PATH` pour tests
+- **Validation E2E** : OpenAI API → 199,849 ✓, DB row populé `litellm_tokens=184716, openai_tokens=199849`, `get_gpt4o_usage` retourne `tokens=219,833` (= max(local, litellm, openai) × 1.10) — **22K au-dessus du dashboard OpenAI**, marge confortable
+- **Smoke 21/21 ALL CLEAR** (deep)
+- **Docs** : `credentials.md` (admin key + bind mount), `gotchas.md` (3 nouveaux items : safety margin display, reconciliation 3 sources, rotation procedure), `TODO.md` (bloc P2 ABCD coché + P3 rotation key)
+
+### Next
+- **Sprint 3 — Prompt Teacher Lyster** (3-5j) : exploiter les tiers v2 calibrés Sessions 17-18 pour piloter le type de feedback (recast / elicitation / metalinguistic / prompt) + dosage par niveau + anti-drift Pak 2025. C'est le prochain gros chantier avec impact UX direct.
+- **Action TODO Sinse à faire dans les jours qui viennent** : rotater l'admin key OpenAI (transitée par chat — leak risk borné car perm Read-Usage seulement, mais hygiène). Procédure dans `gotchas.md` Token tracking section.
+- **Demain matin restic check** : confirmer le daily a inclus le nouveau état SOPS (admin key dans bundle, openai_reconcile.py dans repo) puis supprimer les 3 backups pristine accumulés (litellm + cosmos.config + cosmos compose) + garder cosmos-rollback.sh.bak 7j
+- **Backlog P3 pré-SaaS public** : L4 (`tecnativa/docker-socket-proxy`), L5 (remplacer cosmos reverse proxy par traefik/caddy)
+- **Alternatives** : Sprint 1.6 EFCAMDAT (registration ≥ 1 sem), Sprint 4 analyse risques agent topology
+
+### Gotchas
+- **L'admin key OpenAI a transité par le chat** (Sinse l'a paste dans la conversation). Risk borné car perm `Read-Usage` only (ne peut pas faire d'appel facturable, juste lire stats), mais à rotater. Procédure documentée.
+- **`/admin` headline est intentionnellement gonflé de 10%** depuis Session 20 — `tokens_raw` montre la vraie valeur LiteLLM/OpenAI max. Tooltip explique. À ne pas confondre avec un bug d'affichage.
+- **Le bg task de reconciliation peut fail silencieusement** si l'admin key est invalide/révoquée → `openai_tokens` reste à 0, `reconciled_at` reste à NOW (donc reste "fresh" et bg task ne refire pas avant 15 min). Symptôme : /admin headline ne contient pas la contribution OpenAI. Check : `docker logs academie-api | grep openai_reconcile` pour les warnings.
+- **Race théorique** : le compteur in-memory `_gpt4o_token_counter["tokens"]` est muté par 2 paths (`_track_gpt4o_tokens` à chaque call + `_do_reconcile_and_save` post-reconcile). Pas de lock, mais `max()` est idempotent et les valeurs ne décroissent jamais → safe en pratique. Si on grossit, prévoir un asyncio.Lock.
+- **Cosmos a réécrit `cosmos.docker-compose.yaml`** entre Session 18 ter et Session 20 (revertant `hostname: cosmos-server` → `hostname: ""`) — confirme que cosmos rewrite proactivement son own state. Le runtime container reste fine. Documenté dans gotchas. Si on veut persister le hostname dans le compose, faut le re-set après chaque cosmos UI action.
+- **Backfill row `manual_backfill`** existe toujours dans `LiteLLM_SpendLogs` (48,111 tokens, daté 00:00:00 today). Cohérent avec OpenAI dashboard qui les voit aussi. À garder. Si on doit re-créer la DB, regénérer ce row (ou perdre 48k tokens d'historique).
+- **`_RECONCILE_STALENESS_S = 15 min`** est arbitraire. Si on hit `/admin` plus rarement que ça, la reconciliation ne se déclenche jamais (lazy). Pour un usage admin sporadique, considérer un cron explicit (n8n) qui force-hit /admin toutes les heures.
+
+---
+
+## Session 19 — 2026-04-15
+
+### Done
+Continuation post-handoff Session 18 — fermeture complète du chantier J-1 sécurité.
+
+- **J-1 SOPS suite — `/opt/litellm/config.yaml` migré** (commit `35241d3`) :
+  - `litellm/config.yaml.sops` chiffré en **mode yaml per-value** (`encrypted_regex: '^(api_key|database_url|master_key|salt_key)$'`) — 9 api_keys (OpenAI x3 dont 2 fine-tunes, Groq x4, Mistral, Ollama-Cloud) + database_url chiffrés ; model names / fallbacks / rpm/tpm / commentaires restent diff-readable
+  - `litellm/decrypt-config.sh` wrapper (atomic mv via mktemp, chmod 644, erreur claire si clé absente)
+  - `.gitignore` raffiné : `litellm/config.yaml` + `litellm/config.yaml.backup*` ignorés, `.sops` + wrapper trackés
+  - Round-trip sémantiquement identique (SOPS yaml reformate indent/comments mais valeurs intactes), E2E chat via LiteLLM validé (`gpt-4o-mini` répond avec tokens comptés)
+  - Backup pristine `/opt/litellm/config.yaml.backup-pre-sops` conservé pour 24h
+- **J-1 SOPS cleanup — bundle `secrets/shared.yaml.sops`** (commit `75ff2d4`) :
+  - 9 fichiers `/opt/academie-shared/secrets/*` encapsulés (dify-admin/teacher-key, groq-key-2, jwt-{refresh-,}secret, n8n-encryption-key, ollama-cloud-key, pg-password, restic-passphrase)
+  - `secrets/decrypt-shared.sh` : atomic mv, `chown --reference` préserve ownership (sinse:sinse), trailing `\n` ajouté pour matcher format consommateurs
+  - **Audit redondance** : 5/9 secrets sont des copies de référence (jwt-* dupliqués webapp/.env.sops, pg-password dans webapp + litellm, groq-key-2 + ollama-cloud-key dans litellm/config.yaml.sops). Map documentée dans runbook pour éviter divergence silencieuse à la rotation.
+  - Bug bash trouvé : `((var++))` retourne 0 quand var=0 → `set -e` kill le script. Remplacé par `var=$((var + 1))`. Insidieux : le script "marchait" sur 1/9 fichier puis s'arrêtait silencieusement.
+  - Round-trip byte-identical vérifié sha256sum sur les 9 fichiers
+- **Test rotation TEST_SECRET** : lifecycle complet validé (add → rotate → remove). Pattern documenté dans runbook : decrypt → modify → re-encrypt in place via `cp + sops -e -i`.
+- **Cosmos L1 — AutoUpdate=false** (commit `446a348`) :
+  - UI cosmos n'expose pas le toggle → edit direct `/mnt/cosmos-data/cosmos-config/cosmos.config.json` (jq pseudo via python json) + `docker restart cosmos-server`
+  - Backup pristine `cosmos.config.json.bak-pre-autoupdate-off` créé
+  - Downtime réel ~10-15s, route `academie.petit-pont.com` HTTP 200 servie 3ms post-restart, smoke 15/15
+  - **Vecteur supply-chain coupé** : cosmos ne pull plus `:latest` automatiquement
+- **Cosmos L2/L3 + 1.b — bundle YOLO** (commit `64a3766`, après plan formel approuvé) :
+  - `Privileged: false` + `cap_add: NET_ADMIN` (préemptif Constellation si activé un jour)
+  - Bind `/var/run/dbus/system_bus_socket` retiré (mDNS unused, log error attendue)
+  - `/:/mnt/host` → `:ro` (file-editor UI passe en view-only, pas de dépendance fonctionnelle pour reverse proxy)
+  - Image pinnée au digest `sha256:b7faf38ccabd68e0fab4935f03a6126d19e18801a2e534d22bd14c5dec82827e`
+  - `--cgroupns host` ajouté par sécurité (default Docker récent = private)
+  - **Bug bonus découvert le hard way** : sans `--hostname cosmos-server` explicite, cosmos's `isInsideContainer` check fail (cosmos query Docker API par hostname pour s'auto-identifier) → cosmos crée nouveau config vide à `/var/lib/cosmos/cosmos.config.json` au lieu de lire `/config/cosmos.config.json` (bind mount) → **toutes les routes redirigent vers `/cosmos-ui/`**. 3 itérations recreate (downtime cumulé ~3-4 min) avant identification du root cause via inspection comparative original vs nouveau container.
+  - Cosmos a **auto-sync sa propre `cosmos.docker-compose.yaml`** post-recreate (digest, privileged false, cap_add, mounts) → corrigé `hostname: ""` → `hostname: cosmos-server` pour parité
+  - Script rollback bouton-rouge persisté à `/opt/academie-shared/secrets/cosmos-rollback.sh.bak` (avec `--hostname` + `--cgroupns host`)
+  - Routes 5/5 baseline restaurées (academie 200, dify 302, n8n 200, drive 307, cosmos 307), MongoDB ESTAB, smoke 21/21 ALL CLEAR (deep)
+- **Documentation à jour** :
+  - `credentials.md` : status `authoritative`, banner Sessions 18 + 18 bis + 18 ter
+  - `gotchas.md` : cosmos hardening + le piège `--hostname cosmos-server`
+  - `99-runbooks/rotate-secrets-sops.md` : section LiteLLM + section shared bundle, redundancy map, DR steps mis à jour
+  - `INDEX.md` : lien rotate-secrets-sops.md
+  - `roadmap.md` : J-1 status `🟡 partiel` → `🟢 quasi-complet` (reste L4/L5 backlog)
+  - `TODO.md` : tout coché côté J-1
+
+### Next
+- **Sprint 3 — Prompt Teacher Lyster** (3-5j) : exploiter les tiers v2 calibrés Sessions 17-18 pour piloter le type de feedback (recast / elicitation / metalinguistic / prompt) + dosage par niveau + anti-drift Pak 2025. C'est là que tout le boulot Sprint 1/1.5/2 devient visible côté apprenant.
+- **Demain matin (5 min)** : vérifier restic daily 2026-04-16 a inclus les nouveaux états SOPS, puis supprimer les 4 backups pristine (litellm.backup-pre-sops, cosmos.config.json.bak-pre-autoupdate-off, cosmos.docker-compose.yaml.bak-pre-hardening, garder cosmos-rollback.sh.bak 7j)
+- **Backlog P3 pré-SaaS public** : L4 (`tecnativa/docker-socket-proxy` entre cosmos et docker.sock), L5 (remplacer cosmos reverse proxy par traefik/caddy)
+- **Alternatives** : Sprint 1.6 EFCAMDAT (registration académique ≥ 1 sem), Sprint 4 analyse risques agent topology
+
+### Gotchas
+- **`--hostname cosmos-server` est OBLIGATOIRE pour cosmos** (documenté dans `gotchas.md`) : sans ça, isInsideContainer check fail → routes cassées. Symptôme : 5/5 routes HTTP 307 vers `/cosmos-ui/`. Coût d'apprentissage cette session : ~3-4 min de downtime + 3 itérations.
+- **`docker compose restart` ne relit PAS `env_file`** (gotcha Session 18 confirmé) — toujours `up -d --force-recreate --no-deps` après edit `.env`.
+- **SOPS yaml reformate** indent / déplace commentaires lors du round-trip → diff git montrera de la "churn" non sémantique. Acceptable, mais à ne pas confondre avec un vrai changement.
+- **Bash `((var++))` avec `set -e`** : retourne exit code 1 quand var=0 → script meurt silencieusement. Toujours utiliser `var=$((var + 1))` dans les wrappers SOPS et autres scripts pipefail.
+- **Cosmos a auto-sync son `cosmos.docker-compose.yaml`** post-recreate (j'attendais qu'il l'ignore). Si à l'avenir on veut changer la spec via UI cosmos, attention que cosmos ne ré-écrase pas avec une vue obsolète. Avec AutoUpdate=false ce risque est bas.
+- **Backup litellm `/opt/litellm/config.yaml.backup-pre-sops`** + `cosmos.config.json.bak-pre-autoupdate-off` + `cosmos.docker-compose.yaml.bak-pre-hardening` : 3 backups pristine accumulés. À supprimer demain après confirmation restic. `cosmos-rollback.sh.bak` à garder 7j.
+- **5 secrets shared bundle redondants** avec webapp/.env.sops ou litellm/config.yaml.sops : si tu rotes la source canonique, **ROTATE AUSSI le shared bundle** sinon divergence silencieuse. Map dans runbook `rotate-secrets-sops.md`.
+- **MFA cosmos UI = OFF, AdminWhitelistIPs = null** (audit cette session) : cosmos UI accessible à tout IP qui résoud `cosmos.petit-pont.com`. Mitigation actuelle = Cloudflare Tunnel policy (WARP + France) + password admin. Bloquant SaaS public, toléré familial.
+
+---
+
+## Session 18 — 2026-04-15
+
+### Done
+- **Sprint 2 Phase B3 (bascule scoring effective)** :
+  - `scoring.py` : collecte `row["tier"]` par famille pendant la boucle d'agrégation ; nouvelle branche `if _USE_V2_SCORING` dans la boucle profil famille — majority vote via `Counter` sur les T-codes stockés, fallback transparent vers `m["matrix"][family][band]` si aucun row ne porte de tier ou si tous `NULL`
+  - `_TIER_CODE_TO_LABEL` (reverse map T0→shadow, T1→ignored, T2→noted, T3→penalized, T4→regressive) ajouté à côté du `_TIER_LABEL_TO_CODE` existant
+  - `error_analysis_router._build_error_profile` : SELECT étendu à `tier` pour que la colonne remonte jusqu'à `compute_error_profile`
+  - `webapp/.env` : `USE_V2_SCORING=true`
+  - Rebuild + `docker compose up -d --force-recreate --no-deps academie-api` (le `restart` seul ne relit pas `env_file`, piège noté)
+  - 5 nouveaux tests `test_scoring_v2_branch.py` : flag-off matrix lookup, flag-on row-tier direct, flag-on majority vote (2×T2 > 1×T3 → noted), flag-on NULL fallback, flag-on override cell (SENT:FRAG × A1 → noted via T2)
+- **Retrospective sur 25 rows réels** (profils existants) :
+  - v1 total pondéré = 2.60 (verb_tense 1.2 + calque 0.8 + noun_det 0.6)
+  - v2 total pondéré = 0.788 (calque 0.394 + sentence 0.394 ; verb_tense et noun_det tombent à 0)
+  - delta = −70 % : confirme empiriquement que v1 sur-pénalisait T3, comme attendu par GLMM (β_T3 = −1.22 CI95 [−1.40, −1.03])
+- **Sprint 2 B+** (commit `b237cf9`) — property-based tests via `pytest-hypothesis` :
+  - 10 properties + Hypothesis a surfacé l'asymétrie v1/v2 weights (v1 sans `regressive`)
+  - Tests sprint2 total : 38/38 PASS sous v1 et sous USE_V2_TOLERANCE=true
+- **J-1 credentials SOPS (fondation)** : sops 3.12.2 + age 1.2.1, keypair, .sops.yaml, webapp/.env.sops dotenv per-var, decrypt-secrets.sh wrapper, runbook rotate-secrets-sops.md
+- **Smoke-test** : 15/15 ALL CLEAR
+
+### Next
+- Sprint 3 prompt Teacher Lyster
+- J-1 suite : migrer /opt/litellm/config.yaml vers SOPS
+
+### Gotchas
+- `docker compose restart` ne relit PAS env_file → `up -d --force-recreate --no-deps`
+- SOPS clé age = SPOF pour DR (triple backup recommandé)
+
+---
+## Session 17 — 2026-04-15
+
+### Done
+- **Sprint 2 Phase B1** (commit `fa74e69`) : override loader pour `tolerance_matrix_v2_overrides.yaml`
+  - `scoring.py._load_matrix()` étendu pour merger les overrides après chargement v2 (guard `if _USE_V2`)
+  - `chat_router.py` : même logique pour la matrice utilisée en chat real-time
+  - Override `sentence × beginner = noted` **actif en prod** (vérifié `docker exec`)
+  - Test `test_overrides_applied.py` : 4 tests (parse, baseline reverse, override applied, scope isolation)
+- **Sprint 2 Phase B2** (commit `fe23036`) : populate error_log v2 fields
+  - `tolerance_matrix_v2.yaml` étendu : sections `gravity_per_family` (12 familles × 3 axes linguistic/communicative/social) + `criterial_per_family` (12 familles × emergence/mastery CEFR)
+  - Priors SLA-based (Hartshorn 2013, James 1998 + curriculum AcademIA)
+  - `scoring.enrich_error_fields(code, niveau)` helper pur déterministe (override-aware via B1)
+  - `error_analysis_router.py` : fetch `niveau_global` une fois + enrich par erreur (Rules + LLM layers) + INSERT étendu à 15 colonnes
+  - Approach B retenu (pas de touch au prompt LLM fine-tuned, refactor llm.py/phase1b reporté Sprint 6+ Approach C)
+  - `backfill_error_log_v2_fields.py` idempotent : 9/9 rows backfillées (filter `tier IS NULL`)
+  - Flag `USE_V2_SCORING` introduit (default false, skeleton — bascule effective B3)
+  - Test `test_enrichment.py` : 5 tests (V:TENSE/B1, SENT:FRAG/A1 via override, unknown code, niveau None, mapping coverage)
+- **Sprint 2 tests total** : 23/23 PASS
+- **Smoke-test final** : 21/21 ALL CLEAR (3 rebuilds successifs sans régression)
+- **Docs sync** : ADR-009 (Actions de mise en œuvre B2 cochées), `matrix_v2_review.md` (loader override marqué livré)
+
+### Next
+- **Sprint 2 Phase B3** (~30 min, courte session future) :
+  - Activer `USE_V2_SCORING=true` dans `webapp/.env`
+  - Refactor `compute_error_profile` famille loop pour lire `row["tier"]` au lieu de `m["matrix"][family][band]` (avec fallback si `tier IS NULL`)
+  - Re-run `test_retrospective_v1_vs_v2` pour quantifier impact
+  - Property-based tests `pytest-hypothesis` sur invariants scoring (P2, optionnel)
+- **Approach C** (Sprint 6+) : LLM-judged gravity contextuel (fine-tune nouveau modèle ou appel séparé). Reporté tant que priors statiques B2 restent acceptables.
+- **Alternatives** si on veut faire autre chose : J-1 SOPS credentials (avant SaaS public), Sprint 3 prompt Teacher Lyster
+
+### Gotchas
+- **`USE_V2_SCORING` est un skeleton** : flag exposé, log debug en cas d'activation, mais le family loop dans `compute_error_profile` n'a PAS encore de branch `row["tier"]`. Activer le flag aujourd'hui ne change rien (pas un bug, c'est par design pour B3).
+- **Backfill ne remplit PAS toujours `tier=NULL`** : filtre `tier IS NULL` est correct mais si jamais un row se retrouve avec `tier=NULL` après B2 (ne devrait pas arriver vu que router enrichit), re-run le script.
+- **`niveau_global` peut être NULL pour user fresh** (user créé pas encore onboardé) → `enrich_error_fields` fallback band=intermediate, donne tier T1 par défaut sur la matrice empirique. Cohérent mais à monitorer si beaucoup de users fresh produisent des erreurs avant onboarding complet.
+- **Priors gravity/criterial = intuition SLA, pas calibré** : valeurs `0.6/0.4/0.1` etc. sont des estimations Hartshorn-style. Sinse peut les ajuster directement dans `tolerance_matrix_v2.yaml` sans migration. Les 9 rows backfillées garderont leurs anciennes valeurs (modifications futures s'appliquent aux nouveaux rows uniquement) — re-run `backfill_*.py` après modif si on veut harmoniser.
+- **3 rebuilds container dans la session** : à chaque rebuild on perd LiteLLM cache + connection pool warm-up. ~10s de latence sur la première requête post-rebuild. Pas critique pour familial.
+- **Tests Sprint 2 dépendent du venv Sprint 1** : si on supprime `/opt/academie/scripts/sprint1/venv/`, prévoir `scripts/sprint2/requirements.txt` + venv dédié.
+- **`compute_error_profile` est large (200+ lignes)** : refactor B3 pour insérer la branche `_USE_V2_SCORING` proprement nécessitera attention pour ne pas casser le path v1 (default). Tests régression `test_retrospective_v1_vs_v2` indispensables.
+
+---
+## Session 16 — 2026-04-15
+
+### Done
+- **Bascule soft v2 tolerance matrix en prod** (commit `b748283`) : rename `tolerance_matrix_v2_draft.yaml` → `tolerance_matrix_v2.yaml`, flag `USE_V2_TOLERANCE` dans `scoring.py` + `chat_router.py`, ajout `USE_V2_TOLERANCE=true` dans `webapp/.env`, rebuild + restart `academie-api`. Vérif via `docker exec` : weights GLMM (`ignored=0.0 / noted=0.196 / penalized=0.394 / regressive=0.538`) chargés depuis le bon yaml. Rollback ~30s via flag off + restart.
+- **Sprint 2 Phase A complet** (commits `df73a53` + `d6a5541`) :
+  - Backup safety net (`pg_dump` 56 MB) → `/tmp/pre-sprint2.sql.gz`
+  - `migrate_sprint2_schema.py` idempotent : `error_log` +6 colonnes nullable (`tier`, `gravity_linguistic/communicative/social`, `criterial_level_emergence/mastery`) + 3 CHECK constraints + index `idx_error_log_tier`
+  - 3 nouvelles tables créées : `l1_transfer_observations`, `domain_catalog` (seed `lang:en`), `spaced_retrieval_queue` (+ partial index)
+  - Snapshot cut-off ADR-007 option C : 8 rows archivés dans `snapshots_session_v1_archive`, colonne `schema_version` (existants=1, futurs=2)
+  - Bug idempotence corrigé : projection explicite des colonnes v1 dans l'INSERT archive (sinon mismatch après ajout `schema_version`)
+  - 14 tests régression (`scripts/sprint2/tests/`) tous PASS : `test_weights_parse` (sanity yaml + diff 21 cells), `test_retrospective_v1_vs_v2` (re-score 9 rows), `test_synthetic_battery` (replay 189 phase1b cases × 6 niveaux avec invariants asymétriques)
+  - **Matrix v2 review adversariale** `docs/01-pedagogy/matrix_v2_review.md` : 21 cellules analysées avec citations SLA (Bryant 2017, Yannakoudakis 2018, Lyster & Saito 2010, Selinker 1972, Lardiere 1998, Klein & Perdue 1997, Master 1987, Swan 2005, Rifkin & Roberts 1995). Verdict : 19 ACCEPT, 1 FLAG (`word_order × A1` — monitor drop-off), 1 OVERRIDE (`sentence × beginner` `penalized` → `noted` car chat fragments ≠ essai W&I)
+  - **ADR-009** `gravity-axes-schema.md` : choix colonnes dénormalisées vs table séparée vs JSONB (Hartshorn 2013, James 1998)
+  - **Runbook** `migrate-taxonomy-v2.md` : forward + 3 niveaux rollback (soft flag / hard schema drop / nuclear pg restore)
+  - `tolerance_matrix_v2_overrides.yaml` créé pour application Phase B (loader à implémenter dans `scoring.py`)
+  - Docs mises à jour : `data-model.md` (new cols + tables marked authoritative), `roadmap.md` (Sprint 2 Phase A ✅ / Phase B inscrite), `INDEX.md` (3 nouveaux liens)
+- **Fix smoke-test warning LiteLLM** : `/health` retourne ~250KB JSON, fragile au check strict `-sf` + grep. Switch sur `/health/liveliness` (réponse `"I'm alive!"` minimaliste). Smoke-test passe maintenant 21/21 sans warning.
+
+### Next
+- **Sprint 2 Phase B** (3-4j, dépendances Phase A satisfaites) :
+  - Refactor `llm.py` prompt → output `tier` + `gravity_axes` + `criterial_level_*` en JSON (touche au prompt fine-tuned, retest phase1b battery obligatoire)
+  - Refactor `error_analysis_router.py` → INSERT des nouveaux champs
+  - Refactor `scoring.py` → lecture `error_log.tier` directe + loader override yaml
+  - Application override `sentence × beginner = noted` (cf. matrix_v2_review.md)
+  - Flag `USE_V2_SCORING` pour bascule progressive (parallèle de `USE_V2_TOLERANCE`)
+  - Property-based tests avec `pytest-hypothesis` sur invariants scoring
+- **Alternatives en cas d'autre besoin** : J-1 credentials SOPS (avant SaaS public), Sprint 3 prompt Teacher Lyster, J-4 auth OIDC
+
+### Gotchas
+- **`/opt/academie/webapp/.env` gitignored** : `USE_V2_TOLERANCE=true` doit être set manuellement sur target deploys (notamment si on duplique l'env). Documenté dans le commit `b748283` mais pas dans un runbook formel — à formaliser si on multi-instance.
+- **Tests Sprint 2 utilisent venv Sprint 1** : `cd /opt/academie/scripts/sprint2 && ../sprint1/venv/bin/pytest tests/`. Si on supprime/recrée le Sprint 1 venv, prévoir un mini-`requirements.txt` dans `sprint2/`.
+- **Override `sentence × beginner` non encore appliqué** : `tolerance_matrix_v2.yaml` reste empirique pur (penalized). En attendant Phase B + loader, un A1 qui produit `SENT:FRAG` se prendra `weight=0.394`. Risque faible (1 user A1, 0 A1 actif récemment), mais à appliquer dès Phase B.
+- **R-hat GLMM = 1.01 (Sprint 1.5)** est borderline. ESS bulk min = 329 < 400. Convergence acceptable mais pas excellente. Si on doit re-fit (Sprint 6), prévoir `num_samples=2000+` au lieu de 1000.
+- **Docker cosmos-server reste privileged + docker.sock + bind /** : trou de sécurité majeur identifié Session 13, toujours pas résolu. Bloquant SaaS public, pas familial.
+- **`migrate_sprint2_schema.py` est idempotent ET relancé plusieurs fois aujourd'hui** : safe à rejouer, mais garder en tête qu'il ne purge pas les data (p.ex. seed `lang:en` peut accumuler des `metadata` patches via UPDATE futurs).
+
+---
+## Session 15 — 2026-04-15
+
+### Done
+- **7 fixes urgents infra** (identifiés Session 13 scan) livrés en bloc :
+  - Delete Dify app test `cccccccc` (2 conversations orphelines)
+  - Archive workflow n8n orphelin `f79033231f7644` (duplicate `dify-diagnostic`, 0 runs depuis création)
+  - Cleanup 2 dangling Docker volumes (820 MB Nextcloud orphelin + 24K vide)
+  - `pg-backup` étendu à 3 DBs : academie_db + litellm_db + dify_plugin (vérifié manuellement, 3 dumps créés)
+  - `smoke-test --quick` : nouvelle alerte n8n fail rate >5% sur 48h (fail rate actuel 0.3%)
+  - Migration subnet `academie-net-bridge` /28 → /27 (12→30 IPs, 19 slots libres, downtime ~10 min, validé smoke-test 20/20)
+  - Note : fail rates n8n historiques (snapshot 17% / diag 28% sur 14j) déjà résolus par fix F1 EVAL_READY Session 14 (seulement 1 error sur 7j récents)
+- **Sprint 1 Path A** (calibration taxonomie v2 via corpus externe) :
+  - Installation venv Python 3.13 dans `/opt/academie/scripts/sprint1/` avec NumPyro + JAX + lifelines + errant + spaCy (pymer4 skippé faute de R sur système, wolfi-like)
+  - Download W&I + LOCNESS BEA 2019 corpus (6 MB compressed, 3370 essays CEFR-annotés + 50 natifs)
+  - Mapping ERRANT 28 tags → 9 familles AcademIA via `errant_to_academie.yaml` (84.7% couverture instances, 4/4 tests pytest OK)
+  - Normalize M2 → Parquet : 70 489 error annotations × 2 671 learners × niveaux A1–C2 + N (usage spaCy sentencizer pour aligner M2 avec JSON)
+  - EDA + tier empiriques reach-based (seuils 70/30/10) : matrice `tier_assignments_external.parquet` + 3 figures heatmap
+  - **Livraison `tolerance_matrix_v2_draft.yaml`** : 21/48 cellules (44%) changent vs v1. Familles calibrées = 8/12 (verb_tense, noun_det, preposition, pronoun, word_order, morphology, surface, sentence). Non calibrées = verb_usage, vocabulary, calque, discourse (ERRANT trop coarse).
+- **Sprint 1.5** (raffinement GLMM) exécuté dans la foulée :
+  - Data prep Bernoulli essay×family : `glmm_dataset.parquet` 29 412 rows (58.5% positifs), crosstab y×tier monotone (83%/51%/19%/7%)
+  - NumPyro hierarchical logistic GLMM NUTS 2 chains × 1000 samples, target_accept 0.9, ~2 min CPU
+  - β_tier posterior : T1=0 (baseline) / T2=–0.629 [–0.75, –0.51] / T3=–1.215 [–1.40, –1.03] / T4=–1.675 [–2.00, –1.35]
+  - Convergence : R-hat_max 1.01, ESS_bulk_min 329, 0 divergences
+  - Weights relative-to-T1 : ignored=0.00 / noted=0.196 / penalized=0.394 / regressive=0.538 (+ CI 95%)
+  - Update `tolerance_matrix_v2_draft.yaml` : weights GLMM + CI + glmm_diagnostics bloc
+- **Rapport `sprint1_report.md`** : 10 sections incluant § 9 GLMM results, comparaisons pré/post, limites (biais corpus essais vs chat conversationnel AcademIA, 15% ERRANT unmappable, L1 non pris en compte, familles sémantiques non couvertes)
+- **Docs mises à jour** : `backup.md`, `deployment.md`, `monitoring.md`, `filesystem-scan.md`, `roadmap.md` (Sprint 1 + 1.5 marqués ✅), `error-gradation.md`, `INDEX.md`
+
+### Next
+- **Handoff (en cours)** puis session suivante
+- **Sprint 2 — Refonte schéma taxonomie (5-10j)** est le prochain chantier principal :
+  - Review humain des 21 cellules modifiées + protocole validation expert κ≥0.6 avant activation
+  - Bascule `v2_draft.yaml` → `tolerance_matrix.yaml` avec A/B flag rollback
+  - Extension DB : `tier`, `gravity_axes`, `criterial_levels` sur `error_log`
+  - Nouvelles tables : `l1_transfer_observations`, `domain_catalog`, `spaced_retrieval_queue`
+  - Migration snapshots (ADR-007 cut-off)
+- Alternatives légères : Sprint 3 (prompt Teacher Lyster), J-1 credentials SOPS, bascule soft v2 sans refonte DB
+
+### Gotchas
+- **Données externes `/mnt/cosmos-data/sprint1/`** : hors git, couvert par restic niveau 3 (via `/mnt/cosmos-data/backups/` déjà inclus). Vérifier au prochain restic daily que les Parquet + figures apparaissent.
+- **EFCAMDAT non tenté** : registration académique nécessaire, délai ≥ 1 semaine typiquement. Cox PH skippé (W&I = one-shot essays, pas de data longitudinale).
+- **ESS bulk 329 < 400** (seuil strict). Concerne σ_v (random effect famille), pas les β_tier (ESS > 1500). Inférences sur les tiers fiables, mais rerun avec `num_samples=2000` possible si on veut plus de marge.
+- **Alignment JSON ↔ M2 perd ~30%** des annotations ERRANT sur essais longs (spaCy tokenizer ≠ ERRANT tokenizer). 70 k rows suffisent pour GLMM mais le undersample peut biaiser les stats absolues. Dette technique notée pour Sprint 1.5+.
+- **Ne PAS commiter** `/opt/academie/scripts/sprint1/venv/` (déjà dans `.gitignore` — vérifier à chaque fois).
+- **`tolerance_matrix.yaml` v1 reste en prod** — `v2_draft.yaml` est posé à côté, pas activé. Aucun impact prod dans cette session (smoke-test final 21/21 clear).
+
+---
+## Session 14 — 2026-04-15
+
+### Done
+- **Optimisation coût /pickup** : `model: claude-sonnet-4-6` ajouté au frontmatter de `pickup.md` — prochain pickup ~5× moins cher
+- **Rotation SESSION.md** : fenêtre glissante N=3 sessions (était 13 sessions = ~7K tokens lus inutilement à chaque pickup)
+- **SESSION_ARCHIVE.md créé** : sessions 1-10 archivées, newest-on-top, jamais lues au pickup
+- **handoff.md mis à jour** : instruction de rotation automatique ajoutée (archive la plus vieille si >3 sessions après prepend)
+- Discussion token cost : explication ToolSearch (déjà actif côté harness), système prompt lourd, system-reminders re-injectés (non configurable), auto-memory (~3-4K tokens/tour)
+
+### Next
+- Sprint 1 taxonomie v2 (calibration empirique GLMM+Cox) — chantier principal
+- Fixes urgents (doublon n8n, dangling volume 820MB, app test `cccccccc`, backup rotation)
+- Sécurité : audit cosmos-server, migration SOPS secrets
+
+### Gotchas
+- `model: claude-sonnet-4-6` dans pickup.md frontmatter — à vérifier que Claude Code honore bien le champ `model` au prochain pickup (pas encore testé)
+
+---
+
+
+## Session 13 — 2026-04-15
+
+### Done
+- **Recherche scientifique profonde** (5 agents parallèles) sur la taxonomie CECRL graduée : SLA theory + CEFR + math/ML + pédagogie délivrance + LLM-as-grader 2023-2026. ~80 sources citées avec DOI/URL.
+- **6 décisions architecturales tranchées** avec Sinse (Q1-Q6 cf. ADRs) : calibration first, 5 tiers T0-T4, schema multi-domaine dès départ, ERRANT reporté, BYOK LiteLLM, self-consistency ciblé.
+- **8 dimensions architecture globale ouvertes** : SaaS freemium/B2B cible, ado+adulte indistinct, positionnement "complément à un cours", multi-domaines (langues + Python + cybersec + compta), monolithe maintenu (ADR-001), hybrid orchestrated (ADR-004 accepted-in-principle), shared library `academie-core` (ADR-005), snapshot cutoff (ADR-007).
+- **Structure documentation créée** `sinse-workspace/projects/academie-ia/docs/` : 10 dossiers, 42 fichiers, **5306 lignes markdown** authoritative.
+  - `INDEX.md` + `README.md` (point d'entrée unique)
+  - `00-project/` : vision, roadmap 7 sprints, glossary 60+ termes
+  - `01-pedagogy/` : taxonomy-framework, cefr-language-instance, error-gradation, feedback-delivery, bibliography
+  - `02-architecture/` : overview, data-model, agent-topology, shared-core, **api-surface** (new), **integrations** (new)
+  - `03-domain/languages/en.md` : Teacher détaillé
+  - `04-infra/` : deployment, backup, monitoring, credentials, filesystem-scan (snapshot)
+  - `05-decisions/` : ADR-template + 8 ADRs fondateurs
+  - `99-runbooks/` : gotchas, add-new-agent, rotate-litellm-keys, restore-backup
+  - `_legacy/` : 6 anciens docs préservés (status:needs-review)
+- **`/pickup` et `/handoff` mis à jour** : lecture INDEX.md au pickup, check consistency docs ↔ code au handoff.
+- **AGENTS.md workspace enrichi** : section DOCS WORKFLOW obligatoire avant toute modif structurelle.
+- **Scan exhaustif infrastructure** (4 agents parallèles, ~1200s) : Docker (13 containers), filesystem (/opt/academie + /opt/litellm + /mnt/cosmos-data), DB (250 tables academie_db + litellm_db + dify_plugin + Redis), surface applicative (36 endpoints FastAPI, 12 routes SvelteKit, 8 apps Dify, 7 workflows n8n, nginx, LiteLLM).
+- **Corrections critiques aux docs** post-scan :
+  - `curriculum_concepts` n'existe pas — concepts en JSONB dans `curriculums`
+  - Teacher chatflow = 41 nodes (pas 28)
+  - 98 concepts (pas 92)
+  - nginx sur host (pas container)
+  - cosmos-server = UI admin privileged (pas reverse proxy)
+  - cosmos-mongo-KIo existe (non documenté avant)
+  - academie_db = mégabase 250 tables mix 5 systèmes
+- **TODO P2 "Admin estimation dépense ft:gpt-4o-mini"** marqué DONE (livré Session 12).
+
+### Next
+- **Sprint 1 taxonomie v2** — calibration empirique (GLMM + Cox PH) sur dump `error_log` + `profils_eleves`. Remplace poids arbitraires 0.3/0.8 par valeurs data-driven. Effort : 5-7 jours.
+- **Fixes urgents** identifiés au scan :
+  - Doublon `dify-diagnostic` n8n (2 workflows même webhook path)
+  - Subnet /28 saturé (12/14 IPs) — ajouter un container = recréation bridge en /27
+  - Weekly/monthly backup rotation pas en place (rétention effective = 2 jours)
+  - `litellm_db` non backupé
+  - App test `cccccccc` à supprimer
+  - Dangling Docker volume 820 MB à cleanup
+- **Sécurité prioritaire avant SaaS public** : audit `cosmos-server` (privileged + docker.sock), migration SOPS des secrets (cf. credentials.md), correction fail rates n8n (snapshot 17%, diagnostic 28%).
+
+### Gotchas
+- **Docs pas encore dans git** : 38 fichiers workspace untracked + 24 tracked changes. Le handoff va commiter tout ça — gros commit.
+- **`filesystem-scan.md` = snapshot ponctuel** (status `snapshot`), non maintenu automatiquement. Consulter les docs structurés pour l'état courant.
+- **ADR-004 accepted-in-principle** : agent-topology à ré-analyser avant Sprint 5 avec analyse de risques détaillée.
+- **Roadmap** : 7 sprints étalés sur 6 mois, ~80-100 jours dev solo. Pas de pression delivery (familial).
+
+---
+
+
+## Session 12 — 2026-04-15
+
+### Done
+- Diagnostic problématique tracking tokens : widget admin affichait 4K alors que OpenAI dashboard montrait 48K (gap 12x)
+- Investigation approfondie : confirmé que **100% des appels LLM passent déjà par LiteLLM proxy** (Dify provider_models = aliases LiteLLM, n8n workflows POST vers `:4000`, error_analysis aussi). Le problème n'était pas le routing mais l'absence de logging.
+- Activation `LiteLLM_SpendLogs` : ajout `general_settings` dans `/opt/litellm/config.yaml` (database_url + disable_spend_logs:false + store_prompts_in_spend_logs:false pour économie disque) + restart container
+- Backend : `webapp/backend/app/database.py` ajoute un 2e pool `litellm_pool` (litellm_db, min:1 max:4). `chat_router.py:get_gpt4o_usage()` réécrit pour lire LiteLLM en truth + fallback tiktoken local si LiteLLM down (champ `source` indique l'état). Ajout breakdown par modèle (`models[]`) avec tokens + cost_usd.
+- Frontend : widget admin (`admin/+page.svelte`) affiche barre principale gpt-4o-mini + 2e ligne ft:gpt-4o-mini-v3 (tokens + $) + indicateur source LiteLLM/estimate
+- Backfill row insérée dans LiteLLM_SpendLogs (request_id `backfill-2026-04-15-pre-litellm-activation`) pour aligner aujourd'hui sur OpenAI dashboard (52,104 tokens). Tagguée auditable via metadata.
+- Validation E2E : chat webapp tracké, mistral-small tracké, endpoint retourne `source:"litellm"` avec breakdown propre
+- TODO P2 "estimation dépense ft:gpt-4o-mini" marqué DONE (livré comme effet de bord)
+
+### Next
+- Si on poursuit aujourd'hui : taxonomie CECRL graduée (gros chantier structurel) ou flashcard / spaced repetition (P2 fun)
+- Demain : vérifier reconciliation OpenAI vs LiteLLM_SpendLogs (J+1 délai usage API)
+- À envisager : sécurité — clé OpenAI en clair dans `/opt/litellm/config.yaml`, password DB aussi (TODO P3 séparé)
+
+### Gotchas
+- `_track_gpt4o_tokens` (tiktoken) garde son rôle critique : il pilote l'auto-switch gpt-4o-mini → groq-standard à 1.5M (sub-second), or LiteLLM SpendLogs est batché ~30-60s. Ne pas le supprimer.
+- `/opt/litellm/config.yaml` n'est pas dans un git repo — modif non versionnée. À sortir de cet handoff, ajouter le suivi via `/opt/academie/infra/` ou similaire si on veut gouvernance.
+- La row de backfill (~48K tokens) est synthétique : split arbitraire 90/10 input/output, spend calculé au tarif paid standard. Si OpenAI facture différemment (free tier complimentary), le `cost_usd` affiché peut être surestimé. Pas critique tant que c'est juste un indicateur.
+- Le compteur local `_gpt4o_token_counter` continue de s'incrémenter (~6K aujourd'hui) en parallèle de LiteLLM. Pas grave fonctionnellement (utilisé que pour budget exceeded), mais c'est de la double-comptabilité à terme.
+
+
+---
+
+
+## Session 11 — 2026-04-15
+
+### Done
+- F1 EVAL_READY fixé (FAIL → PASS) : fallback FR déterministe dans `code_eval_check` quand le LLM envoie `[EVAL_READY]` seul dans un 2e message
+- Nouveau script `scripts/fix_eval_ready_fallback.py` (patch idempotent published + draft workflows)
+- Source `scripts/update_teacher_onboarding.py` mis à jour pour régénérations futures
+- Validation E2E complète : onboarding 10 échanges → profil A1 créé (niveau_global, diagnostic_exchange_count, onboarding_completed_at tous set)
+- `docs/test-results-features.md` mis à jour : F1 = PASS
+
+### Next
+- Attaquer la taxonomie CECRL graduée (bonus mémoire) — granularité 6 bandes au lieu de 4 actuelles, calibration empirique des poids
+- OU reprendre TODO P2 : flashcards / spaced repetition, estimation dépense ft:gpt-4o-mini sur /admin
+
+### Gotchas
+- Le fix est en place mais le cas exact du bug (LLM envoie marker seul) ne s'est pas déclenché pendant l'E2E — le LLM était compliant. Validation défensive via unit test + lecture directe DB Dify.
+- E2E onboarding prend ~10 min car chaque tour Dify = 60s (blocking mode + gpt-4o-mini free tier + rate limit 3 RPM + large system prompt)
+
+---
+
+## Session 10 — 2026-04-15
+
+### Done
+- Diagnostic bug `/pickup` : SESSION.md/TODO.md introuvables (chemin relatif `projects/academie-ia/` résolvait depuis `/opt/academie/` mais les fichiers sont dans `/root/sinse-workspace/projects/academie-ia/`)
+- Fix : `pickup.md` + `handoff.md` migrés vers chemins absolus
+- Cleanup : suppression doublons user-level (`/root/.claude/commands/{pickup,handoff}.md`), seule la version project-scoped subsiste
+
+### Next
+- Reprendre TODO P2 : flashcards / spaced repetition, ou estimation dépense ft:gpt-4o-mini sur /admin
+- Bonus mémoire : F1 EVAL_READY (compliance LLM), taxonomie CEFR graduée
+
+### Gotchas
+- Les commandes `/pickup` et `/handoff` sont désormais machine-spécifiques (chemin absolu hardcodé) — explicite par choix, mais à savoir si le repo est cloné ailleurs
+
+---
+
+## Session 9 — 2026-04-14
+
+### Done
+- SESSION.md passé en mode cumulatif (prepend au lieu d'overwrite)
+- /handoff command mis à jour pour empiler les sessions
+- Token limit ajusté à 1.5M (au lieu de 1.45M)
+- Fix token tracking (missing await)
+- Widget admin token usage validé (écart ~2.5% vs OpenAI dashboard)
+
+### Next
+- Admin : estimation dépense ft:gpt-4o-mini (error analysis) — TODO P2
+- Mot de passe sinse = `temp-session-2026` — à changer
+
+---
+
+## Session 8 — 2026-04-14
+
+### Done
+- Switch chatbot Teacher : groq-standard (Llama 3.3 70B) → gpt-4o-mini (free tier, complimentary tokens)
+- Fallback LiteLLM : gpt-4o-mini → groq-standard → mistral-small
+- Token budget daily : compteur tiktoken persisté en PostgreSQL (table token_usage_daily), auto-switch vers groq à 1.5M tokens/jour, auto-restore gpt-4o-mini à minuit
+- Widget admin : barre de progression quota journalier + modèle actif + warning si dépassé
+- Endpoint /api/chat/token-usage pour monitoring
+- Test comparatif : ~70K tokens pour onboarding + 25 msgs. Écart /admin vs OpenAI dashboard : ~2.5% (surestimation safe)
+
+### Next
+- Admin : estimation dépense ft:gpt-4o-mini (error analysis tokens + coût) — TODO P2
+- Mot de passe sinse = `temp-session-2026` — à changer
+
+### Gotchas
+- Le compteur token surestime de ~2.5% (overhead system prompt estimé à 2000, réel ~1700)
+- L'error analysis (ft:gpt-4o-mini v3) reste le seul poste payant (~$0.005/appel)
+- L'error analysis nodes doit être re-ajouté après chaque run de update_snapshot_workflow.py
+
+---
+
+## Session 7 — 2026-04-14
+
+### Done
+- Phase 3 complète : 40/40 features PASS
+- F1 fixé : conclusion FR enforcée + détection élargie FR/EN
+
+---
+
+## Session 6 — 2026-04-14
+
+### Done
+- Phase 3 : test fonctionnel 40 features via webapp (63/71 pass initial)
+- 5 bugs identifiés et corrigés : snapshot JSON repair, tolerance_matrix key, derniere_session, is_first_turn, EVAL_READY wording
+- Retest : 7/8 FAIL corrigés, F1 reste compliance LLM
+
+---
+
+## Session 5 — 2026-04-14
+
+### Done
+- Étape 2 : Taxonomie d'erreurs — rules expansion 10→17 codes A1-C1, 43 tests 98% couverture
+- tolerance_matrix filtering en temps réel (shadow/noted/penalized)
+- Quick fix dashboard : "concepts vus" distinct de "concepts maîtrisés"
+
+---
+
+## Session 4 — 2026-04-14
+
+### Done
+- Quick fix dashboard stats : "concepts vus" au lieu de "concepts maîtrisés" dans le bloc stats
+
+---
+
+## Session 3 — 2026-04-14
+
+### Done
+- Étape 1 complète — Adaptation de personnalité :
+  - PROMPT_SESSION : ton adaptatif, profilage progressif, contextes par intérêts, objectif
+  - Snapshot : extraction personnalité (tâche 5 LLM)
+  - Settings webapp : centres d'intérêt + style correction
+  - Onboarding tour 3 : collecte intérêts + style
+
+---
+
+## Session 2 — 2026-04-14
+
+### Done
+- Inventaire complet 24 (→40) features Teacher
+- Audit error taxonomy (3 couches, 57 codes, couverture rules ~15-20%)
+- Audit adaptation personnalité (modes concept OK, reste non branché)
+- Plan 3 étapes validé : personnalité → taxonomie → test fonctionnel
+
+---
+
+## Session 1 — 2026-04-14
+
+### Done
+- Onboarding refonte complète (8 commits) : DB migration 5 colonnes, FK repair, diagnostic UPSERT fix, profil-get, profile API, prompt rewrite (2 FR + 5-7 EN + auto-eval + micro-tâches), dashboard bilan card, E2E test 24/24
+- Bug critique UUID→username corrigé sur 6 workflows n8n + error_analysis endpoint
+- Error pipeline déployé (snapshot → /internal/analyze-errors → error_log)
+- Snapshot : stop overwriting niveau_global
+- Stats coherence : sessions/minutes/progress alignés
+- Nettoyage doublons /pickup /handoff + artefacts multi-agent
+
+### Decisions
+- Approche pragmatique vs académique pour l'onboarding (pas de CAT/IRT/bayésien)
+- Profilage progressif plutôt que 4 tours FR à l'onboarding (finalement 3 tours)
+- Plomberie d'abord, sophistication ensuite
