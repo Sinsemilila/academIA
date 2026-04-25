@@ -43,7 +43,7 @@ model_list:
     - model_name: gpt-4o-mini
       litellm_params:
         model: openai/gpt-4o-mini
-        api_key: ENC[AES256_GCM,data:9Jtu3vF198FZUfSY8/vSN5ksUWvV65UNX4xLtRnM7h9IOUQSJ+JTrgFCfgTlH89suYLUk7VTX5QadZJiQqG8gIIKrBIv6wKLVLLszxrY8+cz6HUKCEi1kGpkER9JB+7QoaydiY6KORbHoa1EPDKUrw+VwtMMuaqf0aD+XwISRm3v5WxaXWJeBSdbtJih0XKB/2i2RyMsUqOklfCG6oPu/q86Frw=,iv:uUjDUkpmr8MHPWxLVClAljU+2OtodTkbUT1GFRtfKpE=,tag:Ji7sMmZQzNLbQI6ELGQiNg==,type:str]
+        api_key: ENC[AES256_GCM,data:lCfdLPXwtm7A5j5rbIql8UjUi/R2p0zRtKT1hOxCIgttab9/hQ0hU9yXow53oEA+rPH6KqGzeZpK+4XiLQHSoKPH5ikbLi6EyCCo/1fdsDBZpVkDN4gV6MJy91iDYmffLsSNbMlT0BWk78gyKP4x+HXaLNOlRwOhuXhKGMcFSnrS3I2TJhrj6VPho/aYS9in7oLGd/MAFxIiQEk1YSAtFny1rnk=,iv:ZwYoCHkaCbB1rxDQfCrOzHwxQYvw71CzxHd/PYF2Uac=,tag:ctsMBWIN2+wSnY+QpncoIA==,type:str]
       model_info:
         owner: sinse
         tier: free
@@ -51,7 +51,7 @@ model_list:
     - model_name: ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v2:DTurinhs
       litellm_params:
         model: openai/ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v2:DTurinhs
-        api_key: ENC[AES256_GCM,data:5eb8G3jhWJIXtIlMQwXVyfnqGLOBK+50pEo4QjzVEkuL28Jzhlr8Mpu2KdW0lwKGZfmSRbsJ58StPRe/AGSOHMwfdVzi5AQrbK3Nd68+1Ga3YFjGvC5WHqEc85H9uwALomjuB1CCpuoE+C1Jz50SCVLrajpd2UzRJ8VLE10MtY/Tu3yKA10SjimcieGpjkpkfxP6ptvUpPXQwZL9a+u/B8gZYeg=,iv:pHjobxNOqb4hLKY4O19SytFU3hx8hrfFWqbAgPciSyc=,tag:prGwBWqha3K7nxTo/vWU5g==,type:str]
+        api_key: ENC[AES256_GCM,data:lCfdLPXwtm7A5j5rbIql8UjUi/R2p0zRtKT1hOxCIgttab9/hQ0hU9yXow53oEA+rPH6KqGzeZpK+4XiLQHSoKPH5ikbLi6EyCCo/1fdsDBZpVkDN4gV6MJy91iDYmffLsSNbMlT0BWk78gyKP4x+HXaLNOlRwOhuXhKGMcFSnrS3I2TJhrj6VPho/aYS9in7oLGd/MAFxIiQEk1YSAtFny1rnk=,iv:ZwYoCHkaCbB1rxDQfCrOzHwxQYvw71CzxHd/PYF2Uac=,tag:ctsMBWIN2+wSnY+QpncoIA==,type:str]
       model_info:
         owner: sinse
         tier: paid
@@ -73,7 +73,7 @@ model_list:
     - model_name: groq-standard
       litellm_params:
         model: groq/llama-3.3-70b-versatile
-        api_key: ENC[AES256_GCM,data:42wd/i3edIWDKLebI+ClZCdpV3VYQbWOstJAmoFG+eqtHE6ZoWBgATO9vxXQqJn4FYbJ5WU1mhI=,iv:006YZ/DdwGdOOVeGaAzTelv18c2qyLBhANZVSpanfRY=,tag:TRO0VEcHB3K3++RiPAWjxg==,type:str]
+        api_key: ENC[AES256_GCM,data:OvwAtQuzaopDcRVCNOiI/Ur7YfoSQQw95hGjssx1VvtxoOOwo1zx4ka4nmljd5RoLfFG0yxHfZE=,iv:iLgSNAWpBR4MpCuAnv+QXrYS0YJaB/2VmGKOPNK1a0Y=,tag:86iG121umSgV1skHlVvRWw==,type:str]
         # throttle à 83% du max (12K) → bounce avant saturation
         tpm: 10000
         # throttle à 83% du max (30)
@@ -84,7 +84,7 @@ model_list:
     - model_name: groq-standard
       litellm_params:
         model: groq/llama-3.3-70b-versatile
-        api_key: ENC[AES256_GCM,data:Q7kWUe+o5p/D6eKUAmsFxWPtD7FxHImRkyG1/2H360b3Ztw7FbpH7tyyJdvNXnmKaCPHQbOuJtQ=,iv:WiNvnXOgGNmjz61VELDp89drLUtUyBcBO6IMwDq3MfM=,tag:ipyniZbhjYRNbum3NoW+HQ==,type:str]
+        api_key: ENC[AES256_GCM,data:S/3yxLMpqGfreIcSj3HJjRO/xLRwagt0ZqsAorD1Y/RytOLXxHOnL1Mtobr2DUUKilOLLvcxQi0=,iv:CkaHO9Kq1/Q8G58pAysXM1RUe4Vamv7ByX4QJ8ErC3c=,tag:mahel8YseUfuzUEYKG2LEQ==,type:str]
         tpm: 10000
         rpm: 25
       model_info:
@@ -121,7 +121,7 @@ model_list:
     - model_name: groq-snapshot
       litellm_params:
         model: groq/llama-3.1-8b-instant
-        api_key: ENC[AES256_GCM,data:DFXqr0HgLIYuKIqjwdzol50koXZLv0sAI+/KqWSEoCoL6OorCE64D8eqx7qlvNFAl0pZbwGZlKY=,iv:9XqrRx7j3xO8CMtmjAjmTotLMKYxG5rPDM2Ao1IyDpw=,tag:CyjG8+gFew8uYClUTFJhCA==,type:str]
+        api_key: ENC[AES256_GCM,data:OvwAtQuzaopDcRVCNOiI/Ur7YfoSQQw95hGjssx1VvtxoOOwo1zx4ka4nmljd5RoLfFG0yxHfZE=,iv:iLgSNAWpBR4MpCuAnv+QXrYS0YJaB/2VmGKOPNK1a0Y=,tag:86iG121umSgV1skHlVvRWw==,type:str]
         tpm: 5000
         rpm: 25
       model_info:
@@ -207,7 +207,7 @@ model_list:
     - model_name: gemini-flash
       litellm_params:
         model: gemini/gemini-2.5-flash
-        api_key: ENC[AES256_GCM,data:gt7OM6eOCRBMGsEaWgQUbaku1TwHMWFdow==,iv:p3IfoBGR9G+UCDbUjdcg5WyC09AuEjEbGl1w/RPnasQ=,tag:0ojlTe+Ppg1jF0bOc6RV+w==,type:str]
+        api_key: ENC[AES256_GCM,data:N/qiZH7pnAS+MtXjbjOBZhBMbxM/skMg8Q==,iv:nhKHKAWPzoneYlIhuy0vWBhm4/9fd2AbXbhC9nGQ48A=,tag:cIwuVzUaRgOfrpqN3pG7Qw==,type:str]
         # Gemini free-tier per-model limits (observed 2026-04-22) :
         #   2.5 Flash      :  5 RPM,  20 RPD
         #   3 Flash preview:  5 RPM,  20 RPD
@@ -223,7 +223,7 @@ model_list:
     - model_name: gemini-3-flash
       litellm_params:
         model: gemini/gemini-3-flash-preview
-        api_key: ENC[AES256_GCM,data:f6jyh1+SSLOL+6rg4//ZL0FT26tIM8G3Zw==,iv:ysE1DrLHX8Px6lxCPwOnJEo8NJV2OUw1R9eafWWZALs=,tag:bvcBYAAOpEYyfRVXnZT+uQ==,type:str]
+        api_key: ENC[AES256_GCM,data:N/qiZH7pnAS+MtXjbjOBZhBMbxM/skMg8Q==,iv:nhKHKAWPzoneYlIhuy0vWBhm4/9fd2AbXbhC9nGQ48A=,tag:cIwuVzUaRgOfrpqN3pG7Qw==,type:str]
         rpm: 5
       model_info:
         owner: sinse
@@ -244,7 +244,7 @@ model_list:
     - model_name: mistral-small
       litellm_params:
         model: mistral/mistral-small-latest
-        api_key: ENC[AES256_GCM,data:ZwF24naVN8uTlVuPkDtmtBhGWLguL01oqkAkUwIUYFI=,iv:I2d0P1agcs11GhULc0NRMHCsZU3v9LIGlXrfu2JrkGk=,tag:9EEsmzmIshyEjAMTS3KWIA==,type:str]
+        api_key: ENC[AES256_GCM,data:UfcQOLd3myRXUvTqjz3A+Vh83Usl+uov9Ag=,iv:yzJ7e7dj1mnzhCAUfPcuhwNDbbHU9dG9J6+zhqIkhOQ=,tag:81woMLDE2RTdf0tliZSWAQ==,type:str]
         # limite réelle Mistral free
         rpm: 2
       model_info:
@@ -309,7 +309,7 @@ sops:
             L2UyMVpXZlNUSUYrcXdOWW94bjB6SEkKaiUf/BJfRSHLPx1bRuwo0Cq6+Gqolu+Y
             lyj+mJdZXf259qszpesqBBkVCJamfaMqlimABW2kqJkwFwV2e6bzIg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-04-22T19:36:10Z"
-    mac: ENC[AES256_GCM,data:dENTTffpjddbLXr0N+AbBzelJNOrTJMt+fVjBLCOhLs0YJOy9UGE8FeAh2Bfu9VcDh2XpSo+KItnDvS5YbWpySoQU2FbxGJ0IdnGz90sfm0TazwWY0fheMOoxy0PL/Rti9t/L38Z94fmp7MFp+V6/zGahSP9jNF+Z4uADMdZ8+A=,iv:UnNt2yMVB7pW6CjvFGV1316ybM3lEgA9ihZAGGjpBTk=,tag:e4PlDS77bqMBMi0b3V5WOQ==,type:str]
+    lastmodified: "2026-04-25T09:30:02Z"
+    mac: ENC[AES256_GCM,data:6tkBi6lkBCVW96pXFvS09D2aiuzC+635RzFYLy29r88LQoclvidaNoOeInyd7LAdRrjNLkmLFWrRFdNomZqdxp0ZA98gg5RQ3Py0l+v7ugtolt6Lfkk+rvtXkPmNa+eUKaI2HabOWCuCFobwB2bzU5vK9ZrRS9SO8U6wgoI7uHM=,iv:ok5CdNjTIr0fN4fch3P7vw8dH8igORiB89wcAXX8slo=,tag:mn11Plfk7UThbJMLIrm04w==,type:str]
     encrypted_regex: ^(api_key|database_url|master_key|salt_key)$
     version: 3.12.2
