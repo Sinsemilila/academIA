@@ -1,14 +1,23 @@
 # TODO — AcademIA
-Last updated: 2026-04-24 — Claude (Session 48 mid — Obsidian plan validation in progress)
+Last updated: 2026-04-25 — Claude (Session 48 close — Migration Obsidian + v0.1 Claude-as-vault-cognition LIVRÉE)
 
 ## 🔝 EN COURS — RESUME AU PROCHAIN /pickup
 
-**Validation externe Obsidian Second Brain plan — Packages 5/16 à envoyer**
+**Tester workflow v0.1 Claude-as-vault-cognition + reprendre AcademIA P0**
 
-- Lire d'abord : `/root/sinse-vault/projects/obsidian-migration/obsidian-validation-state.md` (synthèse packages 1-4 faite + décisions L1-L16 lockées + méta-remarque Claude web à internaliser)
-- Puis envoyer à Sinse le **Package 5 — Triggers auto plan-mode** (bloc code complet dans `/root/sinse-vault/projects/obsidian-migration/obsidian-validation-packages.md` lignes ~370-423)
-- Sinse colle dans conversations externes (ChatGPT + Gemini Pro + Claude web Opus 4.7), ramène transcripts, je synthétise, on enchaîne P6→P16
-- **Décision provisoire à trancher avec Sinse** : vault unique vs 2 vaults séparés (workspace+life). Reco Claude = (b) 2 vaults séparés.
+Migration Obsidian + Claude-cognition architecture LIVRÉES Session 48 (135 locks, 4 phases, ~5h45 continu). Voir [[hot]] vault pour résumé.
+
+**Next actions au prochain pickup** :
+- Test E2E live workflow v0.1 : `claude` + `/pickup` (workspace orientation) + `/project academia` (deep load + dispatch vault-reader Haiku conditionnel)
+- Si v0.1 fonctionne bien → enchainer **P0 Teacher EN structured output enum** (~30 min, untried option #1, débloque Phase 3 fault injection delta gating)
+- Calendrier 2026-05-07 (12 jours) : DMARC `p=quarantine` + CSP enforce flip + CF Email Routing setup
+- Si problème v0.1 → ajustements design avant continuer
+
+**Roadmap macro (vault projects/obsidian-migration/roadmap-sinse-2026-04-25.md)** :
+- P0 cette semaine (~5h) : Teacher EN enum + B4 GlitchTip test browser + Restic monthly + DPA OpenAI/Groq
+- P1 mai 2026 : DMARC + CSP enforce + Phase 3 fault injection + B5 Paraglide i18n
+- P2 mai-juillet : Phase B AcademIA gros morceaux (B2 Bits UI, B3 PWA, B6) + Maestro ES catchup + outreach
+- P3 août-déc : formation cybersec aligné + L26 user non-root trigger-based
 
 ## OPEN (any AI can take)
 

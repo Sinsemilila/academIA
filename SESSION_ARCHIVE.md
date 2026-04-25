@@ -3,6 +3,45 @@
 Sessions plus anciennes (hors des 3 dernières conservées dans [`SESSION.md`](SESSION.md)).
 
 
+## Session 45 — 2026-04-22 (nuit, 17 commits — Teacher EN 17→22/26 = 85% via κ-calibrated judge + CEFR-gated mapping + B1 anti-patterns)
+
+### Done
+
+**Phase 1 — Re-baseline noise floor V2 avec gemini-3-1-flash-lite judge** : run `noise_floor.py --runs 2 --mode full --agent teacher_en`. cf_move_set_valid FPR 0.154 → 0.0 (16× judge consistency improvement). 6 A1/A2 scenarios consistently failing on forbidden CF moves — bug invisible avant la migration κ=0.33→0.84. Doc `session45_noise_floor_v2_post_judge_migration.md`. Commit `3151be1`.
+
+**Phase 2 (a + b + c + d + f) — Bug pédagogique fix iterative ladder** :
+- P2a `TIER_TO_FEEDBACK_BY_LEVEL` — refactor `tier_to_feedback_type()` accepts `level`. A1 T3 = `implicit_recast` (was elicit/metalinguistic forbidden). 26 pytest. Commit `d36c1bb`.
+- P2b A1 + A2 rubrics rewritten with HARD BAN + 3 anti-pattern fewshots A1 (P2c). V3 measurement = mixed (A1 partly fixed). Commits `83fccda`, `a82a84d`, `0412301`.
+- P2d B1 rubric HARD BAN + 3 B1 anti-patterns + 1 extra A2 anti-pattern. P2f A1 `l2_ratio_band [0.7, 0.98] → [0.7, 1.0]` on 7 scenarios (false-positive band fix). **V5 = 22/26 = 85%** — net +5 scenarios (3 A1 unstuck since Session 40, 1 A2, 1 B1, 2 L2_ratio fixes). Commit `5d7b246`.
+
+**P4.5 — /admin Oracle judge budget section** : JudgeBudgetBar SVG component aggregating 3-tier Gemini chain (540 RPD cumulated). New `/api/admin/judge-budget` endpoint reads `litellm_cache_stats` per provider model. Footer surface preflight CLI command. Cascade latency fix (judge_model swap `gemini-flash` → `gemini-3-1-flash-lite` direct, eliminates 15-30s cascade overhead per 429 retry). Commit `feb4eb9`.
+
+**P2g+h+i — Negative finding (rolled back)** : applied 3 prompt-engineering techniques (4 new anti-patterns, positive reframing, FINAL SELF-CHECK block enumerating banned phrases). V6 = 5/26 (catastrophic regression). Reverted P2i, V7 = 16/26 (still below V5). Rolled back all 3 to V5 baseline. Pink-elephant priming confirmed : listing banned phrases verbatim, even inside "if you catch yourself" frames, activates them in LLM representation. Documented learning : never repeat banned tokens >2×, structured output enum (untried option #1) is the next-session target, ablate one change at a time. Doc `session45_p2ghi_negative_finding.md`. Commit `656ae09`.
+
+**Side projects** :
+- LiteLLM Gemini chain (gemini-flash 20 RPD + gemini-3-flash 20 RPD + gemini-3-1-flash-lite 500 RPD = **540 RPD cumulated free tier**). All 3 models κ=0.84 in calibration. LiteLLM router fallback chain configured.
+- `preflight_gemini.py` updated to query per-model RPD via `litellm_cache_stats`, accurate budget visibility.
+- Statusline gadget `/root/.claude/statusline.sh` — evolution emoji `🌱→🌿→🌳→🦋→🐉` per cost band + `🎂` anniversary easter egg + `+N` Dwarf Fortress legendary++ trope past lvl 100.
+
+### Next
+
+**Session 46** :
+- **Try option #1 structured output enum constraint** — the untried high-ROI prompt-engineering technique. Add `feedback_type_intended: <enum excluding explicit_correction>` to JSON schema. LLM declares type BEFORE writing feedback, schema-validated. Should hit 24-26/26 if pink-elephant doesn't reappear. ~30 min + V8.
+- **Phase 3 — fault injection delta gating** (Session 42 O3 carryover) : clean+faulted run per scenario, gate on `mean(delta) ≥ 0.4 AND false_positive < 0.20`. Bypasses the 80% structural false-alarm ceiling. ~2h.
+- **Phase 4 — gate-strict flip** : battery block 8 `lint strict` → `lint + smoke strict` once Phase 3 PASS.
+
+**Moyen terme** : Phase C-deep prompt reorder (cache 19→75% post-Phase 3-4 protection). Maestro ES catchup avec les apprentissages P2 (skip pink-elephant trap, structured output first).
+
+### Gotchas
+
+- **Pink-elephant priming est VRAI et fort** : enumerate banned phrase verbatim in prompt = LLM produces them more, not less. Even with positive reframing pair ("if you feel the urge → ALWAYS Y"). Anthropic + EMNLP 2024 NegationBench papers confirm. Single rule for prompt engineering : positive instructions only, banned tokens ≤ 2× total mentions.
+- **gpt-4o-mini Teacher LLM ceiling ≈ 85% via prompt engineering** : V5 22/26 hits the ceiling for prompt-only interventions. To reach 95-100% : either structured output enum constraint (option #1, untried) OR LLM upgrade (gpt-4o, claude-haiku — 3× cost).
+- **Judge κ matters more than expected** : gpt-4o-mini judge κ=0.33 was masking real Teacher bugs as "passing" via systematic false-positives. Migration to gemini-3-1-flash-lite (κ=0.84) was the unblocker for the entire Session 45 progress. Lesson : always κ-calibrate judges before trusting their verdicts.
+- **Goldens MUST be re-recorded after every prompt change** : semantic_fidelity_pairwise dim compares against goldens, becomes stale immediately when Teacher prompt changes. Session 45 ran `record_golden.py --apply` after every meaningful prompt edit (~5 times tonight).
+- **Gemini free tier per-model RPD** is the real budget unit (not TPM). 2.5 Flash + 3 Flash = 20 RPD each ; 3.1 Flash Lite = 500 RPD. Direct `gemini-3-1-flash-lite` model_group preferred over fallback chain `gemini-flash → 3-flash → 3-1-flash-lite` to avoid 15-30s cascade latency on 429 retries.
+- **Ablation matters** : P2g+h+i applied together to save budget cost us the ability to know which intervention hurt vs helped. Next time : 1 change → 1 measurement → stack only if positive.
+
+
 ## Session 43-44 — 2026-04-22 (soir, 14 commits — P5 onboarding telemetry + admin dashboard redesign + model budget waterfall)
 
 ### Done

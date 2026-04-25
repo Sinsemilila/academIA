@@ -5,6 +5,126 @@ Sessions empilées (plus récente en haut). Rotation : seules les **3 dernières
 ---
 ---
 
+## Session 48 — 2026-04-25 (jour, ~5h45 continu, 18+ commits / 4 repos pushed — Migration Obsidian Phase 0a/0b/0c + 1 + 2 + 3 LIVRÉE + Claude-as-vault-cognition v0.1 architecturale)
+
+### Done
+
+**Migration Obsidian COMPLÈTE** — 4 phases massives en single session :
+
+**Phase 0a sécurité (4/4 — base hardening)** :
+- `~/.claude/settings.json` purgé (drop `defaultMode: auto` + `skipAutoPermissionPrompt: true` + wildcards `permissions.allow: ["*"]`). Source-of-truth enforcement permissions.deny désormais honorée.
+- **Mistral key migration end-to-end** : ancienne clé compromise rotée + SOPS source `config.yaml.sops` migré vers `os.environ/MISTRAL_API_KEY` + container LiteLLM relauncher avec `-e MISTRAL_API_KEY` + smoke live HTTP 200.
+- **rclone config encryption** : master pwd 32 random base64 dans `/opt/academie-shared/secrets/rclone-master-password` + `RCLONE_PASSWORD_COMMAND` env dans restic-backup.sh + restic-restore-test.sh + token gdrive rotation OAuth re-auth via Windows + verify end-to-end (4 snapshots accessibles).
+- **Hardening cosmos** : `/etc/sysctl.d/99-hardening.conf` (kptr_restrict=2, ptrace_scope=2, rp_filter=1, syncookies, log_martians) + auditd installed/enabled + unattended-upgrades + `/etc/apt/apt.conf.d/20auto-upgrades`.
+
+**Phase 1 Obsidian (foundations)** :
+- Vault structure créée `/root/sinse-vault/` avec 5 folders Option C (projects/areas/resources/archive/meta) + `.gitignore` + `.stignore` + git init + GitHub repo `sinse-vault` privé + push initial.
+- `sinse-tools` repo init `/root/sinse-tools/` + GitHub repo (sinse-tools- typo renamed via gh CLI) + push.
+- `sinse-workspace-archive` rename via gh CLI (cohérent migration future).
+- CLAUDE.md natifs déployés : `/opt/academie/CLAUDE.md` (project, 84 lignes) + `~/.claude/CLAUDE.md` (cross-project user-level, 56 lignes).
+- Aliases bash : `claude-academie`, `claude-eisen`, `tmux-academie`, `tmux-eisen`.
+- Memory mirror cron `/etc/cron.d/memory-vault-mirror` toutes 15 min : `rsync -a --delete /root/.claude/projects/-opt-academie/memory/ → /root/sinse-vault/meta/agent-memory/` + 16 files mirrored initial.
+- Eisenday cloné `/opt/eisenday/` depuis github.com/Sinsemilila/Eisenday-app.
+- Syncthing cosmos installed + service active + pairing devices laptop ↔ cosmos + folder shared `sinse-vault` bidir TLS Up to Date validé E2E.
+
+**Wikilinks flip L128** (multi-agent research 5 agents, lock decision flip) :
+- Research community + tooling 2025-2026 : token-cheaper Claude (3 vs 8-12 tokens/lien), MCP servers wikilink-native (jacksteamdev, cyanheads), bugs markdown documentés Obsidian staff (mobile/Android, unlinked-mentions, parent-paths).
+- L97 (markdown links) → L128 (wikilinks default zéro exception). Settings Obsidian Windows : `Use Wikilinks ON` + `New link format = Shortest path when possible`.
+- Tous fichiers vault wikilinks, simplification choix Sinse (anti-drift discipline manuelle).
+
+**Phase 2-3 obsidian migration** (8 + 4 steps + Step 8.5 safety) :
+- Backup pré-migration : restic snapshot `c2cd7070` (1.3 GiB tag pre-obsidian-migration-phase2) + git tags pre-phase2-migration sur 4 repos.
+- Step 1 : 114 files AcademIA project docs `/root/sinse-workspace/projects/academie-ia/` → `/opt/academie/` (8 .md root + docs/ rsync 78 files merged into existing 41 = 119 total zero collision sur 00-project, 01-pedagogy, 05-decisions, 99-runbooks après merge + 4 sub-dirs historique archive/challenges/merge-requests/refactor-v1.0).
+- Step 2 : 5 hardcoded refs critiques fixed (CLAUDE.md ligne 80, slash commands handoff/pickup paths, simulate_personas.py lignes 12+24, AGENTS.md projet drop, oracle/README.md:5 relative link).
+- Step 3 : workspace meta → vault `resources/` (4 files: git-workflow, sinse-quickstart, file-protection, tools) + 3 ADRs workspace docs/decisions/ → `/opt/academie/docs/05-decisions/`.
+- Step 4 : planning Obsidian → vault `projects/obsidian-migration/` (audit-phase0/ 9 files + 4 obsidian-*.md + roadmap-sinse + phase2-3-plan).
+- Step 5 (CRITIQUE) : tools/ migration avec cron pause + symlinks recreate `/opt/academie-shared/scripts/` → `/root/sinse-tools/` + atomicity check 4/4 OK + restic-backup paths split staging Phase 2 (sinse-vault + sinse-tools UNIQUEMENT) vs Phase 3 (+ sinse-archive).
+- Step 6-8 : cleanup workspace (AGENTS.md drop + tools/ rm) + commits + validation E2E.
+- Step 8.5 PRÉ-rename safety audit : grep hardcoded refs critique `/etc/cron.d/`, code, slash commands → tous clean. TODO.md WIP paths fixed `/root/sinse-workspace/planning/` → `/root/sinse-vault/projects/obsidian-migration/`.
+- Phase 3 : `mv /root/sinse-workspace/ /root/sinse-archive-2026-pre-vault/` + restic add archive path (Step 11 split staging) + final smoke 17/17 ALL CLEAR.
+
+**Audit cohérence multi-agent (3 agents read-only, 18 findings)** :
+- 5 critiques fixés : C1 cron pause systémique pendant Step 5 (race conditions), C2 restic paths split staging clarification, C3 Step 2 grep+sed concret, C4 Step 7/8 réordonnés (validation avant commits), C5 Step 8.5 PRÉ-rename audit safety.
+- 8 importants fixés : I1-I8 (simulate_personas paths exact, AGENTS.md projet, oracle README link, time budget recalibré 4h → 4h40, backup cron file, Step 6 ordering, GEMINI.md dead symlink, symlinks atomicity).
+- Locks ajoutés L130-L132 (cron pause systémique, restic split staging, audit hardcoded PRÉ-rename obligatoire).
+
+**Architecture Claude-as-vault-cognition v0.1 LIVRÉE** (multi-agent research 4 agents) :
+- Research patterns 2025-2026 : Karpathy LLM Wiki (pre-compiled summaries pas RAG), Eleanor Konik flow (inbox → knowledge promote), Anthropic effective-context-engineering, token economics Haiku 4.5 vs Opus 4.7 (5x cheaper), crossover 2K/10K/multi-turn.
+- Two-tier slash commands :
+  - **`~/.claude/commands/pickup.md`** (NEW user-level, workspace orientation léger ~3-5K tokens) : lit vault hot.md + log.md + INDEX.md + cosmos health + active projects status.
+  - **`~/.claude/commands/project.md`** (NEW user-level, switcher avec args + dispatch vault-reader conditionnel) : `/project academia [task-hint] [--no-vault]`, deep load `/opt/<projet>/{CLAUDE,SESSION,TODO,docs/INDEX}.md` + détecte WIP TODO.md + dispatch Haiku si task identifié.
+  - **`/opt/academie/.claude/commands/pickup.md`** DELETED (absorbé par /project).
+  - **`/opt/academie/.claude/commands/handoff.md`** kept (project-specific finalize).
+- **Custom agent `~/.claude/agents/vault-reader.md`** Haiku 4.5 : lit vault Obsidian + synthesize ≤300 tokens cross-projet knowledge. Format strict KEY POINTS / FILES READ / GOTCHAS / UNCERTAINTY (no preamble, hard limit). Économie ~74% tokens vs raw load Opus.
+- Vault root files :
+  - `vault/CLAUDE.md` (instructions Claude reading vault)
+  - `vault/INDEX.md` (MOC racine — topic → file map, entry point retrieval)
+  - `vault/hot.md` (500-word semantic snapshot — auto-overwrite par /handoff v0.2)
+  - `vault/log.md` (chronological one-liner per session — auto-append par /handoff v0.2)
+- Vault meta : `claude-conventions.md` (read/write zones, frontmatter, anti-patterns) + `cli-mapping.md` (inventory exhaustif Claude Code CLI cosmos — slash commands, custom agents, skills, CLAUDE.md hierarchy, settings, memory canonical, tools, status line, aliases, gaps).
+- Vault knowledge seeds (3 patterns démontrent pattern) : `auth-patterns.md`, `dify-variable-wiring.md`, `n8n-workflow-history.md`.
+- Vault empty zones : `inbox/`, `daily/` avec .gitkeep.
+- CLAUDE.md natifs (project + user) référencent vault dispatch pattern + cross-references vers INDEX/conventions/cli-mapping.
+- Vault project doc : `vault/projects/obsidian-migration/v0-claude-as-vault-cognition.md` doc canonical complet (vision, architecture, conventions, anti-patterns, roadmap v0.1→v0.3, indicateurs succès).
+- Locks ajoutés L133-L135 (architecture two-tier, vault-reader Haiku custom, vault structure root + write zones).
+
+**Side wins** :
+- Workflow vault populated end-to-end visible Obsidian Windows (Sinse validé refresh Ctrl+R cache puis voit tout).
+- Pre-push hooks fixed `/opt/academie/.git/hooks/pre-push` + `/root/sinse-workspace/.git/hooks/pre-push` (paths smoke-test old → /root/sinse-tools/).
+- log tool `/root/sinse-tools/log` CHANGELOG path fixed (post-Phase 2 trouvé au /handoff).
+
+**Métriques finales** : smoke deep 23/23 + smoke quick 17/17 + restic backup pushed `c2cd7070` 1.3 GiB + 18+ commits 4 repos (academia, sinse-vault, sinse-tools, sinse-workspace-archive) + 135 locks accumulés (L1-L135) + 9 documents canonical produced.
+
+### Next
+
+**Session 49 picks immédiats** :
+- **Test E2E live workflow v0.1** (~10 min) : `claude` depuis SSH cosmos + `/pickup` (workspace orientation) + `/project academia` (deep load + dispatch vault-reader sur task hint si TODO.md WIP marker) + question test pour observer Haiku synthese fonctionne.
+- **P0 Teacher EN structured output enum** (~30 min, untried option #1, bloque Phase 3 fault injection delta gating) : ajouter `feedback_type_intended: <enum excluding explicit_correction>` dans JSON schema → LLM declares type AVANT writing feedback. Target 24-26/26 si pink-elephant ne reapparaît pas.
+- **B4 GlitchTip browser final test** (~15 min) : Ctrl+Shift+R sur academie.petit-pont.com + `Promise.reject(new Error('test'))` → vérifier event GlitchTip frontend Issues sous 30s. Pipeline serveur-side validé Session 47.
+
+**Calendar 2026-05-07 (12 jours)** :
+- DMARC `p=quarantine` flip via API CF zone-token (après 2 sem CSP collecte clean).
+- CSP enforce flip dans `hooks.server.ts` (`Content-Security-Policy-Report-Only` → `Content-Security-Policy`).
+- CF Email Routing setup `dsar@/security@/dmarc-reports@` (token CF account a perms, **modifies DNS MX + écrase SPF** → demande OK explicite avant exec).
+
+**v0.2 Claude-as-vault-cognition** (~45 min, déclenchable post-test E2E v0.1 OK) :
+- `/handoff` extension auto-writes : append `vault/daily/YYYY-MM-DD.md` (project, done, decisions, gotchas, commits) + overwrite `vault/hot.md` (regenerate 500-word snapshot) + append `vault/log.md` (one-liner) + drafts auto dans `vault/inbox/` si new patterns détectés.
+- Mirror cron `/etc/cron.d/academia-state-mirror` toutes 15 min : `rsync /opt/academie/{SESSION,TODO,CHANGELOG}.md → /root/sinse-vault/projects/academia-ia/` (read-only mirror, source-of-truth /opt/academie).
+- Si vault knowledge manque pour task récurrent → seed nouveau knowledge file.
+
+**v0.3 future (post-mesure 2-4 semaines usage v0.1+v0.2)** :
+- Top-10 skills keyword-routed si patterns émergent (auth, dify, n8n, svelte, etc.).
+- Promotion pipeline `inbox/` → `knowledge/` (Sinse review process).
+- MCP Obsidian server si vault > 200 notes (jacksteamdev ou cyanheads).
+- Cache Anthropic prompt cache_control breakpoint pour stable docs.
+
+**Pédagogie Phase 3-4** (post Teacher EN P0) :
+- Phase 3 fault injection delta gating (~2h) : Session 42 O3 carryover, clean baseline + faulted run par scenario, gate sur `mean(delta) ≥ 0.4 AND false_positive < 0.20`.
+- Phase 4 gate-strict flip : `RUN_RECENT_BATTERY.sh` block 8 `lint strict` → `lint + smoke strict`.
+
+**Phase B AcademIA** (P2 mai-juillet, gros morceaux) :
+- B2 Bits UI + shadcn-svelte (~2.5 sem, 18 composants headless).
+- B3 Images + PWA Workbox (~1 sem, AVIF/WebP + Vite PWA).
+- B5 Paraglide-JS i18n (~0.5 sem, quick win EN fallback).
+- B6 Forms + motion + state (~1 sem, Superforms v2 runes).
+
+**Manuel Sinse résiduel** :
+- Signer DPA OpenAI ([platform.openai.com/account/data-processing-addendum](https://platform.openai.com/account/data-processing-addendum)) + Groq ([groq.com/dpa/](https://groq.com/dpa/)).
+- Restic restore mensuel test E2E (jamais fait, J+30 audit).
+- Cloudflare Notifications policies (DDoS + SSL expiring + Page Shield + Tunnel down).
+
+### Gotchas
+
+- **Pre-push hooks hardcoded paths** : `.git/hooks/pre-push` dans /opt/academie + /root/sinse-workspace référençaient `/root/sinse-workspace/tools/smoke-test`. Découverts au push final Phase 2 (smoke-test command not found). Fix sed → `/root/sinse-tools/`. Pattern : tout fichier `.git/hooks/*` n'est pas committed (config locale), reste sur cosmos seulement, doit être patché manuellement post-migration.
+- **log tool `/root/sinse-tools/log`** ligne 37 hardcodait `/root/sinse-workspace/projects/academie-ia/CHANGELOG.md` (commit `e652bf3` fixé). Découvert au /handoff Session 48 close.
+- **Syncthing folder rescan** : malgré `localFiles=49 globalFiles=50` post-migration, `phase2-3-obsidian-migration-plan.md` apparaissait pas dans Obsidian Windows Files panel. Cache Obsidian Windows. Fix `Ctrl+P → Reload app without saving`. Pattern : après migration vault content, toujours suggest reload Obsidian Windows.
+- **Git "dubious ownership"** post-rename `sinse-workspace` → `sinse-archive-2026-pre-vault` : git refuse open repo car owner sinse vs current user root. Fix `git config --global --add safe.directory /root/sinse-archive-2026-pre-vault`. Pattern : si rename dossier git owned par autre user, ajouter safe.directory à toutes les operations git contre archive.
+- **Subagent context loss anti-pattern** (audit cohérence research) : vault-reader Haiku ne voit pas le context conversation Opus, brief complete obligatoire dans dispatch prompt (OBJECTIVE, files to read, output format strict). "Lost in synthesis" : Haiku peut omettre détails CRITIQUES (line numbers, edge cases) si dispatch prompt vague. Mitigation : prompt strict + format KEY POINTS / FILES / GOTCHAS / UNCERTAINTY.
+- **Auto-Dream conflict** Claude memory native rewrites memory en arrière-plan → vault `meta/agent-memory/` doit rester read-only mirror via cron 15 min (cohérent L9). Source-of-truth memory = `~/.claude/projects/-opt-academie/memory/`, jamais éditer côté vault.
+- **Eisenday `/opt/eisenday/`** cloné mais .ai/ doc = doc-théâtre (audit L102 : 4 fichiers, 2 commits seulement 2026-04-02). NE PAS répliquer .ai/ pattern pour AcademIA (cohérent L110 flatten en CLAUDE.md natif + CHANGELOG.md projet).
+
+---
+
 ## Session 47 — 2026-04-23 (jour, ~30 commits / 8 PRs main — Phase A 7/7 closed + 4 followups + Phase B1 design tokens + Phase B4 GlitchTip stack + UX nav + CF Access refactor)
 
 ### Done
@@ -126,43 +246,3 @@ Sessions empilées (plus récente en haut). Rotation : seules les **3 dernières
 
 ---
 
-
-## Session 45 — 2026-04-22 (nuit, 17 commits — Teacher EN 17→22/26 = 85% via κ-calibrated judge + CEFR-gated mapping + B1 anti-patterns)
-
-### Done
-
-**Phase 1 — Re-baseline noise floor V2 avec gemini-3-1-flash-lite judge** : run `noise_floor.py --runs 2 --mode full --agent teacher_en`. cf_move_set_valid FPR 0.154 → 0.0 (16× judge consistency improvement). 6 A1/A2 scenarios consistently failing on forbidden CF moves — bug invisible avant la migration κ=0.33→0.84. Doc `session45_noise_floor_v2_post_judge_migration.md`. Commit `3151be1`.
-
-**Phase 2 (a + b + c + d + f) — Bug pédagogique fix iterative ladder** :
-- P2a `TIER_TO_FEEDBACK_BY_LEVEL` — refactor `tier_to_feedback_type()` accepts `level`. A1 T3 = `implicit_recast` (was elicit/metalinguistic forbidden). 26 pytest. Commit `d36c1bb`.
-- P2b A1 + A2 rubrics rewritten with HARD BAN + 3 anti-pattern fewshots A1 (P2c). V3 measurement = mixed (A1 partly fixed). Commits `83fccda`, `a82a84d`, `0412301`.
-- P2d B1 rubric HARD BAN + 3 B1 anti-patterns + 1 extra A2 anti-pattern. P2f A1 `l2_ratio_band [0.7, 0.98] → [0.7, 1.0]` on 7 scenarios (false-positive band fix). **V5 = 22/26 = 85%** — net +5 scenarios (3 A1 unstuck since Session 40, 1 A2, 1 B1, 2 L2_ratio fixes). Commit `5d7b246`.
-
-**P4.5 — /admin Oracle judge budget section** : JudgeBudgetBar SVG component aggregating 3-tier Gemini chain (540 RPD cumulated). New `/api/admin/judge-budget` endpoint reads `litellm_cache_stats` per provider model. Footer surface preflight CLI command. Cascade latency fix (judge_model swap `gemini-flash` → `gemini-3-1-flash-lite` direct, eliminates 15-30s cascade overhead per 429 retry). Commit `feb4eb9`.
-
-**P2g+h+i — Negative finding (rolled back)** : applied 3 prompt-engineering techniques (4 new anti-patterns, positive reframing, FINAL SELF-CHECK block enumerating banned phrases). V6 = 5/26 (catastrophic regression). Reverted P2i, V7 = 16/26 (still below V5). Rolled back all 3 to V5 baseline. Pink-elephant priming confirmed : listing banned phrases verbatim, even inside "if you catch yourself" frames, activates them in LLM representation. Documented learning : never repeat banned tokens >2×, structured output enum (untried option #1) is the next-session target, ablate one change at a time. Doc `session45_p2ghi_negative_finding.md`. Commit `656ae09`.
-
-**Side projects** :
-- LiteLLM Gemini chain (gemini-flash 20 RPD + gemini-3-flash 20 RPD + gemini-3-1-flash-lite 500 RPD = **540 RPD cumulated free tier**). All 3 models κ=0.84 in calibration. LiteLLM router fallback chain configured.
-- `preflight_gemini.py` updated to query per-model RPD via `litellm_cache_stats`, accurate budget visibility.
-- Statusline gadget `/root/.claude/statusline.sh` — evolution emoji `🌱→🌿→🌳→🦋→🐉` per cost band + `🎂` anniversary easter egg + `+N` Dwarf Fortress legendary++ trope past lvl 100.
-
-### Next
-
-**Session 46** :
-- **Try option #1 structured output enum constraint** — the untried high-ROI prompt-engineering technique. Add `feedback_type_intended: <enum excluding explicit_correction>` to JSON schema. LLM declares type BEFORE writing feedback, schema-validated. Should hit 24-26/26 if pink-elephant doesn't reappear. ~30 min + V8.
-- **Phase 3 — fault injection delta gating** (Session 42 O3 carryover) : clean+faulted run per scenario, gate on `mean(delta) ≥ 0.4 AND false_positive < 0.20`. Bypasses the 80% structural false-alarm ceiling. ~2h.
-- **Phase 4 — gate-strict flip** : battery block 8 `lint strict` → `lint + smoke strict` once Phase 3 PASS.
-
-**Moyen terme** : Phase C-deep prompt reorder (cache 19→75% post-Phase 3-4 protection). Maestro ES catchup avec les apprentissages P2 (skip pink-elephant trap, structured output first).
-
-### Gotchas
-
-- **Pink-elephant priming est VRAI et fort** : enumerate banned phrase verbatim in prompt = LLM produces them more, not less. Even with positive reframing pair ("if you feel the urge → ALWAYS Y"). Anthropic + EMNLP 2024 NegationBench papers confirm. Single rule for prompt engineering : positive instructions only, banned tokens ≤ 2× total mentions.
-- **gpt-4o-mini Teacher LLM ceiling ≈ 85% via prompt engineering** : V5 22/26 hits the ceiling for prompt-only interventions. To reach 95-100% : either structured output enum constraint (option #1, untried) OR LLM upgrade (gpt-4o, claude-haiku — 3× cost).
-- **Judge κ matters more than expected** : gpt-4o-mini judge κ=0.33 was masking real Teacher bugs as "passing" via systematic false-positives. Migration to gemini-3-1-flash-lite (κ=0.84) was the unblocker for the entire Session 45 progress. Lesson : always κ-calibrate judges before trusting their verdicts.
-- **Goldens MUST be re-recorded after every prompt change** : semantic_fidelity_pairwise dim compares against goldens, becomes stale immediately when Teacher prompt changes. Session 45 ran `record_golden.py --apply` after every meaningful prompt edit (~5 times tonight).
-- **Gemini free tier per-model RPD** is the real budget unit (not TPM). 2.5 Flash + 3 Flash = 20 RPD each ; 3.1 Flash Lite = 500 RPD. Direct `gemini-3-1-flash-lite` model_group preferred over fallback chain `gemini-flash → 3-flash → 3-1-flash-lite` to avoid 15-30s cascade latency on 429 retries.
-- **Ablation matters** : P2g+h+i applied together to save budget cost us the ability to know which intervention hurt vs helped. Next time : 1 change → 1 measurement → stack only if positive.
-
----
