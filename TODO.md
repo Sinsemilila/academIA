@@ -5,8 +5,8 @@ Last updated: 2026-04-24 — Claude (Session 48 mid — Obsidian plan validation
 
 **Validation externe Obsidian Second Brain plan — Packages 5/16 à envoyer**
 
-- Lire d'abord : `/root/sinse-workspace/planning/obsidian-validation-state.md` (synthèse packages 1-4 faite + décisions L1-L16 lockées + méta-remarque Claude web à internaliser)
-- Puis envoyer à Sinse le **Package 5 — Triggers auto plan-mode** (bloc code complet dans `/root/sinse-workspace/planning/obsidian-validation-packages.md` lignes ~370-423)
+- Lire d'abord : `/root/sinse-vault/projects/obsidian-migration/obsidian-validation-state.md` (synthèse packages 1-4 faite + décisions L1-L16 lockées + méta-remarque Claude web à internaliser)
+- Puis envoyer à Sinse le **Package 5 — Triggers auto plan-mode** (bloc code complet dans `/root/sinse-vault/projects/obsidian-migration/obsidian-validation-packages.md` lignes ~370-423)
 - Sinse colle dans conversations externes (ChatGPT + Gemini Pro + Claude web Opus 4.7), ramène transcripts, je synthétise, on enchaîne P6→P16
 - **Décision provisoire à trancher avec Sinse** : vault unique vs 2 vaults séparés (workspace+life). Reco Claude = (b) 2 vaults séparés.
 
