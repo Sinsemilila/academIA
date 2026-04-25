@@ -79,6 +79,22 @@ Design tokens OKLCH (cf. `docs/99-runbooks/b1-design-tokens.md`).
 
 Note : ces fichiers vivent dans `/opt/academie/` (live with code, depuis Phase 2 obsidian migration 2026-04-25).
 
+## VAULT KNOWLEDGE (cross-projet)
+
+Pour patterns cross-projet (auth, dify, n8n, svelte, infra, etc.), dispatch
+subagent `vault-reader` (Haiku 4.5) plutôt que load raw `/opt/academie/docs/`
+dans Opus context. Économie ~74% tokens vs raw load.
+
+- Vault root : `/root/sinse-vault/`
+- Entry point : `/root/sinse-vault/INDEX.md` (MOC racine)
+- Knowledge cross-projet : `/root/sinse-vault/knowledge/` (auth-patterns, dify-variable-wiring, n8n-workflow-history)
+- Conventions read/write Claude : `/root/sinse-vault/meta/claude-conventions.md`
+- CLI mapping exhaustive : `/root/sinse-vault/meta/cli-mapping.md`
+
+Pattern via slash command :
+- `/pickup` (workspace orientation, lit vault hot.md + INDEX.md + log.md)
+- `/project academia [task-hint]` (deep load + dispatch vault-reader si task identifié)
+
 ## STYLE
 
 Telegraph. Noun-phrases ok. Drop grammar. Min tokens. English code, French chat.
