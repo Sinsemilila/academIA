@@ -1,27 +1,26 @@
 # TODO — AcademIA
-Last updated: 2026-04-25 — Claude (Session 48 close — Migration Obsidian + v0.1 Claude-as-vault-cognition LIVRÉE)
+Last updated: 2026-04-26 — Claude (Session 49 — v0.2 Claude-as-vault-cognition LIVRÉE, projet AcademIA figé pendant focus lock Obsidian)
 
-## 🔝 EN COURS — RESUME AU PROCHAIN /pickup
+## 🔒 FOCUS LOCK OBSIDIAN — AcademIA en pause
 
-**🚨 P0 BLOQUANT AVANT TOUT** — Syncthing Windows persistence
-- Sinse a dû fermer terminal PowerShell qui run `syncthing.exe` → Syncthing Windows down → vault sync cassé
-- **Avant toute autre chose** : install SyncTrayzor (https://github.com/canton7/SyncTrayzor) sur Windows = Syncthing avec tray icon + auto-start au login + pas de terminal visible. ~2 min install + import config existante (Device ID + folder déjà paired côté cosmos).
-- Alternative : install Syncthing comme Windows service via `nssm` ou Task Scheduler at logon.
-- Vérif post-install : Syncthing Windows UI 8384 accessible + folder `sinse-vault` Up to Date vs cosmos.
-- Sans ce fix : vault ne sync plus, Obsidian Windows déconnecté de Claude updates.
+**Décision Sinse 2026-04-26** : projet Obsidian migration / Claude-as-vault-cognition reste seul focus actif. **NE PAS** entamer items AcademIA ci-dessous tant que Sinse n'a pas explicit déclaré closure Obsidian.
 
-**Tester workflow v0.1 Claude-as-vault-cognition + reprendre AcademIA P0** (après fix Syncthing)
+État Obsidian :
+- v0.1 LIVRÉE 2026-04-25 ✅
+- v0.2 LIVRÉE 2026-04-26 ✅ (handoff vault auto-writes + mirror cron academie + test E2E + bug fix sinse-tools symlinks + Syncthing Windows persistence resolved)
+- v0.3 différé post-mesure 2-4 sem (anti-pattern anticipation)
+- Closure technique Session 49 — voir [[hot]] vault pour détails
 
-Migration Obsidian + Claude-cognition architecture LIVRÉES Session 48 (135 locks, 4 phases, ~5h45 continu). Voir [[hot]] vault pour résumé.
+## 🔝 EN COURS — RESUME AU PROCHAIN /pickup (post-closure Obsidian)
 
-**Next actions au prochain pickup** :
-- Test E2E live workflow v0.1 : `claude` + `/pickup` (workspace orientation) + `/project academia` (deep load + dispatch vault-reader Haiku conditionnel)
-- Si v0.1 fonctionne bien → enchainer **P0 Teacher EN structured output enum** (~30 min, untried option #1, débloque Phase 3 fault injection delta gating)
-- Calendrier 2026-05-07 (12 jours) : DMARC `p=quarantine` + CSP enforce flip + CF Email Routing setup
-- Si problème v0.1 → ajustements design avant continuer
+Sinse choisira explicit prochain projet parmi candidats roadmap :
+- **P0.1 Teacher EN structured output enum** (~30 min, untried option #1, débloque Phase 3 fault injection delta gating)
+- **Calendar 2026-05-07** (DMARC `p=quarantine` + CSP enforce flip + CF Email Routing) — 12 jours fenêtre
+- **Eisenday V2 backlog** (dormant, app shortcuts / onboarding / widget / R8)
+- **v0.3 mesure usage** (post 2-4 sem données réelles cumulatives)
 
 **Roadmap macro (vault projects/obsidian-migration/roadmap-sinse-2026-04-25.md)** :
-- P0 cette semaine (~5h) : Teacher EN enum + B4 GlitchTip test browser + Restic monthly + DPA OpenAI/Groq
+- P0 cette semaine (~5h, figé focus lock) : Teacher EN enum + B4 GlitchTip test browser + Restic monthly + DPA OpenAI/Groq
 - P1 mai 2026 : DMARC + CSP enforce + Phase 3 fault injection + B5 Paraglide i18n
 - P2 mai-juillet : Phase B AcademIA gros morceaux (B2 Bits UI, B3 PWA, B6) + Maestro ES catchup + outreach
 - P3 août-déc : formation cybersec aligné + L26 user non-root trigger-based
