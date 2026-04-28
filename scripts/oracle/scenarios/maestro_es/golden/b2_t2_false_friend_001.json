@@ -1,24 +1,24 @@
 {
   "scenario_id": "b2_t2_false_friend_001",
-  "sha": "f7fb532a1ba4",
-  "recorded_at": "2026-04-28T22:23:24Z",
-  "response": "Casi — *embarazada* significa 'pregnant'. Para expresar que te sientes abrumada, podrías usar *avergonzada* o *incomodada*. ¿Cómo dirías la frase correctamente?",
-  "dify_conversation_id": "91f616ff-c2a9-426c-8323-68b40b914c42",
-  "dify_message_id": "e5d32f25-5382-4520-a4de-6aca911d83f1",
+  "sha": "90bd135e791d",
+  "recorded_at": "2026-04-28T22:38:15Z",
+  "response": "Casi — en lugar de 'embarazada', podrías decir 'me siento abrumada por este proyecto'. ¿Cómo lo dirías tú?",
+  "dify_conversation_id": "a65b125f-9b47-4316-bc0d-ed4d939eb6b0",
+  "dify_message_id": "7e05fed7-a55b-4b86-9096-de7b39d2916c",
   "usage": {
     "prompt_tokens": 3086,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 282,
+    "completion_tokens": 252,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3368,
+    "total_tokens": 3338,
     "total_price": "0",
     "currency": "USD",
-    "latency": 5.339,
-    "time_to_first_token": 5.712,
+    "latency": 8.782,
+    "time_to_first_token": 9.18,
     "time_to_generate": 0.0
   }
 }

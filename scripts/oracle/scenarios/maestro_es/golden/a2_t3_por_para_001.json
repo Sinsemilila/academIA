@@ -1,10 +1,10 @@
 {
   "scenario_id": "a2_t3_por_para_001",
-  "sha": "f7fb532a1ba4",
-  "recorded_at": "2026-04-28T22:23:04Z",
+  "sha": "90bd135e791d",
+  "recorded_at": "2026-04-28T22:37:48Z",
   "response": "¡Genial! Hablar español es muy útil para el trabajo. ¿Qué tipo de trabajo haces? ¿Hay algún tema específico que te gustaría practicar?",
-  "dify_conversation_id": "d5296f35-3b78-47f4-a55a-c5936c99006b",
-  "dify_message_id": "6ea3fe77-dd04-4b34-9646-aa28b1980902",
+  "dify_conversation_id": "f4985eb6-fdcd-4c47-9a7c-098fd360d1b8",
+  "dify_message_id": "b17bb5bd-599a-4629-912f-605f8ce536fb",
   "usage": {
     "prompt_tokens": 3636,
     "prompt_unit_price": "0",
@@ -17,8 +17,8 @@
     "total_tokens": 3667,
     "total_price": "0",
     "currency": "USD",
-    "latency": 3.126,
-    "time_to_first_token": 3.507,
+    "latency": 1.599,
+    "time_to_first_token": 2.04,
     "time_to_generate": 0.0
   }
 }

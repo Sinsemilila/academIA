@@ -1,24 +1,24 @@
 {
   "scenario_id": "b1_t2_quantifier_001",
-  "sha": "f7fb532a1ba4",
-  "recorded_at": "2026-04-28T22:23:10Z",
-  "response": "Casi — en español decimos 'muy divertida' en lugar de 'mucho divertida'. Y, para la segunda parte, ¿cuál es el verbo correcto para expresar que estabas cansada después de la fiesta? Intenta usar 'estuve' en lugar de 'estaba'.",
-  "dify_conversation_id": "77ccc4f9-ff31-48dd-8322-73f0dc9c2ab0",
-  "dify_message_id": "19b25218-1b54-4b2d-abf5-4693d821730e",
+  "sha": "90bd135e791d",
+  "recorded_at": "2026-04-28T22:38:00Z",
+  "response": "Casi — en lugar de *mucho divertida*, ¿qué adverbio deberías usar? Y recuerda, *estaba* es correcto, pero ¿cuál es el tiempo que usaste para la fiesta? Intenta reformularlo.",
+  "dify_conversation_id": "16b2494e-1836-4641-b04c-77976649cab3",
+  "dify_message_id": "56acf402-a038-4f77-a038-1cd5b8e5fda7",
   "usage": {
     "prompt_tokens": 3721,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 291,
+    "completion_tokens": 266,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 4012,
+    "total_tokens": 3987,
     "total_price": "0",
     "currency": "USD",
-    "latency": 5.0,
-    "time_to_first_token": 5.396,
+    "latency": 10.515,
+    "time_to_first_token": 10.882,
     "time_to_generate": 0.0
   }
 }

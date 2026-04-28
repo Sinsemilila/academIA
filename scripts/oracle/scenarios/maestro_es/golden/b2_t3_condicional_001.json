@@ -1,24 +1,24 @@
 {
   "scenario_id": "b2_t3_condicional_001",
-  "sha": "f7fb532a1ba4",
-  "recorded_at": "2026-04-28T22:23:35Z",
-  "response": "Casi correcto, pero en lugar de 'iba a estudiar', deberías decir 'habría estudiado'. Así, la frase quedaría: 'Si tuviera más tiempo, habría estudiado un idioma nuevo cada año'. ¿Puedes reformularla con esta corrección?",
-  "dify_conversation_id": "10bc9083-a06e-4f52-b0fa-8b8c6b877fb1",
-  "dify_message_id": "7d70acfd-d818-4f84-b253-c8ba2f47a5c4",
+  "sha": "90bd135e791d",
+  "recorded_at": "2026-04-28T22:38:22Z",
+  "response": "Casi correcto, pero en lugar de 'iba a estudiar', deberías decir 'habría estudiado'. Entonces, la frase completa sería: 'Si tuviera más tiempo, habría estudiado un idioma nuevo cada año'. ¿Puedes intentar reformularla?",
+  "dify_conversation_id": "fd412e6f-f76a-43ca-a143-007e18d97b66",
+  "dify_message_id": "ba29d6aa-6cc2-40d5-bf99-6c1e5d6634f6",
   "usage": {
     "prompt_tokens": 3073,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 273,
+    "completion_tokens": 275,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3346,
+    "total_tokens": 3348,
     "total_price": "0",
     "currency": "USD",
-    "latency": 9.946,
-    "time_to_first_token": 10.483,
+    "latency": 5.974,
+    "time_to_first_token": 6.336,
     "time_to_generate": 0.0
   }
 }

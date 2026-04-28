@@ -1,10 +1,10 @@
 {
   "scenario_id": "b1_t3_subjuntivo_pres_001",
-  "sha": "f7fb532a1ba4",
-  "recorded_at": "2026-04-28T22:23:18Z",
+  "sha": "90bd135e791d",
+  "recorded_at": "2026-04-28T22:38:05Z",
   "response": "Casi — después de *espero que*, ¿qué modo del verbo venir?",
-  "dify_conversation_id": "2934a332-b9f8-4f44-9353-66920f6658bb",
-  "dify_message_id": "01794185-39ee-4a73-b261-aa20d5237d38",
+  "dify_conversation_id": "5ec715ed-6407-43e4-821c-ff742fe908f2",
+  "dify_message_id": "504ad4cc-3446-4720-9692-0c131b96c01f",
   "usage": {
     "prompt_tokens": 3721,
     "prompt_unit_price": "0",
@@ -17,8 +17,8 @@
     "total_tokens": 3738,
     "total_price": "0",
     "currency": "USD",
-    "latency": 0.734,
-    "time_to_first_token": 1.12,
+    "latency": 0.848,
+    "time_to_first_token": 1.227,
     "time_to_generate": 0.0
   }
 }

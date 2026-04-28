@@ -1,24 +1,24 @@
 {
   "scenario_id": "multi_a2_por_para_uptake_001",
-  "sha": "f7fb532a1ba4",
-  "recorded_at": "2026-04-28T22:23:48Z",
-  "response": "¡Genial! Aprender español puede abrirte muchas puertas en el trabajo. ¿Qué temas específicos te interesan más para tu trabajo?",
-  "dify_conversation_id": "58712db4-cf15-40b2-979e-403510a75217",
-  "dify_message_id": "10ee1130-c754-41c0-9e24-1de71140f56d",
+  "sha": "90bd135e791d",
+  "recorded_at": "2026-04-28T22:39:37Z",
+  "response": "¡Genial! Aprender español puede abrirte muchas puertas en el trabajo. ¿Qué temas específicos te interesan para tu trabajo?",
+  "dify_conversation_id": "168de7df-4d84-43b8-97e7-d73ecfb1d130",
+  "dify_message_id": "e2e795fb-a483-4e93-93e6-c0dddba33d24",
   "usage": {
     "prompt_tokens": 3631,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 28,
+    "completion_tokens": 27,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3659,
+    "total_tokens": 3658,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.097,
-    "time_to_first_token": 1.537,
+    "latency": 1.169,
+    "time_to_first_token": 1.558,
     "time_to_generate": 0.0
   }
 }

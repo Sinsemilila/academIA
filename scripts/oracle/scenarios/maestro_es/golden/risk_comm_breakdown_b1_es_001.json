@@ -1,24 +1,24 @@
 {
   "scenario_id": "risk_comm_breakdown_b1_es_001",
-  "sha": "f7fb532a1ba4",
-  "recorded_at": "2026-04-28T22:23:58Z",
-  "response": "Hmm, parece que hay un pequeño error en tu frase. ¿Podrías intentar reformularla? Piensa en cómo expresar lo que querías decir sobre lo que hacía la persona y la razón relacionada con el tiempo. ¡Inténtalo!",
-  "dify_conversation_id": "d8d62128-ea81-4ec6-8c15-91f8dbec669d",
-  "dify_message_id": "831eb9a1-864f-471d-b642-de7420dd692b",
+  "sha": "90bd135e791d",
+  "recorded_at": "2026-04-28T22:39:50Z",
+  "response": "Hmm, parece que hay un pequeño error en tu frase. En lugar de \"la cosa que hacía de la persona\", podrías decir \"la cosa que hacía la persona\". Además, ¿qué tiempo quieres expresar? Si hablas de algo que sucedía en el pasado, podrías usar el imperfecto. ¿Puedes intentar reformularlo?",
+  "dify_conversation_id": "65921e67-964d-4392-8317-041a3fb08689",
+  "dify_message_id": "a40716ad-2ccd-4b5b-b584-c488b9eb0e3c",
   "usage": {
     "prompt_tokens": 3721,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 50,
+    "completion_tokens": 69,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3771,
+    "total_tokens": 3790,
     "total_price": "0",
     "currency": "USD",
-    "latency": 2.083,
-    "time_to_first_token": 2.455,
+    "latency": 1.65,
+    "time_to_first_token": 2.016,
     "time_to_generate": 0.0
   }
 }

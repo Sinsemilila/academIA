@@ -1,10 +1,10 @@
 {
   "scenario_id": "risk_a1_metalinguistic_leak_es_001",
-  "sha": "f7fb532a1ba4",
-  "recorded_at": "2026-04-28T22:23:55Z",
+  "sha": "90bd135e791d",
+  "recorded_at": "2026-04-28T22:39:47Z",
   "response": "¡No te preocupes! Tu español está mejorando. Vamos a practicar juntos. ¿Qué te gustaría aprender hoy?",
-  "dify_conversation_id": "a43fda87-5c7e-45b4-92a6-68c555fa2207",
-  "dify_message_id": "15ea3367-50a3-4450-9cfc-b8af587f4095",
+  "dify_conversation_id": "b5cd4518-6427-4a3a-892c-4d5788734bb9",
+  "dify_message_id": "6369348b-3c3f-4a55-9d32-ce199ba1934c",
   "usage": {
     "prompt_tokens": 3630,
     "prompt_unit_price": "0",
@@ -17,8 +17,8 @@
     "total_tokens": 3654,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.346,
-    "time_to_first_token": 1.741,
+    "latency": 2.057,
+    "time_to_first_token": 2.455,
     "time_to_generate": 0.0
   }
 }

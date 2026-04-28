@@ -1,24 +1,24 @@
 {
   "scenario_id": "c1_t3_subjuntivo_imp_001",
-  "sha": "f7fb532a1ba4",
-  "recorded_at": "2026-04-28T22:23:44Z",
-  "response": "Dices *me alegré mucho de que tú viniste*, pero sería mejor decir *me alegré mucho de que tú hubieras venido* para reflejar el hecho de que la cena fue un evento reciente. También, podrías usar *por que* en lugar de *de que*. ¿Te gustaría intentar reformular la frase?",
-  "dify_conversation_id": "d7c37b38-8c0c-48f2-9abb-24f45c32a2d3",
-  "dify_message_id": "3b5e9671-f7dd-41f0-8b6b-cbd882a1ae9e",
+  "sha": "90bd135e791d",
+  "recorded_at": "2026-04-28T22:39:33Z",
+  "response": "Es correcto decir *me alegré mucho de que vinieras a la cena ayer por la noche*. Aquí, el uso de *vinieras* en subjuntivo es más adecuado para expresar una acción pasada que se percibe como menos cierta. ¡Buen intento!",
+  "dify_conversation_id": "0ca08e69-0e48-442e-a085-6fce3533b61a",
+  "dify_message_id": "91ec9751-d989-45ea-9c77-f1260de06975",
   "usage": {
     "prompt_tokens": 3098,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 279,
+    "completion_tokens": 286,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3377,
+    "total_tokens": 3384,
     "total_price": "0",
     "currency": "USD",
-    "latency": 4.111,
-    "time_to_first_token": 4.487,
+    "latency": 66.86,
+    "time_to_first_token": 67.249,
     "time_to_generate": 0.0
   }
 }
