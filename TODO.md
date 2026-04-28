@@ -47,7 +47,7 @@ Last updated: 2026-04-29 — Claude (Session 51 — Teacher EN P0.1 alignment + 
 
 - **Calendar 2026-05-07** (DMARC `p=quarantine` + CSP enforce flip + CF Email Routing) — **8 jours fenêtre restant**
 - **Eisenday V2 backlog** (dormant, app shortcuts / onboarding / widget / R8)
-- **Maestro ES alignment** : appliquer `build_full_dify_inputs` à `--agent maestro_es` + re-record goldens. Same scripts work, ~30 min once Tier 1 complete.
+- ~~**Maestro ES alignment**~~ : ✅ Session 51 — `build_full_dify_inputs(scenario, "maestro_es")` validated, Dify temp 0.7→0.2 patched (workflow `d3df0ef0-...`), 24 goldens re-recorded (commit `d1ed462` sha `f7fb532a1ba4`). Battery measurement awaits judge RPD reset (Groq gemini-3-1-flash-lite 481/540 RPD).
 - **v0.3 mesure usage** (post 2-4 sem données réelles, démarrage compteur Session 49 = 2026-04-26)
 
 **Roadmap macro (vault projects/obsidian-migration/roadmap-sinse-2026-04-25.md)** :
