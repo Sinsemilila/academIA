@@ -5,7 +5,7 @@ Sessions empilées (plus récente en haut). Rotation : seules les **3 dernières
 ---
 ---
 
-## Session 50 — 2026-04-28 (jour, ~2h continu — Closure FINALE migration Obsidian + Syncthing PC fixe pairing + audit intégral + tests E2E)
+## Session 50 — 2026-04-28 (jour, ~6h continu — Closure FINALE migration Obsidian + Syncthing PC fixe + audit intégral + Bundle FIX/B/F+G + 14 knowledge promus + disk resize +50G + Docker move sdb + /handoff user-level smart)
 
 ### Done
 
@@ -51,7 +51,48 @@ Sessions empilées (plus récente en haut). Rotation : seules les **3 dernières
 - Phase 0 closure 13 items LIVRÉE Session 49 (item 12 différé post-incident, item 13 droppé jusqu'à trigger MCP externe) ✅
 - v0.3 différé post-mesure 2-4 sem usage réel (lock explicit anti-pattern anticipation)
 - **Audit + Phase A + tests E2E + closure Session 50 ✅**
-- Lock prochain projet libre : Sinse choisit P0 AcademIA Teacher EN ou autre direction.
+
+---
+
+## Session 50 — APRÈS-MIDI (suite, ~4h continu)
+
+**Bundle FIX CONVENTIONS** (5 ships vault) :
+- Phase A `2e6b1f2` : wikilinks L128 update conventions.md + mirror cron exception read-only zones documented (meta/agent-memory/* + projects/*-ia/* écrasés au prochain tick)
+- Phase C `ee9df87` + `f3aa49b` : frontmatter coverage 21 files (13 obsidian-migration drafts + 5 meta partial + 3 resources). Type whitelist étendu `[plan, audit]` dans validate-frontmatter.sh + CLAUDE.md vault. **100% coverage hors mirrors atteinte**.
+- Phase D `739811f` : taxonomy tags pluralization (gotcha→gotchas). Total 38 tags (cible 15+scope, audit 2-3 mois post-usage).
+- Phase E `c31ee60` : .gitkeep log/+log/plans/ + INDEX sections "Empty by design" notes (inbox/log-plans/archive/areas).
+
+**Bundle B ACTIVATE LEARNING** (3 ships) :
+- B1 memory `feedback_skill_routing.md` (non-versionné par design) : routing rules pour /log-failure /safepoint /decision /promote /daily /ingest + inbox draft policy (≥2 sessions OU ≥10 min debug OU cross-projet émergent)
+- B2 `c5b4e40` (sinse-claude-config) : section ## SKILLS & LEARNING PIPELINE dans CLAUDE.md user (6 skills triggers + audit mensuel ~30 min + anti-doc-théâtre check 0 skill 4 sessions)
+- B3 `826208f` (academie) : /handoff Section 4.4 bar abaissé inbox + Section 4.5 NEW failures+gotchas consolidation + Section 5.2 vault commit list étendu (projects/*/failures.md) + Section 6 anti-doc-théâtre flag
+
+**Bundle F+G SCALING PREP** (3 ships) :
+- F1 `dd7f5cf` (vault) : `meta/templates/template-new-project-structure.md` 8 steps bootstrap projet (mkdir + cron + alias + INDEX + CLAUDE.md natif + focus-lock decision + failures.md skip + knowledge anticipation). Naming conventions (suffix -ia deprecated).
+- G1 `9009a77` (academie) : /handoff Section 4.1 [project] tag forced daily headers + 7 slugs canoniques (obsidian/academia/eisenday/microentreprise/cross-project/infra/meta)
+- G2 `537d295` (vault) : focus-lock pattern formalisé `meta/workflow.md` (when/how activate/lift + items hors scope + 4 anti-patterns explicit)
+
+**14 knowledge files promus vault/knowledge/** (4 ships) :
+- 1ère vague `f54e8ee` (3 plans stratégiques) : multilang-roadmap (Wave 1-4 ES/IT+DE/JP/RU) + onboarding-qcm-research (refonte 2026-04-20, 7 rapports vague1+2) + security-refactor-blueprint (ADR-001 H2 2026 réutilisable cross-projet)
+- 2ème vague `7c5f983` (5 pédago/architecture) : pedagogy-cefr-consolidation + error-gradation-framework (GLMM Cox) + feedback-delivery-pedagogy (Lyster/Hattie/Cowan/Cepeda/Sheen-Ellis/Pak) + taxonomy-framework-abstract (5 tiers domain-agnostic GravityAxes James 1998) + architecture-patterns-composite (CF Tunnel + nginx HOST + Docker /28 + LiteLLM cascade + FastAPI monolith + Dify + n8n)
+- 3ème vague `a21eb12` (6 socle solide) : data-model-postgresql + api-surface-rest (10 routers + 5 patterns) + academia-glossary + rgpd-compliance-toolkit (DPIA/registre/DSAR/Schrems II/AI Act/mineurs) + sla-pedagogy-bibliography (15+ citations + 13 corpus open) + l1-l2-scaffolding-policy (matrice 9 cells level×distance×FLA)
+- **Total vault knowledge maintenant 17 files** (3 originaux + 14 promus today). Pattern Karpathy LLM Wiki = pre-compiled summaries + pointer code-adjacent /opt/academie/docs/ source canonical. Audit final exhaustif valide ZERO doc strategic oublié.
+
+**Disk resize + Docker move** :
+- Phase 1 : `qm resize 100 scsi0 +50G` (host Proxmox, 0 downtime) + fdisk delete swap partitions sda5/sda2 + growpart /dev/sda 1 + resize2fs (online) + create swapfile 2.6G sur sda1 + fstab clean. /dev/sda1 passes 47G→99G, 81%→41% used.
+- Phase 2 : Docker compose down 17 containers + stop docker.service + containerd.service + rsync /var/lib/{docker,containerd} → /mnt/cosmos-data/{docker,containerd} (sdb 850G dédié) + edit /etc/docker/daemon.json data-root + /etc/containerd/config.toml root + restart services + auto-start containers via restart policies. /dev/sda1 final 18G/99G (20% used, 76G libres). 17/17 containers running + smoke 17/17.
+- 5 commits academie (matin closure) + 8 commits vault (audit + bundles + promotions) + 1 commit sinse-claude-config (B2)
+
+**`/handoff` user-level smart** (1 ship) :
+- `e1f390d` (sinse-claude-config) : skill `/root/.claude/commands/handoff.md` user-level cross-projet auto-detect via git status. Workflow `claude` (depuis /root/) → /pickup → /project academia → work → /project eisenday → work → /handoff (auto-detect 2 projets touchés, ferme proprement chacun + vault auto-writes cumulés). Args : `--projet <nom>`, `--vault-only`, `--dry-run`. Compatible legacy /opt/academie/.claude/commands/handoff.md (overrides sections 1-3 si présent).
+
+**Métriques journée Session 50** :
+- 18 commits cross 3 repos (5 academia + 11 vault + 2 sinse-claude-config)
+- 14 knowledge files promus vault (~3500L cumulés summaries Karpathy pattern)
+- Disk resize +50G + Docker move sdb (76G libres, économie infra long-terme)
+- /handoff user-level smart cross-projet activé (workflow scaling Eisenday/microentreprise futur)
+- Smoke 17/17 ALL CLEAR continu
+- GitHub counter à T+0 final : 7/18 reconnus (délai propagation private repos burst, va rattrapper)
 
 ### Next
 
@@ -81,6 +122,10 @@ Sessions empilées (plus récente en haut). Rotation : seules les **3 dernières
 - **SESSION.md gap Session 49** : oversight au /handoff Session 49 — bloc SESSION.md jamais ajouté (focus Sinse sur autre chose). Pattern : `/handoff` doit checker `grep "## Session N" SESSION.md` post-prepend pour validate. Sinon vault `log.md` + `hot.md` capturent l'historique mais SESSION.md drift.
 - **Syncthing PC fixe `--allow-newer-config`** : flag obligatoire si SyncTrayzor v2 + Syncthing v2.0.16+ avec config v52 portable. Sans le flag, Syncthing refuse de démarrer car config "newer than supported". À cocher Settings avancées SyncTrayzor.
 - **Test Session 49 portable offline** : portable éteint au moment du round-trip Syncthing test. Sync needs=0 confirmé côté cosmos+fixe. Portable rattrappera au prochain power-on (delta minor).
+- **Docker 29.4 storage driver `overlayfs` "duplicate" du compte** : `du /var/lib/docker` traverse les overlayfs mounts qui pointent vers `/var/lib/containerd/snapshots/`. Apparent 17G + 20G mais réel storage = uniquement containerd snapshots (Docker rootfs/overlayfs/<container_id> = mountpoints virtuels, pas data physique). Mesurer avec `--exclude=*/rootfs/overlayfs/*`. Solved Phase 2 move data-root.
+- **fdisk extended partition layout sda5 swap** bloque growpart /dev/sda 1 si sda2 (extended) + sda5 (swap) sont après sda1. Fix : swapoff + fdisk delete sda5 + delete sda2 + growpart + resize2fs + fallocate swapfile sur sda1 nouveau espace + fstab clean.
+- **GitHub contribution counter délai indexer** : repos privés en burst → propagation slow (10/h max). 18 commits today, 7 reconnus à fin journée. Pattern : check 24h après si <14 commits, sinon investigate user emails verified.
+- **`/handoff` project-level vs user-level scope** : project-level `/opt/academie/.claude/commands/handoff.md` chargé seulement si cwd = /opt/academie au démarrage Claude. Solution scaling : user-level smart `/handoff` (e1f390d) auto-detect via git status, marche depuis n'importe quel cwd. claude direct from /root/ recommended pour multi-projet.
 
 ---
 

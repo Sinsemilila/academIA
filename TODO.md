@@ -1,5 +1,5 @@
 # TODO — AcademIA
-Last updated: 2026-04-28 — Claude (Session 50 — Closure FINALE Obsidian + Syncthing fixe + audit intégral + tests E2E. Focus lock LEVÉ.)
+Last updated: 2026-04-28 — Claude (Session 50 PM — closure FINALE + bundles + 17 knowledge vault + disk resize + /handoff smart)
 
 ## ✅ OBSIDIAN MIGRATION CLOSED (2026-04-28)
 
