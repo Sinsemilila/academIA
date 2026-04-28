@@ -48,19 +48,28 @@ from oracle.judges.dify_client import build_oracle_profile as _build_oracle_prof
 
 
 def record_one(client: httpx.Client, agent: str, key: str, scenario: ScenarioSchema, sha: str) -> GoldenFile | None:
+    """Session 51 P0.2 — record via prod-aligned Dify path.
+
+    Builds full inputs via `build_full_dify_inputs` (mirrors chat_router prod scope),
+    captures the same answer the harness will see (incl. `<output>{json}</output>`
+    unwrap when LLM emits structured output). Metadata kept for traceability.
+    """
+    from oracle.judges.dify_client import build_full_dify_inputs
     first_learner = next((t for t in scenario.turns if t.role == "learner"), None)
     if not first_learner:
         return None
     cfg = _cfg()
     url = cfg["dify"]["public_api_base"] + cfg["dify"].get("public_api_path", "/v1/chat-messages")
-    nl_summary, lp_json = _build_oracle_profile(scenario, agent)
+    try:
+        inputs = build_full_dify_inputs(scenario, agent)
+    except Exception as e:
+        print(f"  WARN {scenario.id}: build_full_dify_inputs failed ({e}), falling back to 2-input", file=sys.stderr)
+        nl_summary, lp_json = _build_oracle_profile(scenario, agent)
+        inputs = {"learner_profile_summary": nl_summary, "learner_profile_json": lp_json}
     try:
         r = client.post(url, json={
             "query": first_learner.text,
-            "inputs": {
-                "learner_profile_summary": nl_summary,
-                "learner_profile_json": lp_json,
-            },
+            "inputs": inputs,
             "user": f"oracle-{scenario.id}", "response_mode": "blocking",
             "conversation_id": "",
         }, headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
@@ -70,11 +79,26 @@ def record_one(client: httpx.Client, agent: str, key: str, scenario: ScenarioSch
     except Exception as e:
         print(f"  ERROR {scenario.id}: {e}", file=sys.stderr)
         return None
+    raw_answer = (resp.get("answer") or "").strip()
+    # Mirror call_agent's <output> unwrap so goldens reflect feedback prose
+    # (the same string judges see at scoring time).
+    response = raw_answer
+    if "<output>" in raw_answer and "</output>" in raw_answer:
+        try:
+            _PKG = Path("/opt/academie/packages/academie-core")
+            if str(_PKG) not in sys.path:
+                sys.path.insert(0, str(_PKG))
+            from academie_core.pedagogy.teacher_prompt import parse_teacher_response
+            parsed = parse_teacher_response(raw_answer)
+            if parsed.parse_ok and parsed.feedback:
+                response = parsed.feedback.strip()
+        except Exception:
+            pass
     return GoldenFile(
         scenario_id=scenario.id,
         sha=sha,
         recorded_at=datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
-        response=(resp.get("answer") or "").strip(),
+        response=response,
         dify_conversation_id=resp.get("conversation_id"),
         dify_message_id=resp.get("message_id"),
         usage=(resp.get("metadata") or {}).get("usage"),

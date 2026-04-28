@@ -118,27 +118,46 @@ async def _call_judge(
     headers = {"Content-Type": "application/json"}
     if master:
         headers["Authorization"] = f"Bearer {master}"
-    try:
-        r = await client.post(
-            cfg["litellm"]["proxy_url"], json=payload, headers=headers,
-            timeout=jcfg.get("timeout_s", 30),
-        )
-        r.raise_for_status()
-        choice = r.json().get("choices", [{}])[0]
-        text = (choice.get("message") or {}).get("content")
-        result = _extract_json(text)
-        if result is None:
-            # Surface whether we got an empty content (thinking overflow?)
-            # or a non-JSON body, so the operator can debug.
-            _log.warning(
-                "judge returned no parseable JSON "
-                "(content_empty=%s, finish_reason=%s)",
-                not text, choice.get("finish_reason"),
+    # Session 51 P0.2 — retry on 429 / ReadTimeout with exponential backoff.
+    # Free-tier judge LLMs (Groq gemini-3-1-flash-lite) burst-limit on full
+    # battery (78 calls × 26 scenarios × 3 votes). Without retry, many dims
+    # fall back to None verdict → divergent-by-default semantic_fidelity_pairwise.
+    timeout_s = jcfg.get("timeout_s", 30)
+    max_attempts = 3
+    for attempt in range(max_attempts):
+        try:
+            r = await client.post(
+                cfg["litellm"]["proxy_url"], json=payload, headers=headers,
+                timeout=timeout_s,
             )
-        return result
-    except Exception as e:
-        _log.warning("judge call failed: %s (%s)", type(e).__name__, e)
-        return None
+            if r.status_code == 429 and attempt < max_attempts - 1:
+                await asyncio.sleep(2 ** attempt)
+                continue
+            r.raise_for_status()
+            choice = r.json().get("choices", [{}])[0]
+            text = (choice.get("message") or {}).get("content")
+            result = _extract_json(text)
+            if result is None:
+                _log.warning(
+                    "judge returned no parseable JSON "
+                    "(content_empty=%s, finish_reason=%s)",
+                    not text, choice.get("finish_reason"),
+                )
+            return result
+        except httpx.ReadTimeout:
+            if attempt < max_attempts - 1:
+                await asyncio.sleep(2 ** attempt)
+                continue
+            _log.warning("judge call failed: ReadTimeout after %d attempts", max_attempts)
+            return None
+        except httpx.HTTPStatusError as e:
+            # 429 fallthrough on final attempt OR non-retryable status.
+            _log.warning("judge call failed: HTTPStatusError (%s)", e)
+            return None
+        except Exception as e:
+            _log.warning("judge call failed: %s (%s)", type(e).__name__, e)
+            return None
+    return None
 
 
 async def _vote_n(
