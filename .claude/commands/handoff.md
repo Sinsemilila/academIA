@@ -89,10 +89,37 @@ Newest at bottom. Append-only.
 ### 4.4 Inbox drafts (conditionnel)
 Cible : `/root/sinse-vault/inbox/<slug>.md`
 
-- **Si** la session a révélé un pattern cross-projet récurrent OU non-trivial (auth quirk, dify gotcha, n8n behavior, deploy trick) **non encore documenté** dans `vault/knowledge/`
-- → draft un fichier `inbox/<slug>.md` avec frontmatter `type: knowledge`, `status: draft`, `tags: [...]`, `ai_summary: "..."`. Body court = pattern + reproduction + résolution.
-- Sinse review et promote vers `vault/knowledge/<topic>.md` ultérieurement.
-- **Skip** cette section si rien d'identifié. Pas de filler.
+- **Si** la session a révélé :
+  - Pattern récurrent (≥2 occurrences sessions distinctes), OR
+  - Pattern non-trivial (≥10 min debug réel), OR
+  - Pattern probably cross-projet émergent (apprentissage techno réutilisable type Svelte runes, OKLCH tokens, GlitchTip self-host, CF Tunnel+Access patterns)
+  - **non encore documenté** dans `vault/knowledge/`
+- → draft un fichier `inbox/<slug>.md` avec frontmatter `type: knowledge`, `status: draft`, `project: cross-project|<projet>`, `tags: [3-5 from canonical taxonomy]`, `ai_summary: "..."`. Body court = pattern + reproduction + résolution + notes.
+- Sinse review mensuel et promote vers `vault/knowledge/<topic>.md` via skill `/promote`.
+- **Skip filler still applies** — bar = "utile debug futur OR pattern récurrent probable", pas trivia.
+
+Cohérent `~/.claude/projects/-root/memory/feedback_skill_routing.md` inbox draft policy.
+
+### 4.5 Failures + gotchas consolidation (NEW v0.2.1)
+
+Au moment du `/handoff`, scanner la section `### Gotchas` du SESSION block
+just-prepended (Section 3) :
+
+Pour chaque gotcha listé :
+
+- **Si command verbatim error** (format `cmd | error message verbatim`) :
+  → invoque `/log-failure <cmd> | <error>` (per-projet `vault/projects/<projet>/failures.md` append-only L34 strict format)
+- **Si pattern atomique projet** (symptôme + solution + why) :
+  → propose append à `<projet>/docs/99-runbooks/gotchas.md` format atomique §2 (cohérent `vault/meta/conventions/failure-log-and-gotchas.md`)
+- **Si trivial / typo / one-shot** (skip bar = "info utile pour debug futur") :
+  → skip explicit
+
+Output récap ligne :
+```
+🔻 Failures+gotchas consolidation : N failures logged, M gotchas atomiques append, K skipped trivial.
+```
+
+Cohérent L33-L42 (Sinse audit mensuel humain pas auto-promote, Claude consolidate in-loop pour capture max signal post-fix L36).
 
 ## 5. Commit + push (project + vault)
 
@@ -102,7 +129,7 @@ Cible : `/root/sinse-vault/inbox/<slug>.md`
 - `git -C /opt/academie push origin main`
 
 ### 5.2 Vault (/root/sinse-vault)
-- `git -C /root/sinse-vault add daily/ hot.md log.md inbox/`
+- `git -C /root/sinse-vault add daily/ hot.md log.md inbox/ projects/*/failures.md`
 - `git -C /root/sinse-vault commit -m "[handoff] Session N — <slug 5-mot project>"`
 - `git -C /root/sinse-vault push origin main`
 
@@ -110,3 +137,8 @@ Si rien dans vault diff (cas rare, session pas trackée) → skip vault commit.
 
 ## 6. Confirmation
 One-line confirmation only.
+
+**Anti-doc-théâtre auto-check** : si Sessions N, N-1, N-2, N-3 ont **0 skill
+invoqué** (`/log-failure`, `/safepoint`, `/decision`) ET **0 inbox draft créé**
+→ flag dans confirmation : `⚠️ Pipeline learning asleep — escalate root cause review`.
+Cohérent `~/.claude/CLAUDE.md` § SKILLS & LEARNING PIPELINE.
