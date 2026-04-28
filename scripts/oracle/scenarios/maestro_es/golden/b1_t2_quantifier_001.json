@@ -1,24 +1,24 @@
 {
   "scenario_id": "b1_t2_quantifier_001",
-  "sha": "90bd135e791d",
-  "recorded_at": "2026-04-28T22:38:00Z",
-  "response": "Casi — en lugar de *mucho divertida*, ¿qué adverbio deberías usar? Y recuerda, *estaba* es correcto, pero ¿cuál es el tiempo que usaste para la fiesta? Intenta reformularlo.",
-  "dify_conversation_id": "16b2494e-1836-4641-b04c-77976649cab3",
-  "dify_message_id": "56acf402-a038-4f77-a038-1cd5b8e5fda7",
+  "sha": "057e704de2db",
+  "recorded_at": "2026-04-28T22:49:55Z",
+  "response": "La fiesta fue *muy* divertida, pero yo *estuve* muy cansada después. ¿Por qué usas 'mucho' y no 'muy' aquí?",
+  "dify_conversation_id": "e046bfce-9df8-43d4-94ff-288b497284f6",
+  "dify_message_id": "9302915c-2ca5-41d6-8a68-dc8b0aac5cc1",
   "usage": {
     "prompt_tokens": 3721,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 266,
+    "completion_tokens": 254,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3987,
+    "total_tokens": 3975,
     "total_price": "0",
     "currency": "USD",
-    "latency": 10.515,
-    "time_to_first_token": 10.882,
+    "latency": 4.929,
+    "time_to_first_token": 5.309,
     "time_to_generate": 0.0
   }
 }

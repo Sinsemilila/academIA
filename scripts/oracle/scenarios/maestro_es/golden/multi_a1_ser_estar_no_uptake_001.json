@@ -1,24 +1,24 @@
 {
   "scenario_id": "multi_a1_ser_estar_no_uptake_001",
-  "sha": "90bd135e791d",
-  "recorded_at": "2026-04-28T22:39:35Z",
-  "response": "Ah, *estás* cansado hoy — ¿has tenido un día largo?",
-  "dify_conversation_id": "73ed60f9-374e-4517-b85a-b636f25505be",
-  "dify_message_id": "f8590707-3307-4135-b9c6-894ab811ce50",
+  "sha": "057e704de2db",
+  "recorded_at": "2026-04-28T22:50:26Z",
+  "response": "Ah, *estás* cansado hoy — ¿has dormido bien? Podemos hacer algo tranquilo.",
+  "dify_conversation_id": "0478b6b8-4604-4bd2-9983-64a6ffd7a5f5",
+  "dify_message_id": "f1cbed1e-0284-43d2-825c-d0ab5b652182",
   "usage": {
     "prompt_tokens": 3645,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 17,
+    "completion_tokens": 21,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3662,
+    "total_tokens": 3666,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.192,
-    "time_to_first_token": 1.615,
+    "latency": 1.07,
+    "time_to_first_token": 1.427,
     "time_to_generate": 0.0
   }
 }

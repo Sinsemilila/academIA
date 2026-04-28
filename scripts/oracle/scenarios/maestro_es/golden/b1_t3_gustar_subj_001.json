@@ -1,24 +1,24 @@
 {
   "scenario_id": "b1_t3_gustar_subj_001",
-  "sha": "90bd135e791d",
-  "recorded_at": "2026-04-28T22:38:03Z",
-  "response": "¡Qué bien que te gusta la música clásica y los libros de historia! Solo un pequeño detalle: en español, se dice \"me gusta\" en lugar de \"yo gusto\". Así que sería: \"Me gusta mucho la música clásica y los libros de historia\". ¿Cuál es tu compositor favorito o qué libro de historia te ha impresionado más?",
-  "dify_conversation_id": "559a437d-12aa-4928-81ec-69471920ffce",
-  "dify_message_id": "4a33db69-36f8-418d-8774-fd02eff29f45",
+  "sha": "057e704de2db",
+  "recorded_at": "2026-04-28T22:50:02Z",
+  "response": "Me alegra que te guste la música clásica y los libros de historia. Recuerda que en español decimos 'me gusta' en lugar de 'yo gusto'. Así que sería: 'Me gusta mucho la música clásica y los libros de historia'. ¿Cuál es tu compositor favorito?",
+  "dify_conversation_id": "496d595b-a371-4dac-88fc-2669416530e4",
+  "dify_message_id": "9598c84c-8d18-4e32-92be-dc77c6cb573b",
   "usage": {
     "prompt_tokens": 3737,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 70,
+    "completion_tokens": 268,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3807,
+    "total_tokens": 4005,
     "total_price": "0",
     "currency": "USD",
-    "latency": 2.509,
-    "time_to_first_token": 2.887,
+    "latency": 5.335,
+    "time_to_first_token": 5.703,
     "time_to_generate": 0.0
   }
 }

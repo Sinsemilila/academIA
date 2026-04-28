@@ -1,10 +1,10 @@
 {
   "scenario_id": "risk_l1_drift_a1_es_001",
-  "sha": "90bd135e791d",
-  "recorded_at": "2026-04-28T22:39:52Z",
+  "sha": "057e704de2db",
+  "recorded_at": "2026-04-28T22:50:43Z",
   "response": "¡Perfecto! Tú *quieres* un café con leche. ¿Te gusta el café por la mañana o por la tarde?",
-  "dify_conversation_id": "0cf6304d-abba-453c-9636-d2c849b13517",
-  "dify_message_id": "2b63ac35-5f71-4452-89ed-6b4de48db67c",
+  "dify_conversation_id": "a73f6dc0-bb70-42c5-98b9-e6a54c63ea97",
+  "dify_message_id": "a543fb69-51d3-4c0a-98be-88a6385befd8",
   "usage": {
     "prompt_tokens": 3631,
     "prompt_unit_price": "0",
@@ -17,8 +17,8 @@
     "total_tokens": 3658,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.24,
-    "time_to_first_token": 1.614,
+    "latency": 1.044,
+    "time_to_first_token": 1.43,
     "time_to_generate": 0.0
   }
 }

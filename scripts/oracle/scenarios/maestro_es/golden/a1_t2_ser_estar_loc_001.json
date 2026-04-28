@@ -1,24 +1,24 @@
 {
   "scenario_id": "a1_t2_ser_estar_loc_001",
-  "sha": "90bd135e791d",
-  "recorded_at": "2026-04-28T22:37:34Z",
-  "response": "¡Muy bien! Pero recuerda que cuando hablas de ubicación, usamos \"está\" en lugar de \"es\". Entonces, sería: \"Mi casa está en Madrid, cerca del parque.\" \n\n¿Te gusta vivir en Madrid?",
-  "dify_conversation_id": "69e79116-76eb-492f-a30c-65eb23815071",
-  "dify_message_id": "1f9e7f80-5d7a-4317-b27b-51f41f51b6c9",
+  "sha": "057e704de2db",
+  "recorded_at": "2026-04-28T22:49:36Z",
+  "response": "¡Muy bien! Pero recuerda que cuando hablas de ubicación, usamos \"está\" en lugar de \"es\". Entonces, sería \"Mi casa está en Madrid, cerca del parque\". \n\n¿Te gusta vivir en Madrid?",
+  "dify_conversation_id": "49c8adc0-5040-4ab1-8d03-8a48bea3b631",
+  "dify_message_id": "b6a3693a-b3fa-43e8-a541-5e47f5df12e7",
   "usage": {
     "prompt_tokens": 3649,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 47,
+    "completion_tokens": 46,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3696,
+    "total_tokens": 3695,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.44,
-    "time_to_first_token": 1.837,
+    "latency": 1.233,
+    "time_to_first_token": 1.617,
     "time_to_generate": 0.0
   }
 }
