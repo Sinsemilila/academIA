@@ -28,7 +28,10 @@ Cf. [backup.md](../04-infra/backup.md) pour la stratégie complète.
 cd /tmp
 git clone https://github.com/Sinsemilila/academIA.git
 git clone https://github.com/Sinsemilila/sinse-workspace.git
-# copier vers /opt/academie/ et /root/sinse-workspace/
+# copier vers /opt/academie/ et /root/sinse-archive-2026-pre-vault/
+# Note: /root/sinse-workspace renamed to /root/sinse-archive-2026-pre-vault Phase 3 (2026-04-25).
+# Tools moved to /root/sinse-tools (separate repo: Sinsemilila/sinse-tools).
+# Vault content moved to /root/sinse-vault (separate repo: Sinsemilila/sinse-vault).
 ```
 
 ## Niveau 2 — Restore PostgreSQL depuis dump

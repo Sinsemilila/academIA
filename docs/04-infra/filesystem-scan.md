@@ -304,9 +304,9 @@ Commented-out models: groq-standard (×3), groq-snapshot (×3), groq-qwen, mistr
 ```
 /opt/academie-shared/
 ├── scripts/
-│   ├── pg-backup.sh       → /root/sinse-workspace/tools/pg-backup (symlink)
-│   ├── restic-backup.sh   → /root/sinse-workspace/tools/restic-backup (symlink)
-│   └── smoke-test.sh      → /root/sinse-workspace/tools/smoke-test (symlink)
+│   ├── pg-backup.sh       → /root/sinse-tools/pg-backup (symlink)
+│   ├── restic-backup.sh   → /root/sinse-tools/restic-backup (symlink)
+│   └── smoke-test.sh      → /root/sinse-tools/smoke-test (symlink)
 └── secrets/
     (see below — filenames only)
 ```
@@ -449,7 +449,7 @@ Hourly snapshot safety net script.
 |---|---|---|
 | `pg-backup` | `0 * * * *` (hourly) | `/opt/academie-shared/scripts/pg-backup.sh >> /var/log/pg-backup.log` |
 | `restic-backup` | `30 3 * * *` (daily 03:30) | `/opt/academie-shared/scripts/restic-backup.sh >> /var/log/restic-backup.log` |
-| `smoke-monitor` | `*/15 * * * *` (every 15 min) | `/root/sinse-workspace/tools/smoke-test --quick` → appends to `/var/log/smoke-alert.log` on FAILED |
+| `smoke-monitor` | `*/15 * * * *` (every 15 min) | `/root/sinse-tools/smoke-test --quick` → appends to `/var/log/smoke-alert.log` on FAILED |
 
 **Other cron directories (system defaults only, no academie content):**
 - `/etc/cron.daily/`: `apt-compat`, `dpkg`, `exim4-base`, `logrotate`, `man-db`, `rkhunter`.
@@ -539,7 +539,7 @@ All three proxies forward `Host`, `X-Real-IP`, `X-Forwarded-For`, `X-Forwarded-P
   - `M .claude/settings.local.json`
 - **Untracked**: `.claude/scheduled_tasks.lock`
 
-### 10.2 `/root/sinse-workspace`
+### 10.2 `/root/sinse-workspace` (archived as `/root/sinse-archive-2026-pre-vault/` post-Phase 3 vault migration 2026-04-25)
 
 - **Branch**: `main`
 - **Latest commit**: `1ab08d8 [docs] Session 12 handoff — token tracking centralized via LiteLLM`
@@ -582,7 +582,7 @@ All three proxies forward `Host`, `X-Real-IP`, `X-Forwarded-For`, `X-Forwarded-P
 
 ## Appendix B — Existing `04-infra/` docs (neighbour files)
 
-Already present in `/root/sinse-workspace/projects/academie-ia/docs/04-infra/`:
+Neighbour docs in `/opt/academie/docs/04-infra/` (moved here from `/root/sinse-workspace/projects/academie-ia/docs/04-infra/` during Phase 3 vault migration 2026-04-25):
 - `backup.md`
 - `credentials.md`
 - `deployment.md`

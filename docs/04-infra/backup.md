@@ -17,7 +17,7 @@ last_reviewed: 2026-04-15
 | **1** | VM cosmos complète | Proxmox local (SSD1, 119G) via vzdump | Daily 4h | 7 jours | ⚠️ à auditer via Proxmox UI |
 | **2** | PostgreSQL dump (3 DBs : academie_db + litellm_db + dify_plugin) | `/mnt/cosmos-data/backups/postgres/` | Hourly | 24h rolling + daily 7j + weekly 4w + monthly 12m | ✅ **multi-DB actif 2026-04-15** — weekly fires 2026-04-19, monthly 2026-05-01 |
 | **3** | Restic chiffré offsite | Google Drive 5TB | Daily 3h30 | 30 daily / 12 monthly / unlimited yearly | ⚠️ à auditer |
-| **4** | Git | GitHub (`academIA` code + `sinse-workspace` projet) | Per commit | Illimité | ✅ OK |
+| **4** | Git | GitHub (`academIA` code + `sinse-archive-2026-pre-vault` projet archivé) | Per commit | Illimité | ✅ OK |
 
 ### Gaps résiduels (post-fix Session 15)
 
@@ -116,7 +116,10 @@ restic -r <repo> restore <snapshot-id> --target /tmp/restore
 
 - **Repos** :
   - `/opt/academie` → `Sinsemilila/academIA` (public)
-  - `/root/sinse-workspace` → `Sinsemilila/sinse-workspace` (private)
+  - `/root/sinse-archive-2026-pre-vault` → `Sinsemilila/sinse-workspace` (private, archived 2026-04-25 post-vault migration)
+  - `/root/sinse-vault` → `Sinsemilila/sinse-vault` (private)
+  - `/root/sinse-tools` → `Sinsemilila/sinse-tools` (private)
+  - `/root/.claude` → `Sinsemilila/sinse-claude-config` (private)
 - **Commits** : gitleaks pre-commit hook + smoke-test pre-push
 - **Push** : par session via `/handoff`
 

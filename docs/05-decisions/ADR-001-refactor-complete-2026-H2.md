@@ -130,7 +130,7 @@ Découpage : **60% refactor / 40% pédago**, ou alternance session entière selo
 - LiteLLM proxy déjà en place (cost tracking per-model)
 - Cloudflare déjà devant (activer WAF rules)
 - passlib déjà installé (swap scheme seulement)
-- Smoke-test `/root/sinse-workspace/tools/smoke-test` (étendre security checks)
+- Smoke-test `/root/sinse-tools/smoke-test` (étendre security checks)
 
 ## Verification
 
