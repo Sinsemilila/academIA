@@ -9,19 +9,22 @@ families:
   verb_tense:
     label: "Temps & conjugaison"
     label_en: "Tense & conjugation"
-    codes: ["V:TENSE", "V:SVA", "V:FORM", "V:COND", "V:ASPECT", "V:AUX", "V:INFL"]
+    # Session 51 — ES codes V:PRET, ASPECT:PERF_OVERUSE folded in
+    codes: ["V:TENSE", "V:SVA", "V:FORM", "V:COND", "V:ASPECT", "V:AUX", "V:INFL", "V:PRET", "ASPECT:PERF_OVERUSE"]
     mode: active
 
   verb_usage:
     label: "Verbes (usage)"
     label_en: "Verb usage"
-    codes: ["V:MODAL", "V:PASS", "V:EXIST", "V:CHOICE", "V:PHRASAL"]
+    # Session 51 — ES codes V:SER_ESTAR, V:GUSTAR_SUBJECT folded in
+    codes: ["V:MODAL", "V:PASS", "V:EXIST", "V:CHOICE", "V:PHRASAL", "V:SER_ESTAR", "V:GUSTAR_SUBJECT"]
     mode: active
 
   noun_det:
     label: "Noms & déterminants"
     label_en: "Nouns & determiners"
-    codes: ["N:COUNT", "N:INFL", "N:POSS", "N:CHOICE", "ART", "ART:GENERIC", "DET"]
+    # Session 51 — ES code ART:PROF folded in
+    codes: ["N:COUNT", "N:INFL", "N:POSS", "N:CHOICE", "ART", "ART:GENERIC", "DET", "ART:PROF"]
     mode: active
 
   pronoun:
@@ -45,31 +48,36 @@ families:
   morphology:
     label: "Morphologie"
     label_en: "Morphology"
-    codes: ["MORPH:DERIV", "MORPH:WORDCLASS", "ADJ:CHOICE", "ADJ:FORM", "ADJ:ORDER", "ADV:CHOICE"]
+    # Session 51 — ES codes QUANT:MUY_MUCHO, CONCORD:GEN folded in
+    codes: ["MORPH:DERIV", "MORPH:WORDCLASS", "ADJ:CHOICE", "ADJ:FORM", "ADJ:ORDER", "ADV:CHOICE", "QUANT:MUY_MUCHO", "CONCORD:GEN"]
     mode: active
 
   surface:
     label: "Surface"
     label_en: "Surface errors"
-    codes: ["SPELL", "SPELL:COGNATE", "ORTH:CASE", "ORTH:SPACE", "PUNCT", "PUNCT:COMMA", "PUNCT:APOST", "CONTR", "REDUND"]
+    # Session 51 — ES codes PUNCT:INTERROG, ORTH:NY folded in
+    codes: ["SPELL", "SPELL:COGNATE", "ORTH:CASE", "ORTH:SPACE", "PUNCT", "PUNCT:COMMA", "PUNCT:APOST", "CONTR", "REDUND", "PUNCT:INTERROG", "ORTH:NY"]
     mode: active
 
   preposition:
     label: "Prépositions"
     label_en: "Prepositions"
-    codes: ["PREP"]
+    # Session 51 — ES codes PREP:POR_PARA, PREP:MOVEMENT, PREP:A_PERSONAL folded in
+    codes: ["PREP", "PREP:POR_PARA", "PREP:MOVEMENT", "PREP:A_PERSONAL"]
     mode: active
 
   vocabulary:
     label: "Vocabulaire"
     label_en: "Vocabulary"
-    codes: ["LEX:CHOICE", "LEX:COLLOC", "LEX:FALSE", "LEX:IDIOM", "LEX:ARGSTRUCT"]
+    # Session 51 — ES code IDIOM:HACE_AGO folded in
+    codes: ["LEX:CHOICE", "LEX:COLLOC", "LEX:FALSE", "LEX:IDIOM", "LEX:ARGSTRUCT", "IDIOM:HACE_AGO"]
     mode: active
 
   calque:
     label: "Calques français"
     label_en: "French transfer"
-    codes: ["LEX:CALQUE", "PREP:CALQUE"]
+    # Session 51 — ES code LEX:FR_RESIDUE folded in
+    codes: ["LEX:CALQUE", "PREP:CALQUE", "LEX:FR_RESIDUE"]
     mode: active
 
   discourse:

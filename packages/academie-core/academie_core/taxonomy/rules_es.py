@@ -453,6 +453,208 @@ def _detect_preterito_perfecto_past_marker(text: str) -> list[RuleDetection]:
     return results
 
 
+# ── Wave 2 (Session 51 — coverage gap audit) ────────────────────────
+# Source: oracle scenarios maestro_es/ — 6 critical scenarios were failing
+# detection (a2_t2_preterite, a2_t2_a_personal, a1_t2_concord_gender, …).
+# These 3 P0 detectors close the most impactful gaps.
+
+# Closed-past temporal markers — context for preterite irregulars
+_PAST_MARKERS_ES = (
+    r"\b(ayer|anoche|anteayer|antier|"
+    r"el\s+(?:lunes|martes|miércoles|jueves|viernes|sábado|domingo)\s+pasad[oa]|"
+    r"la\s+semana\s+pasada|"
+    r"el\s+(?:mes|año|verano|invierno|fin\s+de\s+semana)\s+pasad[oa]|"
+    r"hace\s+(?:una?\s+)?\w+\s+(?:días?|semanas?|meses?|años?))\b"
+)
+
+# Common irregular preterite forms — keys are wrong forms to flag, values are corrections.
+# Includes both genuine errors (yo + 3rd-person form) and learner-invented forms (e.g., "veí").
+IRREGULAR_PRET_WRONG_TO_RIGHT: dict[str, tuple[str, str]] = {
+    # Pattern: learner says wrong form → correction
+    "veí": ("vi", "Pretérito irrégulier de 'ver' à la 1ère pers : 'vi' (pas 'veí')"),
+    "andé": ("anduve", "Pretérito de 'andar' : 'anduve/-iste/-uvo' (pas 'andé')"),
+    "tení": ("tuve", "Pretérito de 'tener' : 'tuve/-iste/-uvo' (pas 'tení')"),
+    "sabí": ("supe", "Pretérito de 'saber' : 'supe/-iste/-upo' (pas 'sabí')"),
+    "podí": ("pude", "Pretérito de 'poder' : 'pude/-iste/-udo' (pas 'podí')"),
+    "querí": ("quise", "Pretérito de 'querer' : 'quise/-iste/-iso' (pas 'querí')"),
+}
+
+# Person-form mismatches: pronoun + 3rd-person form (yo + fue → fui)
+_PRET_3SG_TO_1SG: dict[str, str] = {
+    "fue": "fui",     # ir/ser
+    "vio": "vi",      # ver
+    "hizo": "hice",   # hacer
+    "tuvo": "tuve",   # tener
+    "estuvo": "estuve",
+    "anduvo": "anduve",
+    "supo": "supe",
+    "pudo": "pude",
+    "quiso": "quise",
+    "dijo": "dije",
+    "trajo": "traje",
+    "vino": "vine",
+    "puso": "puse",
+}
+
+
+def _detect_preterite_irregulars(text: str) -> list[RuleDetection]:
+    """V:PRET — irregular preterite errors.
+
+    Two patterns flagged :
+      (1) learner-invented forms ("veí", "andé") regardless of context
+      (2) "yo" + 3rd-person preterite ("yo fue" → "yo fui") in past-marker context
+    """
+    results: list[RuleDetection] = []
+    has_past_marker = bool(re.search(_PAST_MARKERS_ES, text, re.IGNORECASE))
+
+    # (1) Invented forms — always flag
+    for wrong, (right, reason) in IRREGULAR_PRET_WRONG_TO_RIGHT.items():
+        if re.search(rf"\b{re.escape(wrong)}\b", text, re.IGNORECASE):
+            results.append(RuleDetection("V:PRET", wrong, right, reason))
+
+    # (2) Person-form mismatch: 'yo' + 3sg preterite (only if past-marker context to reduce FP)
+    if has_past_marker:
+        for wrong_form, right_form in _PRET_3SG_TO_1SG.items():
+            pattern = re.compile(rf"\byo\s+{re.escape(wrong_form)}\b", re.IGNORECASE)
+            for m in pattern.finditer(text):
+                results.append(RuleDetection(
+                    "V:PRET",
+                    m.group(0),
+                    f"yo {right_form}",
+                    f"Pretérito 1ère pers : 'yo {right_form}' (pas 'yo {wrong_form}' — c'est la 3ème personne).",
+                ))
+    return results
+
+
+# Transitive verbs that take 'a' before human direct objects (a-personal)
+_A_PERSONAL_VERBS = (
+    "ver", "veo", "ves", "vemos", "veis", "vio", "viste", "vi", "vimos",
+    "conocer", "conozco", "conoces", "conoce", "conocí", "conociste", "conoció",
+    "buscar", "busco", "buscas", "busca", "busqué", "buscaste", "buscó",
+    "recordar", "recuerdo", "recuerdas", "recuerda",
+    "ayudar", "ayudo", "ayudas", "ayuda", "ayudé",
+    "invitar", "invito", "invitas", "invita", "invité", "invitó",
+    "abrazar", "abrazo", "abrazas", "abraza",
+    "llamar", "llamo", "llamas", "llama", "llamé", "llamó",
+    "saludar", "saludo", "saludas", "saluda",
+    "esperar", "espero", "esperas", "espera",
+    "mirar", "miro", "miras", "mira",
+    "escuchar", "escucho", "escuchas", "escucha",
+    "encontrar", "encuentro", "encuentras", "encuentra",
+    "visitar", "visito", "visitas", "visita",
+)
+_A_PERSONAL_OBJECTS = (
+    "padre", "madre", "papá", "mamá", "hermano", "hermana", "hermanos", "hermanas",
+    "hijo", "hija", "hijos", "hijas", "amigo", "amiga", "amigos", "amigas",
+    "primo", "prima", "primos", "primas", "tío", "tía", "tíos", "tías",
+    "abuelo", "abuela", "abuelos", "abuelas", "novio", "novia",
+    "esposo", "esposa", "marido", "mujer",
+    "profesor", "profesora", "maestro", "maestra", "estudiante", "estudiantes",
+    "vecino", "vecina", "vecinos", "vecinas", "compañero", "compañera",
+    "niño", "niña", "niños", "niñas", "chico", "chica", "chicos", "chicas",
+)
+
+
+def _detect_a_personal_missing(text: str) -> list[RuleDetection]:
+    """PREP:A_PERSONAL — missing 'a' before human direct object.
+
+    FR→ES key transfer error : 'veo mi madre' → 'veo a mi madre'.
+    Pattern : transitive_verb + (mi/tu/su/el/la/los/las) + animate_noun, no 'a' before.
+    """
+    results: list[RuleDetection] = []
+    verbs_alt = "|".join(_A_PERSONAL_VERBS)
+    objs_alt = "|".join(_A_PERSONAL_OBJECTS)
+    # Match : verb + space + (det) + noun, NOT preceded by 'a '
+    pattern = re.compile(
+        rf"\b({verbs_alt})\s+(mi|tu|su|el|la|los|las|mis|tus|sus)\s+({objs_alt})\b",
+        re.IGNORECASE,
+    )
+    for m in pattern.finditer(text):
+        verb, det, obj = m.group(1), m.group(2), m.group(3)
+        # Check the verb isn't already preceded or followed by 'a '
+        full = m.group(0)
+        # Look at the slice between verb and det in the original text
+        # If 'a ' was there it would be: verb + 'a ' + det → wouldn't match this pattern
+        # So matches here are missing 'a'.
+        results.append(RuleDetection(
+            "PREP:A_PERSONAL",
+            full,
+            f"{verb} a {det} {obj}",
+            f"Préposition 'a' obligatoire devant objet direct humain : '{verb} a {det} {obj}' (a personal).",
+        ))
+    return results
+
+
+# Gender lexicon — high-frequency nouns where gender differs from FR or is irregular.
+# Format : noun → gender ('M' or 'F'). Only nouns where mismatch likely from FR transfer.
+_NOUN_GENDER: dict[str, str] = {
+    # Masculine despite -a ending (false-cognate gender)
+    "día": "M", "mapa": "M", "sistema": "M", "problema": "M", "tema": "M",
+    "idioma": "M", "programa": "M", "clima": "M", "drama": "M", "poema": "M",
+    "planeta": "M", "fantasma": "M",
+    # Feminine despite -o or unusual pattern
+    "mano": "F", "foto": "F", "moto": "F", "radio": "F",
+    # Common feminine
+    "casa": "F", "mesa": "F", "silla": "F", "ciudad": "F", "verdad": "F",
+    "libertad": "F", "felicidad": "F", "salud": "F", "luz": "F", "voz": "F",
+    "noche": "F", "tarde": "F", "gente": "F", "muerte": "F", "suerte": "F",
+    "leche": "F", "carne": "F", "sangre": "F", "fuente": "F", "frente": "F",
+    "solución": "F", "decisión": "F", "información": "F", "cuestión": "F",
+    "razón": "F", "nación": "F", "explicación": "F",
+    "víctima": "F", "persona": "F", "estrella": "F",
+    # Common masculine
+    "libro": "M", "coche": "M", "perro": "M", "gato": "M", "niño": "M",
+    "padre": "M", "amigo": "M", "trabajo": "M", "tiempo": "M", "ejemplo": "M",
+    "país": "M", "lugar": "M", "momento": "M", "número": "M", "color": "M",
+    "papel": "M", "error": "M", "amor": "M", "calor": "M", "dolor": "M",
+}
+_DET_GENDER: dict[str, str] = {
+    "el": "M", "los": "M", "un": "M", "unos": "M",
+    "la": "F", "las": "F", "una": "F", "unas": "F",
+}
+
+
+def _detect_gender_disagreement(text: str) -> list[RuleDetection]:
+    """CONCORD:GEN — article-noun gender mismatch on high-frequency nouns.
+
+    Uses a curated lexicon of common nouns (~50 entries) where gender differs
+    from FR or is otherwise high-error-rate. Restricted scope avoids false
+    positives on nouns absent from lexicon (LLM layer covers gap).
+    """
+    results: list[RuleDetection] = []
+    pattern = re.compile(
+        r"\b(el|la|los|las|un|una|unos|unas)\s+([a-záéíóúñ]+)\b",
+        re.IGNORECASE,
+    )
+    # Skip the 'a' before fem-as-masc nouns rule : "el agua/águila" — accepted
+    FEM_AS_MASC_ARTICLE = {"agua", "águila", "alma", "área", "hambre"}
+    for m in pattern.finditer(text):
+        det_raw, noun = m.group(1).lower(), m.group(2).lower()
+        if noun in FEM_AS_MASC_ARTICLE:
+            continue
+        det_g = _DET_GENDER.get(det_raw)
+        noun_g = _NOUN_GENDER.get(noun)
+        if det_g and noun_g and det_g != noun_g:
+            # Pick the right determiner
+            corrections = {"M": {"el": "el", "los": "los", "un": "un", "unos": "unos"},
+                           "F": {"la": "la", "las": "las", "una": "una", "unas": "unas"}}
+            # Map current det → opposite gender determiner of same number/definite-ness
+            det_to_opposite = {
+                "el": "la", "la": "el",
+                "los": "las", "las": "los",
+                "un": "una", "una": "un",
+                "unos": "unas", "unas": "unos",
+            }
+            right_det = det_to_opposite[det_raw]
+            results.append(RuleDetection(
+                "CONCORD:GEN",
+                f"{det_raw} {noun}",
+                f"{right_det} {noun}",
+                f"Concordancia de género : '{noun}' es {noun_g} → '{right_det} {noun}' (pas '{det_raw} {noun}').",
+            ))
+    return results
+
+
 def detect_errors_es(text: str) -> list[RuleDetection]:
     """Main entry — aggregates all ES rule-based detectors.
 
@@ -479,4 +681,8 @@ def detect_errors_es(text: str) -> list[RuleDetection]:
     results.extend(_detect_ir_en_preposition(text))
     results.extend(_detect_fr_residue(text))
     results.extend(_detect_preterito_perfecto_past_marker(text))
+    # Wave 2 (Session 51 — oracle scenario coverage gap fix)
+    results.extend(_detect_preterite_irregulars(text))
+    results.extend(_detect_a_personal_missing(text))
+    results.extend(_detect_gender_disagreement(text))
     return results

@@ -247,6 +247,10 @@ ERROR_CODE_TO_FAMILY = {
     "PREP:MOVEMENT": "preposition",
     "LEX:FR_RESIDUE": "calque",
     "ASPECT:PERF_OVERUSE": "verb_tense",
+    # Wave 2 (Session 51 — rules_es.py coverage gap fix)
+    "V:PRET": "verb_tense",
+    "PREP:A_PERSONAL": "preposition",
+    "CONCORD:GEN": "morphology",
 }
 
 def detect_errors(text: str, lang: str = "en") -> list[RuleDetection]:
