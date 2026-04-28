@@ -1,5 +1,5 @@
 # TODO — AcademIA
-Last updated: 2026-04-28 — Claude (Session 50 PM — closure FINALE + bundles + 17 knowledge vault + disk resize + /handoff smart)
+Last updated: 2026-04-29 — Claude (Session 51 — Teacher EN P0.1 alignment + P0.2 scoring stabilization)
 
 ## ✅ OBSIDIAN MIGRATION CLOSED (2026-04-28)
 
@@ -15,11 +15,40 @@ Last updated: 2026-04-28 — Claude (Session 50 PM — closure FINALE + bundles 
 
 ## 🔝 EN COURS — RESUME AU PROCHAIN /pickup
 
-Sinse choisira explicit prochain projet parmi candidats roadmap :
-- **P0.1 Teacher EN structured output enum** (~30 min, untried option #1, débloque Phase 3 fault injection delta gating)
-- **Calendar 2026-05-07** (DMARC `p=quarantine` + CSP enforce flip + CF Email Routing) — **9 jours fenêtre restant**
+**Session 51 (2026-04-28/29) livré** :
+- ✅ P0.1 — harness/prod scope alignment (`build_full_dify_inputs`, commit `7a7fae1`). Découverte : harness mesurait Teacher EN lobotomized (2 inputs vs 11 prod).
+- ✅ P0.2 — scoring stabilization tier 0 : judge retry/back-off (`2b76917`), Dify temp 0.7→0.2 (SQL direct), goldens re-recorded (`535c09b`).
+- 📊 Nouveau baseline aligned : **18-19/26 ±1** (vs 20/26 lobotomized). 2 stable cf_move fails identifiés (b1_edge prepositions full_recast, b2_t3_passive explicit_correction).
+- 📚 Research synthesis : `vault/inbox/2026-04-29-teacher-en-improvement-research-bibliography.md` (alignment drift Cuenca-Jiménez 2025, BIPED two-step ACL 2024, Rating Roulette judge variance, SGLang deterministic).
+
+**Lock prochain horizon** : Tier 1 scoring stabilization avant Maestro ES (architecture réutilisable cross-langues).
+
+### 🎯 Teacher EN improvement roadmap (research-backed, Session 51 synthesis)
+
+**Tier 1 — Scoring stabilization** (~1-2j, free-tier compatible) — **EN COURS Session 51**
+- [x] Judge retry/back-off (commit `2b76917`)
+- [x] Dify LLM temp 0.7→0.2 (Session interactive node, SQL direct)
+- [x] Goldens re-recorded post-alignment (commit `535c09b`)
+- [ ] **n_votes 3→5 + confidence threshold ≥3/5** : `skip` if uncertain (don't penalize Teacher EN for judge noise) → `config.yaml` + `llm_pairwise.py:_majority_*`
+- [ ] Gwet's AC2 reporting between runs (κ paradox on skewed batteries) — formula in `oracle/kappa/`
+- [ ] **(Future)** SGLang local Qwen3-8B `--enable-deterministic-inference` judge OR two-judge panel (gemini + Llama-3.1 Groq)
+
+**Tier 2 — Architecture refactor BIPED two-step** (~1-2 sem) — **PENDANT Maestro ES**
+- [ ] Split Dify "Session interactive" en : (a) CF-move classifier strict JSON enum + reflection field, (b) response generator conditioned on chosen move
+- [ ] Many-shot bank stratifié (CEFR × move) — 50-200 exemplars par cellule (12+ minimum). Stratify by failure-mode analysis from current battery (b1 prep + b2 passive priority).
+- [ ] Apply architecturalement aux 2 langues simultanément (EN + ES)
+
+**Tier 3 — LoRA fine-tune** (~2-4 sem) — **APRÈS Maestro ES baseline si plateau persiste**
+- [ ] Synthetic Lyster-labeled CF corpus (Session 47 `generate_v3_training_data` partial)
+- [ ] LoRA Llama-3.1-8B / Qwen3-8B / Mistral-7B (EvalYaks precedent : 96% adherence)
+- [ ] Inference cost ÷10 long-terme
+
+### 🌐 Other P0/P1/P2/P3 candidates
+
+- **Calendar 2026-05-07** (DMARC `p=quarantine` + CSP enforce flip + CF Email Routing) — **8 jours fenêtre restant**
 - **Eisenday V2 backlog** (dormant, app shortcuts / onboarding / widget / R8)
-- **v0.3 mesure usage** (post 2-4 sem données réelles cumulatives, démarrage compteur Session 49 = 2026-04-26)
+- **Maestro ES alignment** : appliquer `build_full_dify_inputs` à `--agent maestro_es` + re-record goldens. Same scripts work, ~30 min once Tier 1 complete.
+- **v0.3 mesure usage** (post 2-4 sem données réelles, démarrage compteur Session 49 = 2026-04-26)
 
 **Roadmap macro (vault projects/obsidian-migration/roadmap-sinse-2026-04-25.md)** :
 - P0 cette semaine : Teacher EN enum + B4 GlitchTip test browser + Restic monthly + DPA OpenAI/Groq
