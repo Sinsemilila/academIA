@@ -32,7 +32,7 @@ Certains secrets du bundle `secrets/shared.yaml.sops` sont des copies de référ
 | `dify-admin-key` | **canonique ici** | 3 scripts Dify orchestration |
 | `dify-teacher-key` | **canonique ici** | 2 scripts E2E tests |
 | `n8n-encryption-key` | **canonique ici** (et dans config n8n hors repo) | n8n process (triple backup critique, si perdu → workflows illisibles) |
-| `restic-passphrase` | **canonique ici** | `~/sinse-workspace/tools/restic-backup` (niveau 3 chiffré, si perdu → backups illisibles) |
+| `restic-passphrase` | **canonique ici** | `/root/sinse-tools/restic-backup` (niveau 3 chiffré, si perdu → backups illisibles) |
 
 ## Prérequis
 
