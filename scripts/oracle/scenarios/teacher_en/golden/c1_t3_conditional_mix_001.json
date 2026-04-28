@@ -1,12 +1,12 @@
 {
   "scenario_id": "c1_t3_conditional_mix_001",
-  "sha": "041230126a96",
-  "recorded_at": "2026-04-22T20:52:24Z",
-  "response": "You did well in expressing the idea, but there's a small error in your conditional structure. It should be: \"If I had known about the meeting earlier, I would have prepared differently.\" \n\nThe first part needs to use the past perfect (\"had known\") instead of \"would have known.\" Keep practicing, and you'll master it!",
-  "dify_conversation_id": "d9ba27b7-f4b7-4d74-9dea-1322914c9431",
-  "dify_message_id": "aba9935b-dee3-4d67-bd21-26f8bee236f0",
+  "sha": "7a7fae15b102",
+  "recorded_at": "2026-04-28T21:38:44Z",
+  "response": "Your sentence contains a common mistake with the conditional perfect. Instead of saying \"If I would have known,\" you should say \"If I had known.\" So, the correct sentence would be: \"If I had known about the meeting earlier, I would have prepared differently.\" \n\nWould you like to try another example using the correct structure?",
+  "dify_conversation_id": "a2378d0a-49d8-42f2-aa24-1b5655798c3b",
+  "dify_message_id": "7e6715c0-cb49-4530-ab79-5b4c2ec69e7c",
   "usage": {
-    "prompt_tokens": 2411,
+    "prompt_tokens": 3420,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
@@ -14,11 +14,11 @@
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 2478,
+    "total_tokens": 3487,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.465,
-    "time_to_first_token": 1.824,
+    "latency": 2.388,
+    "time_to_first_token": 2.788,
     "time_to_generate": 0.0
   }
 }
