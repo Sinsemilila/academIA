@@ -1,26 +1,28 @@
 # TODO — AcademIA
-Last updated: 2026-04-26 — Claude (Session 49 — v0.2 Claude-as-vault-cognition LIVRÉE, projet AcademIA figé pendant focus lock Obsidian)
+Last updated: 2026-04-28 — Claude (Session 50 — Closure FINALE Obsidian + Syncthing fixe + audit intégral + tests E2E. Focus lock LEVÉ.)
 
-## 🔒 FOCUS LOCK OBSIDIAN — AcademIA en pause
+## ✅ OBSIDIAN MIGRATION CLOSED (2026-04-28)
 
-**Décision Sinse 2026-04-26** : projet Obsidian migration / Claude-as-vault-cognition reste seul focus actif. **NE PAS** entamer items AcademIA ci-dessous tant que Sinse n'a pas explicit déclaré closure Obsidian.
-
-État Obsidian :
+**Closure formelle Session 50** :
 - v0.1 LIVRÉE 2026-04-25 ✅
-- v0.2 LIVRÉE 2026-04-26 ✅ (handoff vault auto-writes + mirror cron academie + test E2E + bug fix sinse-tools symlinks + Syncthing Windows persistence resolved)
-- v0.3 différé post-mesure 2-4 sem (anti-pattern anticipation)
-- Closure technique Session 49 — voir [[hot]] vault pour détails
+- v0.2 LIVRÉE 2026-04-26 ✅
+- Phase 0 closure 13 items LIVRÉE 2026-04-26 ✅ (item 12 différé post-incident, item 13 droppé jusqu'à trigger MCP externe)
+- Audit intégral + Phase A docs cleanup + tests E2E live LIVRÉS 2026-04-28 ✅
+- Syncthing 3 devices opérationnel (cosmos + portable + fixe) ✅
+- v0.3 différé post-mesure 2-4 sem usage réel (lock explicit anti-pattern anticipation)
 
-## 🔝 EN COURS — RESUME AU PROCHAIN /pickup (post-closure Obsidian)
+**Lock prochain projet libre** : Sinse choisit explicit P0/P1/P2/P3 ci-dessous.
+
+## 🔝 EN COURS — RESUME AU PROCHAIN /pickup
 
 Sinse choisira explicit prochain projet parmi candidats roadmap :
 - **P0.1 Teacher EN structured output enum** (~30 min, untried option #1, débloque Phase 3 fault injection delta gating)
-- **Calendar 2026-05-07** (DMARC `p=quarantine` + CSP enforce flip + CF Email Routing) — 12 jours fenêtre
+- **Calendar 2026-05-07** (DMARC `p=quarantine` + CSP enforce flip + CF Email Routing) — **9 jours fenêtre restant**
 - **Eisenday V2 backlog** (dormant, app shortcuts / onboarding / widget / R8)
-- **v0.3 mesure usage** (post 2-4 sem données réelles cumulatives)
+- **v0.3 mesure usage** (post 2-4 sem données réelles cumulatives, démarrage compteur Session 49 = 2026-04-26)
 
 **Roadmap macro (vault projects/obsidian-migration/roadmap-sinse-2026-04-25.md)** :
-- P0 cette semaine (~5h, figé focus lock) : Teacher EN enum + B4 GlitchTip test browser + Restic monthly + DPA OpenAI/Groq
+- P0 cette semaine : Teacher EN enum + B4 GlitchTip test browser + Restic monthly + DPA OpenAI/Groq
 - P1 mai 2026 : DMARC + CSP enforce + Phase 3 fault injection + B5 Paraglide i18n
 - P2 mai-juillet : Phase B AcademIA gros morceaux (B2 Bits UI, B3 PWA, B6) + Maestro ES catchup + outreach
 - P3 août-déc : formation cybersec aligné + L26 user non-root trigger-based

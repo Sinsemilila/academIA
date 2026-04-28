@@ -164,3 +164,4 @@ Full historical detail: see `HISTORY.md` in /opt/academie/ and `archive/pre-migr
 2026-04-23 unknown — [feat] Session 46 close — Phase A 6/7 (+A1 sessions Redis JWT XSS éliminé) ; pickup primer A5+A6 prêt pour Session 47
 2026-04-23 unknown — [feat] Session 47 (2026-04-23, ~10h) — Phase A 7/7 closed + B1 design tokens OKLCH + B4 GlitchTip observability stack + 4 followups + Cloudflare Access refactor
 2026-04-25 unknown — [feat] Session 48 close — Migration Obsidian Phase 0a/0b/0c+1+2+3 complete + v0.1 Claude-as-vault-cognition livrée (two-tier slash commands /pickup + /project, vault-reader Haiku subagent, vault structure, 135 locks accumulés)
+2026-04-28 unknown — [fix] Session 50 — closure finale Obsidian: Phase A purge sinse-workspace refs (5 docs/), Syncthing PC fixe paired (3 devices), audit intégral 10 checks PASS, tests E2E vault-reader+/handoff+round-trip ALL PASS

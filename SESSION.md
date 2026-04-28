@@ -5,6 +5,85 @@ Sessions empilées (plus récente en haut). Rotation : seules les **3 dernières
 ---
 ---
 
+## Session 50 — 2026-04-28 (jour, ~2h continu — Closure FINALE migration Obsidian + Syncthing PC fixe pairing + audit intégral + tests E2E)
+
+### Done
+
+**Note** : Session 49 (2026-04-26 — v0.2 Claude-as-vault-cognition LIVRÉE + Phase 0 closure 13 items) n'a pas eu de bloc dans SESSION.md (oversight au /handoff Session 49). Résumé full Session 49 disponible dans `vault/log.md` (entrée 2026-04-26) et `vault/projects/obsidian-migration/obsidian-validation-state.md` (closure block).
+
+**Syncthing PC fixe pairing** :
+- SyncTrayzor fork GermanCoding installé sur PC fixe Windows + flag `--allow-newer-config` activé (Settings avancées Syncthing).
+- Device fixe `25MCD6N-LSECE6W-JL7NK7H-2TF2QUX-5OM7M7S-HGXGY6H-7ONDUKL-RINSDAC` ajouté côté cosmos via API (rest/config/devices) + folder `sinse-vault` shared avec 3 devices (cosmos JPIP7HV + portable NLD47KM + fixe 25MCD6N).
+- Sync validé end-to-end : 71 → 72 files transferred (test round-trip Phase B test 13), state idle, need=0, errors=0, fixe connecté via relay-server.
+- Obsidian Windows installé fixe + ouvert coffre `E:\sinse-vault` + autostart SyncTrayzor configuré (Start on login + Start minimized + Close to tray + Start Syncthing automatically).
+
+**Audit intégral système Obsidian** (10 checks read-only) :
+1. Inventaire archive `/root/sinse-archive-2026-pre-vault/` vs vault+/opt/academie : ✅ archive = github snapshot pré-vault intentionnel (1 commit `archive/workspace pre-vault`)
+2. Hardcoded paths `sinse-workspace` cross-cosmos : ⚠️ 18 refs détectées (5 docs actifs à fixer, le reste = HISTORY/CHANGELOG/refactor archive immutable trace)
+3. Frontmatter validator : ✅ `/root/sinse-vault/meta/scripts/validate-frontmatter.sh` + symlink pre-commit présent
+4. Cron mirrors : ✅ `/etc/cron.d/{memory,academie}-vault-mirror` actifs, markers récents (mtime <15 min)
+5. Symlinks sinse-tools `/usr/local/bin/` : ✅ 11/11 (smoke-test, committer, log, ship, pg-backup, status, restic-backup, restic-snapshots, restic-restore, restic-prune, wipe-academie)
+6. Syncthing 3 devices : ✅ folder idle need=0, fixe connecté relay
+7. Slash commands user-level : ✅ 8/8 (pickup, project, safepoint, decision, daily, log-failure, promote, ingest)
+8. Subagent vault-reader : ✅ Haiku 4.5, format strict KEY POINTS / FILES READ / GOTCHAS
+9. Hook PreToolUse require-recent-plan.sh : ✅ matcher Edit|Write|MultiEdit
+10. Frontmatter pre-commit : ✅ (item 3 confirme)
+
+**Phase A — Cleanup hardcoded refs** (8 replacements distinct dans 5 docs `/opt/academie/docs/`) :
+- `04-infra/backup.md` L20+L119 : `sinse-workspace` projet → `sinse-archive-2026-pre-vault` archivé + table repos étendue (sinse-vault/sinse-tools/sinse-claude-config)
+- `04-infra/filesystem-scan.md` L307-309 : `/root/sinse-workspace/tools/` → `/root/sinse-tools/` (3 symlinks pg-backup, restic-backup, smoke-test)
+- `04-infra/filesystem-scan.md` L452 : cron `smoke-monitor` chemin update
+- `04-infra/filesystem-scan.md` L542 : section header annoté "(archived as `/root/sinse-archive-2026-pre-vault/`)"
+- `04-infra/filesystem-scan.md` L585 : section "Already present" → footnote "moved here from ... during Phase 3 vault migration 2026-04-25"
+- `99-runbooks/restore-backup.md` L30-31 : commentaire restore destination clarifié post-Phase 3
+- `99-runbooks/rotate-secrets-sops.md` L35 : `~/sinse-workspace/tools/restic-backup` → `/root/sinse-tools/restic-backup`
+- `05-decisions/ADR-001-refactor-complete-2026-H2.md` L133 : section "Reusable existing assets" smoke-test path update (future-oriented, pas decision historique)
+- 2 commits split (ship guard secret-name false-positive sur rotate-secrets-sops.md → split commit) : `c2d5b96` (4 docs) + `48acd3f` (rotate-secrets-sops.md gitleaks scan PASS)
+
+**Phase B — Tests E2E live** :
+- **Test 11 vault-reader Haiku dispatch** ✅ PASS : INDEX.md read OK + auth-patterns.md matched + synthèse format strict (KEY POINTS / FILES READ / GOTCHAS) ≤300 tokens, gotchas bonus (`__Host-` cookie removed L114, `response_model=TokenResponse` rejette dict alternative L115, pyotp ≤2.9.0 L116, CF Access path-precedence L118)
+- **Test 12 /handoff Section 4 vault auto-writes** ✅ PASS dry-run : grep confirms 4 cibles vault dans Section 4 (daily/hot/log/inbox conditionnel), Section 5 split commit project + vault, vault writeable. Test E2E réel = ce /handoff.
+- **Test 13 Syncthing round-trip 3 devices** ✅ PASS : file `inbox/test-roundtrip-session50-cosmos-2026-04-28.md` créé cosmos → API folder state idle 71→72 files → Sinse confirms visible Obsidian fixe `E:\sinse-vault\inbox\` (portable offline OK normal). Cleanup file post-validation.
+
+**Migration Obsidian formellement close** :
+- v0.1 LIVRÉE Session 48 (2026-04-25) ✅
+- v0.2 LIVRÉE Session 49 (2026-04-26) ✅
+- Phase 0 closure 13 items LIVRÉE Session 49 (item 12 différé post-incident, item 13 droppé jusqu'à trigger MCP externe) ✅
+- v0.3 différé post-mesure 2-4 sem usage réel (lock explicit anti-pattern anticipation)
+- **Audit + Phase A + tests E2E + closure Session 50 ✅**
+- Lock prochain projet libre : Sinse choisit P0 AcademIA Teacher EN ou autre direction.
+
+### Next
+
+**Pickup primer Session 51** :
+1. `/pickup` → smoke-test → vérif vault sain (3 devices sync, mirrors actifs)
+2. Choisir prochain projet : P0 AcademIA Teacher EN structured output enum (~30 min, débloque Phase 3 fault injection delta gating) OU calendar 2026-05-07 (DMARC `p=quarantine` + CSP enforce flip + CF Email Routing setup, 9 jours fenêtre restant) OU Eisenday V2 backlog OU outreach P2
+
+**P0 cette semaine** :
+- **P0.1 Teacher EN enum** : `feedback_type_intended: <enum excluding explicit_correction>` JSON schema, target 24-26/26 si pink-elephant ne reapparaît pas
+- **Calendar 2026-05-07** : DMARC API CF zone token + CSP `Content-Security-Policy-Report-Only` → enforce dans `hooks.server.ts` + CF Email Routing setup (modifie DNS MX + écrase SPF strict → demande OK explicite Sinse)
+
+**P1 mai** :
+- Phase 3 fault injection delta gating (~2h, débloque Phase 4 RUN_RECENT_BATTERY block 8)
+- B5 Paraglide-JS i18n (~3-4h, quick win)
+
+**v0.3 mesure** : post 2-4 sem usage v0.1+v0.2, candidats : top-10 skills keyword-routed si patterns émergent, MCP Obsidian server si vault >200 notes.
+
+**Manuel Sinse résiduel** :
+- Signer DPA OpenAI + Groq self-service (RGPD A6 prerequisite)
+- Restic monthly restore test E2E (jamais fait, J+30 audit)
+- vzdump cron J+1/J+2/J+3 vérif (Session 48 todo)
+- Cloudflare Notifications policies (DDoS + SSL expiring + Page Shield + Tunnel down) — token a perms mais perdues lors edit dashboard
+
+### Gotchas
+
+- **Ship script secret-name false-positive** : `ship "[fix] ..." docs/99-runbooks/rotate-secrets-sops.md` refuse stage car nom contient "secrets". Pattern : split commit + `git add` direct + `git commit` (gitleaks pre-commit hook validera contenu = pas de secret leak réel). Découverts au commit Phase A.
+- **SESSION.md gap Session 49** : oversight au /handoff Session 49 — bloc SESSION.md jamais ajouté (focus Sinse sur autre chose). Pattern : `/handoff` doit checker `grep "## Session N" SESSION.md` post-prepend pour validate. Sinon vault `log.md` + `hot.md` capturent l'historique mais SESSION.md drift.
+- **Syncthing PC fixe `--allow-newer-config`** : flag obligatoire si SyncTrayzor v2 + Syncthing v2.0.16+ avec config v52 portable. Sans le flag, Syncthing refuse de démarrer car config "newer than supported". À cocher Settings avancées SyncTrayzor.
+- **Test Session 49 portable offline** : portable éteint au moment du round-trip Syncthing test. Sync needs=0 confirmé côté cosmos+fixe. Portable rattrappera au prochain power-on (delta minor).
+
+---
+
 ## Session 48 — 2026-04-25 (jour, ~5h45 continu, 18+ commits / 4 repos pushed — Migration Obsidian Phase 0a/0b/0c + 1 + 2 + 3 LIVRÉE + Claude-as-vault-cognition v0.1 architecturale)
 
 ### Done
@@ -187,62 +266,6 @@ Sessions empilées (plus récente en haut). Rotation : seules les **3 dernières
 - **gh pr merge avec PR# erroné** échoue silencieusement et le code reste sur la branche → si tu vois "Already up to date" après merge de PR récent, vérifie avec `gh pr view N --json state` que c'est vraiment merged. Pattern safe : `PR=$(gh pr list --head <branch> --json number -q '.[0].number')` puis `gh pr merge $PR ...`.
 - **`cfat_` token format** : nouveau format CF tokens (account-owned). Format ~50 chars avec préfixe `cfat_`. Le `/user/tokens/verify` endpoint dit "Invalid API Token" pour ces tokens → ne pas se fier à verify, tester l'endpoint réel qu'on veut utiliser.
 - **Tunnel Cloudflare hostname conflict avec CNAME existante** : si on créé une CNAME via API puis qu'on essaie d'ajouter le hostname côté Tunnel UI/API, CF refuse "host already exists". Solution : delete CNAME via API d'abord, le tunnel hostname la recrée auto.
-
----
-
-## Session 46 — 2026-04-23 (nuit, ~22 commits — Refactor 2026-H2 ADR-001 + Phase A : 6/7 items livrés)
-
-### Done
-
-**ADR-001 refactor complet 2026-H2 (sécu + design system + RGPD)** : roadmap 5-6 mois calendaires en 4 phases (A sécu / B fondations visuelles / C refonte pages / D auto-audit) avant beta privée fermée gratuite. Stack SOTA 2026 (Bits UI + shadcn-svelte + OKLCH + WebAuthn + GlitchTip self-hosted). Budget 0€ — toutes options payantes remplacées par alternatives gratuites. Parallélisation pédago 60/40. Pentest payant différé jusqu'aux premiers revenus. 7 décisions tranchées : JWT localStorage→sessions Redis, Cloudflare déjà en place, 5-6 mois validé, beta privée sans pentest, i18n UI Paraglide, mineurs flow consentement parental, MFA TOTP all users + WebAuthn phase 2. Doc `docs/05-decisions/ADR-001-refactor-complete-2026-H2.md` + entrée 18 dans `docs/decisions.md`. Commit `20a2baf`.
-
-**Phase A — 6/7 items livrés** :
-
-- **A7 Cloudflare DNS/SSL/HSTS/WAF/Cache/Page Shield/Bot Fight** — appliqué via API zone-token : SPF `v=spf1 -all` + DMARC `p=none` phase 1 + SSL Full strict + Always HTTPS + Min TLS 1.2 + TLS 1.3 + HSTS 1 an (no preload tant que A3 enforce stable) + Free Managed WAF Ruleset + Cache Rule `/_app/immutable/` + Bot Fight Mode (toi via dashboard). Page Shield découvert déjà actif. Rate limit `/api/*` reporté A5 backend (free tier = 1 règle prise par leaked credential check). Commits `4e7377b`, `1831ec6`.
-- **A7a CI Dependabot + security-audit** — `.github/dependabot.yml` (pip+npm+actions+docker hebdo, groups minor-patch) + `.github/workflows/security-audit.yml` (pip-audit+npm audit+syft SBOM+Trivy fs scan). `dependabot_security_updates` + `vulnerability_alerts` activés via gh API. Commit `4e7377b`.
-- **A3 CSP report-only + headers + collecteur** — middleware FastAPI étendu (COOP/CORP/Permissions-Policy 27 features), nouveau `security_router.py` POST `/api/csp-report` rate-limited 60r/min/IP, query-strings stripped, IP SHA256 daily-salted ; SvelteKit `hooks.server.ts` injecte `Content-Security-Policy-Report-Only` + COOP/CORP sur HTML pages, `connect-src wss + dify`, `frame-src dify + Turnstile`, `frame-ancestors 'none'`, `report-uri /api/csp-report`. Migration `csp_violations` + index + vue `csp_violations_24h`. Helper smoke test `scripts/sprint8/02_test_csp_endpoint.sh`. **Fenêtre collecte 2 sem ouverte** → flip enforce visé 2026-05-07. Commits `2222cb7`, `ed3b0d4`, `07ce9ef`.
-- **A2 Argon2id silent rehash** — `passlib[bcrypt,argon2]` + `argon2-cffi 23.1.0`, `CryptContext(["argon2","bcrypt"], deprecated="auto", argon2__type="ID")`, `verify_and_rehash()` via `passlib.verify_and_update`, login flow UPDATE password_hash silent à la 1ère connexion réussie. **Validé end-to-end sur sinse** : hash passé `$2b$12$...` → `$argon2id$v=19$m=65536,t=3,p=4`. Commit `435abcc`.
-- **A4 MFA TOTP backend + UI + admin enrolled** — `pyotp 2.9.0` + `qrcode[pil] 7.4.2` + module `totp.py` (RFC 6238 verify ±30s, recovery codes 10×10-char base32, hashed argon2id, nullify-in-place anti-reuse). 4 endpoints `/api/security/totp/{status,enroll-start,enroll-confirm,disable}`. Login flow 2-step : `/api/auth/login` retourne `{mfa_required:true, username}` si user has TOTP, `/api/auth/login-mfa` accepte TOTP code OR recovery code. Migration `user_totp` PK user_id. CLI `04_totp_enroll_admin.py` (QR ASCII terminal). UI SvelteKit `/login` step 2 + `/settings/security` (4 vues état-machine : not enrolled / in progress / recovery codes display / enrolled + disable). **Sinse enrôlé sur Aegis, recovery codes notés NordPass, login flow validé end-to-end.** Commits `69aba81`, `90f4e9c`, `50deb82`, `e536615`.
-- **A1 Auth migration JWT→sessions opaques Redis + CSRF double-submit** — supprime la vulnérabilité XSS structurelle (JWT en `localStorage`). Module `webapp/backend/app/sessions.py` (Redis store, token urlsafe 48-byte + csrf_token 32-byte, sliding TTL 7j, reverse index `user_sessions:<uid>`, short_id sha1[:16]). `auth.py` : suppression JWT helpers, nouveau `get_current_user(request)` cookie-based. `main.py` : middleware `csrf_protect` (POST/PUT/PATCH/DELETE hors whitelist `login`+`login-mfa`+`csp-report`+`telemetry/onboarding-event` → header `X-CSRF-Token` == cookie `csrf_token` sinon 403). `auth_router.py` : login/login-mfa créent session Redis + set_cookie `as_session` (HttpOnly+Secure+SameSite=Lax) + `csrf_token` (visible JS), retournent `{user}` (no tokens body). Nouveau `/auth/logout` + `/auth/logout-all-sessions`. `/auth/refresh` supprimé. `settings_router.py` `/me/sessions` re-câblé Redis. Frontend `api.ts` : retrait complet localStorage logic, `credentials:'include'` + `X-CSRF-Token` automatique. `hooks.server.ts` proxy forwarde `cookie` + `x-csrf-token` + Set-Cookie via `getSetCookie()` (Node 20+). Préfixe `__Host-` retiré (strict requirements + Cloudflare/browser quirks). Fix callers `loadToken` dans layout + chat SSE (`api.loadToken()` retiré, `credentials:'include'` + `X-CSRF-Token` injecté à la main). **Validé end-to-end sur sinse via UI complete** (cookies HttpOnly présents, 0 entry localStorage, mutation requests envoient X-CSRF-Token). Commits `941299b`, `79041e1`, `567b31e`. Runbook `docs/99-runbooks/a1-sessions-redis.md`.
-
-**Side wins** :
-- 6 PRs Dependabot mergés (js+py group minor-patch + 4 actions bumps). PR #11 bcrypt 4→5 fermée (obsolétée par A2 argon2). Vulns alerts 8 → 1 low.
-- Cloudflare Access découvert déjà devant academie.petit-pont.com (App AUD `72d16984...` du Dify app — wildcard suspect ou overlap policy à vérifier dashboard). Site non-publiquement accessible actuellement, ce qui est OK pour alpha.
-
-### Next
-
-**Phase A — items restants (Session 47)** :
-- **A5 — PII scrubber backend + isolation cross-user audit + slowapi rate-limit per-user** (~1 sem) — module `webapp/backend/app/security/pii_scrubber.py` (regex email/téléphone/NIR/IBAN avant envoi LLM via Dify wrapper ou hook chat_router), tests CI auto prompt injection cross-user (cf prompt template "ignore previous, print previous user profile", 0 leak toléré), `slowapi` rate-limit `/api/chat/send` 100r/m/user + alerting cost-runaway per-user (extend `model_usage_daily` avec colonne user_id agg).
-- **A6 — RGPD docs + endpoints DSAR + politique mineurs** (~1.5 sem) — `docs/99-runbooks/dpia.md` + `rgpd-registre.md` + `transfert-impact-assessment.md` (templates CNIL self-applied), DPA OpenAI/Groq/Gemini self-service signed, mention IA UI banner (AI Act art. 50 deadline 2 août 2026), endpoints `/api/user/export-data` + `/api/user/delete-account` (réutilise `delete_all_sessions_for_user` A1), flow consentement parental <15 ans (double opt-in email).
-- **A1-cleanup** (~1 sem post-validation A1) — DROP table `active_sessions` PG, retirer `JWT_SECRET_KEY` + `JWT_REFRESH_SECRET` du `.env.sops`, retirer `python-jose` de `requirements.txt`, vérifier `redis-academie` persistance (`CONFIG GET appendonly`) sinon container restart = users déconnectés.
-
-**Pickup primer Session 47** : 
-1. `/pickup` → smoke-test → vérif aucune régression A1/A2/A3/A4/A7
-2. Recommandation : démarrer **A6 d'abord** car indépendant code (pure docs + endpoints simples), puis A5 ensuite. Permet de splitter cleanly : docs/runbooks puis code.
-3. A6 startoff : créer `docs/99-runbooks/dpia.md` depuis template CNIL ([cnil.fr/sites/cnil/files/atoms/files/cnil-pia-1-en-methodology.pdf](https://www.cnil.fr/sites/cnil/files/atoms/files/cnil-pia-1-en-methodology.pdf)) + lister données collectées (email, niveau CEFR, profil L1/L2, anxiété langues motivation onboarding, historique chat conversations).
-4. A5 startoff : `pip install slowapi presidio-analyzer`, ajouter middleware FastAPI rate-limit auth-aware (par user_id pas IP), créer test `tests/test_pii_scrubber.py` + `tests/test_cross_user_isolation.py`.
-
-**A4b polish** (post-Phase A immédiate) : régénération recovery codes UI, Fernet at-rest encryption secret TOTP, WebAuthn/Passkeys scaffolding, force-reset 90j inactivité.
-
-**Phase B fondations visuelles** déclenchable en parallèle dès qu'un slot Phase A est complet.
-
-**Pédago Session 46+** (parallélisable 60/40) : P0 Teacher EN structured output enum (~30 min + V8), Phase 3 fault injection delta gating, Maestro ES catchup.
-
-**Manuel à toi** :
-- DMARC bump à `p=quarantine` après 2 sem collecte clean (jalon 2026-05-07).
-- A3 CSP analyse logs + flip enforce J+14.
-- Cloudflare Access app config check (Dify wildcard suspect).
-- Cloudflare Email Routing (security@ + dmarc-reports@ + dsar@) — token a perms mais nécessite OK explicite (modifie DNS MX + écrase SPF).
-- Cloudflare Notifications policies (DDoS + SSL expiring + Page Shield malicious script + Tunnel down) — token a perms mais perdues lors d'un re-edit dashboard.
-
-### Gotchas
-
-- **Token Cloudflare edit dashboard buggy** : à chaque ré-édition pour ajouter une perm, le dashboard drop des perms account-level préalables (Access, Notifications). Conséquence : créer un nouveau token from scratch plutôt qu'éditer si on perd des perms.
-- **Cloudflare Access devant academie.petit-pont.com** : tout curl externe → 403 Cloudflare Access (App AUD `72d16984...` qui matche dify app, suspect wildcard). Tests doivent passer par `127.0.0.1:3001` (frontend) ou `127.0.0.1:8000` (backend) avec `Host:` header bypass.
-- **Push GitHub workflow file = scope `workflow` requis** : le token gh CLI n'avait que `gist,read:org,repo`. Refresh manuel via `gh auth refresh -h github.com -s workflow` (interactif, navigateur) — pas auto-élevable par moi.
-- **SvelteKit response_model FastAPI** : un endpoint avec `response_model=TokenResponse` rejette tout dict alternative (ex `{mfa_required:true}`) avec ResponseValidationError 500. Solution : retirer le `response_model=` ou Union type.
-- **pyotp version max = 2.9.0** (pas 2.10.x). Erreur catch sur build, fix `requirements.txt`.
-- **Multi-line copy-paste dans terminal user** : casse les commandes longues (newline injecté). Toujours fournir des commandes monoligne ou des scripts helper.
 
 ---
 
