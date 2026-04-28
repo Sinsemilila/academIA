@@ -171,25 +171,29 @@ async def _vote_n(
     return results
 
 
-def _majority_move(votes: list[dict]) -> str | None:
+def _majority_move(votes: list[dict]) -> tuple[str | None, float]:
+    """Returns (winner, agreement_ratio). ratio = winner_count / total_valid_votes."""
     moves = [v.get("move") for v in votes if v.get("move")]
     if not moves:
-        return None
-    return Counter(moves).most_common(1)[0][0]
+        return None, 0.0
+    winner, count = Counter(moves).most_common(1)[0]
+    return winner, count / len(moves)
 
 
-def _majority_bool(votes: list[dict], key: str) -> bool | None:
+def _majority_bool(votes: list[dict], key: str) -> tuple[bool | None, float]:
     vals = [v.get(key) for v in votes if isinstance(v.get(key), bool)]
     if not vals:
-        return None
-    return Counter(vals).most_common(1)[0][0]
+        return None, 0.0
+    winner, count = Counter(vals).most_common(1)[0]
+    return winner, count / len(vals)
 
 
-def _majority_level(votes: list[dict]) -> str | None:
+def _majority_level(votes: list[dict]) -> tuple[str | None, float]:
     lvls = [v.get("level") for v in votes if v.get("level")]
     if not lvls:
-        return None
-    return Counter(lvls).most_common(1)[0][0]
+        return None, 0.0
+    winner, count = Counter(lvls).most_common(1)[0]
+    return winner, count / len(lvls)
 
 
 CEFR_ORDER = {"A1": 1, "A2": 2, "B1": 3, "B2": 4, "C1": 5, "C2": 6}
@@ -205,19 +209,27 @@ async def _score_cf_move(client, cfg, scenario: ScenarioSchema, bot: str, n: int
         {"role": "user", "content": CF_MOVE_PROMPT.format(learner=learner, tutor=bot)},
     ]
     votes = await _vote_n(client, cfg, msgs, n)
-    move = _majority_move(votes)
+    move, ratio = _majority_move(votes)
     if not move:
         return DimVerdict(dim="cf_move_set_valid", verdict="unknown",
                           reasoning="no consensus", judge_votes=votes)
-    if forbidden and move in forbidden:
+    fail_thr = cfg.get("judge_fail_threshold", 0.7)
+    is_forbidden = forbidden and move in forbidden
+    is_unacceptable = acceptable and move not in acceptable
+    if (is_forbidden or is_unacceptable) and ratio < fail_thr:
+        # Session 51 Tier 1 — borderline judge consensus, don't certify fail.
+        return DimVerdict(dim="cf_move_set_valid", verdict="unknown",
+                          reasoning=f"move={move} ({ratio:.2f} < {fail_thr}) low confidence",
+                          judge_votes=votes)
+    if is_forbidden:
         return DimVerdict(dim="cf_move_set_valid", verdict="fail",
-                          reasoning=f"move={move} in forbidden set", judge_votes=votes)
-    if acceptable and move not in acceptable:
+                          reasoning=f"move={move} in forbidden set ({ratio:.2f})", judge_votes=votes)
+    if is_unacceptable:
         return DimVerdict(dim="cf_move_set_valid", verdict="fail",
-                          reasoning=f"move={move} not in acceptable set {sorted(acceptable)}",
+                          reasoning=f"move={move} not in acceptable set {sorted(acceptable)} ({ratio:.2f})",
                           judge_votes=votes)
     return DimVerdict(dim="cf_move_set_valid", verdict="pass",
-                      reasoning=f"move={move}", judge_votes=votes)
+                      reasoning=f"move={move} ({ratio:.2f})", judge_votes=votes)
 
 
 async def _score_cefr_register(client, cfg, scenario: ScenarioSchema, bot: str, n: int) -> DimVerdict:
@@ -229,16 +241,22 @@ async def _score_cefr_register(client, cfg, scenario: ScenarioSchema, bot: str, 
         {"role": "user", "content": CEFR_REGISTER_PROMPT.format(tutor=bot)},
     ]
     votes = await _vote_n(client, cfg, msgs, n)
-    level = _majority_level(votes)
+    level, ratio = _majority_level(votes)
     if not level:
         return DimVerdict(dim="register_cefr_alignment", verdict="unknown",
                           reasoning="no consensus", judge_votes=votes)
     diff = abs(CEFR_ORDER.get(level, 0) - CEFR_ORDER.get(target, 0))
     if diff <= tolerance:
         return DimVerdict(dim="register_cefr_alignment", verdict="pass",
-                          reasoning=f"observed={level}, target={target}", judge_votes=votes)
+                          reasoning=f"observed={level}, target={target} ({ratio:.2f})",
+                          judge_votes=votes)
+    fail_thr = cfg.get("judge_fail_threshold", 0.7)
+    if ratio < fail_thr:
+        return DimVerdict(dim="register_cefr_alignment", verdict="unknown",
+                          reasoning=f"observed={level} vs target={target} ({ratio:.2f} < {fail_thr}) low confidence",
+                          judge_votes=votes)
     return DimVerdict(dim="register_cefr_alignment", verdict="fail",
-                      reasoning=f"observed={level} vs target={target} (±{tolerance})",
+                      reasoning=f"observed={level} vs target={target} (±{tolerance}, {ratio:.2f})",
                       judge_votes=votes)
 
 
@@ -253,15 +271,20 @@ async def _score_pairwise(client, cfg, scenario: ScenarioSchema, bot: str, golde
             learner=learner, response_a=bot, response_b=golden)},
     ]
     votes = await _vote_n(client, cfg, msgs, n)
-    eq = _majority_bool(votes, "equivalent")
+    eq, ratio = _majority_bool(votes, "equivalent")
     if eq is None:
         return DimVerdict(dim="semantic_fidelity_pairwise", verdict="unknown",
                           reasoning="no consensus", judge_votes=votes)
     if eq:
         return DimVerdict(dim="semantic_fidelity_pairwise", verdict="pass",
-                          reasoning="majority equivalent", judge_votes=votes)
+                          reasoning=f"majority equivalent ({ratio:.2f})", judge_votes=votes)
+    fail_thr = cfg.get("judge_fail_threshold", 0.7)
+    if ratio < fail_thr:
+        return DimVerdict(dim="semantic_fidelity_pairwise", verdict="unknown",
+                          reasoning=f"divergent ({ratio:.2f} < {fail_thr}) low confidence",
+                          judge_votes=votes)
     return DimVerdict(dim="semantic_fidelity_pairwise", verdict="fail",
-                      reasoning="majority divergent", judge_votes=votes)
+                      reasoning=f"majority divergent ({ratio:.2f})", judge_votes=votes)
 
 
 def score_all(scenario: ScenarioSchema, response: str, golden: str, cfg: dict, n: int = 3) -> list[DimVerdict]:

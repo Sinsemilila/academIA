@@ -12,7 +12,13 @@ modes:
     n_votes: 1
   full:
     scenario_count: 24
-    n_votes: 3
+    n_votes: 5
+# Session 51 Tier 1 — judge confidence threshold (Wang 2022 self-consistency,
+# Rating Roulette ACL 2025). Asymmetric: certify "fail" only if winner
+# agreement_ratio ≥ this threshold ; below → "unknown" (treated as pass-through
+# at scenario aggregation, harness.py:193). Avoids penalizing Teacher EN for
+# free-tier judge variance documented in inbox bibliography.
+judge_fail_threshold: 0.7
 axis_thresholds:
   policy_compliance: 0.66
   output_shape: 0.66
