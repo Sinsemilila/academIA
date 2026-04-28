@@ -51,9 +51,9 @@ Cible : `/root/sinse-vault/daily/YYYY-MM-DD.md`
 
   # Daily YYYY-MM-DD
   ```
-- Append (à la fin du fichier) un bloc session :
+- Append (à la fin du fichier) un bloc session **avec `[project]` tag obligatoire** :
   ```markdown
-  ## Session N — HH:MM-HH:MM [project]
+  ## Session N — HH:MM-HH:MM [<projet-slug>]
 
   ### Done
   - bullets
@@ -67,7 +67,16 @@ Cible : `/root/sinse-vault/daily/YYYY-MM-DD.md`
   ### Commits
   - `<sha>` `[type] msg` (project-or-repo)
   ```
-- Plusieurs sessions le même jour → blocs successifs ordonnés chronologiquement.
+- **`<projet-slug>` obligatoire** dans header (cohérent G1 SCALING PREP). Slugs canoniques :
+  - `obsidian` — migration vault / Claude-as-vault-cognition
+  - `academia` — projet AcademIA (frontend + backend + Phase A/B/C/D)
+  - `eisenday` — Android Kotlin (quand active)
+  - `microentreprise` — web client (futur P3.5 trigger)
+  - `cross-project` — work touchant ≥2 projets simultané (rare)
+  - `infra` — cosmos-level (cron, hardening, smoke-test, restic, sinse-tools)
+  - `meta` — vault internals (frontmatter, taxonomy, conventions)
+- **Bénéfice** : Obsidian Dataview query future filtrage daily par projet + clarté humaine browse vault/daily/.
+- Plusieurs sessions le même jour → blocs successifs ordonnés chronologiquement (ok mix slugs si vraiment work cross-projet, mais préférer 1 session = 1 slug).
 
 ### 4.2 Hot snapshot — overwrite intégral
 Cible : `/root/sinse-vault/hot.md`
