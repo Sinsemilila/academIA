@@ -9,8 +9,8 @@ families:
   verb_tense:
     label: "Temps & conjugaison"
     label_en: "Tense & conjugation"
-    # Session 51 — ES codes V:PRET, ASPECT:PERF_OVERUSE folded in
-    codes: ["V:TENSE", "V:SVA", "V:FORM", "V:COND", "V:ASPECT", "V:AUX", "V:INFL", "V:PRET", "ASPECT:PERF_OVERUSE"]
+    # Session 51 — ES codes V:PRET, ASPECT:PERF_OVERUSE, V:SUBJ folded in
+    codes: ["V:TENSE", "V:SVA", "V:FORM", "V:COND", "V:ASPECT", "V:AUX", "V:INFL", "V:PRET", "ASPECT:PERF_OVERUSE", "V:SUBJ"]
     mode: active
 
   verb_usage:

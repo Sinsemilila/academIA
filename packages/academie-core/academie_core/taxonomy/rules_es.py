@@ -655,6 +655,101 @@ def _detect_gender_disagreement(text: str) -> list[RuleDetection]:
     return results
 
 
+# ── Wave 2 P2 — Subjunctive trigger detection ───────────────────────
+# High-impact for B1+ scenarios (b1_t3_subjuntivo_pres_001, multi_b1_subj_partial).
+# Triggers : volitional/desiderative verbs + 'que' + indicative form. The LLM
+# layer handles deeper morphology ; this rule catches the most common cases.
+
+# Volitional/desiderative triggers requiring subjunctive in subordinate
+_SUBJ_TRIGGERS = (
+    r"quiero\s+que",
+    r"quieres\s+que",
+    r"quiere\s+que",
+    r"queremos\s+que",
+    r"queréis\s+que",
+    r"quieren\s+que",
+    r"espero\s+que",
+    r"esperas\s+que",
+    r"espera\s+que",
+    r"esperamos\s+que",
+    r"deseo\s+que",
+    r"deseamos\s+que",
+    r"para\s+que",
+    r"prefiero\s+que",
+    r"prefiere\s+que",
+    r"pido\s+que",
+    r"pide\s+que",
+    r"necesito\s+que",
+    r"necesita\s+que",
+    r"ojalá(?:\s+que)?",
+    r"es\s+importante\s+que",
+    r"es\s+necesario\s+que",
+    r"dudo\s+que",
+    r"duda\s+que",
+    r"no\s+creo\s+que",
+)
+
+# Common indicative present forms that should be subjunctive after triggers.
+# Maps wrong (indicative) → right (subjunctive) for high-frequency verbs.
+_IND_TO_SUBJ_PRES: dict[str, str] = {
+    # ar verbs
+    "hablo": "hable", "hablas": "hables", "habla": "hable",
+    "hablamos": "hablemos", "habláis": "habléis", "hablan": "hablen",
+    "trabaja": "trabaje", "trabajas": "trabajes",
+    "estudio": "estudie", "estudias": "estudies", "estudia": "estudie",
+    # er verbs
+    "como": "coma", "comes": "comas", "come": "coma",
+    "comemos": "comamos", "coméis": "comáis", "comen": "coman",
+    "bebes": "bebas", "bebe": "beba",
+    # ir verbs
+    "vivo": "viva", "vives": "vivas", "vive": "viva",
+    "vivimos": "vivamos", "viven": "vivan",
+    "escribes": "escribas", "escribe": "escriba",
+    # irregular high-freq
+    "vienes": "vengas", "viene": "venga", "venimos": "vengamos", "vienen": "vengan",
+    "vas": "vayas", "va": "vaya", "vamos": "vayamos", "van": "vayan",
+    "tienes": "tengas", "tiene": "tenga", "tenemos": "tengamos", "tienen": "tengan",
+    "haces": "hagas", "hace": "haga", "hacemos": "hagamos", "hacen": "hagan",
+    "dices": "digas", "dice": "diga", "decimos": "digamos", "dicen": "digan",
+    "puedes": "puedas", "puede": "pueda", "podemos": "podamos", "pueden": "puedan",
+    "sabes": "sepas", "sabe": "sepa", "sabemos": "sepamos", "saben": "sepan",
+    "eres": "seas", "es": "sea", "somos": "seamos", "son": "sean",
+    "estás": "estés", "está": "esté", "estamos": "estemos", "están": "estén",
+}
+
+
+def _detect_subjunctive_missing(text: str) -> list[RuleDetection]:
+    """V:SUBJ — indicative form after subjunctive trigger.
+
+    Pattern : trigger phrase + (optional pronoun) + indicative-form-of-known-verb.
+    Suggests the subjunctive equivalent. Limited to common verbs to keep
+    high-precision (LLM layer handles long tail).
+    """
+    results: list[RuleDetection] = []
+    # Match : trigger + optional pronoun (yo|tú|él|...) + indicative verb form (within ~3 tokens)
+    pronouns_alt = r"(?:yo|tú|él|ella|usted|nosotros|vosotros|ellos|ellas|ustedes)"
+    verbs_alt = "|".join(re.escape(v) for v in _IND_TO_SUBJ_PRES.keys())
+    for trigger in _SUBJ_TRIGGERS:
+        # \s+ between trigger and (optional pronoun + space)? + verb. Allow up to 2 short
+        # adverbs/connectors between (e.g. "Quiero que tú no comas demasiado" should still flag).
+        pattern = re.compile(
+            rf"\b({trigger})\s+(?:{pronouns_alt}\s+)?(?:no\s+)?({verbs_alt})\b",
+            re.IGNORECASE,
+        )
+        for m in pattern.finditer(text):
+            trig_full, ind_verb = m.group(1), m.group(2).lower()
+            subj_verb = _IND_TO_SUBJ_PRES.get(ind_verb)
+            if not subj_verb:
+                continue
+            results.append(RuleDetection(
+                "V:SUBJ",
+                f"{trig_full} ... {ind_verb}",
+                f"{trig_full} ... {subj_verb}",
+                f"Después de '{trig_full}' se requiere subjuntivo : '{subj_verb}' (no '{ind_verb}').",
+            ))
+    return results
+
+
 def detect_errors_es(text: str) -> list[RuleDetection]:
     """Main entry — aggregates all ES rule-based detectors.
 
@@ -681,8 +776,10 @@ def detect_errors_es(text: str) -> list[RuleDetection]:
     results.extend(_detect_ir_en_preposition(text))
     results.extend(_detect_fr_residue(text))
     results.extend(_detect_preterito_perfecto_past_marker(text))
-    # Wave 2 (Session 51 — oracle scenario coverage gap fix)
+    # Wave 2 P0 (Session 51 — oracle scenario coverage gap fix)
     results.extend(_detect_preterite_irregulars(text))
     results.extend(_detect_a_personal_missing(text))
     results.extend(_detect_gender_disagreement(text))
+    # Wave 2 P2 (Session 51 — subjunctive triggers)
+    results.extend(_detect_subjunctive_missing(text))
     return results

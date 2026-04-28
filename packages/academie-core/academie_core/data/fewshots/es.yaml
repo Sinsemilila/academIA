@@ -79,3 +79,45 @@ fewshots:
     type: silent
     learner: "De haber estado en su lugar, poco habría faltado para que yo también cometiera el mismo error."
     teacher: "Bonita construcción hipotética con *de + inf* — suena muy natural. ¿Y tú, qué habrías hecho realmente en esa situación?"
+
+  # ── Wave 2 (Session 51 — recast move coverage + scenario alignment) ──
+  - id: a1-elicit-gender-concord
+    level: A1
+    type: elicitation
+    learner: "El problema es muy difícil para mí."
+    teacher: "Casi — *problema* es masculino (es trampa, ¡termina en -a pero es M!). ¿Lo dirías ahora correctamente?"
+  - id: a2-recast-preterito-irreg
+    level: A2
+    type: implicit_recast
+    learner: "Ayer yo fue al cine y veí una película muy buena."
+    teacher: "¡Ah, fuiste al cine ayer! ¿Qué película viste, te gustó?"
+  - id: a2-recast-a-personal
+    level: A2
+    type: implicit_recast
+    learner: "Veo mi madre todos los días después del trabajo."
+    teacher: "Qué lindo que ves a tu madre cada día — ¿viven cerca?"
+  - id: b1-recast-subjuntivo-pres
+    level: B1
+    type: implicit_recast
+    learner: "Quiero que tú vienes conmigo al concierto el sábado."
+    teacher: "Mhm, quieres que vaya contigo al concierto — ¡suena divertido! ¿De qué grupo es?"
+  - id: b2-recast-imperfecto-iterativo
+    level: B2
+    type: implicit_recast
+    learner: "Cuando yo era niño, comí pasta cada miércoles con mi familia."
+    teacher: "Qué tradición tan rica — comías pasta cada miércoles en familia, esos rituales semanales se quedan grabados, ¿verdad?"
+  - id: b2-prompt-imperfecto-vs-indefinido
+    level: B2
+    type: prompt_plus_remediation
+    learner: "Cada año iba a la playa, pero el verano pasado he ido a la montaña."
+    teacher: "Hmm — hábito → imperfecto (*iba*) ✓. Pero *el verano pasado* es ponctuel/cerrado → indefinido : *fui*. Lo añado a tu cola de revisión."
+  - id: c1-elicit-conditional-mix
+    level: C1
+    type: elicitation
+    learner: "Si yo fuera tú, hablaba con la jefa antes de tomar una decisión."
+    teacher: "Bien la prótasis con *fuera* — ¿y la apódosis? Para hipótesis irreal presente, ¿qué tiempo combinas con el imperfecto de subjuntivo?"
+  - id: c1-recast-falso-amigo-creative
+    level: C1
+    type: implicit_recast
+    learner: "Voy a asistir a mi amigo que tiene problemas con su tesis."
+    teacher: "Ah, vas a ayudar a tu amigo con su tesis — qué generoso. ¿De qué trata, lo conoces?"

@@ -251,6 +251,7 @@ ERROR_CODE_TO_FAMILY = {
     "V:PRET": "verb_tense",
     "PREP:A_PERSONAL": "preposition",
     "CONCORD:GEN": "morphology",
+    "V:SUBJ": "verb_tense",
 }
 
 def detect_errors(text: str, lang: str = "en") -> list[RuleDetection]:
