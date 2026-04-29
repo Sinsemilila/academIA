@@ -198,13 +198,16 @@ def test_curriculum_all_concepts_grouped(lang, level):
 
 
 def test_curriculum_en_total_concepts_reasonable():
-    """Session 41 sanity: EN curriculum merged from DB taxonomy (53→~105).
+    """Sanity range — updated per Session 53 Phase B4 audit (Hawkins + Companion 2020).
 
-    Updated range after Session 41 merge (script 19_curriculum_en_apply_merge.py).
-    ES still at 52 (pre-merge); matching merge for ES is Session 42+."""
+    History :
+    - Session 41 (2026-04-23) : DB taxonomy merge 53 → ~105 concepts
+    - Session 53 (2026-04-30) : Hawkins Ch 9.1 audit added 26 criterial features → ~131
+    - Phase D2 future : may grow further with Functions/Mediation if structured into curriculum
+    """
     curr = _load_curriculum("en")
     total = sum(len(curr[lvl]["concept_keys"]) for lvl in ["A1","A2","B1","B2","C1","C2"])
-    assert 80 <= total <= 130, f"curriculum_en total concepts out of range: {total}"
+    assert 100 <= total <= 200, f"curriculum_en total concepts out of range: {total}"
 
 
 # ── LanguageData ─────────────────────────────────────────────────────

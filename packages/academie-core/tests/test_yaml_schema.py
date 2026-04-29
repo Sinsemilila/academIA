@@ -22,6 +22,7 @@ from academie_core.data.schemas import (
     ConceptHintsPack,
     CurriculumPack,
     FewshotPack,
+    FunctionsPack,
     L1NamesPack,
     L1TransferPack,
     MicroLessonPack,
@@ -143,3 +144,23 @@ def test_l1_names_schema():
     raw = _load(DATA_DIR / "l1_transfer" / "l1_names.yaml")
     assert raw is not None, "l1_names.yaml missing"
     L1NamesPack.model_validate(raw)
+
+
+# ── Functions dimension (Phase D1 — Session 53) ───────────────────────
+
+@pytest.mark.parametrize("lang", LANGS)
+def test_functions_schema(lang):
+    """Functions YAML pack — A1+A2 scope Phase D1, B1-C2 deferred Phase D2.
+
+    EN+ES are ACTIVE (must exist + validate). IT/DE/JA/RU skip until Phase D2.
+    """
+    path = DATA_DIR / "functions" / f"{lang}.yaml"
+    if not path.exists():
+        if lang in ACTIVE_LANGS:
+            pytest.fail(f"functions/{lang}.yaml missing for active language")
+        pytest.skip(f"no functions/{lang}.yaml (Phase D2 deferred)")
+    raw = _load(path)
+    FunctionsPack.validate_mapping(raw)
+    # Sanity : at least A1 functions defined
+    assert "A1" in raw, f"functions/{lang}.yaml missing A1 block"
+    assert len(raw["A1"]["functions"]) >= 3, f"A1 functions too sparse (<3 entries)"
