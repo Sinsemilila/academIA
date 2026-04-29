@@ -86,13 +86,13 @@ Voir `vault/projects/academia-ia/library-p3-roadmap.md` pour P2/P3 (~36 ouvrages
 
 **Context** : Session 53 skim batch (74/85 books skimmed = 87% library tracked) a révélé que `curriculum_en.yaml` + `curriculum_es.yaml` ont été construits "à l'aveugle" pré-S52 (headers `# Sourced from CEFR Companion + EVP + Hughes` mensongers — aucun de ces books acquired avant S52). Maintenant on a les 4 authority anchors (Hawkins, CEFR Companion 2020, PCIC A1-A2, PCIC B1-B2) et 86 autres books skimmed. Roadmap d'incorporation par langue ci-dessous. Voir `/root/sinse-vault/knowledge/books/USAGE-MAP.md` pour status canonique des 90 books trackés.
 
-### Phase A — P0 quick wins (Session 53, ~3-4h, ✅ EN COURS)
+### Phase A — P0 quick wins (Session 53, 2026-04-30, ✅ LIVRÉE)
 
-- [x] (claude, 2026-04-30, Session 53) TODO.md per-lang book incorporation roadmap (cette section)
-- [ ] (claude, 2026-04-30, Session 53) `concept_hints/en.yaml` expansion 20→94 entries (A1+A2+C1+C2 fully covered, FR-oriented hints)
-- [ ] (claude, 2026-04-30, Session 53) `curriculum_es.yaml` flag 10 gaps inline TODO comments (vs PCIC + CEFR Companion 2020)
-- [ ] (claude, 2026-04-30, Session 53) `curriculum_en.yaml` + `curriculum_es.yaml` document l1_transfer integration path (header refs + cross-yaml docs)
-- [ ] **DEFERRED Phase B** : `phrasal_verbs` stratification (A2/B1/B2/C1 per Hawkins Ch 8) — **scope creep cross-système** (touche `tolerance_matrix.yaml` + `tolerance_matrix_v2.yaml` + `webapp/backend/app/routers/profile_router.py:559` prod code + Dify workflow `concept_hint_map` + `scripts/update_teacher_chatflow.py` + `scripts/sprint6/19_curriculum_en_apply_merge.py` + `scripts/e2e_promo_test.py:42`). Migration multi-system → ne PAS bundle dans Phase A quick wins.
+- [x] (claude, 2026-04-30, Session 53, c94d896) TODO.md per-lang book incorporation roadmap (cette section)
+- [x] (claude, 2026-04-30, Session 53, 895d32f) `concept_hints/en.yaml` expansion 20→**105** entries (100% curriculum_en coverage A1-C2, FR-oriented hints avec faux amis flagged)
+- [x] (claude, 2026-04-30, Session 53, af891e1) `curriculum_es.yaml` flag 10 gaps inline TODO comments + honest header annotation (vs PCIC + CEFR Companion 2020)
+- [x] (claude, 2026-04-30, Session 53, 3e53dba) `curriculum_en.yaml` + `curriculum_es.yaml` honest source attribution + document l1_transfer integration path (`teacher_prompt.py:488` consumer)
+- [ ] **DEFERRED Phase B** : `phrasal_verbs` stratification (A2/B1/B2/C1 per Hawkins Ch 8) — **scope creep cross-système** (touche `tolerance_matrix.yaml` + `tolerance_matrix_v2.yaml` + `webapp/backend/app/routers/profile_router.py:559` prod code + Dify workflow `concept_hint_map` + `scripts/update_teacher_chatflow.py` + `scripts/sprint6/19_curriculum_en_apply_merge.py` + `scripts/e2e_promo_test.py:42`). Migration multi-system → bundled in Phase B EN audit.
 
 ### Phase B — P0 EN flagship audit (~5-7j, post Phase A)
 
