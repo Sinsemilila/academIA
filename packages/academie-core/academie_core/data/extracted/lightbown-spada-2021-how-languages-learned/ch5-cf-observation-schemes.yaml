@@ -1,0 +1,290 @@
+# Corrective feedback taxonomy extracted from Lightbown & Spada (2021),
+# How Languages are Learned (5th ed.), Chapter 5
+# "Observing learning and teaching in the second language classroom"
+# (Oxford Handbooks for Language Teachers — pedagogical textbook for teachers)
+#
+# Ch 5 covers PDF pp. 176-213. CF section ("Corrective feedback in the
+# classroom", Studies 1-5) spans pp. 195-202.
+#
+# Taxonomy origin: Lyster & Ranta (1997, pp. 46-48) — the SIX-category scheme
+# is reproduced verbatim by L/S, with examples drawn from L/S's own ESL
+# observation data (10-11-year-olds). L/S does NOT split recasts into
+# sub-types as Lyster (2007) does; recasts treated as a single category, with
+# variability noted via Sheen (2004) and Loewen & Philp (2006) studies.
+# L/S does NOT include "prompt_plus_remediation" as a labelled combined
+# move (though sequences of repetition + recast / repetition + metalinguistic
+# + explicit are shown in examples).
+#
+# Cross-validation against Lyster (2007) extraction: see notes inline.
+# AGREES with Lyster on all six base types (definitions overlap heavily).
+# DIFFERS on: (a) no implicit/explicit/full/partial recast split,
+# (b) no prompt_plus_remediation labelled as such, (c) target audience =
+# adult ESL/FSL teachers vs Lyster's research monograph for SLA scholars,
+# (d) wider range of contexts cited (Australia ESL, Japanese FL, written CF).
+
+source_book: "lightbown-spada-2021-how-languages-learned"
+extracted_by: claude
+extracted_date: "2026-04-29"
+schema_version: 1
+schema_ref: "_schemas/cf-taxonomy.schema.yaml"
+
+cf_moves:
+  # ====================================================================
+  # EXPLICIT CORRECTION
+  # L/S p. 196 — verbatim Lyster & Ranta (1997, p. 46) definition
+  # ====================================================================
+  - id: explicit_correction
+    definition: "Explicit provision of the correct form. As the teacher provides the correct form, she clearly indicates that what the student had said was incorrect (e.g., 'Oh, you mean …', 'You should say …'). Example given: S: 'The dog run fastly.' T: '\"Fastly\" doesn't exist. \"Fast\" does not take -ly. That's why I picked \"quickly\".'"
+    cefr_appropriateness:
+      a1: medium        # L/S do not give explicit CEFR mapping; inferred from teacher-audience framing
+      a2: medium
+      b1: medium
+      b2: low
+      c1: low
+      c2: low
+    counter_indications:
+      - "Communicative/content-based settings where flow matters and meaning emphasized over form (L/S p. 198 citing Lyster 1998 — 'students less likely to notice recasts than other forms of corrective feedback' implies similar form-foreground concern)"
+      - "When self-repair is achievable through a prompt — L/S endorses the Lyster/Mori counterbalance hypothesis (p. 199-200) for shifting away from form-supplying feedback in form-oriented contexts"
+    co_occurrence_warning:
+      - "L/S (p. 197) shows it co-occurring as remediation step after repetition + metalinguistic comment: 'We is? But it's two people, right? You see your mistake? You see the error? When it's plural it's we are.' — this triple sequence (repetition→metalinguistic→explicit_correction) is shown as a single L/R example"
+    empirical_effect_size:
+      study: "Sheen (2010) Study 5 — direct correction (written) and direct metalinguistic feedback (written) both significantly outperformed control on immediate and delayed post-tests for adult ESL article use; oral metalinguistic also outperformed; ONLY oral recast did NOT outperform control"
+      l1_l2_pair: "L1 mixed / L2 English (adult ESL — articles a/the)"
+    source: "Lightbown & Spada 2021, ch 5, pp. 196-197, 201-202"
+    confidence: high
+
+  # ====================================================================
+  # RECAST (single category — L/S do NOT split into implicit/explicit/full/partial)
+  # L/S p. 196 — Lyster & Ranta (1997) definition; variants discussed pp. 200-201
+  # CROSS-VAL: Lyster (2007) splits this into 4 enum entries
+  # (implicit_recast, explicit_recast, full_recast, partial_recast)
+  # — L/S collapses all four into "Recasts" as defined here, then notes
+  # variability empirically without naming sub-types
+  # ====================================================================
+  - id: implicit_recast
+    definition: "Teacher's reformulation of all or part of a student's utterance, minus the error. Recasts are generally implicit in that they are not introduced by 'You mean', 'Use this word', or 'You should say'. Example: S1: 'Why you don't like Marc?' T: 'Why don't you like Marc?' S2: 'I don't know, I don't like him.' (L/S note p. 196: 'in this example the teacher does not seem to expect uptake from S1. It seems she is merely reformulating the question S1 has asked S2.')"
+    cefr_appropriateness:
+      a1: low           # Inferred — L/S note recasts often go unnoticed in meaning-oriented contexts (p. 198)
+      a2: medium
+      b1: medium
+      b2: medium
+      c1: low
+      c2: low
+    counter_indications:
+      - "Content-based / meaning-focused classrooms where 'students may assume that the teacher is responding to the content rather than the form of their speech' (L/S p. 198 paraphrasing Lyster 1998)"
+      - "French immersion / experiential-orientation contexts where learners 'rarely repaired their utterances after receiving recasts' (L/S p. 199 Study 3 = Lyster & Mori 2006)"
+    co_occurrence_warning:
+      - "L/S p. 196-197 shows recast immediately following clarification request sequence ('Fourteen times a week?') — when recast follows a successful clarification, function shifts to confirmation"
+      - "Lyster & Mori (2006) counterbalance hypothesis: 'feedback is more likely to be noticed if learners are oriented in a direction that is opposite to what they have become accustomed to in their instructional environment' (L/S p. 199-200) — recasts work poorly when learners are already accustomed to meaning focus"
+    empirical_effect_size:
+      study: "Lyster & Ranta (1997) — recasts >50% of feedback in 4 French immersion classrooms; least likely to lead to uptake. Lyster & Mori (2006) Study 3 — recasts effective in Japanese immersion (analytic orientation) but not French immersion (experiential orientation). Ohta (2000) Study 2 — recasts noticed in adult Japanese FL via private speech, especially when directed at other learners or whole class. Sheen (2010) Study 5 — oral recasts only group NOT to outperform control on article use post-tests."
+      l1_l2_pair: "L1 English / L2 French (Quebec immersion); L1 English / L2 Japanese; L1 mixed / L2 English (adult ESL)"
+    source: "Lightbown & Spada 2021, ch 5, pp. 196-201"
+    confidence: high
+
+  - id: explicit_recast
+    definition: "Recast delivered with prosodic stress or emphasis to highlight the error. L/S do NOT use the term 'explicit recast' but Sheen (2004) study cited p. 200-201 distinguishes 'recasts that were declarative versus interrogative, reduced versus non-reduced, single words or short phrases versus long phrases or clauses' and 'whether they are delivered with or without stress or emphasis.' Loewen & Philp (2006) finding 'recasts containing prosodic stress were thirteen times more likely to result in successful uptake' (p. 547, cited L/S p. 201) — though this did NOT translate into improved test performance."
+    cefr_appropriateness:
+      a1: medium        # Inferred from prosody making form salient at low proficiency
+      a2: medium
+      b1: high
+      b2: high
+      c1: medium
+      c2: low
+    counter_indications:
+      - "Even with stress, immediate uptake does not guarantee delayed retention (Loewen & Philp 2006: 'these interactions were not associated with improved performance on a subsequent test', L/S p. 201)"
+    empirical_effect_size:
+      study: "Loewen & Philp (2006) — adult learners of English; prosodically stressed recasts 13x more likely to yield successful uptake than unstressed recasts; no effect on delayed test"
+      l1_l2_pair: "L1 mixed / L2 English (adult)"
+    source: "Lightbown & Spada 2021, ch 5, pp. 200-201"
+    confidence: medium
+
+  - id: full_recast
+    definition: "Recast that reformulates the entire learner utterance. L/S do NOT label this sub-type; included via Sheen (2004) cited p. 200-201 distinguishing 'long phrases or clauses' vs 'single words or short phrases.' L/S p. 196 base definition allows 'reformulation of all or part of a student's utterance' so full_recast is the 'all' branch."
+    cefr_appropriateness:
+      a1: low           # Inferred — heavy cognitive load identified by L/S p. 198 'double challenge of making the subject-matter comprehensible and enhancing knowledge of the L2 itself'
+      a2: medium
+      b1: medium
+      b2: medium
+      c1: medium
+      c2: low
+    counter_indications:
+      - "Content-based teaching: 'not all content teaching is necessarily good language teaching' (Swain 1988 cited L/S p. 198) — full recasts during subject-matter delivery may be tracked only for meaning"
+    source: "Lightbown & Spada 2021, ch 5, pp. 196, 198, 200-201"
+    confidence: low
+
+  - id: partial_recast
+    definition: "Recast that reformulates only part of the learner utterance. L/S do NOT use this sub-type label; included via base definition (p. 196: 'reformulation of all or part') and Sheen (2004) note (p. 200-201) on 'reduced versus non-reduced' recasts and 'single words or short phrases.'"
+    cefr_appropriateness:
+      a1: medium        # Inferred — shorter target reduces processing load
+      a2: medium
+      b1: high
+      b2: high
+      c1: medium
+      c2: low
+    source: "Lightbown & Spada 2021, ch 5, pp. 196, 200-201"
+    confidence: low
+
+  # ====================================================================
+  # CLARIFICATION REQUEST
+  # L/S p. 196-197 — verbatim Lyster & Ranta (1997)
+  # ====================================================================
+  - id: clarification_request
+    definition: "Indicates to students either that their utterance has been misunderstood by the teacher or that the utterance is incorrect in some way and that a repetition or a reformulation is required. A clarification request includes phrases such as 'Pardon me …'. It may also include a repetition of the error as in 'What do you mean by … ?' Example: T: 'How often do you wash the dishes?' S: 'Fourteen.' T: 'Excuse me.' (Clarification request) S: 'Fourteen.' T: 'Fourteen what?' (Clarification request) S: 'Fourteen for a week.' T: 'Fourteen times a week?' (Recast)"
+    cefr_appropriateness:
+      a1: low           # Inferred — risk of breakdown
+      a2: medium
+      b1: high
+      b2: high
+      c1: medium
+      c2: low
+    counter_indications:
+      - "Risk that learner reads it as genuine non-comprehension rather than corrective signal — L/S sample dialogue p. 196-197 illustrates this ambiguity (student repeats 'Fourteen' rather than reformulating, requiring teacher to ask 'Fourteen what?' explicitly)"
+    co_occurrence_warning:
+      - "L/S p. 196-197 shows clarification requests bridging into a recast once shared meaning is achieved — when clarification leads to comprehension, the follow-up reformulation may function more as confirmation than correction"
+    empirical_effect_size:
+      study: "Lyster & Ranta (1997) — among the prompt-family moves more likely to lead to learner repair than recasts (L/S p. 198: 'elicitations and metalinguistic feedback not only resulted in more uptake, they were also more likely to lead to a corrected form')"
+    source: "Lightbown & Spada 2021, ch 5, pp. 196-197"
+    confidence: high
+
+  # ====================================================================
+  # METALINGUISTIC FEEDBACK
+  # L/S p. 197 — verbatim Lyster & Ranta (1997)
+  # ====================================================================
+  - id: metalinguistic
+    definition: "Comments, information, or questions related to the correctness of the student's utterance, without explicitly providing the correct form. Metalinguistic comments generally indicate that there is an error somewhere (e.g., 'Can you find your error?'). Metalinguistic information generally provides either some grammatical terminology that refers to the nature of the error (e.g., 'It's masculine') or a word definition in the case of lexical errors. Metalinguistic questions also point to the nature of the error but attempt to elicit the information from the student (e.g., 'Is it feminine?'). Example: S: 'We look at the people yesterday.' T: 'What's the ending we put on verbs when we talk about the past?' S: 'e–d'"
+    cefr_appropriateness:
+      a1: contraindicated  # Inferred — requires metalanguage knowledge
+      a2: low
+      b1: medium
+      b2: high
+      c1: high
+      c2: medium
+    counter_indications:
+      - "When learners lack the metalanguage to decode the cue (e.g., 'It's masculine' presupposes knowledge of grammatical gender terminology)"
+    empirical_effect_size:
+      study: "Sheen (2010) Study 5 — both oral metalinguistic feedback and written direct metalinguistic feedback significantly outperformed control on adult ESL article post-tests; Sheen interprets findings as evidence that 'the medium (oral versus written) in which corrective feedback is provided is less important than the explicitness of the corrective feedback (recasts versus metalinguistic feedback)'"
+      l1_l2_pair: "L1 mixed / L2 English (adult ESL — articles)"
+    source: "Lightbown & Spada 2021, ch 5, pp. 197-198, 201-202"
+    confidence: high
+
+  # ====================================================================
+  # ELICITATION
+  # L/S p. 197 — verbatim Lyster & Ranta (1997)
+  # ====================================================================
+  - id: elicitation
+    definition: "At least three techniques teachers use to directly elicit the correct form from the students. First, teachers elicit completion of their own utterance (e.g., 'It's a …'). Second, teachers use questions to elicit correct forms (e.g., 'How do we say x in English?'). Third, teachers occasionally ask students to reformulate their utterance. Example: S: 'My father cleans the plate.' T: 'Excuse me, he cleans the —–?' S: 'Plates?'"
+    cefr_appropriateness:
+      a1: low           # Inferred — risk of silence
+      a2: medium
+      b1: high
+      b2: high
+      c1: medium
+      c2: low
+    counter_indications:
+      - "When form not yet acquired, learner cannot retrieve it (no L/S explicit statement, but consistent with pedagogic logic of prompt family)"
+    empirical_effect_size:
+      study: "Lyster & Ranta (1997) — 'elicitations and metalinguistic feedback not only resulted in more uptake, they were also more likely to lead to a corrected form of the original utterance' (L/S p. 198)"
+      l1_l2_pair: "L1 English / L2 French (immersion 9-11-year-olds)"
+    source: "Lightbown & Spada 2021, ch 5, pp. 197-198"
+    confidence: high
+
+  # ====================================================================
+  # REPETITION
+  # L/S p. 197 — verbatim Lyster & Ranta (1997)
+  # NOTE: L/S explicitly shows TWO co-occurrence patterns (with recast,
+  # with metalinguistic + explicit_correction)
+  # ====================================================================
+  - id: repetition
+    definition: "Teacher's repetition of the student's erroneous utterance. In most cases, teachers adjust their intonation so as to highlight the error. L/S provide TWO concrete examples of repetition followed by remediation: (1) Repetition + Recast: S: 'He's in the bathroom.' T: 'Bathroom? Bedroom. He's in the bedroom.' (2) Repetition + Metalinguistic + Explicit Correction: S: 'We is …' T: 'We is? But it's two people, right? You see your mistake? You see the error? When it's plural it's we are.'"
+    cefr_appropriateness:
+      a1: medium        # Inferred — high salience, no metalanguage
+      a2: high
+      b1: high
+      b2: medium
+      c1: low
+      c2: low
+    counter_indications:
+      - "Without intonation cue, may be misread as confirmation"
+    co_occurrence_warning:
+      - "L/S p. 197-198 explicitly notes repetition can be followed by recast OR by metalinguistic + explicit_correction in the same teacher turn — i.e., repetition serves as a prompt step that may or may not be remediated"
+    empirical_effect_size:
+      study: "Lyster & Ranta (1997) — 'Repetition of error was the least frequent feedback type provided' in the 4 French immersion classes (L/S p. 198)"
+      l1_l2_pair: "L1 English / L2 French (immersion)"
+    source: "Lightbown & Spada 2021, ch 5, pp. 197-198"
+    confidence: high
+
+  # ====================================================================
+  # PROMPT_PLUS_REMEDIATION (inferred — L/S do NOT label as combined move)
+  # CROSS-VAL: Lyster (2007) treats this as standalone enum entry citing
+  # Doughty & Varela (1998) "corrective recasting". L/S do NOT cite
+  # Doughty & Varela in Ch 5 CF section, and do not name the sequence.
+  # However the PATTERN is clearly visible in their repetition examples
+  # (p. 197-198) where repetition is followed by recast OR by
+  # metalinguistic + explicit_correction.
+  # ====================================================================
+  - id: prompt_plus_remediation
+    definition: "Sequenced feedback in which a prompt is followed by teacher-supplied form. NOT explicitly labelled by L/S, but demonstrated in their repetition examples (p. 197): repetition with rising intonation immediately followed by either a recast ('Bathroom? Bedroom.') or by metalinguistic comment + explicit_correction ('We is? … When it's plural it's we are.'). L/S frame these as repetition examples, not as a distinct combined category. Lyster (2007) treats this combined sequence as a separate move citing Doughty & Varela (1998); L/S do not cite D&V in Ch 5."
+    cefr_appropriateness:
+      a1: medium        # Inferred — safety net of remediation
+      a2: high
+      b1: high
+      b2: high
+      c1: medium
+      c2: low
+    counter_indications:
+      - "If teacher remediates too quickly (no pause for self-repair), reduces to recast and loses prompt effect (general SLA principle, NOT explicit in L/S)"
+    co_occurrence_warning:
+      - "L/S frame repetition+recast and repetition+metalinguistic+explicit as instances of repetition (the prompt step) rather than as combined moves — different categorization than Lyster (2007)"
+    source: "Lightbown & Spada 2021, ch 5, pp. 197-198"
+    confidence: low
+
+# ====================================================================
+# CROSS-VALIDATION SUMMARY: Lightbown/Spada Ch 5 vs Lyster (2007)
+# ====================================================================
+# AGREEMENTS (definitions match closely or are verbatim):
+#   - explicit_correction         AGREE  (L/S verbatim L&R 1997 p. 46)
+#   - clarification_request       AGREE  (L/S verbatim L&R 1997)
+#   - metalinguistic     AGREE  (L/S verbatim L&R 1997)
+#   - elicitation                 AGREE  (L/S verbatim L&R 1997)
+#   - repetition                  AGREE  (L/S verbatim L&R 1997)
+#
+# DIVERGENCES:
+#   - implicit_recast / explicit_recast / full_recast / partial_recast
+#       L/S do NOT split — single "Recasts" category with empirical
+#       variation noted via Sheen 2004 + Loewen & Philp 2006 (without
+#       sub-type labels). Lyster (2007) ch 4 explicitly defines all four.
+#   - prompt_plus_remediation
+#       L/S do NOT label the combined move. Repetition+recast and
+#       repetition+metalinguistic+explicit are shown as instances of
+#       *repetition* in their examples. Lyster (2007) labels and cites
+#       Doughty & Varela (1998) "corrective recasting"; L/S do not cite
+#       D&V in Ch 5.
+#
+# DIFFERENT EMPIRICAL DATA:
+#   - L/S add Sheen (2010) oral vs written CF on articles (L/S Study 5)
+#     — finding that explicitness > medium, and ONLY oral recasts failed
+#     to outperform control. Not in Lyster 2007.
+#   - L/S add Ohta (2000) private speech method (L/S Study 2) — recasts
+#     DO get noticed via private speech, especially when directed at
+#     other learners. Not central in Lyster 2007.
+#   - L/S add Oliver & Mackey (2003) Australian primary ESL multi-context
+#     (Study 4) — feedback type varies with content/management/
+#     communication/explicit-language exchange contexts.
+#   - L/S add Sheen (2004) recast variability, Loewen & Philp (2006)
+#     prosodic stress (uptake yes, post-test no).
+#
+# CONFIDENCE DISTRIBUTION:
+#   - high   : 6  (explicit_correction, implicit_recast, clarification_request,
+#                  metalinguistic, elicitation, repetition)
+#   - medium : 1  (explicit_recast — derived from Sheen + L&P, not L/S core)
+#   - low    : 3  (full_recast, partial_recast, prompt_plus_remediation —
+#                  inferred from base recast definition + repetition
+#                  examples; L/S do not name or sub-categorize)
+#
+# CEFR APPROPRIATENESS: All inferred conservatively (medium-low confidence).
+# L/S do NOT provide CEFR mapping; their target audience = teachers in
+# diverse adult/child ESL/FSL contexts (not Lyster's specific Quebec
+# immersion children). Mappings carried over from Lyster (2007)
+# extraction with minor adjustments where L/S empirics suggest
+# differences.

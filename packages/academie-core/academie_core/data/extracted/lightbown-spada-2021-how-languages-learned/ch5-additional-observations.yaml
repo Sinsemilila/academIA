@@ -1,0 +1,186 @@
+# Additional Ch 5 observations (NON-CF material) extracted from
+# Lightbown & Spada (2021), How Languages are Learned (5th ed.), Chapter 5
+#
+# Captured for downstream consumption by future custom schemas
+# (questions-taxonomy, time-distribution, ethnography-methodology).
+# NO schema currently exists for this content. File is informational
+# until consumers define schemas.
+#
+# Sibling file: ch5-cf-observation-schemes.yaml (cf-taxonomy schema-strict)
+
+source_book: "lightbown-spada-2021-how-languages-learned"
+extracted_by: claude
+extracted_date: "2026-04-29"
+chapter: 5
+chapter_title: "Observing learning and teaching in the second language classroom"
+pdf_pages: "176-213"
+schema_ref: null  # No schema yet — pending downstream definition
+
+# ====================================================================
+# QUESTIONS IN THE CLASSROOM (Studies 6-10)
+# Ch 5 pp. 202-206
+# ====================================================================
+questions_in_classroom:
+  pages: "202-206"
+  framing: "Two main distinctions: (1) display questions (teacher knows answer) vs genuine/referential questions (teacher may not know), (2) closed (one possible answer) vs open (multiple answers, invite elaboration). L/S note historical pendulum swing: communicative pedagogy initially urged fewer display questions, but recent re-evaluation acknowledges scaffolding role of display questions."
+  studies:
+    - id: study_6_long_sato_1983
+      finding: "Adult ESL classes — teachers asked more display questions than information (genuine/referential) questions; in NS/NNS conversations OUTSIDE classroom referential questions were more frequent. Teacher-learner interaction = 'a greatly distorted version of its equivalent in the real world' (p. 284)."
+      source: "Long & Sato (1983), cited L/S p. 202-203"
+
+    - id: study_7_mccormick_donato_2000
+      finding: "Display questions can serve important pedagogic / scaffolding function in adult ESL — re-evaluation of the blanket 'avoid display questions' advice. Working within sociocultural theory, scaffolding = process where more knowledgeable speaker helps novice via interactional framework. Example: T: 'Palace?' / S1: 'Like castle?' / S2: 'Special place, very good.' / T: 'Castle, special place, very nice. Who usually lives in palaces?' / Ss: 'Kings.' Display question 'Who usually lives in palaces?' draws learner attention to the word 'palace' and facilitates comprehension."
+      source: "McCormick & Donato (2000), cited L/S p. 203-204"
+
+    - id: study_8_dalton_puffer_2006
+      finding: "CLIL Austria — open questions yielded greater quantity AND quality of learner output than closed; open questions asking for reasons/explanations led to most complex linguistic outcomes. Caveat: 'this level of question/response interaction requires a high level of competence in the foreign language on the part of the teacher' (p. 205)."
+      source: "Dalton-Puffer (2006), cited L/S p. 204-205"
+      context: "CLIL (Content and Language Integrated Learning), Austria"
+
+    - id: study_9_white_lightbown_1984_wait_time
+      finding: "Audiolingual ESL — teachers gave students 'no more than a second or two' before redirecting question or answering it themselves; tended to repeat/paraphrase rather than wait silently. Long et al. (1985) — training teachers to allow more wait time → students produce more, longer, more complex responses; effect stronger with open/referential than closed/display questions."
+      source: "White & Lightbown (1984), Long et al. (1985), cited L/S p. 205"
+
+    - id: study_10_zhang_waring_2012_understanding_checks
+      finding: "28 hours of video-taped ESL classroom interaction; 71 yes/no understanding checks (UC) identified ('Do you understand?', 'Do you have questions?', 'OK?'). Students overwhelmingly indicated 'no problem' regardless of context. UCs at activity boundaries serve DUAL function (comprehension check + activity closing); within-activity post-explanation UCs have SINGULAR comprehension-check function. Students likely reluctant to flag non-comprehension at boundaries (signals end of activity) or post-explanation (face-saving)."
+      source: "Zhang Waring (2012), cited L/S p. 205-206"
+
+  irf_observation:
+    note: "L/S identify the IRE (Initiation/Response/Evaluation) exchange as 'most typical' of structure-based instruction (p. 180). They do NOT use the IRF acronym (Sinclair & Coulthard) explicitly but the concept is the same. Communicative classrooms show genuine questions, negotiation for meaning, and student-led direction shifts (Classroom B transcript p. 187-188 example)."
+    contrast_examples:
+      structure_based:
+        excerpt: "Classroom A (15-yo French L1, structure-based, audiolingual on present continuous): T's questions are nearly all display questions ('What are you doing, Paul?' aiming to elicit -ing form). When student replies 'Nothing' (genuine answer), teacher persists pushing for sentence with present continuous. Pragmatic intent misread by student as accusation rather than display."
+        source: "L/S p. 186-187"
+      communicative:
+        excerpt: "Classroom B (10-yo French L1, communicative, 'What bugs me' activity): T's questions are nearly all genuine ('How old is your brother?', 'Could his brother lend his bicycle?'). Negotiation for meaning over a misunderstanding about which child has a new bicycle."
+        source: "L/S p. 187-188"
+
+# ====================================================================
+# TIME FOR LEARNING LANGUAGES IN SCHOOL (Study 11)
+# Ch 5 pp. 206-208
+# ====================================================================
+time_for_learning_languages:
+  pages: "206-208"
+  key_observations:
+    - "Stern (1985) coined 'drip feed' for 50-200 hours/year typical of N. American school L2 instruction"
+    - "Concentrating L2 instruction over shorter periods is more effective than distributing same hours over longer periods (Collins et al. 1999; Lightbown & Spada 1994)"
+    - "'Earlier is better' belief is contradicted by research in school settings showing more intensive instruction for older children (11-12 yo) leads to better outcomes than spreading earlier kindergarten instruction over many years (Lightbown & Spada 2019)"
+    - "Out-of-classroom L2 input (e.g., daily English TV homework) can boost listening comprehension as much as in-class concentration"
+  studies:
+    - id: study_11_collins_white_2011
+      sample_n: 230
+      learners: "10-11-year-old French-speaking learners of ESL"
+      l1_l2_pair: "L1 French / L2 English (Quebec)"
+      design: "Two intensive ESL models, 400 total hours each. CONCENTRATED: 5h/day, 5 days/week, 5 months. DISTRIBUTED: ~2h/day, 10 months. Communicatively-oriented Quebec curriculum in both. Concentrated group also had daily 30-min English TV homework."
+      finding: "Concentrated model showed small advantages on listening comprehension, but researchers attribute that advantage to extra TV-in-English homework rather than the concentration itself. Both models beneficial overall. Findings consistent with Muñoz (2012), Netten & Germain (2004)."
+      source: "Collins & White (2011), cited L/S p. 207-208"
+  cefr_milestone_estimates:
+    note: "L/S do NOT provide specific hours-to-CEFR-level estimates in Ch 5. Generic figures only: 50-200 hours/year as 'drip feed' insufficient for proficiency, 400 hours intensive sufficient for measurable communicative gains in primary ESL. No mapping to CEFR A2/B1/B2 thresholds."
+
+# ====================================================================
+# ETHNOGRAPHY (Studies 12-14)
+# Ch 5 pp. 209-211
+# ====================================================================
+ethnography_methodology:
+  pages: "209-211"
+  description: "Qualitative observation without predetermined categories; observer takes extensive field notes on activities/practices/interactions and looks for emergent patterns. Observer can be participant (e.g., teacher's aide) or non-participant. Broader scope than observation schemes — includes social, cultural, and political realities and their impact on learners' cognitive/linguistic/social development."
+  defining_contrast: "Observation schemes use predetermined categories (e.g., COLT). Ethnography starts with no categories and lets patterns emerge from data."
+  studies:
+    - id: study_12_watson_gegeo_1992
+      design: "Longitudinal multi-year study, 9 families, Solomon Islands"
+      finding: "Home environments rich in linguistic and cognitive stimulation, yet many children failed in school. Failure linked to: (1) absence of children's L1 in school, replaced by 'restricted and often incorrect version of English'; (2) parents' negative socialization about own school experiences; (3) parental fears about children's success; (4) questioning of school's value. Sociocultural context as influential as linguistic factors."
+      source: "Watson-Gegeo (1992), cited L/S p. 210"
+
+    - id: study_13_toohey_1998
+      design: "Longitudinal observation, kindergarten-Grade 2, Vancouver"
+      learners: "5-7-year-olds; mix of native English speakers and L1 Cantonese, Hindi, Polish, Punjabi, Tagalog"
+      finding: "Three classroom practices systematically separated ESL children: (1) ESL children's desks placed close to teacher's (assumption of need for direct help) and pulled out twice/week for ESL teacher assistance; (2) ESL-ESL interactions (especially material borrowing/lending) had to be done surreptitiously since teacher did not always tolerate it; (3) classroom 'no-copying' rule for oral or written productions disadvantaged ESL children whose primary participation strategy was repeating others. These practices led to exclusion of ESL students from classroom and broader community activities — and did NOT positively contribute to ESL development."
+      source: "Toohey (1998), cited L/S p. 210-211"
+
+    - id: study_14_duff_1995
+      design: "Ethnographic study, English-medium content classes, Hungarian secondary schools, post-Soviet sociopolitical transition"
+      finding: "Compared two activity formats: (a) felelés — heavily ritualized recitation closely associated with Soviet-oriented policies, gradually rejected after 1989; (b) 'student lecture' — open-ended, less ritualized presentation. Student lectures yielded MORE spontaneous comments/questions in English (vs Hungarian), more uptake of teacher and peer feedback, more meaning-negotiation, more development of fluency/accuracy/comprehension. Sociopolitical change directly affects classroom practice AND L2 use/development."
+      source: "Duff (1995), cited L/S p. 211"
+
+# ====================================================================
+# OBSERVATION SCHEMES CITED
+# Ch 5 pp. 183-184
+# ====================================================================
+observation_schemes:
+  - name: "COLT (Communicative Orientation of Language Teaching) Observation Scheme"
+    authors: "Spada & Fröhlich (1995)"
+    structure: "Part A — describes teaching practices in terms of content, focus, organization of activity types (teacher- vs learner-centred, language form vs meaning, topic choice). Part B — describes specific aspects of language produced by teachers and students (amount, restrictions, question types, error treatment)."
+    used_for:
+      - "Classroom comparison research"
+      - "Teacher training (e.g., Japan EFL training programme — Ishizuka & Yorozuya 2014; Sano et al. 2016)"
+    pages: "183-184"
+    availability: "Available on companion website www.oup.com/elt/teacher/hlal"
+
+  - name: "Lyster & Ranta (1997) error treatment observation scheme"
+    structure: "Six CF types: explicit_correction, recasts, clarification_request, metalinguistic_feedback, elicitation, repetition (full extraction in sibling cf-taxonomy file)"
+    used_for: "Describing teacher CF practices and learner uptake"
+    pages: "195-198"
+
+# ====================================================================
+# NATURAL VS INSTRUCTIONAL SETTINGS (Ch 5 introduction)
+# Ch 5 pp. 176-183
+# ====================================================================
+settings_taxonomy:
+  pages: "176-183"
+  contexts:
+    natural_acquisition:
+      description: "Learner exposed to language at work, in social interaction, or (if child) at school where most peers are native speakers. Learning takes place in interaction with peers and through instruction directed at native speakers."
+      characteristics:
+        - "Language not presented step by step; wide variety of vocabulary and structures"
+        - "Errors rarely corrected (interlocutors prioritize meaning over form)"
+        - "Many hours/day of exposure (some addressed to learner, some overheard)"
+        - "Variety of proficient speakers as input source"
+        - "Diverse language event types (greetings, transactions, arguments, instruction)"
+        - "Pressure to produce in service of meaning, not accuracy"
+        - "Modified input available in 1-to-1 conversations, harder in multi-party"
+
+    structure_based:
+      description: "Language taught to L2/FL group; focus on language itself rather than messages. Goal: vocabulary + grammatical rules. Outside contact varies; goal may be exam-passing rather than communication."
+      characteristics:
+        - "Linguistic items presented and practised in isolation, sequenced 'simple' to 'complex'"
+        - "Errors frequently corrected; accuracy prioritized over interaction"
+        - "Limited weekly hours"
+        - "Teacher often only proficient speaker"
+        - "Limited discourse range — typically IRE (Initiation/Response/Evaluation) exchange"
+        - "Pressure to speak/write correctly from beginning"
+        - "Teachers may use L1 for management; modified target language for comprehension/compliance"
+
+    communicative_content_task_based:
+      description: "Goal still language learning, but emphasis on interaction/conversation/use. Topics of general interest (driver's licence, etc.) or subject matter (CBLT — content-based language teaching: history, math through L2)."
+      characteristics:
+        - "Input simplified via context, props, gestures (not structural grading)"
+        - "Limited error correction; meaning over form. Clarification requests as implicit feedback"
+        - "Limited time per learner in 25-30 student class; pair/group work expands production opportunities"
+        - "CBLT/immersion can dramatically increase time"
+        - "Teacher only proficient speaker; learners exposed to peers' interlanguage"
+        - "Variety of discourse types via stories, role-play, authentic materials (newspapers, TV)"
+        - "Low pressure for accuracy; comprehension > production in early stages"
+        - "Modified input is defining feature"
+
+# ====================================================================
+# CROSS-REFERENCE TO LYSTER 2007 EXTRACTION
+# ====================================================================
+cross_reference:
+  parent_taxonomy: "lyster-2007-counterbalanced-content/cf-taxonomy.yaml"
+  sibling_taxonomy: "lightbown-spada-2021-how-languages-learned/ch5-cf-observation-schemes.yaml"
+  notes: |
+    L/S Ch 5 is built on Lyster & Ranta (1997) — same six base categories.
+    Lyster (2007) extends to refined sub-types (4 recast variants,
+    prompt_plus_remediation). L/S Ch 5 cites Lyster & Mori (2006)
+    counterbalance hypothesis (L/S Study 3) as bridge to Lyster's larger
+    framework.
+
+    Empirical scope L/S Ch 5 > Lyster 2007 in instructional context
+    diversity (Australia ESL primary, Japanese FL adult, Quebec
+    immersion, ESL writing, CLIL Austria, Hungarian secondary, Solomon
+    Islands ethnography). Lyster 2007 deeper in single context (Quebec
+    French immersion).
+
+    For AcademIA downstream: this file's questions_in_classroom and
+    time_for_learning_languages sections will need separate schemas
+    when consumed by tolerance_matrix or fewshot generators.
