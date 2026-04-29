@@ -1,0 +1,732 @@
+# Gramática inventario A1 + A2 — Plan Curricular del Instituto Cervantes (PCIC).
+#
+# ADR-014 Layer 1.5 extraction (Session 53 Phase C, 2026-04-30).
+# Source : `cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/02_gramatica_inventario_a1-a2.htm`
+# (HTML version free online, fetched via WebFetch — preferred over scanned PDF 515p).
+# Cross-validation : skim notes literature note `cervantes-2006-plan-curricular-a1-a2.md`.
+#
+# Use case : audit `data/curriculum_es.yaml` against PCIC authoritative inventario.
+# Each PCIC item should map to ≥1 concept_key. Gaps = action items for Phase C audit.
+# Phase C4 patch will expand curriculum_es from 51 → ~120-150 concepts based on this.
+
+source:
+  book: "Plan Curricular del Instituto Cervantes — Niveles de referencia para el español"
+  volume: "A — A1+A2"
+  publisher: "Instituto Cervantes / Edelsa / Biblioteca Nueva"
+  year: 2006
+  edition: "1.ª (reprint Línea 2015)"
+  isbn: "978-84-7711-052-7"
+  inventario: "2. Gramática"
+  pages: "Vol A — section Gramática per niveau (~50-80p chacun, exact pages TBD scanned PDF)"
+  url: "https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/02_gramatica_inventario_a1-a2.htm"
+  fetch_date: 2026-04-30
+  notes: |
+    PCIC = adaptation ES of CEFR (NOT translation Threshold). Derived from Spanish-specific
+    characteristics. Hierarchy : 15 macro-sections (sustantivo, adjetivo, artículo, etc.)
+    × 6 niveaux (A1-C2). Vol A covers A1+A2, Vol B covers B1+B2, Vol C covers C1+C2 (pending acquisition).
+    PCIC rule : "Los inventarios... especifican solo el material nuevo con respecto a los
+    niveles anteriores" — A2 entries are CUMULATIVE additions to A1.
+
+# ============================================================================
+# === A1 (Acceso) — 15 macro-sections ========================================
+# ============================================================================
+A1:
+  level_label: "Acceso"
+  band: "Basic user A1"
+  macro_sections:
+
+    # --- 1. El sustantivo ---
+    "1.El_sustantivo":
+      "1.1.Clases_de_sustantivos":
+        "1.1.1.Nombres_propios":
+          - "Antropónimos sin artículo (María, Antonio)"
+          - "Hipocorísticos y diminutivos (Pepe, Paco, Chelo, Lola)"
+          - "Apellidos sin artículo (Fernández, González)"
+          - "Formas de tratamiento (el Sr. Fernández, Don Fernando)"
+          - "Topónimos países sin artículo (España, Italia) ; ciudades (Madrid, París)"
+        "1.1.2.Nombres_comunes":
+          - "Nombres períodos temporales (mediodía, tarde, noche)"
+      "1.2.El_genero_de_los_sustantivos":
+        - "Masculino -o / femenino -a (amigo/amiga, libro/casa)"
+        - "Otras vocales/consonantes (peine, muerte, árbol, catedral)"
+        - "Femenino -o por abreviación (moto, foto, radio)"
+        - "Heteronimia (padre/madre, hombre/mujer)"
+      "1.3.El_numero_de_los_sustantivos":
+        - "Vocal final → -s (mesa/mesas)"
+        - "Consonante → -es (árbol/árboles, pared/paredes)"
+        - "Terminados -s : monosílabos/agudos → -es (país/países)"
+        - "Plural = suma individuos iguales (coche/coches)"
+
+    # --- 2. El adjetivo ---
+    "2.El_adjetivo":
+      "2.1.Clases_de_adjetivos":
+        "2.1.1.Adjetivos_calificativos":
+          - "Función complemento del nombre (chico guapo)"
+          - "Función atributo (El chico es guapo)"
+          - "Incompatibilidad con posesivos"
+        "2.1.2.Adjetivos_relacionales":
+          - "Gentilicios muy frecuentes (español, francés, japonés)"
+      "2.2.El_genero_del_adjetivo":
+        - "Masculino -o / femenino -a (alto/alta)"
+        - "Masculino consonante / femenino -a — gentilicios (español/española, francés/francesa)"
+        - "Terminados consonante (difícil, fácil)"
+        - "Gentilicios invariables (marroquí, hindú)"
+      "2.3.El_numero_del_adjetivo":
+        - "Vocal → -s (alto/altos, española/españolas)"
+        - "Consonante → -es (fácil/fáciles)"
+      "2.4.Posicion_del_adjetivo":
+        - "Postnominal especificativo/restrictivo (un chico guapo)"
+      "2.5.Grados_del_adjetivo":
+        - "Positivo (un chico guapo)"
+        - "Superlativo absoluto con muy (muy guapo)"
+
+    # --- 3. El artículo ---
+    "3.El_articulo":
+      "3.1.El_articulo_definido":
+        forma:
+          - "Paradigma regular (el, la, los, las) ; contractas (al, del)"
+        distribucion:
+          - "Ausencia con nombre propio persona (regla general)"
+          - "Restricciones presencia otros determinantes : 1ª posición SN"
+          - "Imposibilidad con posesivos/demostrativos prenominales"
+          - "Obligatorio con sujeto en gustar (Me gusta la paella)"
+          - "Incompatibilidad con haber"
+          - "Compatibilidad con estar"
+          - "Incompatibilidad con saber"
+      "3.2.El_articulo_indefinido":
+        forma:
+          - "Paradigma regular (un, una, unos, unas)"
+        valores:
+          - "Indefinición ; primera mención (referentes nuevos) — Tengo un libro"
+        distribucion:
+          - "Incompatibilidad nombres propios"
+          - "Incompatibilidad con demostrativos, numerales, indefinidos"
+      "3.3.Ausencia_de_determinacion":
+        - "Incompatibilidad con gustar (*Me gusta paella)"
+        - "Compatibilidad con haber impersonal (Hay árboles en la plaza)"
+
+    # --- 4. Los demostrativos ---
+    "4.Los_demostrativos":
+      forma:
+        - "Paradigma masc/fem singular/plural (este, ese, aquel + variantes)"
+        - "Neutro singular (esto, eso, aquello)"
+        - "Posición inicial con copulativos (Eso es un libro)"
+      valores:
+        - "Deíctico espacial : cercanía hablante (este libro), lejanía (ese, aquel)"
+        - "Referente desconocido (¿Qué es eso?)"
+      distribucion:
+        - "Posición delante sustantivo"
+        - "Incompatibilidad con artículo"
+
+    # --- 5. Los posesivos ---
+    "5.Los_posesivos":
+      forma:
+        - "Átonas (un poseedor) variation número (mi/mis, tu/tus, su/sus)"
+        - "Tónicas + átonas varios poseedores (nuestro/a/os/as, vuestro/a/os/as, su/sus)"
+        - "Variación género/número con tónicas"
+        - "Coincidencia formal átonas 3ª pers"
+      distribucion:
+        - "Posición inicial átonas (mi libro)"
+        - "Incapacidad átonas aisladas"
+        - "Incompatibilidad con adjetivos/artículo (átonas)"
+        - "Incompatibilidad con haber"
+
+    # --- 6. Los cuantificadores ---
+    "6.Los_cuantificadores":
+      "6.1.Cuantificadores_propios":
+        numerales:
+          - "Cardinales (dos, catorce, trescientos, quince mil) variación género/número"
+          - "Ordinales hasta 10º (primero/primera, segundo/segunda) variación género"
+        no_universales_afirmativos:
+          - "poco, mucho variación género/número"
+          - "bastante variación número"
+      "6.2.Cuantificadores_focales":
+        incluyentes:
+          - "también, tampoco (Yo también soy alemán, Yo tampoco voy)"
+
+    # --- 7. El pronombre ---
+    "7.El_pronombre":
+      "7.1.El_pronombre_personal":
+        "7.1.1.Pronombre_sujeto":
+          forma:
+            - "Paradigma 3 personas (yo, tú, él, nosotros, vosotros, ellos)"
+            - "Variación género 3ª sing/pl ; 1ª/2ª pl"
+            - "Forma usted/ustedes formal"
+          presencia_ausencia:
+            - "Ausencia general : sujeto innecesario/inaceptable"
+            - "Presencia con valor contraste (Yo soy Clara, ¿y tú?)"
+            - "Ausencia en impersonales con haber"
+          valores:
+            - "Referente +humano ; demostrativos para cosas"
+            - "Referencia participantes discurso : nociones persona"
+        "7.1.2.Pronombres_atonos_de_OD":
+          - "Ausencia con hay"
+          - "Ausencia respuestas si antecedente es sustantivo sin determinante"
+        "7.1.3.Pronombres_atonos_de_OI_me_te_le":
+          forma:
+            - "1ª pers sing me (Me gusta el cine)"
+          valores:
+            - "Experimentante semántico con gustar (Me gustan los coches)"
+        "7.1.4.Valores_de_se":
+          forma:
+            - "Pronombre único sing/pl"
+          valores:
+            - "Reflexivo (levantarse, peinarse)"
+      "7.2.Los_relativos":
+        que:
+          - "Especificativas con antecedente expreso (El libro que lee es muy interesante)"
+          - "Invariable, átono, proclítico"
+          - "Antecedente sustantivo +/- humano"
+          - "Función sujeto y OD con antecedente obligatorio"
+      "7.3.Los_interrogativos":
+        - "qué : tónico, posición inicial, invariable, -humano (¿Qué estudias? ¿Qué libro lees?)"
+        - "quién/quiénes : tónico singular, +humano (¿Quién es esa chica?)"
+        - "cuánto/a/os/as : tónico, variable género/número (¿Cuántos años tienes?)"
+        - "dónde, cómo : adverbios interrogativos, posición inicial, invariables"
+      "7.4.Los_exclamativos":
+        - "qué con adjetivo (¡Qué bonito!)"
+        - "qué con adverbio (¡Qué bien!)"
+        - "qué con copulativo + atributo (¡Qué bonito es!)"
+
+    # --- 8. El adverbio ---
+    "8.El_adverbio":
+      "8.2.Adverbios_nucleares":
+        circunstanciales_facultativos:
+          de_lugar:
+            - "Pronominales demostrativos deícticos (aquí, ahí, allí)"
+            - "Intensificación (muy lejos, muy cerca)"
+          de_tiempo:
+            - "Pronominales demostrativos deícticos (ahora, hoy, mañana)"
+          de_cantidad:
+            - "poco, mucho, bastante en posición postverbal"
+            - "Oposición mucho/muy"
+            - "Resultativos (bien, mal)"
+        otros_nucleares:
+          - "Identificativos polares : sí, no ; también, tampoco"
+      "8.4.Adverbios_del_modus":
+        adverbios_enunciacion:
+          - "Metalingüísticos ordenadores (primero, segundo)"
+      "8.5.Adverbios_conjuntivos":
+        - "entonces, también, tampoco con restricciones polaridad"
+      "8.8.Adverbios_relativos_e_interrogativos":
+        - "Interrogativos dónde, cómo posición inicial invariable (¿Dónde vives?)"
+      "8.9.Locuciones_adverbiales":
+        - "por qué (posición inicial, contraste con porque)"
+
+    # --- 9. El verbo ---
+    "9.El_verbo":
+      "9.1.Tiempos_verbales_de_indicativo":
+        "9.1.1.Presente":
+          forma:
+            - "Paradigma regulares ; irregularidades propias (ser, estar, haber, ir)"
+          valores:
+            - "Presente actual (Estamos en clase de español)"
+            - "Presente durativo (Vivo en Madrid)"
+        "9.1.2.Preterito_imperfecto":
+          forma:
+            - "Paradigma regulares ; irregulares (ser, ir, ver)"
+          valores:
+            - "Descriptivo (personas, objetos, lugares, tiempo) — Mi madre era alta, Tenía coche rojo"
+            - "Imperfecto habitual/cíclico (Iba todos los días al colegio)"
+        "9.1.3.Preterito_indefinido":
+          forma:
+            - "Paradigma formas regulares 3 conjugaciones"
+            - "Irregularidad raíz (tener, hacer, estar)"
+            - "Completamente irregulares (ser, ir)"
+            - "Irregulares (ver, dar)"
+          valores:
+            - "Acciones pasadas momento temporal preciso, verbos perfectivos (Fui a su casa)"
+        "9.1.6.Preterito_perfecto":
+          forma:
+            - "Conjugación haber + paradigma participios regulares"
+            - "Participios irregulares (hecho, escrito, visto)"
+          valores:
+            - "Acción pasada relevancia continuada al presente"
+            - "Marcadores temporales explícitos (hoy, este año, esta mañana, ya, todavía no)"
+            - "Marcadores implícitos (He estado en tu casa)"
+      "9.3.El_imperativo":
+        forma:
+          - "Afirmativos regulares 2ª pers sing/pl"
+          - "Afirmativos irregulares (di, haz, pon, sal)"
+          - "Imperativo usted/ustedes"
+          - "Pronombres OD/OI enclíticos (Cómpralo, Dale el libro)"
+        valores:
+          - "Instrucción (Sigue todo recto)"
+          - "Lexicalizados función fática (mira, oye)"
+      "9.4.Formas_no_personales":
+        "9.4.1.Infinitivo":
+          forma:
+            - "Simple 3 conjugaciones"
+          valores:
+            - "Verbal independiente fragmentario (¿Qué haces? Estudiar)"
+            - "Subordinadas sustantivas función sujeto/OD (Estudiar español es divertido, Me gusta estudiar español, Quiero ir a España)"
+        "9.4.3.Participio":
+          forma:
+            - "Regulares ; variación género/número ; concordancia con sustantivo"
+          valores:
+            - "Adjetival (Estoy cansado)"
+
+    # --- 10. El sintagma nominal ---
+    "10.El_sintagma_nominal":
+      "10.1.El_nucleo": "Remite a Gramática 1"
+      "10.2.Complementos_y_modificadores":
+        adjuntos_restrictivos:
+          - "Adjetivos no relacionales"
+          - "Sintagma preposicional único no ambiguo (sustantivo/infinitivo/adverbio) — libro de español, hora de comer, página del libro, casa con jardín"
+        modificadores_oracionales:
+          - "Relativas especificativas en indicativo (chica que lleva gafas)"
+      "10.3.Concordancia_interna_SN":
+        - "Determinante → núcleo → adjetivo"
+      "10.4.Concordancia_SN_verbo":
+        - "Regla general"
+      "10.5.El_vocativo":
+        - "Posición inicial/final (Juan, ¿eres de Madrid?)"
+
+    # --- 11. El sintagma adjetival ---
+    "11.El_sintagma_adjetival":
+      "11.1.El_nucleo": "Remite a Gramática 2"
+      "11.2.Complementos_y_modificadores":
+        modificadores:
+          - "Adverbios de grado (muy, poco, bastante)"
+
+    # --- 12. El sintagma verbal ---
+    "12.El_sintagma_verbal":
+      "12.1.El_nucleo":
+        verbos_predicativos:
+          psicologicos_emocion_psiquica:
+            - "gustar"
+        verbos_copulativos:
+          ser_sin_adjetivo:
+            - "Identificativo (Soy Elena)"
+            - "Pertenencia clase (origen, profesión, ideología, materia) — Soy español, Soy estudiante"
+            - "Localización temporal (Es lunes)"
+            - "Identificación con sustantivos/pronombres (Es él)"
+          estar_sin_adjetivo:
+            - "Localización espacial (Está aquí)"
+            - "Criterio distribucional con adverbios modo (bien/mal)"
+      "12.2.Complementos":
+        "12.2.1.Atributo":
+          - "Concordancia atributo-sujeto (Mis compañeras son alemanas)"
+          - "Atributo sustantivo (Mario es cocinero)"
+          - "Atributo adjetivo (El hijo de Marta es rubio)"
+        "12.2.2.Objeto_directo":
+          - "OD persona sin preposición (Tengo dos hermanos)"
+          - "OD cosa (No tengo teléfono)"
+          - "OD proposición subordinada (Creo que Barcelona es una ciudad muy bonita)"
+        "12.2.3.Objeto_indirecto":
+          - "Pronombre OI 1ª pers sing con gustar (Me gusta bailar)"
+
+    # --- 13. La oración simple ---
+    "13.La_oracion_simple":
+      "13.1.Concordancia":
+        - "Constituyentes : sujeto-verbo, sujeto-atributo"
+      "13.2.Constituyentes":
+        - "Orden neutro/canónico : SVO"
+      "13.3.Tipos_de_oraciones":
+        segun_actitud_hablante:
+          - "Enunciativas afirmativas/negativas (Soy español, No soy español)"
+          - "Interrogativas directas totales (¿Te llamas Ana?)"
+          - "Interrogativas directas parciales (¿Cuándo vienes?)"
+        segun_naturaleza_predicado:
+          - "Impersonales con haber (Hay tres personas)"
+          - "Copulativas/atributivas (Soy de Madrid)"
+          - "Transitivas e intransitivas (Estudio español, Vivo en Italia)"
+
+    # --- 14. Oraciones compuestas por coordinación ---
+    "14.Coordinacion":
+      "14.1.Copulativas":
+        - "y (Soy americana y vivo en Los Ángeles)"
+        - "ni negativas (No me gusta el otoño ni el invierno)"
+      "14.2.Disyuntivas":
+        - "o (¿Eres americano o inglés?)"
+      "14.3.Adversativas":
+        - "pero (Soy alemán, pero vivo en Suiza)"
+      "14.4.Distributivas":
+        - "uno... otro (Uno habla alemán, otro habla francés)"
+
+    # --- 15. Oraciones compuestas por subordinación ---
+    "15.Subordinacion":
+      "15.1.Sustantivas":
+        "15.1.1.Infinitivo":
+          funcion_sujeto:
+            - "Verbo ser (Hablar español es útil)"
+            - "Verbo gustar (Me gusta estudiar español)"
+          funcion_OD:
+            - "Verbos actividad mental transitiva tipo querer (Quiero ir a España)"
+        "15.1.2.Flexionadas":
+          funcion_OD:
+            - "Verbo creer afirmativo (Creo que es muy caro)"
+      "15.2.Adjetivas_de_relativo":
+        - "Especificativas/restrictivas con antecedente expreso (La profesora que tengo es muy buena)"
+        - "Pronombres relativos : que con antecedente expreso, sujeto/OD"
+        - "Modo : indicativo (presente)"
+      "15.3.Adverbiales":
+        "15.3.4.Causales":
+          tipos:
+            - "Del enunciado pospuestas (Estudio español porque mi novio es de Cáceres)"
+            - "Causales motivación con sujeto agentivo (Estoy en España porque me gusta)"
+          nexos:
+            - "porque en causales del enunciado detrás principal"
+            - "Contraste por qué (interrogativo) / porque"
+          modo:
+            - "Siempre indicativo"
+        "15.3.5.Finales":
+          tipos:
+            - "Integradas en infinitivo (Tengo un libro para aprender español)"
+          valores:
+            - "Objetivo utilidad : sujeto agentivo + infinitivo (Estudio español para trabajar en México)"
+            - "Sujeto no agentivo + infinitivo (El boli es para escribir)"
+          nexos:
+            - "para + infinitivo (Este libro es para aprender español)"
+
+# ============================================================================
+# === A2 (Plataforma) — additions to A1 (cumulative inheritance) =============
+# ============================================================================
+A2:
+  level_label: "Plataforma"
+  band: "Basic user A2"
+  inheritance_note: "PCIC rule : A2 entries are CUMULATIVE additions to A1 (inventarios specifient solo material nuevo)"
+  macro_sections:
+
+    "1.El_sustantivo":
+      "1.1.Clases_de_sustantivos":
+        nombres_propios_A2_additions:
+          - "Topónimos con artículo incorporado (La Coruña, El Escorial, La Habana)"
+          - "Instituciones (Instituto Cervantes, Universidad Complutense)"
+          - "Cargos/departamentos (Director, Centro de idiomas)"
+          - "Materias/disciplinas (Física, Medicina)"
+          - "Períodos temporales (Pascua, Nochevieja)"
+        nombres_comunes_A2_additions:
+          - "Eventivos (accidente, concierto)"
+
+    "2.El_adjetivo":
+      "2.1.Clases":
+        calificativos_A2:
+          - "Oposiciones polaridad (bonito/feo, bueno/malo, fuerte/débil)"
+      "2.2.Genero_A2":
+        - "Derivados -dor/-tor/-sor (creador/creadora, receptor/receptora)"
+        - "Terminados -e (interesante, agradable, dulce)"
+
+    "3.El_articulo":
+      "3.1.Definido_A2":
+        forma:
+          - "el ante vocal a tónica (el aula / las aulas)"
+        valores:
+          - "Anafórico (segunda mención) — El curso es interesante"
+          - "Deíctico (¿Puedes cerrar la puerta?)"
+          - "Posesión inalienable (Me duele la cabeza)"
+          - "Genérico (Leo el periódico)"
+          - "Sustantivador/elipsis (Compra el nuevo)"
+        distribucion:
+          - "Obligatorio sustantivos ocio (Juego al tenis)"
+          - "Detrás todo/a/os/as (todos los libros)"
+          - "Compatible numerales (los dos amigos)"
+          - "Incompatible modificadores gradación (*la película muy buena)"
+          - "Obligatorio sujeto verbos tipo apetecer/encantar (Me encanta la paella)"
+          - "Incompatible posesivas sin modificador (*Tiene el perro de Juan)"
+      "3.2.Indefinido_A2":
+        forma:
+          - "un ante vocal a tónica (un aula / unas aulas ; una amplia aula)"
+        valores:
+          - "Anafórico sin correferencia estricta (identidad sentido — una clase de español y luego una de francés)"
+          - "Aproximativo (unos 50 euros)"
+          - "Sustantivador (Compra una nueva)"
+        distribucion:
+          - "Incompatible nombres únicos (*una madre de Juan)"
+          - "Atributo profesión/función/clase/nacionalidad sin artículo (Es profesora de español)"
+          - "Atributo clasificador (Es un amigo)"
+          - "Obligatorio con hay"
+      "3.3.Ausencia_de_determinacion_A2":
+        - "Singular no contables, plural contables cantidad inespecífica (Bebe agua, Escribe cartas)"
+        - "Incompatible predicados sujeto delimitado (*Le encanta cine)"
+        - "Con tener + estereotipo social (Tiene casa, Tiene perro)"
+
+    "4.Los_demostrativos_A2":
+      valores:
+        - "Deíctico temporal (Esta tarde voy al cine)"
+        - "Anafórico (Luis hizo señal a Antonio, pero este no la vio)"
+        - "Referente objeto/persona (No, ese no es)"
+
+    "5.Los_posesivos_A2":
+      forma:
+        - "Tónicas un poseedor (mío/a/os/as, tuyo/a/os/as, suyo/a/os/as)"
+        - "Tónicas varios poseedores (suyo/a/os/as)"
+        - "[Hispanoamérica] Posesivos pospuestos (el libro tuyo, la escuela de nosotros)"
+      valores:
+        - "Posesión inalienable (Me duele la cabeza / *Me duele mi cabeza)"
+        - "Contrastivo con artículo (Ese no está mal, pero prefiero el mío)"
+        - "Respuesta tónicas solas (¿De quién es? Mío)"
+      distribucion:
+        - "Compatible artículo (formas tónicas) — el mío"
+        - "Compatible todos (posesivo detrás) y otros (todos mis compañeros, mis otros compañeros)"
+
+    "6.Los_cuantificadores_A2":
+      "6.1.Propios_A2":
+        numerales:
+          - "Ordinales formas plenas/apocopadas (primero/primer, tercero/tercer)"
+          - "Variación número (los primeros, los segundos)"
+        universales:
+          - "todo : variación género/número (todos los días, todas las mañanas)"
+          - "Combinación obligatoria art/posesivo/demostrativo (todos mis amigos, todos estos libros)"
+          - "Aislado respuesta (¿Qué te gusta? Todo)"
+          - "Variación género concordancia plural verbal (Todas somos alemanas, Todos vamos)"
+          - "Invariable expresiones instrucción (todo seguido, todo recto)"
+        no_universales_afirmativos:
+          - "otro, demasiado : variación género/número (No hace demasiado frío)"
+        negativos:
+          - "nada, nadie : aislados respuesta (¿Qué has comprado? Nada)"
+        gradativos:
+          - "Comparativos más, menos, tan, tanto (determinante/pronombre/adverbio)"
+          - "Superioridad/inferioridad con que (Juan es más/menos alto que yo)"
+          - "Igualdad con como, selección tan/tanto (tan alto como yo, corro tanto como yo)"
+
+    "7.El_pronombre_A2":
+      "7.1.1.Sujeto_A2":
+        presencia_ausencia:
+          - "Resolver ambigüedad omisión verbal (Soy español. Yo también)"
+          - "Entre él/ella/Ud./Uds. por flexión (Él preguntó y ella contestó)"
+          - "Ausencia con verbos meteorológicos (Llueve)"
+        valores:
+          - "3ª pers como no-persona (él, ellos)"
+          - "Deixis ad oculos presente (Ha sido él [señalando])"
+          - "Anafórico (Hablé con Luis y él me dijo la verdad)"
+      "7.1.2.OD_atonos_A2":
+        forma:
+          - "Invariables 1ª/2ª (me, te, nos, os)"
+          - "3ª variación (lo, la, los, las)"
+          - "Neutro lo (ideas/acciones) — No lo conozco"
+          - "[Hispanoamérica] uso la (La pasamos bien)"
+          - "Preferencia átonos sobre tónicos (*Vi a ella / La vi)"
+        posicion:
+          - "Enclisis/proclisis con flexionadas/imperativo/no personales (lo escribo / escríbelo / escribirlo)"
+          - "Alternancia perífrasis (Voy a verlo / Lo voy a ver)"
+          - "Enclítico obligatorio con hay que (*Lo hay que hacer)"
+          - "Alternancia con modales poder/soler (Puedo hacerlo / Lo puedo hacer)"
+      "7.1.3.OI_atonos_A2":
+        forma:
+          - "Invariables (me, te, nos, os)"
+          - "[Hispanoamérica voseo] Vos te hacés la comida"
+          - "3ª pers le/les"
+          - "Sustitución le/les por se ante OD (El permiso, a María se lo dieron)"
+          - "Preferencia átonos (*Di el libro a ella / Le di el libro)"
+        presencia_ausencia:
+          - "Obligatoria con/sin sustantivo — doblado de clíticos (Se lo doy a Luis)"
+          - "Coaparición añadir información género (Le entregué a ella)"
+        valores:
+          - "Experimentante semántico verbos tipo interesar/encantar"
+      "7.1.6.Tonicos_complementos_preposicionales_A2":
+        forma:
+          - "1ª/2ª sing detrás preposición (mí, ti)"
+          - "[Hispanoamérica voseo] con vos, a vos, para vos"
+          - "Reduplicación (A mí me gusta el azul)"
+          - "Amalgamadas con con (conmigo, contigo)"
+        valores:
+          - "Anafórico (tematización) — Con él me divierto"
+          - "Con preposición a valor OI (A mí no me gusta [experimentante], Te lo doy a ti [destinatario])"
+          - "Contrastivo (A mí me gusta el azul)"
+          - "Referente +humano (mí, ti, conmigo, contigo, nosotros, vosotros)"
+      "7.3.Interrogativos_A2":
+        - "qué : sujeto -humano, OD, atributo (¿Qué ha pasado? ¿Qué comes? ¿Qué es Luis?)"
+        - "quién/quiénes : variación número, sujeto +humano (¿Quiénes viven en el 5º?)"
+        - "cuánto/a/os/as : adverbio invariable ante verbo (¿Cuánto pesas?)"
+
+    "8.El_adverbio_A2":
+      "8.2.Nucleares_A2":
+        de_lugar:
+          - "Prepositivos combinación con de (dentro, fuera, abajo, arriba, delante, detrás, lejos, cerca)"
+        de_tiempo:
+          - "Secuencia/orden/sucesión (primero, luego, después)"
+          - "Prepositivos con de (antes, después)"
+          - "Complementos deícticos (la semana pasada, ayer)"
+          - "nunca (Nunca he estado en Ecuador / No he estado nunca)"
+        de_cantidad:
+          - "nada (No me gusta nada [polaridad negativa])"
+      "8.8.Interrogativos_A2":
+        - "cuándo : posición inicial ante verbo/aislado, tiempo (¿Cuándo empiezas vacaciones?)"
+      "8.9.Locuciones_A2":
+        compuestas_adverbio_preposicion:
+          - "antes de, después de, encima de"
+          - "[Hispanoamérica] arriba de (Bailó arriba de una mesa)"
+
+    "9.El_verbo_A2":
+      "9.1.1.Presente_A2":
+        forma:
+          - "Irregularidades vocálicas/consonánticas frecuentes"
+          - "Irregularidades propias (saber, dar)"
+          - "Irregularidades ortográficas"
+        valores:
+          - "Habitual/cíclico (Siempre estudio mucho)"
+          - "Futuro programado/natural (Mañana voy al cine)"
+          - "Futuro inmediatez (Ya voy)"
+      "9.4.1.Infinitivo_A2":
+        forma:
+          - "Sujeto indeterminado/inespecífico (Hay que hacer estos ejercicios)"
+          - "Pronombres OD/OI enclíticos (Puedes usarla, Hay que darle el libro)"
+        valores:
+          - "Subordinadas sustantivas, sujeto verbos psicológicos inacusativos (Le encanta ir al cine)"
+          - "Adverbiales temporales antes de/después de (Siempre bebo leche antes de acostarme)"
+      "9.4.2.Gerundio_A2":
+        forma:
+          - "Simple 3 conjugaciones, valor imperfectivo progresivo"
+          - "Pronombres enclíticos (Está escuchándola, Está escribiéndole carta)"
+        valores:
+          - "Perifrástico estar + gerundio"
+          - "[Hispanoamérica] estar + gerundio valor puntual (Está viniendo = viene)"
+      "9.4.3.Participio_A2":
+        forma:
+          - "Irregulares (hecho, escrito)"
+          - "Morfema tiempos compuestos"
+        valores:
+          - "Como atributo (El coche está estropeado)"
+
+    "10.SN_A2":
+      "10.2.Complementos_A2":
+        restrictivos:
+          - "Participios como adjetivos (una película apasionante / conocida)"
+          - "Aposición (mi hermano Juan [especificativa] ; calle Alcalá, teatro Albéniz)"
+      "10.3.Concordancia_A2":
+        - "Sexo biológico/género gramatical (el caimán / *la caimana)"
+      "10.4.SN_verbo_A2":
+        - "Colectivos frecuentes (Mucha gente vive en pisos en España)"
+        - "Primer SN coordinación singular (Me interesa la gente y los viajes)"
+
+    "11.Sintagma_adjetival_A2":
+      "11.2.Modificadores_A2":
+        - "Adverbios gradativos comparativos (más, menos, tan)"
+        - "Exclamativos qué (¡Qué bonito!)"
+
+    "12.SV_A2":
+      "12.1.Nucleo_A2":
+        transitivos:
+          - "Dos argumentos agente+tema (escribir)"
+          - "Tres argumentos agente+tema+destinatario (regalar)"
+          - "Sin tema expreso (Como a las dos)"
+        intransitivos:
+          - "trabajar, correr"
+        inacusativos:
+          - "nacer, crecer"
+        psicologicos:
+          - "Emoción psíquica (encantar)"
+          - "Emoción física (doler)"
+        auxiliares:
+          - "haber tiempos compuestos"
+          - "Perífrasis aspectuales gerundio (estar + gerundio)"
+          - "[Hispanoamérica] estar + gerundio puntual (Está viniendo)"
+          - "Perífrasis aspectuales infinitivo : ir a [incoativas], acabar de [perfectivas], empezar a [ingresivas], volver a [reiterativas]"
+          - "Perífrasis modales infinitivo : poder, tener que/hay que [obligativas]"
+          - "[Panamá/Ecuador/Bolivia] saber + infinitivo valor soler"
+        copulativos:
+          ser_sin_adjetivo:
+            - "Posesión (Es mi libro)"
+            - "Cantidades/precios (Somos tres)"
+            - "Causa con por (Es por tu culpa)"
+            - "Finalidad (Es para escribir)"
+          ser_mas_adjetivo:
+            - "Solo con ser (Luis es sincero, Esas chicas son americanas)"
+          estar_sin_adjetivo:
+            - "Temporal fechas/meses/estaciones a/en (estamos a, estamos en)"
+            - "Meteorológico con a (Estamos a tres grados)"
+          estar_mas_adjetivo:
+            - "Solo con estar (Está contento)"
+      "12.2.Complementos_A2":
+        atributo:
+          - "Participio (El tren está parado en vía 2)"
+        OD:
+          - "OD persona con preposición a (Hoy he visto a Almudena)"
+          - "Pronombres personales OD sustitución (Vi al ladrón / Lo vi / *Vi a él)"
+        OI:
+          - "Preposición a anteposición (He escrito postal a mis padres)"
+          - "Dativo recepción/destino (Te doy ejercicios a ti)"
+          - "Dativo separación (Robaron cartera a muchas personas)"
+          - "Dativo posesivo (Le rompieron gafas a Ana, Me duele cabeza, Me preparo desayuno)"
+          - "Reduplicación OI verbos interesar/encantar (A mí me encanta comer fuera)"
+
+    "13.Oracion_simple_A2":
+      "13.1.Concordancia_A2":
+        - "Pronombre usted/ustedes"
+      "13.2.Constituyentes_A2":
+        - "Variaciones orden SV por estructura informativa (¿Quién es María? Soy yo)"
+      "13.3.Tipos_A2":
+        actitud_hablante:
+          - "Interrogativas disyuntivas (¿Prefieres té o café?)"
+          - "Exclamativas (¡Estoy cansado! ¡Qué difícil!)"
+          - "Exhortativas (Habla con él)"
+        naturaleza_predicado:
+          - "Reflexivas (Me ducho por mañana)"
+          - "Impersonales verbo hacer (Hace frío)"
+          - "[Hispanoamérica] personalizar hacer (Hacen dos días estoy aquí, Ya hicieron dos años, Hacían días)"
+
+    "14.Coordinacion_A2":
+      copulativas:
+        - "Sustitución y por e (Quiero verte e ir a tu casa)"
+      disyuntivas:
+        - "Sustitución o por u (Compra siete u ocho botellas leche)"
+
+    "15.Subordinacion_A2":
+      "15.1.Sustantivas_A2":
+        infinitivo:
+          funcion_sujeto:
+            - "Verbos psicológicos inacusativos"
+            - "Preferencia posición postverbal (Le encanta ir al cine / Ir al cine le encanta)"
+          complemento_regimen:
+            - "Verbos dos argumentos (Aprendo a hablar)"
+      "15.2.Adjetivas_A2":
+        modo:
+          - "Tiempos pasado/futuro"
+      "15.3.Adverbiales_A2":
+        "15.3.1.Temporales":
+          anterioridad:
+            - "antes de + infinitivo, correferencialidad sujetos, factual (Me lavo dientes antes de acostarme)"
+          posterioridad:
+            - "después de + infinitivo, correferencialidad, factual (A veces doy paseo después de cenar)"
+          simultaneidad:
+            - "cuando valor habitual presente (Cuando viene trae regalos)"
+          delimitacion:
+            - "desde + sustantivo (desde tu cumpleaños)"
+            - "desde + adverbio (desde ayer)"
+            - "desde que + indicativo (desde que te vi)"
+            - "desde hace + temporal : contraste/restricciones desde/desde hace/hace"
+            - "hasta + sustantivo (hasta tu cumpleaños)"
+            - "hasta + adverbio (hasta ayer)"
+            - "[México/América Central/andino] hasta sin no — Viene hasta hoy"
+        "15.3.4.Causales_A2":
+          tipos:
+            - "Equivalencia preposición por (Trabajo por dinero)"
+          nexos:
+            - "porque relación causa-efecto (Como porque tengo hambre)"
+          modo: ["Indicativo"]
+        "15.3.5.Finales_A2":
+          tipos:
+            - "Infinitivo (Traigo caja para guardar ropa)"
+          valores:
+            - "Característica + infinitivo modificador SN (comida para llevar)"
+          nexos:
+            - "para + infinitivo, detrás principal (Estudio español para trabajar México / Para trabajar estudio)"
+        "15.3.6.Condicionales_A2":
+          protasis_indicativo:
+            - "Presente ambas (Si quieres ir cine, puedes comprar entrada Internet)"
+          nexos:
+            - "si : diferencia si/sí"
+        "15.3.7.Consecutivas_A2":
+          tipos:
+            - "Coordinadas entonces (Entonces quedamos mañana, ¿no?)"
+            - "Yuxtapuestas por eso, acción resultado (Está enfermo. Por eso no ha venido)"
+          nexos:
+            - "por eso : valor consecuencia"
+            - "entonces : valor deducción (Mañana voy médico. Entonces no vienes clase)"
+          modo: ["Indicativo"]
+        "15.3.8.Comparativas_A2":
+          igualdad:
+            - "tan...como (invariable) — cualidades (Soy tan alto como tú / Manuel, Piso tan grande)"
+            - "tanto/a/os/as...como, concordancia sustantivo — cantidad (Tengo tantos problemas como tú, He comprado tantas libretas)"
+            - "tanto...como (invariable), verbos — frecuencia/intensidad (Corre tanto como yo, Corro tanto como tú / *Tanto corro)"
+          superioridad:
+            - "más que (invariable) — cualidades (más alto luna, más lejos antes, Soy más alto tú)"
+            - "más que cantidad (He comprado más libros que profesora / la profesora, Tengo más)"
+            - "más que verbo (Corro más tú / *Más corro)"
+            - "Comparativos irregulares sintéticos : mejor que (más bien, más bueno) ; mayor que (más grande)"
+          inferioridad:
+            - "menos que (invariable) — cualidades, cantidad, frecuencia"
+            - "Comparativos irregulares : peor que (más mal, más malo) ; menor que (más pequeño)"
+          modo:
+            - "como (Juan es como su padre)"
