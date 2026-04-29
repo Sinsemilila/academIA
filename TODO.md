@@ -1,5 +1,5 @@
 # TODO — AcademIA
-Last updated: 2026-04-29 — Claude (Session 52 — Library all-in authority anchor pivot + ADR-015/016)
+Last updated: 2026-04-30 — Claude (Session 53 — Library ingest 13 stubs + Phase A+B+C+D1 LIVRÉE — EN/ES authority anchor audit + Functions dimension scaffold)
 
 ## ✅ OBSIDIAN MIGRATION CLOSED (2026-04-28)
 
