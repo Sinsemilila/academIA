@@ -13,6 +13,21 @@ Last updated: 2026-04-29 — Claude (Session 51 — Teacher EN P0.1 alignment + 
 
 **Lock prochain projet libre** : Sinse choisit explicit P0/P1/P2/P3 ci-dessous.
 
+## 📚 P0 — Bibliothèque acquisition (Session 51 deep research bibliographie)
+
+**HIGH ROI immédiat** (acquérir si pas déjà accessible biblio universitaire) :
+
+- [ ] **Profile Deutsch** (Glaboniat/Müller/Rusch/Schmitz/Wertenschlag, Klett ISBN 9783126065184) — ~48€. **Blocker Wave 2 DE curriculum extraction**.
+- [ ] **Lightbown & Spada "How Languages are Learned"** 5th ed (2021) ISBN 9780194541268 — ~30€. SLA canonical anchor.
+- [ ] **Lyster "Learning and Teaching Languages Through Content"** (2007) — ~25-35€. Auteur framework AcademIA, lecture canonique.
+- [ ] **JLPT 公式問題集 N5+N4+N3+N2** (Japan Foundation/Bonjinsha) — ~40-60€ total. **Pattern source mini_exam_jp_*.yaml** Wave 3.
+- [ ] **CILS Sillabo per livello** (Università di Siena, Guerra Edizioni) — ~60-80€. Validation curriculum IT Wave 2.
+- [ ] **TORFL practice volumes** (Pushkin Institute, Златоуст) TEU+TBU+TRKI-1+TRKI-2 — ~50-70€. **Pattern source mini_exam_ru_*.yaml** Wave 4.
+
+Total HIGH ROI : ~250-300€ neuf, ~100-150€ second-hand, **gratuit si bibliothèque universitaire**.
+
+**Bibliographie complète multi-domaine** : Session 51 dispatchera 4 deep research agents pour compiler library exhaustive (pédagogie SLA + per-language refs + UX/design/cross-platform + mathématiques pour taxonomy IRT/Cox/GLMM + NLP/voice/speech + software engineering + product). Resultats dans `vault/knowledge/bibliography-{topic}.md`.
+
 ## 🔝 EN COURS — RESUME AU PROCHAIN /pickup
 
 **Session 51 (2026-04-28/29) livré** :
