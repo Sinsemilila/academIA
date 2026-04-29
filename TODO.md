@@ -1,32 +1,49 @@
 # TODO — AcademIA
-Last updated: 2026-04-29 — Claude (Session 51 — Teacher EN P0.1 alignment + P0.2 scoring stabilization)
+Last updated: 2026-04-29 — Claude (Session 52 — Library all-in authority anchor pivot + ADR-015/016)
 
 ## ✅ OBSIDIAN MIGRATION CLOSED (2026-04-28)
 
 **Closure formelle Session 50** :
 - v0.1 LIVRÉE 2026-04-25 ✅
 - v0.2 LIVRÉE 2026-04-26 ✅
-- Phase 0 closure 13 items LIVRÉE 2026-04-26 ✅ (item 12 différé post-incident, item 13 droppé jusqu'à trigger MCP externe)
+- Phase 0 closure 13 items LIVRÉE 2026-04-26 ✅
 - Audit intégral + Phase A docs cleanup + tests E2E live LIVRÉS 2026-04-28 ✅
-- Syncthing 3 devices opérationnel (cosmos + portable + fixe) ✅
-- v0.3 différé post-mesure 2-4 sem usage réel (lock explicit anti-pattern anticipation)
+- Syncthing 3 devices opérationnel ✅
+- v0.3 différé post-mesure 2-4 sem usage réel
+- **Session 52** (2026-04-29) — folder `projects/obsidian-migration/` archived → `archive/obsidian-migration/`
 
 **Lock prochain projet libre** : Sinse choisit explicit P0/P1/P2/P3 ci-dessous.
 
-## 📚 P0 — Bibliothèque acquisition (Session 51 deep research bibliographie)
+## 📚 P0 — Bibliothèque acquisition — Session 52 RECAP
 
-**HIGH ROI immédiat** (acquérir si pas déjà accessible biblio universitaire) :
+**Session 52 (2026-04-29) MASSIVE ingestion** (cf [[../sinse-vault/projects/academia-ia/library-p3-roadmap]]) :
+- ✅ Profile Deutsch (Glaboniat 2005 v2.0) acquired
+- ✅ 8 Marugoto JP A1→B1 series (covers JFS Standard implementation)
+- ✅ JFS Standard pamphlet 2024 + Guidebook 2022
+- ✅ Hawkins/Filipović 2012 *Criterial Features in L2 English* (EN authority anchor)
+- ✅ PCIC Cervantes A1-A2 + B1-B2 (ES authority anchor)
+- ✅ CEFR Companion Volume 2020 ⭐⭐ (cross-lang umbrella authority)
+- ✅ 12 free math/ML/stats canon (Hastie, James, Gelman, Murphy, Bishop, MacKay, Hernan, Boyd ×2, Deisenroth, Baker IRT, Jurafsky SLP3, D2L)
+- ✅ 8 Anna's Archive Tier 1 (Embretson IRT, Bachman testing, Ortega SLA, DeKeyser practice, Norman DOET, Krug DMMT, Tufte VDQI, Strizver typography)
+- ✅ Manning IR + Eisenstein NLP + VanderPlas + Sedgewick + Wickham R4DS + Goodfellow DL ⚠️excerpt + Hernan Causal
 
-- [ ] **Profile Deutsch** (Glaboniat/Müller/Rusch/Schmitz/Wertenschlag, Klett ISBN 9783126065184) — ~48€. **Blocker Wave 2 DE curriculum extraction**.
-- [ ] **Lightbown & Spada "How Languages are Learned"** 5th ed (2021) ISBN 9780194541268 — ~30€. SLA canonical anchor.
-- [ ] **Lyster "Learning and Teaching Languages Through Content"** (2007) — ~25-35€. Auteur framework AcademIA, lecture canonique.
-- [ ] **JLPT 公式問題集 N5+N4+N3+N2** (Japan Foundation/Bonjinsha) — ~40-60€ total. **Pattern source mini_exam_jp_*.yaml** Wave 3.
-- [ ] **CILS Sillabo per livello** (Università di Siena, Guerra Edizioni) — ~60-80€. Validation curriculum IT Wave 2.
-- [ ] **TORFL practice volumes** (Pushkin Institute, Златоуст) TEU+TBU+TRKI-1+TRKI-2 — ~50-70€. **Pattern source mini_exam_ru_*.yaml** Wave 4.
+**Total** : 38 nouveaux PDFs ingested cosmos + 30 literature notes drafted vault. **85 livres tracked total** (vs 6 pre-Session-52 = +1316%).
 
-Total HIGH ROI : ~250-300€ neuf, ~100-150€ second-hand, **gratuit si bibliothèque universitaire**.
+### 🔴 P0 RESTANT — Wave-blockers acquisition (cf P3+ roadmap)
 
-**Bibliographie complète multi-domaine** : Session 51 dispatchera 4 deep research agents pour compiler library exhaustive (pédagogie SLA + per-language refs + UX/design/cross-platform + mathématiques pour taxonomy IRT/Cox/GLMM + NLP/voice/speech + software engineering + product). Resultats dans `vault/knowledge/bibliography-{topic}.md`.
+- [ ] **CILS Sillabo per livello** (Università per Stranieri Siena) — Wave 2 IT blocker authority anchor
+- [ ] **TORFL Lexical/Grammatical Minimums** (Pushkin Institute) — Wave 4 RU blocker authority anchor
+- [ ] **PCIC C1-C2** (Plan Curricular Cervantes Niveles C1-C2) — ES flagship A1-C2 gap (3ème volume manquant)
+
+### 🟡 P1 — Strong recommendation
+
+- [ ] **Goodfellow Deep Learning** re-acquire complete (actuel = excerpt 85p, vrai = 800p) — `deeplearningbook.org` HTML free OR Anna's
+- [ ] **Marugoto Elementary 2 A2 Rikai/Katsudoo** ambiguity validate (manuel cover/TOC du fichier actuel)
+- [ ] **Marugoto B2 source** (série culmine B1) — Tobira ou Quartet candidate pour JP B2 cap
+- [ ] **English Vocabulary Profile + Grammar Profile** Excel exports — `englishprofile.org/wordlists` (signup gratuit)
+- [ ] **VanderPlas PDSH** verify édition 1st (2016) vs 2nd (2022)
+
+Voir `vault/projects/academia-ia/library-p3-roadmap.md` pour P2/P3 (~36 ouvrages, ~280-540€ cumulé total).
 
 ## 🔝 EN COURS — RESUME AU PROCHAIN /pickup
 
