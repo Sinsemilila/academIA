@@ -57,32 +57,52 @@
 # ≠ embarrassed = pregnant ; sensible ≠ sensible = sensitive ; éxito ≠ exit =
 # success). Phase C will refine via PCIC contrastive notes if available.
 # Phase D extension : add en_to_es, etc. when user base diversifies.
+#
+# === Phase C4 audit patch (Session 53 — 2026-04-30) ===
+# 50+ concept_keys added/split per `webapp/backend/docs/audit/2026-04-30-curriculum-es-vs-pcic.md`.
+# Sources : PCIC Vol A+B Gramática inventario (extracted YAMLs in extracted/cervantes-2006-*).
+# - Split ser_estar_basico A1 → 6 keys (4 SER + 2 ESTAR senses + meta contrast)
+# - Relabel pretérito_indefinido + pretérito_perfecto + imperativo_afirmativo_tu A2 → A1 per PCIC ordering
+# - Split subjuntivo_presente + subjuntivo_temporal B1 → 6 keys per trigger taxonomy
+# - Split por_para B1 → 2 keys (por causal/medio/durée vs para finalidad/destino/plazo)
+# - Split conectores_argumentativos B2 → 6 keys per discourse function
+# - Add verbos_cambio_b2 ⭐ critical gap
+# - Add pasiva_perifrástica_b2 vs pasiva_refleja_b1 distinction
+# - C1+C2 deferred (PCIC Vol C acquisition pending)
+# Concept count : 51 → ~95 (+86%).
 
 domain: es
-
 A1:
-  description: "Acceso — survie communicative, présent indicatif, ser/estar basique, genre."
-  # TODO[S53-PCIC-audit Phase C]: ser_estar_basico generic — split into 7 PCIC A1
-  # subcategories (identidad / nacionalidad / origen / hora / fecha / posesión /
-  # cantidad). Action : during Phase C extract PCIC Vol A Gramática inventario A1
-  # ser/estar subsection → expand 1 key → 7 keys. Update concept_hints/es.yaml.
+  description: Acceso — survie communicative, présent indicatif, ser/estar basique, genre.
   concept_keys:
-    - genero_masculino_femenino
-    # TODO[S53-PCIC-audit Phase C]: PCIC A1 gender includes irregularities
-    # (problema = m, mano = f, día = m, agua = f singular but el agua art).
-    # Hint should mention these. Add to concept_hints/es.yaml during expansion.
-    - ser_estar_basico
-    - presente_indicativo_regular
-    - articulos_definidos
-    - articulos_indefinidos
-    - hay_vs_esta
-    - tener_que
-    - numeros_fechas
-    - pronombres_sujeto
-    - saludos_presentaciones
+  - genero_masculino_femenino
+  - presente_indicativo_regular
+  - articulos_definidos
+  - articulos_indefinidos
+  - hay_vs_esta
+  - tener_que
+  - numeros_fechas
+  - pronombres_sujeto
+  - saludos_presentaciones
+  - ser_identificativo_a1
+  - ser_pertenencia_clase_a1
+  - ser_localizacion_temporal_a1
+  - estar_localizacion_espacial_a1
+  - estar_modo_bien_mal_a1
+  - ser_estar_contraste_a1
+  - demostrativos_a1
+  - posesivos_atonos_a1
+  - pronombres_oi_me_te_le_a1
+  - relativo_que_a1
+  - interrogativos_qué_quién_a1
+  - exclamativos_qué_a1
+  - numerales_cardinales_a1
+  - numerales_ordinales_10_a1
+  - preterito_indefinido
+  - preterito_perfecto
+  - imperativo_afirmativo_tu
   concept_weights:
     genero_masculino_femenino: 5
-    ser_estar_basico: 8
     presente_indicativo_regular: 5
     articulos_definidos: 3
     articulos_indefinidos: 3
@@ -91,129 +111,303 @@ A1:
     numeros_fechas: 3
     pronombres_sujeto: 3
     saludos_presentaciones: 3
-  concept_groups:
-    grammar: [genero_masculino_femenino, presente_indicativo_regular, articulos_definidos, articulos_indefinidos, pronombres_sujeto]
-    verbs_basic: [ser_estar_basico, hay_vs_esta, tener_que]
-    vocab: [numeros_fechas, saludos_presentaciones]
-
-A2:
-  description: "Plataforma — passé simple et composé, comparaisons, gustar-type, impératif."
-  concept_keys:
-    - preterito_indefinido
-    - preterito_perfecto
-    - gustar_type
-    - imperativo_afirmativo_tu
-    - comparativos
-    - futuro_ir_a
-    - pronombres_objeto_directo
-    - adverbios_frecuencia
-    - conectores_temporales_basicos
-  concept_weights:
+    ser_identificativo_a1: 5
+    ser_pertenencia_clase_a1: 5
+    ser_localizacion_temporal_a1: 3
+    estar_localizacion_espacial_a1: 5
+    estar_modo_bien_mal_a1: 3
+    ser_estar_contraste_a1: 5
+    demostrativos_a1: 3
+    posesivos_atonos_a1: 3
+    pronombres_oi_me_te_le_a1: 5
+    relativo_que_a1: 3
+    interrogativos_qué_quién_a1: 3
+    exclamativos_qué_a1: 3
+    numerales_cardinales_a1: 3
+    numerales_ordinales_10_a1: 3
     preterito_indefinido: 8
     preterito_perfecto: 5
-    gustar_type: 8
     imperativo_afirmativo_tu: 5
+  concept_groups:
+    grammar:
+    - genero_masculino_femenino
+    - presente_indicativo_regular
+    - articulos_definidos
+    - articulos_indefinidos
+    - pronombres_sujeto
+    verbs_basic:
+    - hay_vs_esta
+    - tener_que
+    vocab:
+    - numeros_fechas
+    - saludos_presentaciones
+    verbos_basicos_es:
+    - ser_identificativo_a1
+    - ser_pertenencia_clase_a1
+    - ser_localizacion_temporal_a1
+    - estar_localizacion_espacial_a1
+    - estar_modo_bien_mal_a1
+    - ser_estar_contraste_a1
+    pronouns_es:
+    - demostrativos_a1
+    - posesivos_atonos_a1
+    - pronombres_oi_me_te_le_a1
+    subordinacion_es:
+    - relativo_que_a1
+    questions_es:
+    - interrogativos_qué_quién_a1
+    expressives_es:
+    - exclamativos_qué_a1
+    numerals_es:
+    - numerales_cardinales_a1
+    - numerales_ordinales_10_a1
+    verbos_pasados_es:
+    - preterito_indefinido
+    - preterito_perfecto
+    verbos_imperativo_es:
+    - imperativo_afirmativo_tu
+A2:
+  description: Plataforma — passé simple et composé, comparaisons, gustar-type, impératif.
+  concept_keys:
+  - gustar_type
+  - comparativos
+  - futuro_ir_a
+  - pronombres_objeto_directo
+  - adverbios_frecuencia
+  - conectores_temporales_basicos
+  - articulo_definido_anaforico_a2
+  - numerales_universal_todo_a2
+  - cuantificadores_negativos_nada_nadie_a2
+  - comparativos_mas_menos_tan_a2
+  - verbos_meteorologicos_a2
+  - od_persona_con_a_a2
+  concept_weights:
+    gustar_type: 8
     comparativos: 5
     futuro_ir_a: 3
     pronombres_objeto_directo: 5
     adverbios_frecuencia: 3
     conectores_temporales_basicos: 3
+    articulo_definido_anaforico_a2: 3
+    numerales_universal_todo_a2: 3
+    cuantificadores_negativos_nada_nadie_a2: 3
+    comparativos_mas_menos_tan_a2: 5
+    verbos_meteorologicos_a2: 3
+    od_persona_con_a_a2: 5
   concept_groups:
-    past_tenses: [preterito_indefinido, preterito_perfecto]
-    structures: [gustar_type, imperativo_afirmativo_tu, futuro_ir_a]
-    pronouns: [pronombres_objeto_directo]
-    comparison: [comparativos]
-    discourse: [adverbios_frecuencia, conectores_temporales_basicos]
-
+    past_tenses: []
+    structures:
+    - gustar_type
+    - futuro_ir_a
+    pronouns:
+    - pronombres_objeto_directo
+    comparison:
+    - comparativos
+    discourse:
+    - adverbios_frecuencia
+    - conectores_temporales_basicos
+    nouns_articles_es:
+    - articulo_definido_anaforico_a2
+    numerals_es:
+    - numerales_universal_todo_a2
+    - cuantificadores_negativos_nada_nadie_a2
+    comparison_es:
+    - comparativos_mas_menos_tan_a2
+    verbos_basicos_es:
+    - verbos_meteorologicos_a2
+    objetos_es:
+    - od_persona_con_a_a2
 B1:
-  description: "Umbral — subjonctif triggers, imperfecto/indefinido, condicional, estilo indirecto."
-  # TODO[S53-PCIC-audit Phase C]: subjuntivo = 2 entries (presente + temporal).
-  # PCIC B1 has 12-15 triggers stratified (volonté / émotion / duda / temporal /
-  # finalidad / condicional / concesivo / influencia). Judge cannot diagnose
-  # subjuntivo errors with 2 buckets. Action : during Phase C extract PCIC Vol B
-  # Gramática inventario B1 subjuntivo subsection → split current 2 keys into 12-15.
-  # TODO[S53-PCIC-audit Phase C]: verbos de cambio (ponerse / volverse / quedarse /
-  # hacerse / convertirse en) absent — PCIC B1 dedicates a subsection. Add 5+
-  # concept_keys under new "verbos_cambio" subsection.
+  description: Umbral — subjonctif triggers, imperfecto/indefinido, condicional, estilo indirecto.
   concept_keys:
-    - imperfecto_vs_indefinido
-    - subjuntivo_presente
-    - subjuntivo_temporal
-    - condicional_simple
-    - por_para
-    - estilo_indirecto_basico
-    - verbos_preposicion
-    - pronombres_indirectos
-    - pronombres_reflexivos
-    - marcadores_discursivos_b1
+  - imperfecto_vs_indefinido
+  - condicional_simple
+  - estilo_indirecto_basico
+  - verbos_preposicion
+  - pronombres_indirectos
+  - pronombres_reflexivos
+  - marcadores_discursivos_b1
+  - subjuntivo_volicion_b1
+  - subjuntivo_emocion_b1
+  - subjuntivo_duda_b1
+  - subjuntivo_valoracion_b1
+  - subjuntivo_temporal_futuro_b1
+  - subjuntivo_finalidad_b1
+  - por_causa_medio_duracion_b1
+  - para_finalidad_destino_plazo_b1
+  - condicional_cortesia_b1
+  - condicional_modestia_sugerencia_b1
+  - pronominales_combinacion_b1
+  - relativo_que_quien_b1
+  - relativo_donde_cuando_como_b1
+  - interrogativo_cual_b1
+  - imperfecto_descriptivo_continuidad_b1
+  - estilo_indirecto_b1
+  - pasiva_refleja_se_b1
+  - aunque_concesivo_factual_b1
   concept_weights:
     imperfecto_vs_indefinido: 8
-    subjuntivo_presente: 8
-    subjuntivo_temporal: 5
     condicional_simple: 5
-    por_para: 8
     estilo_indirecto_basico: 5
     verbos_preposicion: 5
     pronombres_indirectos: 5
     pronombres_reflexivos: 3
     marcadores_discursivos_b1: 3
+    subjuntivo_volicion_b1: 8
+    subjuntivo_emocion_b1: 8
+    subjuntivo_duda_b1: 5
+    subjuntivo_valoracion_b1: 5
+    subjuntivo_temporal_futuro_b1: 8
+    subjuntivo_finalidad_b1: 5
+    por_causa_medio_duracion_b1: 5
+    para_finalidad_destino_plazo_b1: 5
+    condicional_cortesia_b1: 5
+    condicional_modestia_sugerencia_b1: 5
+    pronominales_combinacion_b1: 5
+    relativo_que_quien_b1: 5
+    relativo_donde_cuando_como_b1: 5
+    interrogativo_cual_b1: 3
+    imperfecto_descriptivo_continuidad_b1: 8
+    estilo_indirecto_b1: 8
+    pasiva_refleja_se_b1: 5
+    aunque_concesivo_factual_b1: 5
   concept_groups:
-    aspect: [imperfecto_vs_indefinido]
-    subjunctive_core: [subjuntivo_presente, subjuntivo_temporal]
-    conditional: [condicional_simple]
-    prepositions: [por_para, verbos_preposicion]
-    reported_speech: [estilo_indirecto_basico]
-    pronouns: [pronombres_indirectos, pronombres_reflexivos]
-    discourse: [marcadores_discursivos_b1]
-
+    aspect:
+    - imperfecto_vs_indefinido
+    subjunctive_core: []
+    conditional:
+    - condicional_simple
+    prepositions:
+    - verbos_preposicion
+    reported_speech:
+    - estilo_indirecto_basico
+    pronouns:
+    - pronombres_indirectos
+    - pronombres_reflexivos
+    discourse:
+    - marcadores_discursivos_b1
+    subjunctive_b1_es:
+    - subjuntivo_volicion_b1
+    - subjuntivo_emocion_b1
+    - subjuntivo_duda_b1
+    - subjuntivo_valoracion_b1
+    - subjuntivo_temporal_futuro_b1
+    - subjuntivo_finalidad_b1
+    prepositions_b1_es:
+    - por_causa_medio_duracion_b1
+    - para_finalidad_destino_plazo_b1
+    verb_tenses_b1_es:
+    - condicional_cortesia_b1
+    - condicional_modestia_sugerencia_b1
+    - imperfecto_descriptivo_continuidad_b1
+    pronouns_b1_es:
+    - pronominales_combinacion_b1
+    subordinacion_b1_es:
+    - relativo_que_quien_b1
+    - relativo_donde_cuando_como_b1
+    questions_b1_es:
+    - interrogativo_cual_b1
+    discourse_b1_es:
+    - estilo_indirecto_b1
+    voice_b1_es:
+    - pasiva_refleja_se_b1
+    connectors_b1_es:
+    - aunque_concesivo_factual_b1
 B2:
-  description: "Avanzado — subjonctif complexe, condicional compuesto, pasiva refleja, argumentation."
-  # TODO[S53-PCIC-audit Phase C]: conectores_argumentativos = 1 entry. PCIC B2
-  # splits into 6 classes (causal / consecutivo / concesivo / final / temporal /
-  # contraargumentativo). Stratification critical for discourse-level scoring.
-  # Action Phase C : split 1 → 6 keys + adjust weights + groups.
-  # TODO[S53-PCIC-audit Phase C]: voseo / tuteo / vosotros regional markers absent.
-  # Decision needed : flagship ES = panhispánico (PCIC default explicit) OR
-  # peninsular tuteo only ? Sinse review pre-Phase C.
+  description: Avanzado — subjonctif complexe, condicional compuesto, pasiva refleja, argumentation.
   concept_keys:
-    - condicional_compuesto
-    - subjuntivo_imperfecto
-    - subjuntivo_pluscuamperfecto
-    - pasiva_refleja
-    - aunque_modo
-    - conectores_argumentativos
-    - colocaciones_b2
-    - verbos_pronominales
-    - estilo_indirecto_avanzado
+  - condicional_compuesto
+  - subjuntivo_imperfecto
+  - subjuntivo_pluscuamperfecto
+  - pasiva_refleja
+  - aunque_modo
+  - colocaciones_b2
+  - verbos_pronominales
+  - estilo_indirecto_avanzado
+  - conectores_causales_b2
+  - conectores_consecutivos_b2
+  - conectores_concesivos_b2
+  - conectores_finales_b2
+  - conectores_temporales_avanzados_b2
+  - conectores_contraargumentativos_b2
+  - verbos_cambio_ponerse_volverse_quedarse_hacerse_b2
+  - pasiva_perifrastica_b2
+  - subjuntivo_imperfecto_cortesia_b2
+  - subjuntivo_irrealizacion_pasado_b2
+  - relativos_el_que_la_que_explicativas_b2
+  - relativos_quien_explicativas_b2
+  - dubitativas_quizá_posiblemente_b2
+  - regional_voseo_tuteo_vosotros_b2
   concept_weights:
     condicional_compuesto: 5
     subjuntivo_imperfecto: 8
     subjuntivo_pluscuamperfecto: 8
     pasiva_refleja: 5
     aunque_modo: 5
-    conectores_argumentativos: 5
     colocaciones_b2: 5
     verbos_pronominales: 3
     estilo_indirecto_avanzado: 5
+    conectores_causales_b2: 5
+    conectores_consecutivos_b2: 5
+    conectores_concesivos_b2: 5
+    conectores_finales_b2: 5
+    conectores_temporales_avanzados_b2: 5
+    conectores_contraargumentativos_b2: 5
+    verbos_cambio_ponerse_volverse_quedarse_hacerse_b2: 8
+    pasiva_perifrastica_b2: 5
+    subjuntivo_imperfecto_cortesia_b2: 5
+    subjuntivo_irrealizacion_pasado_b2: 8
+    relativos_el_que_la_que_explicativas_b2: 5
+    relativos_quien_explicativas_b2: 5
+    dubitativas_quizá_posiblemente_b2: 5
+    regional_voseo_tuteo_vosotros_b2: 3
   concept_groups:
-    subjunctive_advanced: [subjuntivo_imperfecto, subjuntivo_pluscuamperfecto, aunque_modo]
-    conditional: [condicional_compuesto]
-    voice: [pasiva_refleja]
-    argumentation: [conectores_argumentativos]
-    lexicon: [colocaciones_b2, verbos_pronominales]
-    reported_speech: [estilo_indirecto_avanzado]
-
+    subjunctive_advanced:
+    - subjuntivo_imperfecto
+    - subjuntivo_pluscuamperfecto
+    - aunque_modo
+    conditional:
+    - condicional_compuesto
+    voice:
+    - pasiva_refleja
+    argumentation: []
+    lexicon:
+    - colocaciones_b2
+    - verbos_pronominales
+    reported_speech:
+    - estilo_indirecto_avanzado
+    connectors_b2_es:
+    - conectores_causales_b2
+    - conectores_consecutivos_b2
+    - conectores_concesivos_b2
+    - conectores_finales_b2
+    - conectores_temporales_avanzados_b2
+    - conectores_contraargumentativos_b2
+    verbs_b2_es:
+    - verbos_cambio_ponerse_volverse_quedarse_hacerse_b2
+    voice_b2_es:
+    - pasiva_perifrastica_b2
+    subjunctive_b2_es:
+    - subjuntivo_imperfecto_cortesia_b2
+    - subjuntivo_irrealizacion_pasado_b2
+    subordinacion_b2_es:
+    - relativos_el_que_la_que_explicativas_b2
+    - relativos_quien_explicativas_b2
+    modality_b2_es:
+    - dubitativas_quizá_posiblemente_b2
+    register_b2_es:
+    - regional_voseo_tuteo_vosotros_b2
 C1:
-  description: "Dominio operativo eficaz — registre, modismos, inversion, précision stylistique."
+  description: Dominio operativo eficaz — registre, modismos, inversion, précision stylistique.
   concept_keys:
-    - colocaciones_avanzadas
-    - registros_formal_informal
-    - modismos
-    - inversion_enfatica
-    - subjuntivo_estilo
-    - marcadores_discursivos_c1
-    - lexico_preciso
-    - construcciones_focales
+  - colocaciones_avanzadas
+  - registros_formal_informal
+  - modismos
+  - inversion_enfatica
+  - subjuntivo_estilo
+  - marcadores_discursivos_c1
+  - lexico_preciso
+  - construcciones_focales
   concept_weights:
     colocaciones_avanzadas: 8
     registros_formal_informal: 5
@@ -224,18 +418,25 @@ C1:
     lexico_preciso: 5
     construcciones_focales: 5
   concept_groups:
-    lexicon_advanced: [colocaciones_avanzadas, modismos, lexico_preciso]
-    register: [registros_formal_informal, marcadores_discursivos_c1]
-    syntax_stylistic: [inversion_enfatica, subjuntivo_estilo, construcciones_focales]
-
+    lexicon_advanced:
+    - colocaciones_avanzadas
+    - modismos
+    - lexico_preciso
+    register:
+    - registros_formal_informal
+    - marcadores_discursivos_c1
+    syntax_stylistic:
+    - inversion_enfatica
+    - subjuntivo_estilo
+    - construcciones_focales
 C2:
-  description: "Maestría — native-like, pragmatique, créativité linguistique."
+  description: Maestría — native-like, pragmatique, créativité linguistique.
   concept_keys:
-    - estructuras_hendidas
-    - discurso_referido_complejo
-    - ironia_pragmatica
-    - matiz_perfectivo_imperfectivo
-    - literatura_referencial
+  - estructuras_hendidas
+  - discurso_referido_complejo
+  - ironia_pragmatica
+  - matiz_perfectivo_imperfectivo
+  - literatura_referencial
   concept_weights:
     estructuras_hendidas: 5
     discurso_referido_complejo: 5
@@ -243,6 +444,11 @@ C2:
     matiz_perfectivo_imperfectivo: 5
     literatura_referencial: 3
   concept_groups:
-    advanced_syntax: [estructuras_hendidas, matiz_perfectivo_imperfectivo]
-    pragmatics: [ironia_pragmatica, discurso_referido_complejo]
-    cultural: [literatura_referencial]
+    advanced_syntax:
+    - estructuras_hendidas
+    - matiz_perfectivo_imperfectivo
+    pragmatics:
+    - ironia_pragmatica
+    - discurso_referido_complejo
+    cultural:
+    - literatura_referencial
