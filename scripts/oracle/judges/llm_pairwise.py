@@ -27,25 +27,33 @@ from ..schemas import DimVerdict, ScenarioSchema
 _log = logging.getLogger("oracle.llm_judge")
 
 CF_MOVES = [
-    "full_recast", "partial_recast", "clarification_request",
-    "metalinguistic", "elicitation", "repetition", "explicit_correction",
+    # 10-class enum aligned with cf-taxonomy.yaml (Lyster 2007 extracted) + AcademIA convention
+    # Schema 11-value enum drops `explicit_recast` here (data starvation in fewshots —
+    # handled via step 2 generator metadata, see docs/01-pedagogy/cf-taxonomy-gap-2026-04-29.md).
+    # `silent` = no-CF policy decision (deliberate pedagogical choice), is_cf: false in schema.
+    "silent", "implicit_recast", "full_recast", "partial_recast",
+    "clarification_request", "repetition", "metalinguistic",
+    "elicitation", "prompt_plus_remediation", "explicit_correction",
 ]
 
-CF_MOVE_PROMPT = """You classify a tutor's corrective feedback move using Lyster's 7-move taxonomy.
+CF_MOVE_PROMPT = """You classify a tutor's corrective feedback move using Lyster's 10-move taxonomy + AcademIA `silent` policy.
 
 Moves :
-- full_recast : tutor repeats learner's utterance with the error silently corrected, no commentary
-- partial_recast : tutor corrects only the erroneous fragment
+- silent : tutor does not correct the error (deliberate pedagogical choice — surface T1/T2 errors at A1/A2 typically silent per AcademIA tolerance policy)
+- implicit_recast : tutor reformulates the learner's utterance minus the error, embedded in a confirmation/expansion, no explicit signal of correction
+- full_recast : tutor repeats whole utterance with error corrected, often paraphrasing for academic register (rare in classroom CF)
+- partial_recast : tutor corrects only the erroneous fragment, often within a follow-up question ("Oh you *went* to Paris! What did you eat?")
 - clarification_request : tutor asks learner to rephrase ("What do you mean?", "Could you say that again?")
-- metalinguistic : tutor names/explains the grammar rule ("past simple uses -ed")
+- repetition : tutor repeats the erroneous part with rising intonation, no correction provided
+- metalinguistic : tutor names/explains the grammar rule or asks rule-based question ("past simple uses -ed", "Past or present?")
 - elicitation : tutor prompts learner to produce the correct form ("Almost — what's the past of go?")
-- repetition : tutor repeats the erroneous part with rising intonation, no correction
-- explicit_correction : tutor flags the error AND provides the correct form ("No, it's 'went', not 'goed'")
+- prompt_plus_remediation : tutor sequences a prompt (clarification/repetition/metalinguistic/elicitation) followed by recast or explicit correction if learner fails to self-repair (Doughty & Varela 1998 'corrective recasting' pattern; Lyster T4 escalation)
+- explicit_correction : tutor flags the error AND provides the correct form ("No, it's 'went', not 'goed'") — anti-pattern at A1-B1 per AcademIA rubric, allowed at C1-C2 stylistic
 
 Learner utterance : "{learner}"
 Tutor response : "{tutor}"
 
-Output strict JSON : {{"move": "<one of the 7>", "confidence": 0.0-1.0, "reasoning": "one sentence"}}"""
+Output strict JSON : {{"move": "<one of the 10>", "confidence": 0.0-1.0, "reasoning": "one sentence"}}"""
 
 CEFR_REGISTER_PROMPT = """You classify the CEFR level that a tutor's response is pitched at.
 
