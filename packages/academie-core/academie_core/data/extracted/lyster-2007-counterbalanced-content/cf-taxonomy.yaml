@@ -10,10 +10,33 @@ schema_ref: "_schemas/cf-taxonomy.schema.yaml"
 
 cf_moves:
   # ====================================================================
+  # NO-CF POLICY (silent) — added to enum 2026-04-29 (Q1 decision)
+  # Documents the deliberate choice to NOT correct (Lyster Ch 4.4 acknowledges)
+  # ====================================================================
+  - id: silent
+    is_cf: false
+    definition: "Deliberate pedagogical choice to NOT provide corrective feedback on a given error, often justified by tolerance policy at level (e.g., A1 surface errors, T1/T2 tier per AcademIA tolerance_matrix). Lyster Ch 4.4 acknowledges 'no feedback' as a counterbalanced choice when the meaning-orientation of the moment outweighs the form-correction benefit, or when the error is below acquisition threshold (Pienemann teachability)."
+    cefr_appropriateness:
+      a1: high          # Silent dominates at A1 — most surface/morphology errors silent
+      a2: high          # Still high silent rate, except T3 communicative breakdown
+      b1: medium        # Reduce silent rate — more form-focused feedback expected
+      b2: medium        # Form-focused feedback dominant
+      c1: low           # Low silent — register/lexical precision errors mostly addressed
+      c2: low           # Lowest silent — pragmatic nuance + creativity, rare untouched errors
+    counter_indications:
+      - "T4 communicative breakdown — must always intervene (rubric A1-C2 hard rule)"
+      - "Stable plateau errors needing 3-strikes escalation (silent prevents progress)"
+    co_occurrence_warning:
+      - "Approval markers (oui, OK, c'est ça, très bien) after error = silent + false positive validation (Lyster 1998a)"
+    source: "Lyster 2007, ch 4.4 + AcademIA tolerance_matrix policy (this entry: AcademIA-specific)"
+    confidence: medium  # Lyster framework + AcademIA policy synthesis
+
+  # ====================================================================
   # RECAST FAMILY (implicit reformulations)
   # Lyster Ch 4.3.1 — most frequent type; 54-65% of feedback in immersion
   # ====================================================================
   - id: implicit_recast
+    is_cf: true
     definition: "Reformulation of the learner's utterance minus the error(s), without explicit indication that the utterance was incorrect. Implicit insofar as it contains no metalinguistic information. In content-based settings recasts often appear in confirmations, confirmation checks, or expansions, intended to confirm or disconfirm the veracity of the student's message rather than to provide negative evidence about form."
     cefr_appropriateness:
       a1: low           # Likely missed by absolute beginners; ambiguous as positive evidence
@@ -148,7 +171,7 @@ cf_moves:
     source: "Lyster 2007, ch 4, pp. 109-110, 120"
     confidence: high
 
-  - id: metalinguistic_feedback
+  - id: metalinguistic
     definition: "Teacher provides comments, information, or questions related to the well-formedness of the student's utterance, without explicitly providing the correct form (e.g., 'Do we say goed in English?', 'We don't say that in French', 'No', 'Is it masculine?'). Engages metalinguistic awareness; pushes self-repair via rule-based reasoning."
     cefr_appropriateness:
       a1: contraindicated  # Limited metalanguage; cognitive overload
