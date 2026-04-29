@@ -1,0 +1,1030 @@
+# Gramática inventario B1 + B2 — Plan Curricular del Instituto Cervantes (PCIC).
+#
+# ADR-014 Layer 1.5 extraction (Session 53 Phase C, 2026-04-30).
+# Source : `cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/02_gramatica_inventario_b1-b2.htm`
+# (HTML version free online via WebFetch).
+# Companion : `cervantes-2006-plan-curricular-a1-a2/grammar-by-level.yaml` (Vol A).
+
+source:
+  book: "Plan Curricular del Instituto Cervantes — Niveles de referencia para el español"
+  volume: "B — B1+B2"
+  publisher: "Instituto Cervantes / Edelsa / Biblioteca Nueva"
+  year: 2006
+  edition: "1.ª"
+  inventario: "2. Gramática"
+  url: "https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/02_gramatica_inventario_b1-b2.htm"
+  fetch_date: 2026-04-30
+
+# ============================================================================
+# === B1 (Umbral) — additions to A1+A2 (cumulative) ==========================
+# ============================================================================
+B1:
+  level_label: "Umbral"
+  band: "Independent user B1"
+  inheritance_note: "PCIC cumulative : B1 entries add to A2 inventory (Vol A grammar-by-level)"
+  macro_sections:
+
+    "1.El_sustantivo_B1":
+      "1.1.Clases":
+        nombres_propios:
+          - "Antropónimos plurales (los Fernández, los González)"
+          - "Topónimos (el Ebro, los Pirineos, el Teide)"
+          - "Topónimos variables (la China / China, el Japón / Japón)"
+          - "Títulos de obras (Don Quijote de la Mancha, Las Meninas)"
+        nombres_comunes:
+          - "Acotadores (una loncha de queso, una pastilla de jabón)"
+          - "Omisión sustantivo acotador (dos [lonchas] de quesos)"
+      "1.2.Genero":
+        - "Términos con género variable según región"
+        - "Epicenos (la persona, la víctima)"
+        - "Cambio género/cambio significado (el manzano / la manzana)"
+        - "Invariables (el / la guía, el / la colega, el / la testigo)"
+      "1.3.Numero":
+        - "Singularia tantum (sed, salud)"
+        - "Pluralia tantum (ganas, facciones, ojeras)"
+        - "Terminados -ay/-ey/-oy (rey/reyes, ley/leyes)"
+        - "Apellidos familias (los Machado, los Pérez, los García)"
+
+    "2.El_adjetivo_B1":
+      "2.1.Clases":
+        calificativos:
+          - "Posibilidad prefijación (agradable / desagradable, útil / inútil)"
+        relacionales:
+          - "Restricciones (los cuidados maternos / *muy maternos)"
+      "2.2.Genero":
+        - "Sufijos apreciativos (grandón / grandona)"
+        - "Terminados -a (hipócrita, homicida, cosmopolita)"
+      "2.4.Posicion":
+        anteposicion:
+          - "Apócope (buen, mal, gran)"
+          - "Anteposición comparativos (mayor seguridad)"
+      "2.5.Grados":
+        - "Comparativo igual de (expresión igualdad)"
+        - "Superlativo absoluto regular (guapísimo, buenísimo)"
+        - "Superlativo relativo (el más / menos... de)"
+      "2.6.Metabasis":
+        - "Sustantivación con determinante (el grande, el azul)"
+
+    "3.El_articulo_B1":
+      "3.1.Definido":
+        valores:
+          - "Anafórico asociativo (Cogió un libro y miró el índice)"
+          - "Segunda mención (Viajaremos a Marruecos. El viaje será en barco)"
+          - "Primera mención con modificadores restrictivos (Dibujó la cara de un niño)"
+        distribucion:
+          - "Obligatorio apellidos familias y accidentes geográficos"
+          - "Topónimos variables (la China / China)"
+          - "Coaparición posesivo postnominal (la amiga mía)"
+          - "Compatibilidad otro (los otros compañeros)"
+          - "Incompatible relativas infinitivo (*Tengo la cosa que decirte)"
+          - "[Hispanoamérica] artículo con casa (Vamos a la casa)"
+      "3.2.Indefinido":
+        valores:
+          - "Indefinitud, no anafórico"
+          - "Incompatibilidad nombres no contables (un café = taza de café)"
+          - "Incompatibilidad cuantificadores universales (*cada un amigo)"
+        distribucion:
+          - "No contables recategorización (un agua muy clara)"
+          - "Entidades únicas (Hacía un calor horrible, brillaba un sol espléndido)"
+          - "Atributo enfático (Luis es un lince / un Adonis)"
+      "3.3.Nombres_escuetos":
+        - "Imposibilidad sujeto preverbal (*Niños juegan en el patio)"
+        - "Imposibilidad genérica (*Gatos son inteligentes)"
+        - "Complemento sustantivo (silla de ruedas, profesor de universidad)"
+
+    "4.Los_demostrativos_B1":
+      valores:
+        - "Referente oración anterior (No pienso eso)"
+      distribucion:
+        - "Combinación con determinantes (estos otros)"
+
+    "5.Los_posesivos_B1":
+      forma:
+        - "Tónico con/sin artículo (Ese bolso es mío / es el mío)"
+        - "Tónico/átono (mi amigo, un amigo mío)"
+      valores:
+        - "Sustitución obligatoria dativo posesivo (Le cortaron el pelo al cero)"
+        - "Sustitución opcional (¿Te hago la cama?)"
+        - "Sustantivos seleccionan argumentos (mi cuadro [poseedor/agente/tema])"
+        - "Diferenciador (Este es mi libro [no el tuyo])"
+      distribucion:
+        - "Con adjetivo posesivo detrás (un amigo suyo muy simpático)"
+        - "Con determinantes (tres discos míos, algunos discos míos)"
+        - "Compatibilidad haber (Hay una carta tuya)"
+
+    "6.Los_cuantificadores_B1":
+      "6.1.Propios":
+        numerales:
+          - "Ordinales a partir 11º"
+        universales:
+          - "cada (cada uno por su camino, Reparte una hoja a cada alumno)"
+        no_universales_afirmativos:
+          - "varios : variación género (siempre plural)"
+          - "algo, alguien, alguno"
+          - "Personas invariable (alguien) ; variable (alguna persona)"
+          - "Cosas invariable (algo) ; variable (alguna cosa)"
+          - "Diferencia semántica : Como algo [-humano] / Llama alguien [+humano]"
+          - "Ha venido alguien [primera] / Ha venido alguno [segunda mención]"
+        no_universales_negativos:
+          - "nada, nadie, ninguno"
+          - "Condiciones aparición (No vino ninguno / *Vino ninguno)"
+          - "Personas invariable (nadie) ; variable (ninguna persona)"
+          - "Cosas invariable (nada) ; variable (ninguna cosa)"
+          - "Diferencia : No tengo nada / No tengo a nadie"
+          - "No me ha llamado nadie [primera] / ninguno [segunda mención]"
+          - "Con más : No ha venido nadie más / No quiero nada más"
+        gradativos:
+          - "Comparativos (Cuesta más / menos de 20 euros)"
+          - "Proporcionales reductores : poco [negativo] / un poco [positivo] / algo [= un poco]"
+      "6.2.Focales":
+        excluyentes:
+          - "Solo voy yo"
+      "6.3.Estructuras_cuantificadas":
+        partitivas:
+          - "Con mayoría (La mayoría de los alumnos prefiere ir a clase)"
+          - "Partitivos no intrínsecos (Acudió un montón de gente)"
+
+    "7.El_pronombre_B1":
+      "7.1.1.Sujeto_B1":
+        presencia_ausencia:
+          - "Presencia con sujetos distintos (Él quiere que vayas)"
+          - "Ausencia con referente inespecífico (Llaman a la puerta)"
+          - "Ausencia infinitivo cuando coincide sujeto/OI/OD (Él quiere ir / Le prohibieron ir)"
+      "7.1.2.OD_atonos_B1":
+        presencia_ausencia:
+          - "Presencia cuando antecedente en otra oración sin determinante (Tengo coche, pero no lo uso nunca)"
+        posicion:
+          - "Enclisis y proclisis con perífrasis (Empiezo a entenderlo / Lo empiezo a entender)"
+          - "Siempre enclíticos : infinitivo solo, verbos factivos, impersonales"
+      "7.1.3.OI_atonos_B1":
+        valores:
+          - "Anafórico tematización (A Luis le doy el libro)"
+          - "[México] Le enclítico enfático (¡Ándale!, ¿Qué le haces?)"
+      "7.1.4.Valores_de_se_B1":
+        valores:
+          - "Pronombre OI ante clítico 3ª pers OD (Se lo doy)"
+          - "Recíproco (Se quieren)"
+          - "Impersonales y pasivas reflejas (Se come muy bien / Se venden pisos)"
+      "7.1.5.Combinacion_atonos_B1":
+        - "Jerarquía OI + OD (Te las di / Me lo dio)"
+        - "Pronominalización obligada OI (Se lo di a Juan)"
+        - "Juntos obligatorios (Voy a decírselo / Se lo voy a decir)"
+        - "Siempre enclíticos (escríbesela, escribírselo)"
+      "7.1.6.Tonicos_preposicionales_B1":
+        - "Excepciones preposiciones (según tú, no *según ti)"
+      "7.2.Relativos_B1":
+        que:
+          - "Oposición que/quien antecedente +humano (la profesora que tengo / el chico a quien saludaste)"
+        adverbios_relativos: "v. Gramática 8.8"
+      "7.3.Interrogativos_B1":
+        que:
+          - "Precedido preposición (¿Con qué escribes? ¿A qué juegas?)"
+          - "Oposición qué/cuál"
+        quien:
+          - "Precedido preposición (¿Con quién trabajas?)"
+          - "OD/OI con a (¿A quién ves? ¿A quién le das el libro?)"
+        cual:
+          - "Tónico con acento, variación número (¿Cuál libro quieres?) [incapacidad]"
+          - "Deixis ad oculos"
+      "7.4.Exclamativos_B1":
+        que:
+          - "Con adverbio + verbo predicativo (¡Qué bien habla español!)"
+          - "Con sustantivo + adjetivo (¡Qué amigo más simpático tienes!)"
+        cuanto:
+          - "Con verbo invariable (¡Cuánto sabe!)"
+          - "Con sustantivo concordancia (¡Cuántos amigos tiene!)"
+        quien:
+          - "Forma invariable (¡Quién podía imaginarlo!)"
+
+    "8.Adverbio_B1":
+      "8.1.En_-mente_B1":
+        - "Restricciones : adjetivos relacionales no forman -mente (*alemanamente)"
+      "8.2.Nucleares_B1":
+        de_tiempo:
+          - "Distancia temporal indefinida sin de (anteriormente, últimamente)"
+          - "Complementos temporales deíctico/anafóricos (dentro de dos días / la semana anterior)"
+          - "nunca con más (Nunca más montaré en globo)"
+        de_cantidad:
+          - "Movimiento dentro SV (Has trabajado mucho hoy / hoy mucho)"
+          - "poco/un poco (He estudiado poco / un poco)"
+        de_modo:
+          - "De acción (fácilmente, difícilmente)"
+          - "Apreciación subjetiva postverbal (estupendamente)"
+          - "Resultativos postverbales (totalmente)"
+          - "Agentivos postverbales/finales (atentamente)"
+      "8.3.Externos_al_dictum_B1":
+        frecuencia_indeterminada:
+          - "habitualmente, frecuentemente, raramente (posición pre/postverbal, gradación posible : muy raramente)"
+        frecuencia_determinada:
+          - "diariamente, anualmente (no gradación : *muy diariamente)"
+        evaluativos:
+          - "Necesidad/obligación postverbales (necesariamente, forzosamente)"
+          - "Emotivos postverbales (afortunadamente, desgraciadamente)"
+          - "Actuación sujeto postverbales (inteligentemente, generosamente)"
+        topico:
+          - "Personalmente, a mí me gustan más los gatos"
+      "8.4.Modus_B1":
+        modalidad:
+          - "Indicadores/reforzadores (Posiblemente lleguemos a tiempo)"
+          - "Dubitativos aislados/integrados (seguramente, probablemente, posiblemente)"
+          - "Escala grado duda"
+      "8.5.Conjuntivos_B1":
+        - "Reforzadores coordinación (Era un título corto y además bonito)"
+        - "Matiz adversativo : menos (= excepto)"
+      "8.6.Focalizadores_B1":
+        particularizadores:
+          - "sobre todo"
+        excluyentes:
+          - "solo, solamente"
+      "8.7.Intensificadores_B1":
+        - "totalmente, realmente, verdaderamente (Eso no fue lo que ocurrió realmente)"
+      "8.8.Relativos_interrogativos_B1":
+        - "Relativo como (Lo he hecho como dijiste)"
+        - "Relativo cuando (Me fui cuando llegaron / Me iré cuando lleguen)"
+        - "Relativo donde (Allí es donde voy)"
+        - "Interrogativo adónde (¿Adónde vas?)"
+        - "Contrastes : como/cómo, donde/dónde, cuando/cuándo"
+      "8.9.Locuciones_B1":
+        - "[Hispanoamérica] no más (eso no más [solamente], ahí no más [mismo])"
+
+    "9.Verbo_B1":
+      "9.1.1.Presente_B1":
+        valores:
+          - "Gnómico/permanente (Dos y dos son cuatro)"
+          - "Condicionales valor actual (Si lloras será porque hiciste algo)"
+          - "Condicionales valor futuro (Si vienes te digo un secreto)"
+      "9.1.2.Imperfecto_B1":
+        valores:
+          - "Acción interrumpida (Iba por la calle y me encontré con él)"
+          - "Imperfecto de conato (Iba a salir cuando sonó el teléfono)"
+          - "Coincidencia con acción pasada (Cuando llegué estaba afeitándose)"
+          - "Cortesía (Quería un jersey rojo)"
+          - "Estilo indirecto (Dijo que tenía sueño / Vi que te querías ir)"
+      "9.1.3.Indefinido_B1":
+        forma:
+          - "Irregularidades vocálicas/consonánticas (vestir, dormir, leer, tocar)"
+          - "Perfectos fuertes (traer, decir, poner)"
+        valores:
+          - "Acciones pasadas momento temporal preciso, verbos no perfectivos (Lo supe)"
+      "9.1.4.Futuro_imperfecto_B1":
+        forma:
+          - "Paradigma regulares"
+          - "Síncopa e (tener/poner/salir)"
+          - "Síncopa sin consonante (saber/querer/poder)"
+          - "Pérdida vocal (hacer/decir)"
+        valores:
+          - "Acciones futuras absolutas (Iré mañana)"
+          - "[Hispanoamérica] preferencia ir a + infinitivo, presente indicativo"
+          - "Probabilidad (Serán las once)"
+      "9.1.5.Condicional_simple_B1":
+        forma:
+          - "Paradigma + irregularidades (igual que futuro)"
+        valores:
+          - "Cortesía (¿Podría hablar contigo?)"
+          - "Modestia (Yo diría que eso no era así)"
+          - "Sugerencia (Deberías acostarte)"
+      "9.1.6.Pret_perfecto_B1":
+        forma:
+          - "Participios irregulares compuestos (reabierto, descrito, devuelto)"
+        valores:
+          - "Dos marcadores explícito/implícito (Nunca he estado allí [en mi vida] / Nunca estuve [en aquella época])"
+          - "Presente psicológico con hace (Hace media hora que se ha ido / se fue)"
+      "9.1.8.Pluscuamperfecto_B1":
+        forma: ["Conjugación haber"]
+        valores: ["Anterioridad respecto pasado (Cuando llegamos ya se había ido)"]
+      "9.2.Subjuntivo_B1":
+        "9.2.1.Presente":
+          forma:
+            - "Paradigma regulares 3 conjugaciones"
+            - "Heredadas (cierro > cierre / cerremos, pido > pida / pidamos)"
+            - "Tema/raíz (estar, ser, dar, ir)"
+          valores:
+            independientes:
+              - "Desiderativas (Ojalá que tengas suerte)"
+              - "Duda (Quizá / tal vez vaya)"
+            subordinadas:
+              - "Verbo principal desiderativo (Quiero que vengas)"
+              - "Estilo indirecto (Siéntate > Dice que me siente)"
+              - "Impersonales valorativas (Es bueno que estudies)"
+              - "Adverbiales temporales (Me voy antes de que llueva / Después de que hablen / Cuando llegues)"
+              - "Adverbiales finales (Te lo doy para que lo uses)"
+        "9.2.2.Imperfecto":
+          forma:
+            - "Paradigma regulares -ra y -se"
+            - "[Hispanoamérica] preferencia -ra ; -se en formales"
+          valores:
+            independientes:
+              - "Desiderativas/irrealización (Ojalá Ana tuviera suerte ayer)"
+              - "Adverbios duda quizá/tal vez (Tal vez fuera ella)"
+              - "Cortesía (Quisiera ver ese abrigo)"
+            subordinadas:
+              - "Posterioridad respecto verbo principal pasado (Dijo que fuera (mañana / enseguida))"
+        "9.2.3.Pret_perfecto":
+          forma: ["Conjugación haber + participios"]
+          valores:
+            - "Correspondencia pretérito perfecto indicativo (No es verdad que haya escrito)"
+            - "Sustitución presente subjuntivo temporales futuro (Cuando se haya marchado / se marche)"
+        "9.2.4.Pluscuamperfecto":
+          forma: ["Conjugación haber + participios"]
+          valores: ["Orientado coordenadas pasado"]
+      "9.3.Imperativo_B1":
+        forma:
+          - "Pronombres enclíticos (díselo, decídselo, dámelas)"
+          - "Imperativo negativo (No te vayas)"
+        valores:
+          - "Ruego/petición (Perdóname, por favor)"
+          - "Sugerencia/consejo (Acuéstate pronto)"
+          - "Aceptación/invitación (Pasa, pasa / Come, come que está muy rico)"
+          - "Orden/mandato (Sal de aquí)"
+      "9.4.Formas_no_personales_B1":
+        infinitivo:
+          forma:
+            - "Sujeto tácito : control sujeto (Yo quiero [yo] ver una película)"
+            - "Pronombres enclíticos (decírselo)"
+          valores:
+            - "Independiente imperativos (No fumar / Introducir 1 euro)"
+            - "Subordinadas sustantivas (Andar (le) ayuda a adelgazar)"
+            - "Interrogativas indirectas (No sé si ir / qué hacer)"
+        gerundio:
+          forma:
+            - "Pronombres enclíticos (estuvo explicándomelo todo)"
+          valores:
+            - "Independiente fragmentario (¿Qué haces? Estudiando)"
+            - "Adjuntos internos (La cafetería está saliendo a la derecha)"
+            - "Adverbial postpuesto modal (Aprende leyendo)"
+        participio:
+          valores:
+            - "Predicativo sin complementos (Me miró satisfecho / Encontré la tienda cerrada)"
+
+    "10.SN_B1":
+      "10.1.Nucleo_B1":
+        - "SN núcleo elíptico coordinación (Mi libro y el de Juan)"
+      "10.2.Complementos_B1":
+        adjuntos_restrictivos:
+          - "Sintagma preposicional posesión inalienable (la chica de los ojos azules)"
+        argumentales:
+          - "Sintagma preposicional (la construcción del edificio)"
+        no_argumentales:
+          - "Aposición explicativa con comas (Juan, mi hermano, es ingeniero)"
+      "10.4.Concordancia_SN_verbo_B1":
+        - "[América Central, Colombia, Perú, Chile] verbo plural con sujeto singular (Cantamos con él = Yo canté con él)"
+      "10.5.Vocativo_B1":
+        - "Posición intermedia valor enfático (Repito, Juan, que te equivocas)"
+
+    "11.Adjetival_B1":
+      "11.2.Complementos_B1":
+        adverbiales:
+          - "vacío por dentro"
+        modificadores:
+          - "Multiplicativos (el doble de)"
+          - "Incompatibilidad elativos (enorme, gigantesco / *muy enorme)"
+          - "Adverbios -mente (increíblemente bueno)"
+          - "Cuantificadoras (un montón de, un grupo de)"
+
+    "12.SV_B1":
+      "12.1.Nucleo_B1":
+        auxiliares:
+          - "Perífrasis verbales (Deseo viajar ¿Qué deseo? / Lo deseo)"
+          - "Modales (soler)"
+          - "Aspectuales infinitivo : volver a [reiterativas], dejar de [perfectivas], ponerse a [ingresivas], estar a punto de [incoativas]"
+          - "Aspectuales gerundio : seguir"
+        copulativos:
+          ser:
+            - "Impersonales (Es de noche / Es tarde)"
+            - "Sujeto oracional (Es una pena que no vengan)"
+          estar:
+            - "Con pronombre lo (Lo está)"
+            - "Profesión eventual (Está de telefonista / médico en La Paz)"
+            - "Cantidades/precios (El euro está a...)"
+          parecer:
+            - "Atributivas (Los niños parecen cansados)"
+            - "Con subordinada (Parece que los niños están cansados)"
+      "12.2.Complementos_B1":
+        atributo:
+          - "Concordancia verbo singular-atributo plural (Lo que más me gusta son las vacaciones)"
+        OI:
+          - "Reduplicación (Le he regalado un bolso a María)"
+        circunstanciales:
+          - "Proposición indicativo/subjuntivo (Viene cuando puede / Vendrá cuando pueda)"
+        regido:
+          - "Verbos frecuentes (hablar de él, pensar en problemas)"
+          - "Doble complementación OD + preposicional (Me invitó a cenar)"
+
+    "13.Oracion_simple_B1":
+      "13.1.Concordancia":
+        - "Colectivos (Ese grupo de alumnos de español es muy bueno)"
+      "13.2.Constituyentes":
+        - "Posposición sujeto información nueva (Esta mañana ha llegado una carta)"
+      "13.3.Tipos":
+        actitud_hablante:
+          - "Dubitativas indicativo (A lo mejor viene)"
+        naturaleza_predicado:
+          - "Recíprocas (Se quieren mucho)"
+          - "Impersonales (Nieva / En este restaurante se come muy bien)"
+          - "Pasivas reflejas (Se vende piso)"
+          - "Desiderativas (¡Ojalá venga!)"
+
+    "14.Coordinacion_B1":
+      copulativas:
+        - "Negativas con ni (Ni lo he visto ni me ha llamado)"
+      adversativas:
+        - "Con sin embargo (Acepté; sin embargo, no estaba seguro)"
+        - "Con aunque (= equivalente) — Entiendo todo aunque no sé hablar"
+
+    "15.Subordinacion_B1":
+      "15.1.Sustantivas":
+        infinitivo:
+          funcion_sujeto:
+            - "Verbos transitivos dos argumentos (Leer te ayuda a mejorar vocabulario)"
+            - "Locuciones predicados psicológicos OI (Me da miedo hablar)"
+            - "Atributos (Es malo comer tanto)"
+            - "Verbos causativos (Leer mejora vocabulario)"
+          funcion_OD:
+            - "Verbos influencia (El profesor aconseja estudiar más)"
+        flexionadas:
+          funcion_sujeto:
+            - "Intransitivos afección (Me encanta que me llames)"
+            - "Atributivos (Es seguro que lo sabe / Es probable que lo sepa)"
+          funcion_OD:
+            - "Pensamiento (No creo que tengas razón)"
+            - "Desiderativos (Quiero que vengas)"
+            - "Emoción [selección subjuntivo]"
+            - "Pronominalización subordinada (Me lo dijo)"
+      "15.2.Adjetivas_B1":
+        tipos:
+          - "Especificativas/restrictivas con antecedente expreso"
+          - "Incompatibilidades : nombres propios (*Juan que vive aquí), posesivos átonos (*su libro que leo), antecedentes oracionales"
+        relativos:
+          - "que : oposición que / quien"
+        antecedente:
+          - "Sustantivo (el libro que leo)"
+        modo: ["Indicativo (todos tiempos)"]
+      "15.3.Adverbiales_B1":
+        "15.3.1.Temporales":
+          anterioridad:
+            - "antes de + infinitivo (correferencialidad, no factual) — Antes de salir te llamo"
+            - "antes de que + subjuntivo (presente, presente/futuro) — Me voy antes de que llueva"
+          posterioridad:
+            - "después de + infinitivo (correferencialidad, no factual) — Después de comer la llamo"
+            - "después de que + subjuntivo (presente futuro) — Llegaré después de que empecéis"
+          simultaneidad:
+            - "al + infinitivo (neutralización cuando) — Al llegar lo vi"
+            - "cuando + indicativo/subjuntivo (Me fui cuando llegó / Llegó cuando dormía)"
+            - "mientras + indicativo (Llegó mientras dormía)"
+          delimitacion:
+            - "hasta que + indicativo/subjuntivo (Estuve en casa hasta que llegó / llegaras)"
+          movilidad: ["Posición flexible"]
+        "15.3.2.Lugar":
+          destino:
+            - "donde + indicativo con antecedente demostrativo (Allí es donde voy)"
+        "15.3.3.Modo":
+          - "como + indicativo (conocimiento) — Lo hice como dijiste"
+        "15.3.4.Causales":
+          nexos:
+            - "como (causales enunciado, delante principal) — Como no venías empecé a cenar"
+            - "por + infinitivo — Lo hizo así por no saber otra manera"
+          modo: ["Siempre indicativo"]
+        "15.3.5.Finales":
+          tipos:
+            integradas:
+              - "Complementarias sustantivo (He comprado pastillas para adelgazar)"
+              - "Complementarias adjetivo (un libro útil para estudiar)"
+              - "Complementarias verbo/SV (Lo uso para fregar / Me levanté temprano para terminar)"
+          valores:
+            - "Objetivo utilidad complemento argumental (*La cuchara sirve / sirve para comer)"
+            - "Modificador SN (pastillas para no toser)"
+          nexos:
+            - "para + infinitivo (referencia disjunta) — Me ha dado esto para revisar [yo]"
+            - "para que + subjuntivo (presente, presente/futuro) — Lo traído para que lo leas"
+          contraste_por_para:
+            - "por / para causalidad/finalidad"
+        "15.3.6.Condicionales":
+          protasis_indicativo:
+            - "Presente indicativo (incompatibilidad futuros) — Si viene Carlota iremos"
+            - "Apódosis presente/futuro (Si tengo tiempo voy / iré)"
+            - "Apódosis imperativo (Si puedes ayúdame)"
+          tipos:
+            - "Reales presente/futuro (Si tienes dinero puedes / podrás viajar)"
+        "15.3.7.Consecutivas":
+          tipos:
+            - "Coordinadas entonces, o sea que, así que (Tengo trabajo o sea que no saldrá / Esperaba mucho así que no vimos)"
+          nexos:
+            - "o sea que, así que : consecuencia (Mañana sábado o sea que no hay clase)"
+            - "deducción (Voy todas semanas o sea que te gusta bailar)"
+          modo: ["Indicativo, imperativo (coordinadas yuxtapuestas)"]
+        "15.3.8.Comparativas":
+          igualdad:
+            - "igual de...que (invariable) — igual de alto que luna / listo que cualquiera"
+          superioridad:
+            - "más que (invariable) — He comprado más libros que revistas"
+            - "el más/menos de (superlativo) — el amigo más fiel de todos"
+          inferioridad:
+            - "menos que (invariable) — He comprado menos libros que revistas"
+          cantidad:
+            - "más/menos de (límite excluida) — Cuesta más/menos de 20 euros"
+            - "no más/menos de (límite incluida) — No cuesta más/menos de 20 euros"
+        "15.3.9.Concesivas":
+          tipos:
+            - "Propias factuales (Aunque me encuentro mal voy al trabajo)"
+          nexos:
+            - "aunque (factual indicativo) — Aunque me encuentro mal voy"
+          modo: ["Indicativo (información nueva)"]
+
+# ============================================================================
+# === B2 (Avanzado) — additions to B1 (cumulative) ===========================
+# ============================================================================
+B2:
+  level_label: "Avanzado"
+  band: "Independent user B2 — cap of essential-tier per ADR-013 for IT/DE/JP/RU"
+  inheritance_note: "PCIC cumulative : B2 entries add to B1"
+  macro_sections:
+
+    "1.El_sustantivo_B2":
+      "1.1.Clases":
+        nombres_propios:
+          - "Individuos/realidades únicas con contraste mayúsculas/minúsculas (la Tierra / la tierra, el Papa / el papa Juan Pablo II)"
+      "1.2.Genero":
+        - "Femeninos comenzando 'a' tónica acentuada (el aula / las aulas / esta aula / nuestra aula ; el agua / las aguas / ciertas aguas / las frescas aguas)"
+        - "Terminaciones femeninas -triz/-ez/-dad/-ción/-sión/-tud/-umbre (la cicatriz, la vejez, la ciudad, la sensación)"
+      "1.3.Numero":
+        - "Invariables (más de una sílaba, no aguda, terminados -us/-sis/-tis) — el virus/los virus, la crisis/las crisis"
+        - "Acentuadas vocal final (á, í, ú) plural -s y -es : más frecuentes -es (maniquíes, rubíes, tabúes) ; -s (esquís, champús, menús)"
+        - "Plurales léxicos (las murallas, las escaleras, los intestinos)"
+
+    "2.El_adjetivo_B2":
+      "2.1.Clases":
+        calificativos:
+          - "Color aproximativos (rojizo, amarillento, grisáceo)"
+          - "Función predicativa (Ana llegó sudorosa)"
+      "2.4.Posicion":
+        anteposicion_enfatica:
+          - "Es un grave problema"
+        cambios_significado:
+          - "un viejo amigo / un amigo viejo"
+          - "un único profesor / un profesor único"
+        relacionales_postnominal:
+          - "un producto lácteo / *un lácteo producto"
+      "2.5.Grados":
+        comparativo:
+          - "Cultos latinos (superior, anterior, interior)"
+          - "Término con preposición de (Es más guapo de lo que me dijiste)"
+        superlativo:
+          - "Prefijos super-/extra-/re-/archi-/ultra- (superguapo, extrafino, archiconocido)"
+          - "Por repetición (María es alta, alta. Juan es guapo guapísimo)"
+
+    "3.El_articulo_B2":
+      "3.1.Definido":
+        valores:
+          - "Genérico con alternancia indefinido (El bolígrafo se usa para escribir / Un bolígrafo se usa para escribir)"
+          - "Sustantivador con lo neutro (lo interesante, lo mejor, lo peor, lo de ayer)"
+          - "Sustantivación otras categorías (No comprendo el porqué de tu decisión, No sabemos el cuándo ni el dónde)"
+        distribucion:
+          - "Restricciones nombres propios únicos : uso obligatorio (la Tierra, el Papa)"
+      "3.2.Indefinido":
+        valores:
+          - "Genérico (alternancia definido)"
+          - "Sujeto general/abstracto presente genérico (*Un bolígrafo no se usaba hace 50 años / El bolígrafo no se usaba hace 50 años)"
+          - "Sustantivador con relativa conjugada (uno que sea de otro país)"
+          - "Anafórico sin correferencia estricta (Juan aprobó. No lo esperaba de un chico que estudia tan poco)"
+        distribucion:
+          - "Incompatible no contables sin modificador (*un agua / un agua muy clara)"
+          - "Compatible singular entidades únicas/no contables con modificador (Hacía un calor horrible, brillaba un sol espléndido)"
+          - "Incompatible [el N de SN definido] predicativas (*un problema de la contaminación)"
+      "3.3.Nombres_escuetos":
+        - "Sujeto preverbal con adjetivo prenominal o coordinación (Fuertes tempestades asolaron la comarca, Agua y vino se combinan mal)"
+        - "Con alguno/ninguno pospuestos (No tiene pudor alguno / ninguno)"
+        - "Con verbos semiauxiliares (hacer noche, tener lugar, dar clase, poner fecha)"
+        - "Profesiones necesitados (Se necesita camarero)"
+
+    "4.Los_demostrativos_B2":
+      valores:
+        - "Anafórico discursivo (Pronunció unas palabras. Estas palabras...)"
+        - "Neutro catafórico discursivo (Escucha esto)"
+      distribucion:
+        - "Posición postnominal con artículo determinado (los tiempos aquellos)"
+
+    "5.Los_posesivos_B2":
+      forma:
+        - "Tónica/átona con ser (Es mi sobrino / Es sobrino mío)"
+      valores:
+        - "Exclamativas fijas (¡Madre mía!, ¡Dios mío!)"
+        - "Fórmula formal (Muy señor mío)"
+      distribucion:
+        - "Compatibilidad artículo + relativa (El libro tuyo que acabo de leer)"
+        - "Numerales/cuantificadores (mis cuatro hijos, tus muchas obligaciones)"
+
+    "6.Cuantificadores_B2":
+      "6.1.Propios":
+        numerales:
+          - "Partitivos (mitad, tercio, doceavo) — la mitad / un tercio de la tarta, una quinta parte de"
+          - "Multiplicativos (doble, triple) — el doble de dinero, diez veces más"
+        universales:
+          - "cada con numerales precedido de (porcentaje) — tres de cada cinco mujeres"
+          - "cualquier (invariable ante sustantivo) — Cualquier persona tiene ese derecho"
+          - "cualquiera (invariable, nunca ante sustantivo) — cualquiera de ellos, cualquier otro / otro cualquiera"
+        no_universales_afirmativos:
+          - "Contraste un / algún"
+        gradativos:
+          - "Atenuante : algo (Es algo pesado)"
+      "6.2.Focales":
+        incluyentes:
+          - "Incluso él aceptó la propuesta"
+      "6.3.Estructuras_cuantificadas":
+        - "Concordancia ad sensum partitivos (La mayoría de los compañeros piensa / piensan igual)"
+
+    "7.Pronombre_B2":
+      "7.1.1.Sujeto_B2":
+        presencia_ausencia:
+          - "Ausencia si referente es objeto (Luis le pide a Ana que [ella] escriba)"
+          - "Alternancia verbos lengua/duda/desconocimiento (Luis no dice que sea él, Dudo que [yo, él] lo haga)"
+      "7.1.2.OD_atonos_B2":
+        forma:
+          - "Pronombre neutro lo sustituto atributo (Lo soy / Lo está)"
+          - "Leísmo persona"
+        presencia_ausencia:
+          - "Obligatoria OD no pronominalizado antepuesto (El alcohol ni lo prueba)"
+          - "Coaparición átono+tónico énfasis (Quiero verla a ella, no a ti)"
+          - "Alternancia todo y cada ((lo) Pierde todo, Cada cosa la guarda en su sitio)"
+        posicion:
+          - "Enclisis/proclisis perífrasis con clíticos (*Lo ponerse a leer / Ponerse a leerlo)"
+          - "Siempre enclíticos : absolutas, OD incrustado (+animado)"
+        valores:
+          - "Anafórico tematización (Mis ejercicios. No los veo)"
+      "7.1.3.OI_atonos_B2":
+        presencia_ausencia:
+          - "Alternancia verbos cambio significado (Toca el piano / Le tocó la lotería)"
+        posicion:
+          - "Antepuesto si complemento solo verbo conjugado (Te recomiendo venir)"
+      "7.1.4.Valores_de_se_B2":
+        valores:
+          - "Diferenciador semántico verbos movimiento (Me voy [irse del lugar] / Voy [ir a donde oyente] ; Me voy de aquí / *Voy de aquí)"
+          - "Voz media (Se abrió la ventana, Se fundió el hielo)"
+          - "Mitigador responsabilidad : se + me/te/le (Se me perdió tu dinero)"
+      "7.1.5.Combinacion_atonos_B2":
+        - "Jerarquía : (se) + (2ª) + (1ª) + (3ª) — Se os cayó / Se lo dije / Se me perdió"
+      "7.2.Relativos_B2":
+        que:
+          - "Explicativas (Esa chica, que es mi vecina, es muy simpática)"
+          - "Antecedente pronombre tónico explicativas (Yo, que soy su mejor amigo, lo sé)"
+        el_que:
+          - "Precedido preposición variación género/número (Los chicos de los que te hablé)"
+          - "Especificativas con antecedente expreso (la casa de la que te hablé)"
+          - "Sin antecedente expreso (He dejado mi dirección para el que le interese, El que asistió ayer fue el menos indicado)"
+          - "Explicativas con/sin preposición (Esa persona, de la que no me fío nada, lo dijo)"
+          - "Semilibres (la [película] que vimos ayer)"
+          - "Antecedente sustantivo sin rasgos específicos (la chica de la que te hablé, el lápiz con el que escribo)"
+          - "Compatibilidad infinitivo especificativas / incompatibilidad explicativas (Conoceré a la chica con la que casarme / *Conoceré a la chica, con la que casarme)"
+          - "OD persona con preposición a (alternancia el que / que) — La chica a la que he visto / La chica que he visto"
+        quien:
+          - "Variación número, concordancia verbo (quien venga / quienes vengan)"
+          - "Con antecedente expreso (Ese profesor, de quien me hablaste, es horrible)"
+          - "Sin antecedente expreso (Quien asistió ayer fue el menos indicado)"
+          - "Sujeto/complemento (Quien tiene razón es él / La persona a quien me dirigí)"
+      "7.3.Interrogativos_B2":
+        - "qué : posición no inicial eco (¿(Que) Luis dijo qué?)"
+        - "quién : sintagma con de partitivo (¿Quién de tus compañeros es Juan?)"
+        - "cuánto : sintagma introducido de (¿Cuántos de tus amigos son españoles?)"
+        - "Orden elementos : categorías precediendo verbo (¿Quién no sabe la respuesta? ¿Quién a menudo hace ejercicio?)"
+        - "Orden libre postverbales (¿De quién habla mal la gente? ¿Por qué Luis no dijo nada?)"
+        - "Coordinados (¿Dónde y cuándo os conocisteis?)"
+        - "Posición final preguntas eco (¿Ella ha dicho qué?)"
+      "7.4.Exclamativos_B2":
+        - "qué con sustantivo, adverbio o adjetivo + proposición (¡Qué bien que estés aquí! ¡Qué maravilla que estás aquí!)"
+        - "cómo con verbo (¡Cómo canta!)"
+        - "cuánto con verbo invariable (¡Cuánto sabe!) ; con sustantivo concordancia (¡Cuántos amigos tiene!)"
+
+    "8.Adverbio_B2":
+      "8.1.En_-mente_B2":
+        - "Pronominales excepto : primeramente, segundamente, doblemente"
+        - "Deverbales -ble/-do/-nte (*evitablemente / inevitablemente, agradablemente / desagradablemente)"
+      "8.2.Nucleares_B2":
+        de_lugar:
+          - "Combinación adverbio prepositivo + adverbio deíctico (allí encima)"
+          - "Admisión cuantificadores (muy lejos / muy encima ; lejísimos / *encimísima)"
+        de_tiempo:
+          - "Relación temporal entre sucesos (inmediatamente, simultáneamente)"
+          - "Caracterización aspectual : definitivamente [resultativo], continuamente [durativo], instantáneamente [puntual], repetidamente [iterativo], repentinamente [inceptivo]"
+          - "Con preposición a (anteriormente a)"
+          - "Cuantificadores (muy recientemente, poco antes / *muy antiguamente)"
+        de_modo:
+          - "Acción (dolorosamente)"
+          - "Apreciación subjetiva (admirablemente)"
+          - "Resultativos (perfectamente)"
+          - "Agentivos negativos (Me llamó desesperadamente / desesperado)"
+          - "Pronominal demostrativo así catafórico (Pienso así: no es justo)"
+          - "Cuantificadores (muy severamente / *muy telefónicamente)"
+        de_cantidad:
+          - "Nada me importa"
+        circunstanciales_obligatorios:
+          - "Posición postverbal/final (tratar bien, salir mal)"
+          - "Cambio significado (tratar un tema / tratar bien a alguien ; salir de casa / salir mal de un trabajo)"
+      "8.3.Externos_dictum_B2":
+        frecuencia_determinada:
+          - "diariamente, anualmente (no gradación : *muy diariamente)"
+        evaluativos:
+          - "Necesidad/obligación parentética (inevitablemente, necesariamente, forzosamente)"
+          - "Emotivos parentética (afortunadamente, desgraciadamente, lamentablemente)"
+          - "Actuación sujeto parentética (inteligentemente, generosamente, correctamente)"
+        topico:
+          - "personalmente parentética (Personalmente, a mí me gustan más los gatos)"
+      "8.4.Modus_B2":
+        modalidad:
+          - "Dubitativos integrados subjuntivo (Probablemente no hubiera venido)"
+          - "Reforzadores valor verdad (sin duda, indudablemente, verdaderamente)"
+        enunciacion:
+          - "Reformuladores aclaratorios (concretamente, exactamente)"
+          - "Reformuladores recapitulativos (resumidamente, en resumen)"
+      "8.5.Conjuntivos_B2":
+        - "así matizador consecutivo (segundo constituyente, inmovilidad) — Ven a verme, así hablamos un rato"
+        - "Continuativos digresivos (precisamente, justamente, a propósito) — Precisamente estábamos hablando de eso"
+      "8.6.Focalizadores_B2":
+        particularizadores:
+          - "particularmente, especialmente"
+          - "Con adjetivos/locuciones/adverbios (totalmente de acuerdo, realmente bueno)"
+        refuerzo:
+          - "justamente, precisamente (omisión posible)"
+      "8.7.Intensificadores_B2":
+        - "Con valor cuantitativo + adjetivos (ligeramente, absolutamente)"
+      "8.8.Relativos_interrogativos_B2":
+        relativo_como:
+          - "Con subjuntivo (Lo haré como digas)"
+        relativo_donde:
+          - "Especificativas (Quedamos donde la última vez)"
+          - "Equivalencia con el que (Este es el lugar donde / en el que nos conocimos)"
+          - "Explicativas (Estudié allí, donde está la plaza)"
+        relativo_adonde:
+          - "Especificativas (Vamos adonde tú quieras)"
+
+    "9.Verbo_B2":
+      "9.1.1.Presente_B2":
+        valores:
+          - "Normativo/imperativo (Miras por aquí y pulsas este botón)"
+          - "Pasado actualizando (Le llamo para disculparme y me cuelga el teléfono)"
+      "9.1.2.Imperfecto_B2":
+        valores:
+          - "Acción interrumpida implícita (¿Qué os estaba diciendo?)"
+          - "Pensamiento interrumpido (Pensaba ir al cine [pero no voy])"
+          - "Lúdico/onírico (Jugamos a que éramos novios, Soñé que estaba en una isla desierta)"
+      "9.1.4.Futuro_B2":
+        valores:
+          - "Impreciso con ya (Ya veremos)"
+      "9.1.5.Condicional_simple_B2":
+        valores:
+          - "Probabilidad pasado (Serían las once)"
+          - "Posterioridad momento pasado (Dijo que vendría (ayer / hoy / mañana))"
+          - "Hipótesis condicionales irreales presente/futuro (Si pudiera, iría)"
+          - "Desiderativo/influencia prótasis omitida (Me comería un helado, Yo iría al médico)"
+      "9.1.8.Pluscuamperfecto_B2":
+        valores:
+          - "Pensamiento/creencia interrumpido (Había pensado ir al cine [pero no fui])"
+      "9.1.9.Futuro_perfecto_B2":
+        valores:
+          - "Anterioridad acción futura (Cuando lleguemos ya se habrá ido)"
+          - "Probabilidad pasado (Habrá tenido problemas)"
+      "9.1.10.Condicional_compuesto_B2":
+        forma:
+          - "Conjugación haber en este tiempo"
+        valores:
+          - "Probabilidad pasado anterioridad (Habrían salido de casa)"
+          - "Correlación temporal consecutio temporum (Dijo que habría venido)"
+          - "Hipótesis condicionales irreales pasado (Si hubiera podido, habría ido)"
+          - "Desiderativo/influencia anterioridad prótasis omitida (Me habría comido un helado, Yo habría ido al médico)"
+      "9.2.Subjuntivo_B2":
+        "9.2.1.Presente":
+          valores:
+            independientes:
+              - "Repetición enunciado imperativo con que + presente (Que te vayas)"
+            subordinacion:
+              - "Coordinadas presente/futuro"
+              - "Desconocimiento subordinadas adjetivas/adverbiales lugar/modo (Busco un libro que sea divertido, Voy donde me digas / Lo haré como digas)"
+              - "Alternancia modo cuestiones intencionales relativas (Quien tiene / tenga mi cartera que me la devuelva)"
+              - "Construcciones impersonales negadas certeza (No es cierto que lo sepa)"
+              - "Incompatibilidad nexo si condicionales (Si llueve no saldremos / *Si llueva)"
+              - "Verbos opinión/creencia negados (No creo que estés bien)"
+              - "Adverbiales temporales inmediatez/posterioridad (una vez que hayamos estudiado, Apenas sepa algo te lo comunico, Me quedo hasta que termines)"
+              - "Concesivas indiferencia aunque/a pesar de (Aunque me lo pidas de rodillas no lo haré, A pesar de que pueda ser una mentira)"
+              - "Adverbiales finales a que (He venido a que me solucionen el problema)"
+        "9.2.2.Imperfecto":
+          forma:
+            - "Paradigma regulares -ra y -se ; irregularidades"
+          valores:
+            independientes:
+              - "Desiderativas / irrealización pasado (Ojalá Ana tuviera suerte ayer)"
+              - "Adverbios duda quizá/tal vez excepto mejor/igual/lo mismo (Tal vez fuera ella / *A lo mejor vaya)"
+              - "Cortesía (Quisiera ver ese abrigo)"
+            subordinacion:
+              - "Posteriores momento pasado (Dijo que fuera (mañana / enseguida))"
+        "9.2.3.Pret_perfecto":
+          valores:
+            - "Correspondencia pretérito perfecto indicativo (No es verdad que haya escrito esa carta)"
+            - "Sustitución presente subjuntivo temporales (Cuando se haya marchado / se marche, avisamos)"
+        "9.2.4.Pluscuamperfecto":
+          valores:
+            - "Orientado coordenadas pasado"
+      "9.3.Imperativo_B2":
+        valores:
+          - "Urgencia con duplicación (Corre, corre que está ahí el tren)"
+          - "Lexicalizados frecuentes : ánimo/consolación (Venga, anda, no te preocupes), urgencia (Venga, corre que está ahí el tren), sorpresa (¡Anda! ¿Estás aquí? ¡Vaya! Pues no lo sabía)"
+          - "Refuerzo orden / suavizar (Sal inmediatamente / Sal, si no te importa)"
+      "9.4.Formas_no_personales_B2":
+        infinitivo:
+          forma:
+            - "Sujeto control OD (El profesor recomendó al estudiante trabajar más)"
+            - "Verbos parecer (Ella parece tener razón / Parece que ella no tiene razón)"
+            - "[Caribe] orden SVO sujeto pronominal (al yo decir, con ella volver, sin tú querer)"
+            - "Compuesto perfectivo (El profesor le regañó por no haber estudiado)"
+          valores:
+            - "Independiente fragmentario respuesta preposición (¿Te ayudo? Sí, a hacer este ejercicio)"
+            - "Independiente imperativos a (A comer)"
+            - "Subordinadas sustantivas complemento preposicional/atributo (El director me invitó a salir de la sala, Eso es bailar)"
+        gerundio:
+          valores:
+            - "Temporalidad (Me lo confesó yendo por la calle / mientras íbamos ; Estudiando siempre como hoy aprobarás ; *Abrí la puerta encontrándome con él [interdicción])"
+            - "Predicativo (Ella habló tartamudeando ; Tengo todo el cuerpo temblando / que me tiembla)"
+        participio:
+          valores:
+            - "Predicativo con complementos (Me miró sorprendido de mi respuesta, Encontré a Sara cansada por el esfuerzo)"
+            - "Pasivas acción (Las puertas serán abiertas a las 10)"
+
+    "10.SN_B2":
+      "10.1.Nucleo":
+        - "SN núcleo elíptico anáforas contexto (Este de la derecha)"
+      "10.2.Complementos":
+        adjuntos_restrictivos:
+          - "Sintagma preposicional interpretación subjetiva/objetiva/posesiva (He leído tus informes / informes de ti)"
+        no_restrictivos:
+          - "Separados comas (la chica, de ojos tristes,...)"
+        argumentales:
+          - "Adjetivos relacionales restricciones léxico-sintácticas"
+        no_argumentales:
+          - "Participios pasados pasivo (El presidente elegido)"
+          - "Sintagma preposicional restricciones posición (*bolsos para mujeres de plástico)"
+        oracionales:
+          - "Relativas especificativas/explicativas"
+          - "Oposición indicativo/subjuntivo"
+      "10.4.Concordancia_SN_verbo":
+        - "Colectivos (Vino / vinieron un grupo de estudiantes)"
+        - "Enumeraciones singular (Me da miedo la oscuridad, la noche, las arañas y serpientes)"
+        - "SSNN unidos ni/o (Vendrá / vendrán mi padre o mi madre, No vendrá / vendrán ni mi padre ni mi madre)"
+        - "Pluralidad sentido unitario singular (La entrada y salida de coches es...)"
+      "10.5.Vocativo":
+        - "Posición intermedia valor enfático (Repito, Juan, que te equivocas)"
+
+    "11.Adjetival_B2":
+      "11.2.Complementos":
+        nominales_preposicion:
+          - "Este texto es difícil de leer"
+          - "Adjetivos deverbales/participios (partidario de un cambio)"
+        oracionales_preposicion:
+          - "Infinitivo (interesado en asistir)"
+          - "Verbo flexionado selección modo (interesado en que vengas)"
+        modificadores:
+          - "Adverbios -mente con gradativos (indudablemente muy necesario)"
+
+    "12.SV_B2":
+      "12.1.Nucleo_B2":
+        auxiliares:
+          - "Pasiva resultado : sujetos definidos obligatorios (*Cartas han sido enviadas)"
+          - "Pasiva acción (Las puertas fueron abiertas a las 10)"
+          - "Modales infinitivo : deber de [dubitativas]"
+          - "Aspectuales infinitivo : ponerse a [ingresivas]"
+        copulativos:
+          ser:
+            - "Localización sucesos/acontecimientos (La cita es en el cine Callao, El concierto es en el auditorio)"
+          ser_mas_adjetivo:
+            - "Adjetivos con ser/estar : regla general (Es delgado / Está delgado)"
+            - "Cambio significado (listo, verde)"
+          parecer:
+            - "Sujeto oración infinitivo (Los niños parecen estar cansados)"
+        seudocopulativos:
+          verbos_cambio:
+            - "ponerse, quedarse, hacerse, volverse"
+      "12.2.Complementos_B2":
+        atributo:
+          - "Sustitución pronombre lo : imposibilidad seudoatributivos (Se volvió vegetariano / *Se lo volvió)"
+          - "Atributo infinitivo (Eso es bailar)"
+          - "Atributo proposición relativo antecedente implícito (Él es quien tiene la culpa)"
+          - "Pronombre lo tematizador (Lo está)"
+        OD:
+          - "Reduplicación OD definido antepuesto tópico (Los libros los tiene Juan)"
+          - "Uso intransitivo OD indefinido (No tengo dinero pero no quiero pedir, ¿Bebió alcohol? No, no bebió)"
+          - "Leísmo persona (Vimos a Luis / Le vimos ; Vimos a Luisa / *Le vimos)"
+          - "[Caribe, sur Colombia, costa Ecuador, Bolivia] A los niños se les educa"
+        OI:
+          - "OI proposición relativa antecedente implícito (Le regalé el libro al que más lo pidió)"
+          - "Verbos intransitivos rigen dativo (Le telefoneé / *Lo telefoneé)"
+        regido:
+          - "Verbos seguidos infinitivo (decidirse a ir)"
+          - "Complemento subordinada (contar con que vengas)"
+          - "Cambios significado (contar / contar con)"
+          - "Construcciones rigen preposición (darse cuenta de, no reparar en)"
+        predicativo:
+          - "Concordancia predicativo-sujeto (Ella ha llegado cansada)"
+          - "Concordancia predicativo-OD (Le he dado a Juan el trabajo terminado)"
+
+    "13.Oracion_simple_B2":
+      "13.1.Concordancia":
+        - "Predicativo (Las aguas corrían turbias, Bailé la lambada descalza)"
+        - "Concordancia SN verbo 1ª/2ª pl (Los españoles pensamos que..., Los profesores creéis que...)"
+        - "Restricciones pronombre 3ª pl (*Ellos los ingleses creen / Ellos, los ingleses, creen)"
+      "13.2.Constituyentes":
+        - "Posposición obligatoria sujeto sin determinante/cuantificador (Han llegado trenes a la estación, Se venden pisos)"
+      "13.3.Tipos":
+        actitud_hablante:
+          - "Dubitativas subjuntivo/indicativo (quizá, posiblemente) — Quizá tengas razón"
+          - "[México, Las Antillas] capaz que + subjuntivo"
+        naturaleza_predicado:
+          - "Pasivas perifrásticas (La obra será expuesta en Museo Reina Sofía, La obra estará expuesta mañana en Museo)"
+
+    "14.Coordinacion_B2":
+      copulativas:
+        - "Negativas conjunción ni (Ni lo he visto ni me ha llamado)"
+      adversativas:
+        - "sino, no obstante (No es antipático sino tímido, Acepté; no obstante, tenía dudas)"
+
+    "15.Subordinacion_B2":
+      "15.1.Sustantivas":
+        infinitivo:
+          - "Función complemento preposicional (Me niego a responder, El director me invitó a salir de la sala)"
+          - "Función atributo identificación (Eso es bailar)"
+        flexionadas:
+          funcion_sujeto:
+            - "Verbos existencia (faltar, bastar, constar) — Falta que terminemos esto / Falta terminar esto"
+            - "Atributivos (resultar, quedar) — Resulta problemático que vayas, Queda claro que no piensas hablar con él"
+          funcion_OD:
+            - "Pensamiento referencia pasado"
+            - "Dicción negadas alternancia modal (No me dijo que Luis hubiera venido / había venido)"
+            - "Percepción selección modo (Imagino que ya habrá vuelto)"
+            - "Influencia (subjuntivo, pasado) — aconsejar, sugerir, pedir..."
+            - "Desiderativos (subjuntivo, pasado) — querer, desear"
+            - "Causativos (subjuntivo) — causar, provocar, determinar"
+      "15.2.Adjetivas_B2":
+        tipos:
+          - "Especificativas/restrictivas sin antecedente expreso (El que viene es Juan / Quien viene es Juan)"
+          - "Explicativas con/sin preposición (La profesora, que es argentina, es muy buena ; Esa persona, de la que no me fío nada, lo dijo)"
+          - "Restricciones : rechazo infinitivo (*Conoceré a la chica, con la que casarme), resistencia subjuntivo (*Mis amigos, que no quieran venir, están enfadados), incompatibilidad antecedentes no específicos (*No conozco a nadie, que habla / hable así)"
+          - "Predicativas : con haber (Hay decisiones con las que no estoy de acuerdo) ; verbos percepción sensorial (La oí que venía por el pasillo)"
+        relativos:
+          - "el/la/los/las que con/sin antecedente (La chica con la que vivo es chilena, Al que le pueda interesar mañana no hay clase)"
+          - "quien/quienes con/sin antecedente (El chico de quien te hablé llega mañana)"
+        adverbios_relativos:
+          - "Con antecedente expreso (Este es el lugar donde / en el que nos conocimos, Estudié allí, donde está la plaza)"
+        antecedente:
+          - "Pronombre tónico explicativas (Yo, que no sé nada...)"
+          - "Semilibres antecedente elíptico (La [película] que vimos ayer fue mejor)"
+        modo: ["Contraste indicativo/subjuntivo"]
+        concordancia:
+          - "Adopción persona antecedente (Tú, que te crees tan listo...)"
+        coordinacion:
+          - "Especificativas sintagmas adjetivales/preposicionales (Es un hombre inteligente y que sabe mucho, Es un hombre con paciencia y que sabe escuchar)"
+      "15.3.Adverbiales_B2":
+        "15.3.1.Temporales":
+          anterioridad:
+            - "Con subjuntivo (coordenadas pasado) — Se fue antes de que llegaras"
+          posterioridad:
+            - "después (de) que + subjuntivo (pasado) — Sucedió después de que tú llegaras"
+            - "en cuanto, en el momento, tan pronto como, apenas (Apenas llegué comenzó a llover)"
+            - "una vez / una vez que : límite iniciación (Una vez que hayamos estudiado decidiremos), con participio (Una vez estudiado el problema)"
+            - "nada más + infinitivo (Nada más llegar nos pusimos a comer)"
+          simultaneidad:
+            - "cuando + subjuntivo estilo indirecto (Dijo que llamaras cuando llegaras)"
+            - "Sustitución (y) entonces (Nos conocimos cuando estalló el conflicto)"
+          delimitacion:
+            - "Varias restricciones aspectuales"
+        "15.3.5.Finales":
+          tipos:
+            - "Integradas : complementarias sustantivo/adjetivo/verbo (He comprado pastillas para adelgazar de farmacia, un libro muy útil para estudiar, Lo uso para fregar los platos, Me he levantado temprano para terminar trabajo)"
+          valores:
+            - "Objetivo utilidad (*La cuchara sirve / La cuchara sirve para comer)"
+            - "Modificador SN (pastillas para no toser)"
+            - "Objetivo consecuencia condiciones principal (Tengo ilusión para seguir)"
+          nexos:
+            - "para + infinitivo referencia disjunta (Me ha dado [él] esto para revisar [yo])"
+            - "[Caribe] pronombre antepuesto infinitivos (Ella cuidó al niño para yo ir a reunión)"
+            - "para que + presente subjuntivo (presente/futuro) — Lo he traído para que lo leas"
+            - "Contraste modo interrogativas/afirmativas (¿Para qué es esto? / Para que estés mejor)"
+          contraste:
+            - "por / para (Llevo gafas para ver mejor / por mi miopía)"
+        "15.3.6.Condicionales":
+          apodosis_imperativo:
+            - "Si puedes, ayúdame"
+          tipos:
+            - "Reales presente/futuro (Si tienes tanto dinero puedes comprarte coche, Si tienes tanto dinero podrás viajar)"
+        "15.3.8.Comparativas":
+          igualdad:
+            - "igual de... que (igual de alto que la luna, Es igual de listo que cualquiera)"
+          superioridad:
+            - "más que (He comprado más libros que revistas)"
+            - "el más / menos de (el amigo más fiel de todos)"
+          inferioridad:
+            - "menos que (He comprado menos libros que revistas)"
+          cantidad:
+            - "más... de, menos... de (límite excluida) — Cuesta más / menos de 20 euros"
+            - "no más... de, no menos... de (límite incluida) — No cuesta más / menos de 20 euros"
+        "15.3.9.Concesivas":
+          tipos:
+            - "Propias factuales (Aunque me encuentro mal voy al trabajo)"
+          nexos:
+            - "aunque factual indicativo (Aunque me encuentro mal voy al trabajo)"
+          modo:
+            - "Indicativo (información nueva) — Aunque está lloviendo pienso ir a correr"
