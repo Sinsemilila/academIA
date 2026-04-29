@@ -12,39 +12,53 @@
 l1: fr
 target: de
 transfers:
-  - family: case_acc_dat
-    multiplier: 1.6
-    description: "Allemand a 4 cas (Nom, Akk, Dat, Gen) vs FR 0 cas. Transfer systémique : 'ich sehe der Mann' (Nom) → 'den Mann' (Akk OD) ; 'ich helfe mein Freund' (Akk) → 'meinem Freund' (Dat — helfen régit dat). Prépositions wechsel (in/an/auf/…) : Akk=direction, Dat=location. Tout A1-B2 fréquent."
-  - family: article_gender_arbitrary
-    multiplier: 1.5
-    description: "Genre DE arbitraire et diverge de FR : das Mädchen (neutre, fille), die Sonne (fém, soleil masc FR), der Mond (masc, lune fém FR), das Auto. Apprenant·e transfère systématiquement le genre FR → erreurs massives déclinaison des articles/adjectifs. A1-A2 très fréquent."
-  - family: verb_final_v2
-    multiplier: 1.5
-    description: "Syntaxe DE : V2 en principale (verbe en 2e position), verbe FINAL en subordonnée. 'Ich denke, dass er ist müde' (calque FR ordre SVO) → 'Ich denke, dass er müde ist' (verbe final). Idem Perfekt : 'Ich habe gegessen' (main) / 'weil ich gegessen habe' (sub). A2-B1 fréquent."
-  - family: compound_nouns_split
-    multiplier: 1.3
-    description: "DE compose les noms en 1 mot : 'Mittagessen' (repas de midi), 'Hausaufgabe' (devoir de maison), 'Straßenbahnhaltestelle' (arrêt de tramway). FR décompose via de/du. Calque fréquent : écriture avec espaces 'Mittag essen' ou tirets 'Mittag-essen' — agrammatical. A2 fréquent."
-  - family: false_friends
-    multiplier: 1.2
-    description: "Top 35 faux amis FR→DE (catalog research §3) : Chef = patron (pas cuisinier = Koch) ; Gymnasium = lycée (pas gym = Turnhalle) ; Handy = portable téléphone ; bekommen = recevoir (pas devenir = werden) ; also = donc (pas anglais also = auch) ; sensibel = émotionnel (pas raisonnable = vernünftig) ; brav = sage/obéissant (pas brave = mutig) ; Apparat = appareil-machine (pas appareil-photo = Kamera) ; Rente = pension (pas loyer = Miete) ; eventuell = éventuellement-peut-être (pas finalement = schließlich) ; Promotion = doctorat (pas réduction commerciale = Rabatt) ; Baiser = meringue (pas baiser = Kuss) ; Direktion = direction-management (pas direction-cardinale = Richtung)."
-  - family: trennbare_verben
-    multiplier: 1.4
-    description: "Verbes séparables DE : 'aufstehen, ankommen, einkaufen, fernsehen, mitnehmen' — particule (auf-, an-, ein-, fern-, mit-) se sépare en main clause et va à la fin : 'ich stehe um 7 auf' (pas 'ich aufstehe'). En subordonnée et infinitif/Perfekt, particule reste collée : 'aufzustehen', 'aufgestanden', 'weil ich aufstehe'. A2-B1 fréquent."
-  - family: adjektivdeklination
-    multiplier: 1.3
-    description: "Adjectifs DE déclinent selon article-type (def/indef/aucun) × genre × nombre × cas : 'der gute Mann' (faible) vs 'ein guter Mann' (mixte) vs 'guter Mann' (forte). FR adjectif simplement accord G+N. Apprenant·e ne décline pas : 'mit ein gut Freund' → 'mit einem guten Freund'. B1-B2 hautement fréquent."
-  - family: genitiv_to_dativ_regression
-    multiplier: 1.0
-    description: "Allemand colloquial substitue souvent Genitiv → Dativ avec 'von' : 'das Auto meines Vaters' → 'das Auto von meinem Vater'. Tolérable oral ; écrit/formel exige Genitiv. Apprenant·e FR évite Genitiv → calque sur tournure 'de' FR. B2-C1 register."
-  - family: werden_passive_future_konjunktiv
-    multiplier: 1.2
-    description: "Verbe 'werden' DE polysémique : (1) auxiliaire futur ('ich werde kommen' = je viendrai) ; (2) auxiliaire passif ('das Buch wird gelesen' = est lu) ; (3) verbe plein 'devenir' ('ich werde müde' = je deviens) ; (4) Konjunktiv II 'würden' ('ich würde gehen' = j'irais). Apprenant·e confond les 4 emplois. B1-B2 fréquent."
-  - family: modalpartikeln
-    multiplier: 1.1
-    description: "Particules modales DE (doch, ja, mal, denn, halt, eben, wohl, schon) — pragmatic, sans équivalent FR direct : 'kommst du mal her?' (atténue impératif) ; 'das ist halt so' (résignation) ; 'er ist ja schon da' (insistance évidence). Apprenant·e omet → discours plat ; ou misuse → registre incongru. B2 fréquent."
-  - family: subordinate_dass_weil
-    multiplier: 1.4
-    description: "Conjonctions subordonnantes DE (dass, weil, wenn, obwohl, während, da) déclenchent SOV : 'ich weiß, dass er kommt heute' → 'dass er heute kommt' (verbe en finale). Calque FR 'que' SVO très tenace. B1 fréquent. Voir aussi `weil` colloquial avec V2 (toléré oral mais marqué)."
-  - family: spelling_eszett_capitalization
-    multiplier: 1.0
-    description: "Spécificités orthographiques DE : (1) ß (Eszett) après voyelle longue/diphtongue : Straße, groß, weiß, Spaß. Réforme 1996 limitée mais existe (Schweiz utilise ss partout). (2) Tous noms communs CAPITALIZED : der Mann, die Stadt, das Haus. Apprenant·e omet majuscules → erreur écrite massive. A1-A2 surface fréquent."
+- family: case_acc_dat
+  multiplier: 1.6
+  description: 'Allemand a 4 cas (Nom, Akk, Dat, Gen) vs FR 0 cas. Transfer systémique : ''ich sehe der Mann'' (Nom) → ''den Mann'' (Akk OD) ; ''ich helfe mein Freund'' (Akk) → ''meinem Freund'' (Dat —
+    helfen régit dat). Prépositions wechsel (in/an/auf/…) : Akk=direction, Dat=location. Tout A1-B2 fréquent.'
+- family: article_gender_arbitrary
+  multiplier: 1.5
+  description: 'Genre DE arbitraire et diverge de FR : das Mädchen (neutre, fille), die Sonne (fém, soleil masc FR), der Mond (masc, lune fém FR), das Auto. Apprenant·e transfère systématiquement le genre
+    FR → erreurs massives déclinaison des articles/adjectifs. A1-A2 très fréquent.'
+- family: verb_final_v2
+  multiplier: 1.5
+  description: 'Syntaxe DE : V2 en principale (verbe en 2e position), verbe FINAL en subordonnée. ''Ich denke, dass er ist müde'' (calque FR ordre SVO) → ''Ich denke, dass er müde ist'' (verbe final). Idem
+    Perfekt : ''Ich habe gegessen'' (main) / ''weil ich gegessen habe'' (sub). A2-B1 fréquent.'
+- family: trennbare_verben
+  multiplier: 1.4
+  description: 'Verbes séparables DE : ''aufstehen, ankommen, einkaufen, fernsehen, mitnehmen'' — particule (auf-, an-, ein-, fern-, mit-) se sépare en main clause et va à la fin : ''ich stehe um 7 auf''
+    (pas ''ich aufstehe''). En subordonnée et infinitif/Perfekt, particule reste collée : ''aufzustehen'', ''aufgestanden'', ''weil ich aufstehe''. A2-B1 fréquent.'
+- family: subordinate_dass_weil
+  multiplier: 1.4
+  description: 'Conjonctions subordonnantes DE (dass, weil, wenn, obwohl, während, da) déclenchent SOV : ''ich weiß, dass er kommt heute'' → ''dass er heute kommt'' (verbe en finale). Calque FR ''que''
+    SVO très tenace. B1 fréquent. Voir aussi `weil` colloquial avec V2 (toléré oral mais marqué).'
+- family: compound_nouns_split
+  multiplier: 1.3
+  description: 'DE compose les noms en 1 mot : ''Mittagessen'' (repas de midi), ''Hausaufgabe'' (devoir de maison), ''Straßenbahnhaltestelle'' (arrêt de tramway). FR décompose via de/du. Calque fréquent
+    : écriture avec espaces ''Mittag essen'' ou tirets ''Mittag-essen'' — agrammatical. A2 fréquent.'
+- family: adjektivdeklination
+  multiplier: 1.3
+  description: 'Adjectifs DE déclinent selon article-type (def/indef/aucun) × genre × nombre × cas : ''der gute Mann'' (faible) vs ''ein guter Mann'' (mixte) vs ''guter Mann'' (forte). FR adjectif simplement
+    accord G+N. Apprenant·e ne décline pas : ''mit ein gut Freund'' → ''mit einem guten Freund''. B1-B2 hautement fréquent.'
+- family: false_friends
+  multiplier: 1.2
+  description: 'Top 35 faux amis FR→DE (catalog research §3) : Chef = patron (pas cuisinier = Koch) ; Gymnasium = lycée (pas gym = Turnhalle) ; Handy = portable téléphone ; bekommen = recevoir (pas devenir
+    = werden) ; also = donc (pas anglais also = auch) ; sensibel = émotionnel (pas raisonnable = vernünftig) ; brav = sage/obéissant (pas brave = mutig) ; Apparat = appareil-machine (pas appareil-photo
+    = Kamera) ; Rente = pension (pas loyer = Miete) ; eventuell = éventuellement-peut-être (pas finalement = schließlich) ; Promotion = doctorat (pas réduction commerciale = Rabatt) ; Baiser = meringue
+    (pas baiser = Kuss) ; Direktion = direction-management (pas direction-cardinale = Richtung).'
+- family: werden_passive_future_konjunktiv
+  multiplier: 1.2
+  description: 'Verbe ''werden'' DE polysémique : (1) auxiliaire futur (''ich werde kommen'' = je viendrai) ; (2) auxiliaire passif (''das Buch wird gelesen'' = est lu) ; (3) verbe plein ''devenir'' (''ich
+    werde müde'' = je deviens) ; (4) Konjunktiv II ''würden'' (''ich würde gehen'' = j''irais). Apprenant·e confond les 4 emplois. B1-B2 fréquent.'
+- family: modalpartikeln
+  multiplier: 1.1
+  description: 'Particules modales DE (doch, ja, mal, denn, halt, eben, wohl, schon) — pragmatic, sans équivalent FR direct : ''kommst du mal her?'' (atténue impératif) ; ''das ist halt so'' (résignation)
+    ; ''er ist ja schon da'' (insistance évidence). Apprenant·e omet → discours plat ; ou misuse → registre incongru. B2 fréquent.'
+- family: genitiv_to_dativ_regression
+  multiplier: 1.0
+  description: 'Allemand colloquial substitue souvent Genitiv → Dativ avec ''von'' : ''das Auto meines Vaters'' → ''das Auto von meinem Vater''. Tolérable oral ; écrit/formel exige Genitiv. Apprenant·e
+    FR évite Genitiv → calque sur tournure ''de'' FR. B2-C1 register.'
+- family: spelling_eszett_capitalization
+  multiplier: 1.0
+  description: 'Spécificités orthographiques DE : (1) ß (Eszett) après voyelle longue/diphtongue : Straße, groß, weiß, Spaß. Réforme 1996 limitée mais existe (Schweiz utilise ss partout). (2) Tous noms
+    communs CAPITALIZED : der Mann, die Stadt, das Haus. Apprenant·e omet majuscules → erreur écrite massive. A1-A2 surface fréquent.'

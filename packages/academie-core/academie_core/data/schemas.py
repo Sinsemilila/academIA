@@ -69,8 +69,19 @@ class FewshotEntry(_Strict):
     teacher: str = Field(..., min_length=5)
 
 
+class FewshotAntiPattern(_Strict):
+    id: str = Field(..., min_length=4)
+    level: CEFRLevel
+    wrong_type: FewshotType
+    learner: str = Field(..., min_length=5)
+    wrong_teacher: str = Field(..., min_length=5)
+    why_wrong: str = Field(..., min_length=10)
+    correct_teacher: str = Field(..., min_length=5)
+
+
 class FewshotPack(_Strict):
     fewshots: list[FewshotEntry]
+    anti_patterns: list[FewshotAntiPattern] | None = None
 
     @field_validator("fewshots")
     @classmethod
