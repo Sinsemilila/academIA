@@ -1,25 +1,143 @@
 # Concept hint map — English (EN).
-# Extracted from Dify Teacher chatflow `code_turn_check` node (Sprint 5 Phase 3).
-# Consumed by backend chat_router → passed as `concept_hints_block` Dify input.
-# Each key matches a concept_key in curriculums.concept_keys JSONB.
+#
+# Consumed by `loader.py:load_concept_hints` + `build_concept_hints_block` →
+# Dify chatflow `code_turn_check` node → passed as `concept_hints_block` Dify input.
+# Each key matches a concept_key in `curriculum_en.yaml`.
+#
+# Format : concept_key → FR-oriented hint with EN example. Optimized for FR L1
+# learners (cognates exploit, faux amis flagged, contrastive notes vs FR).
+#
+# Session 53 expansion (2026-04-30) : 20 → 105 entries, full coverage A1-C2.
+# Pre-S53 file had only B1+B2 partial (20 entries / 105 concept_keys = 19% covered).
+# Source : curriculum_en.yaml concept_keys + general FR-EN linguistic knowledge.
+# Pending Phase B audit : align with Hawkins Ch 9.1 horizontal summary +
+# CEFR Companion App 1 salient features (cf. TODO.md "Phase B — P0 EN flagship audit").
 
-present_perfect_simple: "have/has + past participle (I have visited)"
-present_perfect_vs_past_simple: "quand utiliser have done vs did"
-present_perfect_continuous: "have been + -ing (I have been working)"
-past_perfect: "had + past participle (I had finished)"
-passive_voice: "be + past participle (It was built)"
-conditional_1: "if + present → will (If it rains, I will stay)"
-conditional_2: "if + past → would (If I had money, I would travel)"
-modal_deduction: "must/might/can't be (She must be tired)"
-reported_speech: "He said that... / She told me that..."
-indirect_questions: "Could you tell me where...?"
-phrasal_verbs: "verbes a particule (look up, give in, turn off)"
-gerund_vs_infinitive: "enjoy doing vs want to do"
-relative_clauses: "who/which/that/where/whose"
-connectors: "although, however, despite, whereas"
-used_to: "used to + base (I used to live there)"
-would_habitual: "would + base pour habitudes passees"
-adj_prepositions: "good at, interested in, afraid of"
-adverbs_degree: "quite, rather, fairly, extremely"
-so_such_that: "so + adj / such + noun (so tired that...)"
-both_either_neither: "both...and / either...or / neither...nor"
+# ============================================================================
+# === A1 — Survival (18 concepts) ============================================
+# ============================================================================
+present_simple_basic: "verbe de base + s à la 3e pers (he works) — utilisé pour faits/habitudes. NB: -s OBLIGATOIRE he/she/it (FR pas d'accord similaire)"
+articles_a_an_the: "a/an indéfini avant consonne/voyelle (a book, an apple) ; the défini. Generic plural sans article en EN (FR 'les enfants' = EN 'children' bare)"
+prepositions_place: "in (dans), on (sur), at (à un point précis), under, behind, between, in front of — at + lieu précis ≠ FR à"
+possessive_s: "Marie's book = le livre de Marie. Apostrophe-s pour humains/animaux ; pour objets utiliser 'of' (the door of the house)"
+can_could_basic: "can = pouvoir présent, could = pouvoir passé/conditionnel. PAS de 'to' après (I can swim, NOT I can to swim)"
+there_is_there_are: "Il y a — there is + singulier, there are + pluriel. ≠ FR il y a invariable"
+numbers_dates_times: "1st/2nd/3rd ordinaux ; July 4th OR 4th of July ; at 7 o'clock ; in 2026 ; on Monday"
+plural_nouns: "+s régulier (book/books) ; irréguliers (man/men, child/children, foot/feet) ; -y → -ies (city/cities)"
+greetings_introductions: "Hello/Hi/Good morning ; Nice to meet you ; My name is X / I'm X ; What's your name?"
+subject_pronouns: "I, you, he, she, it, we, they — TOUJOURS exprimés en EN (FR pronom sujet souvent omis ≠ EN)"
+object_pronouns: "me, you, him, her, it, us, them — après préposition ou comme COD/COI (give it to him)"
+to_be_forms: "am/is/are présent, was/were passé. Contractions I'm, he's, they're, isn't, aren't"
+to_have_got: "have/has got = posséder (UK preference). I've got a car = I have a car"
+demonstratives: "this/that singulier, these/those pluriel. this/these = proche, that/those = lointain"
+possessive_adjectives: "my, your, his, her, its, our, their — devant nom (his book). NE PAS confondre avec possessive pronouns (mine, yours, his, hers)"
+wh_questions: "What/Where/When/Why/Who/How — auxiliaire suit (Where do you live? NOT Where you live?)"
+short_answers: "Yes, I do / No, I don't ; Yes, she is / No, she isn't — répéter auxiliaire (FR oui/non sec ≠ EN)"
+prepositions_time: "at + heure (at 7) ; on + jour/date (on Monday) ; in + mois/saison/année (in July, in summer)"
+
+# ============================================================================
+# === A2 — Waystage (13 concepts) ============================================
+# ============================================================================
+past_simple_regular_irregular: "+ed régulier (worked, played) ; irréguliers (go/went, see/saw, eat/ate, take/took, give/gave) — list à mémoriser"
+going_to_future: "be + going to + base = intention/plan (I'm going to study). Pour prédiction basée sur évidence présente"
+comparatives_superlatives: "1 syllabe : -er/-est (taller, the tallest) ; 2+ syllabes : more/the most. Irréguliers : good→better/best, bad→worse/worst"
+will_would_basic: "will + base = futur (I will go) ; would + base = conditionnel/hypothétique (I would go if...)"
+present_continuous: "be + -ing = action en cours maintenant (I am working). FR 'être en train de' OU présent simple"
+countable_uncountable: "countable = a/an + plural ; uncountable = pas de plural (water, information, advice, news singular). some/any/much/many usage diffère"
+adverbs_frequency: "always, usually, often, sometimes, rarely, never — devant verbe principal MAIS après to be (I am always tired)"
+basic_connectors: "and (et), but (mais), or (ou), so (donc), because (parce que), then (puis), also (aussi)"
+modals_can_must_should: "can = pouvoir, must = devoir (obligation forte), should = devoir (conseil) — pas de 'to' après, même forme toutes personnes"
+past_continuous: "was/were + -ing = action en cours dans le passé (I was working when...) — souvent contraste avec past simple événement bref"
+relative_clauses_simple: "who = personnes (the man who works), which/that = choses (the book that I read). who/that omissibles si COD"
+prepositions_movement: "to (vers), into (dans), out of (hors de), onto (sur), through (à travers), across, along, over"
+question_tags: "..., isn't it? / ..., do you? / ..., aren't they? — auxiliaire opposé à la phrase principale. FR n'est-ce pas ?"
+
+# ============================================================================
+# === B1 — Threshold (20 concepts) ===========================================
+# ============================================================================
+present_perfect_simple: "have/has + past participle (I have visited) — action passée avec lien au présent. ≠ FR : souvent traduit passé composé MAIS usage différent"
+present_perfect_vs_past_simple: "present perfect = lien au présent (I have lived here for 5 years — j'y vis encore) ; past simple = passé révolu (I lived there in 2010)"
+conditional_1: "if + present → will + base : situation possible/probable (If it rains, I will stay home)"
+reported_speech: "He said (that) he was tired — recul d'un temps : present→past, past→past perfect, will→would. Pronouns + time markers shift (today→that day)"
+used_to: "used to + base = habitude passée arrêtée (I used to smoke) — ≠ be used to + -ing (avoir l'habitude de)"
+modal_deduction: "must/might/can't be — must = quasi-certitude positive, might = possibilité, can't = quasi-certitude négative"
+phrasal_verbs: "verbe + particule (look up, give in, turn off) — sens souvent idiomatique. NB Phase B audit : sera stratifié A2/B1/B2/C1 per Hawkins Ch 8"
+relative_clauses: "who/which/that/where/whose — defining (no comma, that OK) vs non-defining (comma, no that : My brother, who lives in Paris,...)"
+gerund_vs_infinitive: "enjoy/avoid/finish/mind/suggest + -ing ; want/decide/hope/plan + to + base ; like/start/begin = both possible. Lists à apprendre"
+adj_prepositions: "good at, interested in, afraid of, proud of, worried about — prépositions changent FR ≠ EN (capable de = capable of)"
+connectors: "although/though = bien que ; however = cependant ; despite/in spite of + nom/-ing ; whereas = tandis que"
+present_perfect_continuous: "have/has been + -ing — durée d'action récente continue (I've been working for 3 hours) ; emphasis sur durée vs perfect simple emphasis sur résultat"
+past_perfect: "had + past participle = avant-passé (I had finished when she arrived) — séquence d'événements passés"
+both_either_neither: "both...and = les deux (both English and French) ; either...or = soit...soit ; neither...nor = ni...ni (verbe au singulier après neither/either)"
+adverbs_degree: "quite (assez), rather (plutôt), fairly (assez), pretty (assez familier), extremely, absolutely — placement avant adj/adv"
+indirect_questions: "Could you tell me where he lives? — ordre sujet-verbe normal (PAS d'inversion), pas de do/does/did. Différent du direct: Where does he live?"
+so_such_that: "so + adj/adv (so tired that...) ; such + (a/an) + adj + nom (such a long book that...) — exprimer conséquence/intensité"
+would_habitual: "would + base = habitude passée (When I was a child, we would go fishing) — ≠ used to (would seulement pour ACTIONS, used to OK pour states)"
+passive_voice_basic: "be + past participle (It was built in 1900). Sujet = receveur de l'action. by + agent optionnel (by Romans)"
+imperative: "Base verbale sans sujet : Go! Stop! Don't move! Negative don't + base. Polite : please add. Pas de 'you' devant"
+
+# ============================================================================
+# === B2 — Vantage (19 concepts) =============================================
+# ============================================================================
+conditional_2: "if + past simple → would + base : situation hypothétique présent/futur (If I had money, I would travel) — irréel maintenant. NB: were préféré à was avec I/he/she/it formal (If I were you...)"
+subjunctive_wish_ifonly: "I wish + past simple = regret présent (I wish I knew) ; If only + past simple = regret intense. Pour passé : wish + past perfect"
+conditional_3: "if + past perfect → would have + past participle : hypothèse irréalisée passée (If I had known, I would have helped)"
+reported_speech_full: "He said that he had been working — full backshift, modals (will→would, can→could, must→had to), pronouns + time/place markers shift"
+passive_voice_advanced: "modal passives (must be done, can be seen, should have been told) ; passives en perfect (has been built) ; passives + by-agent ou impersonnel"
+connectors_sophisticated: "nevertheless, nonetheless, hence, therefore, consequently, thus, moreover, furthermore, on the contrary, in contrast — registre élevé écrit/formel"
+articles_advanced: "zero article avec generic plural (Children love sweets) ; the avec superlatives, oceans, families ; cas ambigus (go to school = être étudiant ; go to the school = aller au bâtiment)"
+causative_structures: "have/get sth done — I had my car repaired (faire faire) ; make sb do = forcer ; let sb do = permettre ; help sb (to) do"
+cleft_sentences: "It was John who broke it / What I need is rest / All I want is peace — focalisation/emphasis sur partie de phrase"
+compound_adjectives: "two-word ou hyphenated avant nom : a well-known author, a five-year-old child (singular 'year' avec hyphens), a hard-working student"
+inversion_negative: "Never have I seen... / Rarely does she speak... / Hardly had I arrived... — registre formel/écrit, après adverbes négatifs en tête"
+modal_deduction_past: "must have + past participle (déduction passée certaine — She must have left) ; might/could have + pp (possibilité) ; can't have + pp (déduction négative)"
+modal_reproach_regret: "should have + past participle = aurait dû (I should have called) ; ought to have + pp = même sens registre soutenu ; could/would have"
+parallel_structures: "structures syntaxiques équilibrées dans coordination/comparaison : not only A but also B ; either A or B — A et B grammaticalement parallèles"
+participle_clauses: "Walking down the street, I saw... = -ing initial = simultanéité ; Having finished, she left = perfect participle = antériorité ; Built in 1850, the church..."
+prefixes_suffixes: "un-/in-/im-/ir-/dis-/non- = négatifs ; -tion/-ment/-ity = nominalisations ; -ful/-less = adjectifs (careful/careless) ; -ize/-ify = verbalisations"
+reduced_relative_clauses: "The man (who is) standing there → the man standing there. The book (which was) written by Joyce → the book written by Joyce"
+wish_past_perfect: "I wish I had studied = regret passé (j'aurais dû étudier). Comparable au conditional 3 mais centré sur regret personnel"
+wish_would: "I wish you would stop talking = irritation envers qqn d'autre (action contrôlable par interlocuteur, pas par sujet). Différent de wish + past simple"
+
+# ============================================================================
+# === C1 — Effective Operational Proficiency (20 concepts) ===================
+# ============================================================================
+inversion_negative_adverbial: "Not only did he..., Under no circumstances will I..., Seldom has it been..., Little did I know... — adverbes négatifs/restrictifs initiaux + inversion auxiliaire-sujet"
+advanced_collocations: "make a decision (PAS take), do business (PAS make), heavy traffic (PAS strong), strong coffee (PAS heavy), pay attention (PAS make) — collocations non-déductibles à mémoriser"
+idioms_transparent: "raining cats and dogs, piece of cake, break the ice, a stone's throw — sens figuré devinable par contexte ou métaphore commune"
+register_formal_informal: "purchase vs buy, request vs ask, regarding vs about, prior to vs before — choix lexical selon contexte (academic, business, casual)"
+causative_have: "I had my hair cut yesterday (faire couper). I had a friend help me. Différent de passive : focalise causalité/agent"
+emphatic_do: "I do believe you (j'y crois vraiment). She did say that (elle a bel et bien dit). Auxiliary do/does/did + base = renforcement"
+absolute_constructions: "Weather permitting, we'll leave. The lecture (being) over, we left — structures absolues, sujet propre détaché de la principale, registre formel"
+aspect_mastery: "subtilités progressive vs perfect : has been working (durée + lien) vs has worked (résultat) vs is working (maintenant) — choix précis selon nuance"
+cohesion_deixis: "this/that/it pronoms reprennent contenu antérieur (anaphore) ; here/there/now lieux/temps relatifs au discours. Maintenir cohésion long discours"
+conditionals_implicit: "But for your help, I would have failed = If you hadn't helped... ; Should you need anything... = If you need... ; Were she here... — conditionnels sans 'if'"
+ellipsis_substitution: "She likes coffee and I do too / I like apples but he doesn't / I'll do it tomorrow if I can — omission éléments répétés via auxiliaires/so/either/neither"
+gerund_subjects_complex: "His having said that surprised me / What worries me is John's never calling — gérondif avec sujet propre comme sujet de phrase, registre soutenu"
+gradation_stylistic: "extremely, exceedingly, remarkably, exceptionally, surprisingly — gradations stylistiques au-delà de very. Choix selon registre + nuance"
+hedging_academic: "It seems that, It would appear that, arguably, presumably, to some extent, by and large — atténuation pour modestie scientifique/diplomatie"
+inversion_stylistic: "On the table lay a book / In the corner stood a lamp — inversion littéraire avec adverbiaux de lieu, registre narratif/poétique"
+modals_stylistic: "may I suggest, might I propose, would you be so kind as to — modaux ultra-polis/formels ; shall + 1ère pers + question (Shall we...?)"
+nominalization: "She decided → her decision ; the team failed → the team's failure — transformation verbe/adj → nom, dense academic style"
+reported_speech_nuanced: "He confessed/admitted/conceded/maintained/insisted/asserted that... — verbes de report colorés au-delà de say/tell pour nuancer attitude du locuteur"
+subjunctive_formal: "I suggest (that) he go (PAS goes) — base verbale sans -s, registre formel/américain after suggest/insist/recommend/demand. Be it ever so humble..."
+topicalization: "That book, I haven't read / As for John, he's away / What he said, nobody believed — déplacement constituant en tête pour focalisation/contraste"
+
+# ============================================================================
+# === C2 — Mastery (15 concepts) =============================================
+# ============================================================================
+idioms_opaque: "spill the beans, kick the bucket, bite the bullet, the elephant in the room, by hook or by crook — sens non-déductible, à apprendre comme bloc"
+literary_inversion: "Down came the rain / Out flew the bird / Little did she suspect — inversion poétique/narrative, archaïque/marquée stylistiquement"
+pragmatic_nuance: "implicatures conversationnelles (Grice maxims), insinuations, sous-entendus, ironie subtile — comprendre ce qui est dit ET non-dit en contexte culturel"
+cultural_references: "It's like waiting for Godot / quoting Shakespeare / Kafkaesque — allusions littéraires/culturelles partagées sans explication"
+discourse_markers_c2: "as it were, so to speak, in any event, that being said, on the same note, at the risk of sounding... — marqueurs précis registre soutenu"
+code_switching_register: "passer fluide formel↔informel selon interlocuteur (collègue/PDG/ami), mélange registres pour effet stylistique conscient"
+complex_coordination: "phrases longues avec multiple clauses subordonnées + coordonnées maintenant cohérence + clarté — registre académique/littéraire"
+creative_punctuation: "tiret long pour aparté — virgule oxford pour clarté, point-virgule pour relier idées proches, deux-points pour annoncer/expliquer — choix stylistique conscient"
+free_indirect_discourse: "He looked out. Was it really happening? — fusion narrateur/personnage sans guillemets, registre littéraire (Woolf, Joyce)"
+literary_forms: "archaïsmes (whence, whither, betwixt, ere), poétique (o'er, e'er, 'tis), patois — usage stylistique conscient"
+meta_grammatical_awareness: "discuter EN propre fonctionnement (the use of subjunctive in formal English, register variation in vocabulary choice) — méta-réflexion linguistique"
+pragmatics_implicature: "Can you pass the salt? = requête (PAS question d'aptitude). It's cold here = peut-être requête fermer fenêtre. Inférer intention au-delà sens littéral"
+rhetorical_manipulation: "anaphora, chiasmus, hyperbole, understatement, rhetorical questions — figures rhétoriques pour effet persuasif/littéraire"
+stylistic_norm_breaking: "rupture intentionnelle de règles (sentence fragments, run-ons, archaic forms, slang in formal) pour effet — maîtrise = savoir QUAND violer"
+tense_aspect_flexibility: "historic present narration (Yesterday, I'm walking down the street, when...) ; backshift optional (He said he is/was tired both possible si toujours vrai)"
