@@ -40,16 +40,26 @@ properties:
       properties:
         id:
           enum:
-            - explicit_correction
-            - metalinguistic_feedback
-            - elicitation
-            - clarification_request
-            - repetition
+            # 11 values total : Lyster (2007) canonical 10 moves + silent (no-CF policy)
+            # Naming convention : metalinguistic (short, matches codebase fewshots+rubrics)
+            # BIPED step 1 + judge use 10-value subset (drop explicit_recast — data starvation,
+            # handled via step 2 metadata). Schema preserves explicit_recast for Lyster fidelity.
+            - silent                  # no CF (deliberate pedagogical choice, is_cf: false)
             - implicit_recast
             - explicit_recast
-            - prompt_plus_remediation
             - full_recast
             - partial_recast
+            - clarification_request
+            - repetition
+            - metalinguistic          # renamed from metalinguistic_feedback (codebase alignment)
+            - elicitation
+            - prompt_plus_remediation
+            - explicit_correction
+
+        is_cf:
+          type: boolean
+          description: "True for actual CF moves; false for silent (no-CF policy decision)"
+          default: true
 
         definition:
           type: string
