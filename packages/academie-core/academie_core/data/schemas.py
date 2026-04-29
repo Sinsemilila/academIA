@@ -256,3 +256,54 @@ class L1NamesPack(_Strict):
             if not name or len(name) < 3:
                 raise ValueError(f"empty/short name for {code}: {name!r}")
         return v
+
+
+# ── Functions pack (Phase D1 — Session 53) ───────────────────────────
+# CEFR Companion 2020 Ch 3 production/interaction + PCIC Funciones inventario.
+# NEW dimension : "What can the learner DO with language" (vs grammar-only curriculum).
+
+class FunctionEntry(_Lax):
+    """Single communicative function with exponents.
+
+    `pcic_ref` field tracks PCIC section (e.g., "1.1 Identificar").
+    `exponents` are sample forms used to perform the function (e.g., "Yo soy...").
+    """
+    id: str = Field(..., min_length=4)
+    category: str = Field(..., min_length=3)
+    function: str = Field(..., min_length=5)
+    exponents: list[str] = Field(..., min_length=1)
+    pcic_ref: str | None = None
+    cefr_companion_ref: str | None = None
+    notes: str | None = None
+
+
+class FunctionsPack(_Lax):
+    """data/functions/{lang}.yaml — communicative functions per CEFR level.
+
+    Phase D1 (Session 53) initial scope : A1+A2 only for ES (PCIC) ; A1+A2 stub for EN
+    (cross-ref Hawkins illustrative_language_functions Table 9.1 + CEFR Companion Ch 3).
+    Phase D2 future : extend B1+B2+C1+C2 + Mediation dimension.
+    """
+
+    @classmethod
+    def validate_mapping(cls, raw: dict) -> None:
+        if "domain" not in raw:
+            raise ValueError("missing 'domain' root key in functions pack")
+        valid_levels = {"A1", "A2", "B1", "B2", "C1", "C2"}
+        for key in raw:
+            if key == "domain" or key.startswith("_"):
+                continue
+            if key not in valid_levels:
+                raise ValueError(f"unknown level key: {key!r}")
+            level_block = raw[key]
+            if not isinstance(level_block, dict):
+                raise ValueError(f"{key} must be a dict")
+            functions_list = level_block.get("functions", [])
+            if not isinstance(functions_list, list):
+                raise ValueError(f"{key}.functions must be a list")
+            ids = []
+            for f in functions_list:
+                FunctionEntry.model_validate(f)
+                ids.append(f["id"])
+            if len(ids) != len(set(ids)):
+                raise ValueError(f"{key} duplicate function ids: {ids}")
