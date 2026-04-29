@@ -52,6 +52,10 @@ LITELLM_URL = os.environ.get(
 )
 CLASSIFIER_MODEL = os.environ.get("CF_CLASSIFIER_MODEL", "gemini-3-1-flash-lite")
 CONFIDENCE_THRESHOLD = float(os.environ.get("CF_CLASSIFIER_CONFIDENCE_THRESHOLD", "0.7"))
+# Default timeout 15s — compromise between user UX (chat_router blocks N s) and
+# Groq burst variance (gemini-flash-lite occasionally takes 10-15s under 429 retry).
+# Override via env CF_CLASSIFIER_TIMEOUT_S (e.g. 30 for harness/oracle measurement).
+DEFAULT_TIMEOUT_S = float(os.environ.get("CF_CLASSIFIER_TIMEOUT_S", "15.0"))
 
 
 # ── Prompt assembly ─────────────────────────────────────────────────────
@@ -153,7 +157,7 @@ async def classify_cf(
     level: str,
     turn_count: int = 0,
     lang: str = "en",
-    timeout_s: float = 10.0,
+    timeout_s: float | None = None,
 ) -> dict[str, Any]:
     """Classify recommended CF move for upcoming Teacher response.
 
@@ -167,6 +171,8 @@ async def classify_cf(
     On LLM failure (timeout, parse error, invalid enum, low confidence), falls
     back to rule-based TIER_TO_FEEDBACK_BY_LEVEL (defensive — never breaks chain).
     """
+    if timeout_s is None:
+        timeout_s = DEFAULT_TIMEOUT_S
     sys_prompt = _build_classifier_prompt(level, lang)
     errors_summary = json.dumps(
         [
