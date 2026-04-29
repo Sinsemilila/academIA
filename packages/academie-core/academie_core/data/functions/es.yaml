@@ -1,0 +1,390 @@
+# Functions inventario — Spanish (ES). Communicative functions per CEFR level.
+#
+# Source : Plan Curricular Instituto Cervantes (PCIC) inventario "5. Funciones" Vol A (A1+A2).
+# URL : https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/05_funciones_inventario_a1-a2.htm
+# Extracted Session 53 Phase D1 (2026-04-30) via WebFetch.
+# Schema : `data/schemas.py:FunctionsPack`.
+# Loader : `data/loader.py:load_functions("es")`.
+#
+# Phase D1 scope : A1+A2 only. Phase D2 future : B1+B2 (PCIC Vol B) + C1+C2 (Vol C pending Sinse acquisition).
+
+domain: es
+
+A1:
+  level_label: "Acceso"
+  functions:
+    # === 1. Dar y pedir información ===
+    - id: a1.f.1.1.identificar
+      category: "Dar y pedir información"
+      function: "Identificar (personas, objetos, lugares)"
+      exponents:
+        - "Yo soy + nombre/profesión"
+        - "Mi + sustantivo (Mi teléfono es...)"
+        - "Esto es... (señalando)"
+        - "Este/Ese/Aquel + sustantivo es + SN"
+      pcic_ref: "1.1"
+
+    - id: a1.f.1.2.pedir_informacion
+      category: "Dar y pedir información"
+      function: "Pedir información personal/situacional"
+      exponents:
+        - "¿Quién es? ¿Cómo te llamas?"
+        - "¿Dónde vives? ¿De dónde eres? ¿Qué haces?"
+        - "¿Cuántos años tienes? ¿Qué hora es? ¿Por qué...?"
+      pcic_ref: "1.2"
+
+    - id: a1.f.1.3.dar_informacion
+      category: "Dar y pedir información"
+      function: "Dar información"
+      exponents:
+        - "Enunciado declarativo (Vivo en Madrid, Soy estudiante)"
+        - "Adverbios lugar/tiempo (Aquí, En la mesa, Hoy)"
+        - "Para + infinitivo (Voy para aprender español)"
+        - "Porque... (Porque quiero trabajar en Chile)"
+      pcic_ref: "1.3"
+
+    - id: a1.f.1.4.pedir_confirmacion
+      category: "Dar y pedir información"
+      function: "Pedir confirmación"
+      exponents:
+        - "..., ¿no? (Eres Julián, ¿no?)"
+        - "..., ¿verdad? (Ya has visto..., ¿verdad?)"
+      pcic_ref: "1.4"
+
+    - id: a1.f.1.5.confirmar
+      category: "Dar y pedir información"
+      function: "Confirmar información previa"
+      exponents:
+        - "Sí + enunciado afirmativo"
+        - "No + enunciado negativo"
+      pcic_ref: "1.5"
+
+    # === 2. Opiniones, actitudes, conocimiento ===
+    - id: a1.f.2.2.dar_opinion
+      category: "Opiniones y actitudes"
+      function: "Dar opinión"
+      exponents:
+        - "Yo creo que... (Santiago es muy bonita)"
+        - "Para mí... (Escuchar canciones es útil)"
+      pcic_ref: "2.2"
+
+    - id: a1.f.2.4.valorar
+      category: "Opiniones y actitudes"
+      function: "Valorar"
+      exponents:
+        - "Muy/Bastante bien/mal, Regular, Así así"
+        - "Es (muy/bastante) + adjetivo"
+        - "¡Qué + adjetivo! (¡Qué barato!)"
+      pcic_ref: "2.4"
+
+    - id: a1.f.2.9.acuerdo
+      category: "Opiniones y actitudes"
+      function: "Expresar acuerdo"
+      exponents:
+        - "Sí, muy bonito / No, no es difícil"
+        - "Yo, también/tampoco"
+        - "Sí, es verdad / Sí, estoy de acuerdo"
+      pcic_ref: "2.9"
+
+    - id: a1.f.2.20.conocimiento
+      category: "Opiniones y actitudes"
+      function: "Expresar conocimiento/desconocimiento"
+      exponents:
+        - "Sé + SN/infinitivo / Conozco + SN"
+        - "No sé / No conozco"
+        - "¿Sabes + SN/infinitivo? ¿Conoces...?"
+      pcic_ref: "2.19-2.21"
+
+    # === 3. Gustos, deseos, sentimientos ===
+    - id: a1.f.3.2.gustos
+      category: "Gustos y deseos"
+      function: "Expresar gustos/intereses"
+      exponents:
+        - "(No) me gusta (mucho) + SN/infinitivo"
+        - "Me encantan..., Me interesa..."
+        - "¿Te gusta/interesa + SN/infinitivo?"
+      pcic_ref: "3.1-3.2"
+
+    - id: a1.f.3.5.preferencias
+      category: "Gustos y deseos"
+      function: "Expresar preferencias"
+      exponents:
+        - "Prefiero... / Me gusta más... + SN que SN"
+        - "¿SN o SN? ¿Qué prefieres?"
+      pcic_ref: "3.4-3.5"
+
+    - id: a1.f.3.8.deseos
+      category: "Gustos y deseos"
+      function: "Expresar deseos"
+      exponents:
+        - "Quiero + SN/infinitivo"
+        - "Me gustaría... (cortesía)"
+      pcic_ref: "3.7-3.8"
+
+    - id: a1.f.3.12.emociones
+      category: "Sentimientos"
+      function: "Expresar emociones / estado físico"
+      exponents:
+        - "Estoy contento/triste/enfadado/preocupado/nervioso"
+        - "Tengo miedo / Tengo sed/hambre/frío"
+        - "Me duele + SN (cabeza, pies)"
+      pcic_ref: "3.12-3.19"
+
+    # === 4. Influir en el interlocutor ===
+    - id: a1.f.4.1.orden
+      category: "Influir interlocutor"
+      function: "Dar orden o instrucción"
+      exponents:
+        - "¡Silencio, por favor! / ¿Puedes repetir?"
+        - "Tienes que + infinitivo / Imperativo"
+        - "Hay que + infinitivo"
+      pcic_ref: "4.1"
+
+    - id: a1.f.4.2.favor
+      category: "Influir interlocutor"
+      function: "Pedir favor / objeto / ayuda"
+      exponents:
+        - "¿Puedo pedirte un favor?"
+        - "Un café, por favor / ¿Puedes darme...?"
+        - "¿Me ayudas? / ¿Puedes ayudarme?"
+      pcic_ref: "4.2-4.4"
+
+    - id: a1.f.4.8.permiso
+      category: "Influir interlocutor"
+      function: "Pedir/dar/denegar permiso"
+      exponents:
+        - "¿Se puede? / ¿Puedo + infinitivo?"
+        - "Sí, claro / Sí, sí, ábrela"
+        - "No / No, lo siento / No, está prohibido"
+      pcic_ref: "4.8-4.10"
+
+    - id: a1.f.4.13.proponer
+      category: "Influir interlocutor"
+      function: "Proponer / sugerir / invitar"
+      exponents:
+        - "¿Vamos a + infinitivo?"
+        - "¿Por qué no...? ¿Qué tal si...?"
+        - "¿Quieres un/una...? Te invito a..."
+      pcic_ref: "4.13-4.14"
+
+    - id: a1.f.4.16.aceptar_rechazar
+      category: "Influir interlocutor"
+      function: "Aceptar / rechazar propuesta"
+      exponents:
+        - "Sí, gracias / Vale / De acuerdo / Encantado"
+        - "No, gracias / No, lo siento"
+      pcic_ref: "4.16-4.17"
+
+    - id: a1.f.4.18.aconsejar
+      category: "Influir interlocutor"
+      function: "Aconsejar / advertir"
+      exponents:
+        - "Puedes + infinitivo / Tienes que + infinitivo"
+        - "¿Por qué no...? / Es necesario..."
+        - "¡Cuidado! / Ten cuidado"
+      pcic_ref: "4.18-4.19"
+
+    # === 5. Relacionarse socialmente ===
+    - id: a1.f.5.1.saludar
+      category: "Relacionarse socialmente"
+      function: "Saludar y responder al saludo"
+      exponents:
+        - "Hola / Buenos días/tardes/noches"
+        - "Hola, ¿qué tal? / Hola, ¿cómo estás?"
+        - "Muy bien, gracias, ¿y tú?"
+      pcic_ref: "5.1-5.2"
+
+    - id: a1.f.5.4.presentar
+      category: "Relacionarse socialmente"
+      function: "Presentar a alguien / responder presentación"
+      exponents:
+        - "Este es + nombre / Te presento a..."
+        - "Soy + nombre + profesión"
+        - "Encantado / Hola / Mucho gusto"
+      pcic_ref: "5.4-5.5"
+
+    - id: a1.f.5.10.disculparse
+      category: "Relacionarse socialmente"
+      function: "Disculparse"
+      exponents:
+        - "Perdón / Lo siento mucho"
+        - "Siento + infinitivo"
+      pcic_ref: "5.10"
+
+    - id: a1.f.5.12.agradecer
+      category: "Relacionarse socialmente"
+      function: "Agradecer"
+      exponents:
+        - "Muchas gracias / Gracias"
+        - "De nada (responder)"
+      pcic_ref: "5.12-5.13"
+
+    - id: a1.f.5.16.felicitar
+      category: "Relacionarse socialmente"
+      function: "Felicitar / desear suerte"
+      exponents:
+        - "¡Felicidades! / Enhorabuena"
+        - "Suerte / Buen viaje / ¡Que aproveche!"
+      pcic_ref: "5.16-5.17"
+
+    - id: a1.f.5.21.despedirse
+      category: "Relacionarse socialmente"
+      function: "Despedirse"
+      exponents:
+        - "¡Adiós! / Hasta mañana / ¡Chao!"
+        - "Hasta luego / Un abrazo"
+      pcic_ref: "5.21"
+
+    # === 6. Estructurar el discurso ===
+    - id: a1.f.6.1.establecer_contacto
+      category: "Estructurar discurso"
+      function: "Establecer comunicación / Reaccionar"
+      exponents:
+        - "¡Eh! / Por favor / Nombre / Contacto visual"
+        - "Perdón / Oiga / ¿María?"
+        - "Hola / ¿Sí? / ¿Dígame?"
+      pcic_ref: "6.1"
+
+A2:
+  level_label: "Plataforma"
+  functions:
+    # A2 inherits A1 + adds nuance/extension. Below : A2-specific additions.
+    - id: a2.f.2.13.certeza
+      category: "Opiniones y actitudes"
+      function: "Expresar certeza / falta de certeza"
+      exponents:
+        - "Estoy seguro de que... / Sé que..."
+        - "Creo que... / No estoy seguro"
+      pcic_ref: "2.13-2.14"
+
+    - id: a2.f.2.16.posibilidad
+      category: "Opiniones y actitudes"
+      function: "Expresar posibilidad"
+      exponents:
+        - "Es posible (que + subjuntivo)"
+        - "Quizá(s), Puede ser, Tal vez"
+      pcic_ref: "2.16"
+
+    - id: a2.f.2.17.obligacion
+      category: "Opiniones y actitudes"
+      function: "Expresar obligación / necesidad"
+      exponents:
+        - "Tienes que + infinitivo (obligación personal)"
+        - "Hay que + infinitivo (obligación impersonal)"
+        - "Debes + infinitivo (registro más soutenu)"
+      pcic_ref: "2.17"
+
+    - id: a2.f.2.22.habilidad
+      category: "Opiniones y actitudes"
+      function: "Preguntar / expresar habilidad"
+      exponents:
+        - "¿Sabes + SN/infinitivo?"
+        - "Sé... / Puedo + infinitivo"
+        - "Soy capaz de + infinitivo"
+      pcic_ref: "2.22-2.23"
+
+    - id: a2.f.2.25.recordar_olvidar
+      category: "Opiniones y actitudes"
+      function: "Recordar / olvidar"
+      exponents:
+        - "Me acuerdo (bien) de + SN"
+        - "No me acuerdo / Se me olvidó"
+      pcic_ref: "2.25-2.26"
+
+    - id: a2.f.3.3.aversion
+      category: "Gustos y deseos"
+      function: "Expresar aversión / disgusto"
+      exponents:
+        - "Odio + SN/infinitivo"
+        - "No (me) soporto..."
+        - "Me molesta + SN/infinitivo"
+      pcic_ref: "3.3"
+
+    - id: a2.f.3.9.planes
+      category: "Gustos y deseos"
+      function: "Expresar planes e intenciones"
+      exponents:
+        - "Voy a + infinitivo (futur proche)"
+        - "Pienso + infinitivo"
+        - "¿Trabajas mañana?"
+      pcic_ref: "3.9-3.10"
+
+    - id: a2.f.3.11.estado_animo
+      category: "Sentimientos"
+      function: "Preguntar/expresar estado de ánimo"
+      exponents:
+        - "¿Qué tal estás? ¿Cómo estás?"
+        - "Estoy bien/mal/regular/así así"
+      pcic_ref: "3.11"
+
+    - id: a2.f.3.27.sorpresa_admiracion
+      category: "Sentimientos"
+      function: "Expresar sorpresa, admiración, afecto"
+      exponents:
+        - "¡Increíble! ¡Qué bonito!"
+        - "Te quiero / Te aprecio"
+      pcic_ref: "3.27-3.29"
+
+    - id: a2.f.4.7.responder_orden
+      category: "Influir interlocutor"
+      function: "Responder a orden / petición"
+      exponents:
+        - "Sí, sí / Sí, claro / Vale"
+        - "No (puedo / no me apetece)"
+      pcic_ref: "4.7"
+
+    - id: a2.f.4.23.ofrecerse
+      category: "Influir interlocutor"
+      function: "Ofrecerse para hacer algo"
+      exponents:
+        - "¿Te ayudo? / ¿Puedo ayudarte?"
+        - "¿Necesitas ayuda?"
+      pcic_ref: "4.23"
+
+    - id: a2.f.5.3.dirigirse
+      category: "Relacionarse socialmente"
+      function: "Dirigirse a alguien (interpelación)"
+      exponents:
+        - "Hola + nombre"
+        - "Señor/Señora + apellido"
+        - "Por favor / Perdón / Oiga"
+      pcic_ref: "5.3"
+
+    - id: a2.f.5.8.bienvenida_pesame
+      category: "Relacionarse socialmente"
+      function: "Dar bienvenida / dar pésame"
+      exponents:
+        - "Bienvenido / Muchas gracias"
+        - "Lo siento (pésame)"
+        - "¡Salud! (brindis)"
+      pcic_ref: "5.8-5.15"
+
+    - id: a2.f.6.3.contacto_telefono
+      category: "Estructurar discurso"
+      function: "Preguntar por persona (teléfono / oficina)"
+      exponents:
+        - "¿El Sr. González, por favor?"
+        - "¿Está Juan Carlos, por favor?"
+        - "Sí, soy yo / ¿De parte de quién?"
+      pcic_ref: "6.3"
+
+    - id: a2.f.6.7.relato
+      category: "Estructurar discurso"
+      function: "Solicitar / reaccionar a relato"
+      exponents:
+        - "¿Qué tal + SN? / Cuéntame..."
+        - "Sí, claro / ¿Sí? / Lo siento, tengo prisa"
+      pcic_ref: "6.7-6.8"
+
+    - id: a2.f.6.21.interrumpir
+      category: "Estructurar discurso"
+      function: "Interrumpir / pedir silencio"
+      exponents:
+        - "Perdón..."
+        - "Shhhh / Silencio, por favor"
+      pcic_ref: "6.21-6.23"
+
+# B1+B2 Phase D2 future :
+# - Extend functions per PCIC Vol B Funciones inventario
+# - Add Mediation dimension (CEFR Companion 2020 NEW)
+# C1+C2 Phase D3 : pending PCIC Vol C acquisition (Sinse manual cvc.cervantes.es)

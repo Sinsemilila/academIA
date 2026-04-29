@@ -1,0 +1,117 @@
+# Functions inventario — English (EN). Communicative functions per CEFR level.
+#
+# Sources : CEFR Companion 2020 Ch 3 (production + interaction scales) +
+#   Hawkins/Filipović 2012 Table 9.1 illustrative_language_functions (Threshold 1990:39)
+#   already extracted at `data/extracted/hawkins-filipovic-2012-criterial-features-l2-english/criterial-features-by-level.yaml`
+#
+# Phase D1 scope (Session 53) : A1+A2 stub only — minimal scaffold.
+# Phase D2 future : full A1-C2 expansion using Threshold 1990 + Vantage 1990 + EVP/EGP.
+# Schema : `data/schemas.py:FunctionsPack`. Loader : `data/loader.py:load_functions("en")`.
+
+domain: en
+
+A1:
+  level_label: "Breakthrough"
+  functions:
+    - id: a1.f.1.identifying
+      category: "Giving and asking for information"
+      function: "Identify yourself / others / objects"
+      exponents:
+        - "I am + name/profession (I am John, I'm a teacher)"
+        - "My + noun (My phone is..., My name is...)"
+        - "This/That is + NP (This is my friend, That's a book)"
+      cefr_companion_ref: "Ch 3 Production - identifying"
+
+    - id: a1.f.2.asking_info
+      category: "Giving and asking for information"
+      function: "Ask for personal/situational information"
+      exponents:
+        - "WH-questions : Who, What, Where, When, Why, How"
+        - "Yes/no questions with do/does/are/is"
+        - "How old are you? What time is it?"
+      cefr_companion_ref: "Ch 3 Interaction - asking"
+
+    - id: a1.f.3.greeting
+      category: "Social interaction"
+      function: "Greet and respond to greeting"
+      exponents:
+        - "Hello / Hi / Good morning/afternoon/evening"
+        - "How are you? — Fine, thanks. And you?"
+        - "Nice to meet you / Pleased to meet you"
+      cefr_companion_ref: "Ch 3 Interaction - sociolinguistic appropriateness"
+
+    - id: a1.f.4.introducing
+      category: "Social interaction"
+      function: "Introduce yourself / others"
+      exponents:
+        - "I'm + name (I'm Sarah)"
+        - "This is + name (This is my colleague)"
+        - "Let me introduce..."
+      cefr_companion_ref: "Ch 3 Interaction"
+
+    - id: a1.f.5.thanking_apologizing
+      category: "Social interaction"
+      function: "Thank / apologize"
+      exponents:
+        - "Thank you / Thanks (a lot)"
+        - "You're welcome / Don't mention it"
+        - "Sorry / Excuse me / I apologize"
+      cefr_companion_ref: "Ch 3 Interaction"
+
+A2:
+  level_label: "Waystage"
+  functions:
+    # A2 inherits A1 + adds nuance
+    - id: a2.f.1.requesting
+      category: "Influencing the interlocutor"
+      function: "Request something / ask for help"
+      hawkins_ref: "Hawkins Table 9.1 — Requesting someone to do something"
+      exponents:
+        - "Please + VP imperative (Please sit down)"
+        - "VP imperative + please (Stop talking please)"
+        - "Could you + VPinf? (Could you please close the door?)"
+        - "Would you mind + VP gerund? (Would you mind opening the window?)"
+        - "Can I have + NP + VPpast? (Can I have my shirt washed?)"
+
+    - id: a2.f.2.suggesting
+      category: "Influencing the interlocutor"
+      function: "Suggest a course of action"
+      hawkins_ref: "Hawkins Table 9.1 — Suggesting a course of action"
+      exponents:
+        - "Let's + VPinf (Let's go!)"
+        - "Shall we + VPinf? (Shall we dance?)"
+        - "We could + VPinf (We could go for a walk)"
+        - "What/How about + NP/VP gerund (How about walking home?)"
+        - "Why don't we + VPinf (Why don't we go by train?)"
+
+    - id: a2.f.3.expressing_likes
+      category: "Expressing likes/dislikes"
+      function: "Express likes, dislikes, preferences"
+      exponents:
+        - "I like / love / enjoy + NP/-ing (I love reading)"
+        - "I don't like / hate + NP/-ing"
+        - "I prefer X to Y / I'd rather X than Y"
+
+    - id: a2.f.4.describing_past
+      category: "Narrating"
+      function: "Describe past experiences (recent / general)"
+      exponents:
+        - "I went/visited/saw... (past simple)"
+        - "I was working when... (past continuous)"
+        - "Yesterday / last week / when I was a child..."
+
+    - id: a2.f.5.future_plans
+      category: "Talking about future"
+      function: "Talk about future plans / intentions"
+      exponents:
+        - "I'm going to + base (I'm going to study Spanish)"
+        - "I will + base (I'll call you tomorrow)"
+        - "I'm planning to + base"
+
+# B1+B2+C1+C2 Phase D2 future :
+# Sources to extract :
+# - CEFR Companion 2020 Ch 3 Production scales (pp.60-69)
+# - CEFR Companion 2020 Ch 3 Interaction scales (pp.70-89)
+# - CEFR Companion 2020 Ch 3 Mediation NEW 2020 (pp.90-122) — separate `data/mediation/en.yaml`
+# - Threshold 1990 + Vantage 1990 (van Ek/Trim) inventory of microfunctions
+# - English Profile EVP/EGP signup (englishprofile.org) — Excel exports
