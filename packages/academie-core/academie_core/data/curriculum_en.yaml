@@ -31,6 +31,14 @@
 # Family mapping : `taxonomy/categories.py:50` ("l1_transfer": [PREP:CALQUE,
 # SPELL:COGNATE]). Phase D extension : add en_to_es, es_to_en, etc. when user
 # base diversifies beyond FR L1 dominant.
+#
+# === Phase B4 audit patch (Session 53 — 2026-04-30) ===
+# 26 concept_keys added across A2 (+7), B1 (+11), B2 (+6), C1 (+2) per
+# `webapp/backend/docs/audit/2026-04-30-curriculum-en-vs-authority.md`.
+# Sources : Hawkins/Filipović 2012 Ch 9.1 (criterial-features-by-level.yaml)
+# + CEFR Companion 2020 App 1 + App 7 (salient-features + changes-2001-to-2020).
+# Concept count : 105 → ~131 (+25%).
+# C2 description revised : "near-native" → "highly successful learner" per Companion 2020 App 1.
 
 domain: en
 A1:
@@ -118,6 +126,13 @@ A2:
   - relative_clauses_simple
   - prepositions_movement
   - question_tags
+  - ditransitive_basic
+  - finite_complement_basic
+  - infinitive_complements_basic
+  - pronoun_plus_infinitive
+  - postnominal_ed_modification
+  - genitive_of_double_embedding
+  - might_possibility
   concept_weights:
     past_simple_regular_irregular: 8
     going_to_future: 5
@@ -132,6 +147,13 @@ A2:
     relative_clauses_simple: 5
     prepositions_movement: 5
     question_tags: 3
+    ditransitive_basic: 5
+    finite_complement_basic: 5
+    infinitive_complements_basic: 5
+    pronoun_plus_infinitive: 3
+    postnominal_ed_modification: 5
+    genitive_of_double_embedding: 3
+    might_possibility: 3
   concept_groups:
     verb_tenses:
     - past_simple_regular_irregular
@@ -140,11 +162,14 @@ A2:
     - present_continuous
     - modals_can_must_should
     - past_continuous
+    - might_possibility
     modifiers:
     - comparatives_superlatives
     - adverbs_frequency
+    - postnominal_ed_modification
     nouns_articles:
     - countable_uncountable
+    - genitive_of_double_embedding
     connectors:
     - basic_connectors
     - prepositions_movement
@@ -152,6 +177,11 @@ A2:
     - relative_clauses_simple
     questions:
     - question_tags
+    structures:
+    - ditransitive_basic
+    - finite_complement_basic
+    - infinitive_complements_basic
+    - pronoun_plus_infinitive
 B1:
   description: Threshold — hold conversation on familiar topics, narrate events, give opinion+reason, manage travel. Past
     tenses + present perfect + first conditional.
@@ -176,6 +206,17 @@ B1:
   - would_habitual
   - passive_voice_basic
   - imperative
+  - object_controlled_ing
+  - postnominal_ing_modification
+  - it_extraposition_finite
+  - verb_pp_finite_complement
+  - pseudocleft_wh_object
+  - complex_auxiliaries_b1
+  - adverbial_ing_following
+  - raising_seem_supposed
+  - raising_object_basic
+  - tough_movement_easy
+  - genitive_of_s_embedding
   concept_weights:
     present_perfect_simple: 8
     present_perfect_vs_past_simple: 8
@@ -197,6 +238,17 @@ B1:
     would_habitual: 5
     passive_voice_basic: 8
     imperative: 3
+    object_controlled_ing: 5
+    postnominal_ing_modification: 5
+    it_extraposition_finite: 5
+    verb_pp_finite_complement: 5
+    pseudocleft_wh_object: 5
+    complex_auxiliaries_b1: 3
+    adverbial_ing_following: 5
+    raising_seem_supposed: 5
+    raising_object_basic: 5
+    tough_movement_easy: 3
+    genitive_of_s_embedding: 3
   concept_groups:
     verb_tenses:
     - present_perfect_simple
@@ -208,6 +260,7 @@ B1:
     - past_perfect
     - would_habitual
     - passive_voice_basic
+    - complex_auxiliaries_b1
     discourse:
     - reported_speech
     vocabulary:
@@ -217,15 +270,26 @@ B1:
     structures:
     - gerund_vs_infinitive
     - imperative
+    - object_controlled_ing
+    - it_extraposition_finite
+    - verb_pp_finite_complement
+    - pseudocleft_wh_object
+    - raising_seem_supposed
+    - raising_object_basic
+    - tough_movement_easy
     modifiers:
     - adj_prepositions
     - adverbs_degree
+    - postnominal_ing_modification
     connectors:
     - connectors
     - both_either_neither
     - so_such_that
+    - adverbial_ing_following
     questions:
     - indirect_questions
+    nouns_articles:
+    - genitive_of_s_embedding
 B2:
   description: Vantage — argue, nuance position, cultural comparison, debate. All structures except rare + lexical precision.
   concept_keys:
@@ -248,6 +312,12 @@ B2:
   - reduced_relative_clauses
   - wish_past_perfect
   - wish_would
+  - adverbial_ing_preceding
+  - it_extraposition_infinitival
+  - pseudocleft_wh_subject
+  - secondary_predications
+  - raising_subject_productive
+  - genitive_double_embedding_b2
   concept_weights:
     conditional_2: 5
     subjunctive_wish_ifonly: 5
@@ -268,6 +338,12 @@ B2:
     reduced_relative_clauses: 5
     wish_past_perfect: 8
     wish_would: 5
+    adverbial_ing_preceding: 5
+    it_extraposition_infinitival: 5
+    pseudocleft_wh_subject: 8
+    secondary_predications: 5
+    raising_subject_productive: 8
+    genitive_double_embedding_b2: 5
   concept_groups:
     verb_tenses:
     - conditional_2
@@ -283,13 +359,19 @@ B2:
     - parallel_structures
     connectors:
     - connectors_sophisticated
+    - adverbial_ing_preceding
     nouns_articles:
     - articles_advanced
+    - genitive_double_embedding_b2
     structures:
     - causative_structures
     - cleft_sentences
     - inversion_negative
     - participle_clauses
+    - it_extraposition_infinitival
+    - pseudocleft_wh_subject
+    - secondary_predications
+    - raising_subject_productive
     modifiers:
     - compound_adjectives
     vocabulary:
@@ -320,6 +402,8 @@ C1:
   - reported_speech_nuanced
   - subjunctive_formal
   - topicalization
+  - genitive_ss_embedding
+  - might_permission_formal
   concept_weights:
     inversion_negative_adverbial: 5
     advanced_collocations: 8
@@ -341,6 +425,8 @@ C1:
     reported_speech_nuanced: 8
     subjunctive_formal: 8
     topicalization: 5
+    genitive_ss_embedding: 5
+    might_permission_formal: 3
   concept_groups:
     structures:
     - inversion_negative_adverbial
@@ -349,6 +435,7 @@ C1:
     - absolute_constructions
     - gerund_subjects_complex
     - inversion_stylistic
+    - genitive_ss_embedding
     vocabulary:
     - advanced_collocations
     - idioms_transparent
@@ -367,9 +454,11 @@ C1:
     - subjunctive_formal
     modifiers:
     - gradation_stylistic
+    modals_stylistic_extension:
+    - might_permission_formal
 C2:
-  description: Mastery — near-native, pragmatic nuance, linguistic creativity. Residual errors = fluency markers, not competence
-    gaps.
+  description: Mastery — highly successful learner level (NOT native-speaker per CEFR Companion 2020). Pragmatic nuance, linguistic
+    creativity. Residual errors = fluency markers, not competence gaps.
   concept_keys:
   - idioms_opaque
   - literary_inversion
