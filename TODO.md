@@ -82,6 +82,112 @@ Voir `vault/projects/academia-ia/library-p3-roadmap.md` pour P2/P3 (~36 ouvrages
 - ~~**Maestro ES alignment**~~ : ✅ Session 51 — `build_full_dify_inputs(scenario, "maestro_es")` validated, Dify temp 0.7→0.2 patched (workflow `d3df0ef0-...`), 24 goldens re-recorded (commit `d1ed462` sha `f7fb532a1ba4`). Battery measurement awaits judge RPD reset (Groq gemini-3-1-flash-lite 481/540 RPD).
 - **v0.3 mesure usage** (post 2-4 sem données réelles, démarrage compteur Session 49 = 2026-04-26)
 
+## 📚 Per-language book incorporation roadmap (post-S53 skim batch)
+
+**Context** : Session 53 skim batch (74/85 books skimmed = 87% library tracked) a révélé que `curriculum_en.yaml` + `curriculum_es.yaml` ont été construits "à l'aveugle" pré-S52 (headers `# Sourced from CEFR Companion + EVP + Hughes` mensongers — aucun de ces books acquired avant S52). Maintenant on a les 4 authority anchors (Hawkins, CEFR Companion 2020, PCIC A1-A2, PCIC B1-B2) et 86 autres books skimmed. Roadmap d'incorporation par langue ci-dessous. Voir `/root/sinse-vault/knowledge/books/USAGE-MAP.md` pour status canonique des 90 books trackés.
+
+### Phase A — P0 quick wins (Session 53, ~3-4h, ✅ EN COURS)
+
+- [x] (claude, 2026-04-30, Session 53) TODO.md per-lang book incorporation roadmap (cette section)
+- [ ] (claude, 2026-04-30, Session 53) `concept_hints/en.yaml` expansion 20→94 entries (A1+A2+C1+C2 fully covered, FR-oriented hints)
+- [ ] (claude, 2026-04-30, Session 53) `curriculum_es.yaml` flag 10 gaps inline TODO comments (vs PCIC + CEFR Companion 2020)
+- [ ] (claude, 2026-04-30, Session 53) `curriculum_en.yaml` + `curriculum_es.yaml` document l1_transfer integration path (header refs + cross-yaml docs)
+- [ ] **DEFERRED Phase B** : `phrasal_verbs` stratification (A2/B1/B2/C1 per Hawkins Ch 8) — **scope creep cross-système** (touche `tolerance_matrix.yaml` + `tolerance_matrix_v2.yaml` + `webapp/backend/app/routers/profile_router.py:559` prod code + Dify workflow `concept_hint_map` + `scripts/update_teacher_chatflow.py` + `scripts/sprint6/19_curriculum_en_apply_merge.py` + `scripts/e2e_promo_test.py:42`). Migration multi-system → ne PAS bundle dans Phase A quick wins.
+
+### Phase B — P0 EN flagship audit (~5-7j, post Phase A)
+
+- [ ] **Hawkins Ch 9.1 horizontal summary** (5p, p147-151) → `extracted/hawkins-filipovic-2012-criterial-features-l2-english/criterial-features-by-level.yaml`
+- [ ] **Hawkins Ch 7** (22 syntactic features per CEFR level, 22p) → `positive-syntactic-features.yaml`
+- [ ] **Hawkins Ch 8** (lexical/phrasal verb progression, 13p) → `lexical-progression-by-level.yaml`
+- [ ] **CEFR Companion App 1** (Salient features per niveau, 3p) → `extracted/coe-2020-cefr-companion-volume/salient-features-by-level.yaml`
+- [ ] **CEFR Companion App 7** (Substantive changes 2001→2020, 2p) → `changes-2001-to-2020.yaml`
+- [ ] Audit `curriculum_en.yaml` 94 concepts vs Hawkins criterial features → diff doc `webapp/backend/docs/audit/2026-NN-curriculum-en-vs-hawkins.md`
+- [ ] Patch `curriculum_en.yaml` apply audit findings (concept_keys gaps, weights adjust, header refs honest)
+- [ ] **phrasal_verbs cross-system migration** (deferred from Phase A) : split + tolerance_matrix update + profile_router patch + Dify workflow_history+entity dual-patch + scripts update + e2e tests + golden re-record. ~1-2j cross-system effort.
+- [ ] **EVP/EGP signup englishprofile.org** (Sinse manual, gratuit) → Excel data extract for vocab/grammar profiles
+
+### Phase C — P0 ES flagship audit (~5-7j, post Phase B)
+
+- [ ] **PCIC Vol A Gramática inventario A1+A2** (extraction sections "Gramática" du Vol A 515p) → `extracted/cervantes-2006-plan-curricular-a1-a2/grammar-by-level.yaml`
+- [ ] **PCIC Vol B Gramática inventario B1+B2** → `extracted/cervantes-2006-plan-curricular-b1-b2/grammar-by-level.yaml`
+- [ ] **PCIC Funciones inventario A1-B2** → `functions-by-level.yaml`
+- [ ] **PCIC Nociones específicas A1-B2** → `lexical-by-topic-by-level.yaml`
+- [ ] **PCIC Tácticas y estrategias pragmáticas (B1+B2)** → `pragmatic-strategies.yaml` (cross-ref Lyster cf-taxonomy)
+- [ ] Audit `curriculum_es.yaml` 52 concepts vs PCIC Gramática → expansion ~120-150 concepts (stratifier ser/estar A1, subjuntivo B1, connectores B2, ajouter verbos de cambio, etc.)
+- [ ] **PCIC Vol C C1-C2 acquisition** (Sinse manual, gratuit `cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/`) — bloquant ES flagship audit complet A1-C2
+- [ ] DELE A2/B1/C1/C2 oficial Modelos acquisition (dele.org signup gratuit, Sinse manual)
+
+### Phase D — P1 nouvelles dimensions (multi-session, ~10-13j)
+
+- [ ] **Functions dimension** (CEFR Companion Ch 3 + PCIC Funciones) → nouveau `data/functions/{en,es}.yaml` + `loader.py:load_functions(lang)` + `schemas.py:FunctionsPack`
+- [ ] **Mediation dimension NEW 2020** (CEFR Companion Ch 3 mediation scales) → nouveau `data/mediation/{en,es}.yaml` + loader + schema (différenciateur marché vs Duolingo/Babbel pre-2020)
+- [ ] **Skills-based reorganization** (Reception / Production / Interaction / Mediation per niveau) — major refactor, possiblement parallel structure plutôt que rewrite curriculum existing
+- [ ] EN flagship full A1-C2 audit Phase 2 (post-EVP/EGP integration)
+
+### Wave 2 IT (~13j Phase 1, P2 mai-juin 2026)
+
+- [ ] **CILS Sillabo acquisition** (stub pending — payant Guerra Edizioni OU Anna's search)
+- [ ] CILS 2006/2010 Quaderni A1-A2 + Vedovelli 2013 → `mini_exam/it_A1.yaml` + `mini_exam/it_A2.yaml` + `mini_exam/it_B1.yaml`
+- [ ] Bargallo Traguardo CILS B2 (third-party prep) → `mini_exam/it_B2.yaml`
+- [ ] CILS C1+C2 Quaderni acquired (#86-87) → methodology reference only (above ADR-013 cap, deferred extraction)
+- [ ] Maiden grammar lookup-only (`rules_it.py` edge cases — clitiques doubles, congiuntivo, ne partitive)
+- [ ] Pienemann 1998 PT framework → `rules_it.py` priority gates (PT V2 cross-lang)
+- [ ] Profilo della Lingua Italiana acquisition (analogue PCIC IT, free `loescher.it`)
+
+### Wave 2 DE (~16j Phase 1, P2 juin-juillet 2026)
+
+- [ ] **Profile Deutsch Ch 3.2 A1-B2** (~67p data structurée) → `curriculum_de.yaml` + `concept_hints/de.yaml` Kannbeschreibungen
+- [ ] **Profile Deutsch Ch 3.5 grammatik** → `rules_de.py` Phase 1 grammar coverage
+- [ ] **Goethe B1 Übungssatz officiel** (text PDF, 49p, S53 acquired) → `mini_exam/de_B1.yaml`
+- [ ] **Mit Erfolg Goethe B2** (third-party Klett, scanned 99p, S53 acquired) → `mini_exam/de_B2.yaml` supplementary (NOT official Modellsatz — note dans header)
+- [ ] **Mit Erfolg Telc B2** (third-party Klett, scanned 193p, S53 acquired) → task variety Sprachbausteine cloze format unique
+- [ ] **telc B1 Übungstest officiel acquisition** (Sinse manual telc.net, gratuit) — companion B2 manquant
+- [ ] **Goethe B2 Modellsatz officiel acquisition** (Sinse manual goethe.de, gratuit) — replacement third-party Mit Erfolg
+- [ ] Helbig-Buscha grammar lookup-only (`rules_de.py` Valenztheorie edge cases)
+
+### Wave 3 JP (~28j Phase 1, P3 août-déc 2026)
+
+- [ ] **JFS Guidebook 2022** (⭐⭐ ADR-015) Ch 2.2 (2) speaking rubrics + Reference Materials 3+4 can-dos → `curriculum_jp.yaml` + `rubrics/jp.yaml`
+- [ ] JFS pamphlet 2024 EN (6p exec summary companion JFS Guidebook)
+- [ ] **Pienemann 2005 Ch 8 Kawaguchi** (⭐⭐ canonical empirical PT-JP) → `rules_jp.py` PT-JP stages stratification
+- [ ] Marugoto série A1→B1 (8 vols S52 acquired) → curriculum content per niveau + productive task templates
+- [ ] JLPT N4 vol1+2 + N5 vol2 公式 → `mini_exam/jp_N4.yaml` + `mini_exam/jp_N5.yaml` (note: JLPT = N5/N4/N3 not strict A1/A2/B1)
+- [ ] Tsutsui N3 mock (third-party) → supplementary item bank
+- [ ] Makino dicos JBJ/JIJ/JAJ lookup-only (`rules_jp.py` particles/te-form/keigo edge cases)
+- [ ] **JLPT N5 vol1 公式 acquisition** (stub pending — Bonjinsha ¥800 OU Internet Archive search)
+
+### Wave 4 RU (~21j Phase 1, P3 oct+ 2026)
+
+- [x] (S53 acquired ✅) **TORFL Lexical Min A1/A2/B1/B2** (Pushkin Institute, text PDFs 80/116/199/162p) → `concept_hints/ru.yaml` 780/1200/2300/3000 mots seed par niveau
+- [ ] Antonova Doroga 1+2 (S52 acquired, OCR'd) → `curriculum_ru.yaml` A1+A2 primary content + tâches productives
+- [ ] Bulgakova/Lysenko verb-government glossary + grammar tables (S52 acquired) → `rules_ru.py` companions Antonova
+- [ ] **Lazareva TORFL examiner methodology** (⭐ S52 acquired) → `oracle/judges/` rubric direct seed Wave 4 RU — scoring dims `teacher_ru` Tier-1
+- [ ] Makova-Uskova Vol.3 Pt1 (B2 ✅ within ADR-013 cap, S53 acquired) → `mini_exam/ru_B2.yaml` Чтение section seed
+- [ ] Makova-Uskova Vol.1 + Vol.3 Pt2 (C1 above cap) → lookup-only-deferred
+- [ ] Wade Comprehensive RU Grammar lookup-only (`rules_ru.py` aspect/cas/motion edge cases)
+- [ ] Zalyalova RKI exercises (S52 acquired, OCR'd) → exercise pattern source
+- [ ] **TORFL Grammar Min stub acquisition** (Sinse manual)
+
+### Cross-language activations (post-flagship audit)
+
+- [x] (Session 52, in-use ✅) **Lyster cf-taxonomy** → `cf_classifier.py` Tier 2 BIPED Step 1 (consommé prod via `BIPED_CF_CLASSIFIER_ENABLED` flag)
+- [ ] **Lightbown/Spada Ch6 wire-up** (Ch6 yaml extracted S52, ~1j ship) → `pedagogy/biped_step2_generator.py` Tier 2 BIPED Step 2
+- [ ] **Hernán Causal Ch 22 Target Trial** (skimmed S53) → Tier 2 BIPED measurement framework — ITT vs per-protocol + DAGs
+- [ ] **Bachman-Palmer AUA Framework Ch 2-3** (skimmed S53 ⭐) → bridge AI Act art.50 compliance — `webapp/backend/app/legal/ai_act.py` automated decision justification
+- [ ] **Baker IRT + Embretson Ch 10** (skimmed S53 ⭐⭐) → `psychometrics/placement_test.py` + `cat.py` (5-7j module activation — Rasch 1PL + MLE + CAT canonical + DIF cross-language item bias)
+- [ ] **Hughes 2020 Ch 17 New tech** (⭐⭐⭐) → digital testing methodology + AI-assisted scoring guidelines (companion Baker/Embretson)
+- [ ] **Nation Four Strands** (skimmed S53 ⭐⭐) → Maestro scenarios design audit — currently skewed input/language-focused, missing fluency/output strands
+- [ ] **DeKeyser 2007 Practice** (skimmed) → `dosage_block` declarative→procedural→automatized stage mapping
+- [ ] Ortega 2009 SLA — secondary companion Lightbown/Spada (skimmed)
+
+### Anti-doc-théâtre check
+
+**Pre-emptive 6-month review window 2026-10-29** :
+- Si ≥50% des skimmed books ne sont pas progressed (extracting OR in-use) → signal sur-skim sans extraction trigger
+- Triggers Wave 2 IT/DE début (~mai-juin 2026) → extracting CILS + Profile Deutsch + Pienemann Ch 3 + Maiden lookup
+- Triggers Wave 3 JP démarrage (~août-déc 2026) → extracting Marugoto + JFS Guidebook + Pienemann 2005 Ch 8
+- Triggers Wave 4 RU (~oct+ 2026) → extracting Antonova + Lazareva TORFL + Wade lookup
+
 **Roadmap macro (vault projects/obsidian-migration/roadmap-sinse-2026-04-25.md)** :
 - P0 cette semaine : Teacher EN enum + B4 GlitchTip test browser + Restic monthly + DPA OpenAI/Groq
 - P1 mai 2026 : DMARC + CSP enforce + Phase 3 fault injection + B5 Paraglide i18n
