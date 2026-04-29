@@ -1,0 +1,812 @@
+# Ch 6 "Second language learning in the classroom" — Lightbown & Spada (2021), 5th ed.
+# Six proposals decision framework for L2 teaching, plus L/S synthesis "Assessing the proposals"
+# Counterpart literature note: vault/knowledge/books/lightbown-spada-2021-how-languages-learned.md
+# Custom YAML — no formal schema yet (schema_ref: null)
+
+source_book: "lightbown-spada-2021-how-languages-learned"
+extracted_by: claude
+extracted_date: 2026-04-29
+schema_version: 1
+schema_ref: null
+
+teaching_proposals:
+  - id: get_it_right_from_beginning
+    name: "Get it right from the beginning"
+    short_definition: |
+      Structure-based approaches (grammar translation + audiolingual) emphasizing
+      accuracy from the earliest stages of L2 instruction. Errors must be prevented
+      because they "could become habits". Predominantly form-focused; meaning is
+      secondary to correct production of grammatical features.
+    theoretical_basis: |
+      Grammar translation: classical-language pedagogy adapted for L2 (vocabulary
+      lists, translation equivalents, grammar rules; goal = read literature, mental
+      exercise). Audiolingual: behaviourist + contrastive analysis (Brooks 1960;
+      Lado 1964) — error-prevention to avoid habit formation.
+    classroom_practices:
+      - "Vocabulary lists with translation equivalents"
+      - "Grammar rule presentation followed by decontextualized exercises (fill-in-blanks)"
+      - "Audiolingual pattern practice drills (T-S repetition, transformation drills)"
+      - "Avoidance of spontaneous student speech for fear of errors becoming habits"
+      - "L1 used for explanations and reading comprehension"
+    research_evidence:
+      - study: "Study 15: Audiolingual pattern drill (Lightbown 1983a/b)"
+        finding: |
+          French-speaking learners (aged 11-16, Quebec) in audiolingual programmes.
+          After weeks of drilling present progressive, students supplied auxiliary be
+          + -ing in obligatory contexts BUT also overproduced (-ing where it didn't
+          belong, e.g. 'He's want a cookie'). Once a new morpheme was drilled,
+          previously drilled forms regressed (revert to bare form 'He play ball').
+          Almost-exclusive accuracy/practice focus did NOT yield sustained correct
+          use outside drills, nor comprehension/fluency/communicative ability.
+        l1_l2_pair: "L1 French / L2 English"
+      - study: "Study 16: Grammar plus communicative practice (Savignon 1972)"
+        finding: |
+          48 college French (L2) learners, three groups: communicative, culture,
+          control. All received ~4 hours/week audiolingual + 1 special hour. NO
+          significant differences on linguistic competence measures. The
+          communicative group scored significantly HIGHER on four communicative
+          tests. Adding communicative practice did NOT cause learners to do worse
+          on accuracy. Supports addition of communicative practice (NOT abolition
+          of grammar instruction).
+        l1_l2_pair: "L1 English / L2 French"
+    advantages:
+      - "Useful for grammar/vocabulary study and understanding important cultural texts"
+      - "Audiolingual successful with highly motivated adult learners in intensive govt training programmes (USA)"
+      - "Provides explicit metalinguistic knowledge that some adults prefer (cf. learners' beliefs Ch 3)"
+    limitations:
+      - "Learners often unable to communicate messages/intentions effectively"
+      - "Structure-based approaches do not guarantee high accuracy or linguistic knowledge"
+      - "Classroom emphasis on accuracy → learners feel inhibited, reluctant to take chances"
+      - "Frequent failure to produce fluency AND accuracy in typical school programmes"
+      - "Pattern drill knowledge fragile (regression when new forms introduced)"
+      - "Does not correspond to the way most successful L2 learners have acquired their proficiency"
+    cefr_appropriateness:
+      a1: medium  # explicit forms support beginners but pure drill insufficient
+      a2: medium
+      b1: low
+      b2: low
+      c1: low
+      c2: contraindicated
+    target_use_cases:
+      - "Adult learners with strong metalinguistic background preferring rule-based instruction"
+      - "Highly motivated learners in intensive programmes (military/government training)"
+      - "Reading literary/classical texts comprehension (grammar translation original purpose)"
+    contraindications:
+      - "School-age learners in ordinary programmes with mixed motivation/aptitude"
+      - "Settings where communicative competence is the goal"
+      - "Sole/exclusive method (must be supplemented with meaning-focused practice)"
+    source: "Lightbown & Spada 2021, ch 6, pp. 217-225 (PDF), Examples 1-2 + Studies 15-16"
+    confidence: high
+    lyster_relation: "ALTERNATIVE — pure form-focus pole opposed to Lyster's counterbalanced. Lyster argues this approach overlooks meaning and is insufficient on its own."
+
+  - id: just_listen_and_read
+    name: "Just listen … and read"
+    short_definition: |
+      Comprehension-based instruction: language acquisition occurs when learners are
+      exposed to comprehensible input through listening/reading. Output is NOT
+      necessary for acquisition. Most closely associated with Stephen Krashen's
+      input hypothesis (1985, 1989). Some variants add input enhancement, input
+      flood, or processing instruction to draw attention to forms in the input.
+    theoretical_basis: |
+      Krashen's input hypothesis (i+1) — comprehensible input is sufficient and
+      necessary for acquisition. Output produces no acquisition (only opportunities
+      to elicit input). Acquisition is implicit/unconscious; learning (explicit) is
+      separate and limited to monitor function.
+    classroom_practices:
+      - "Extensive listening and reading with no required oral production"
+      - "Self-paced cassette/audio + book stations (no T-S interaction)"
+      - "Simplified readers (graded readers) for vocabulary/syntax exposure"
+      - "Input flood: high-frequency exposure to a target form (e.g., adverbs)"
+      - "Enhanced input: typographical highlighting (bold, italics, underlining) of target form"
+      - "Processing instruction: tasks forcing learners to rely on the form to extract meaning"
+    research_evidence:
+      - study: "Study 17: Comprehension-based instruction for children (Lightbown et al. 2002; Trofimovich et al. 2009)"
+        finding: |
+          Aged-8 French-speaking children, daily 30-min ESL, NO oral practice/T-S
+          interaction. After 2 years, comp-based learners knew as much English as
+          (and sometimes more than) regular audiolingual learners — even on
+          speaking. At Grade 8 follow-up: comp-only continued to perform as well on
+          comprehension; some regular-programme groups did better on writing
+          (depending on the additional speaking/writing components received).
+        l1_l2_pair: "L1 French / L2 English"
+      - study: "Study 18: Reading for words (Horst 2005)"
+        finding: |
+          21 adult immigrant ESL learners, 6 weeks of self-selected simplified
+          readers from class library on top of regular ESL. Vocabulary growth
+          attributable to reading observed; the more students read, the more words
+          learned. Substantial vocab growth requires reading a lot (not 1-2 books/sem).
+        l1_l2_pair: "Mixed L1s / L2 English"
+      - study: "Study 19: Input flood (Trahey & White 1993)"
+        finding: |
+          French-speaking 10-12 yr learners, 10 hrs over 2 weeks reading texts with
+          hundreds of adverb instances (no teaching / error correction). Improved on
+          accepting English-grammatical word order ('The children quickly leave
+          school') BUT continued to accept French-only orders ('The children leave
+          quickly school'). Input flood added something but did not REMOVE L1-based
+          errors. Positive evidence alone insufficient for unlearning (cf. White 1991).
+        l1_l2_pair: "L1 French / L2 English"
+      - study: "Study 20: Enhanced input (J. White 1998)"
+        finding: |
+          French-speaking 11-12 yr learners, 10 hrs over 2 weeks, possessive
+          determiners (his/her). Texts typographically enhanced (bold/underline/italics/caps).
+          Both enhanced and non-enhanced groups improved similarly — small gains.
+          Enhancement alone insufficient to override L1 transfer; subsequent research
+          (Spada, Lightbown, & White 2005) showed simple rule + collaborative work
+          more effective.
+        l1_l2_pair: "L1 French / L2 English"
+      - study: "Study 21: Processing instruction (VanPatten & Cadierno 1993)"
+        finding: |
+          Adult Spanish FL learners, object pronoun acquisition. Processing-instruction
+          group (explicit info + comprehension exercises forcing pronoun-attention)
+          did better on comprehension AND production than the production-practice
+          group. Benati (2019) review confirms VanPatten input-processing approach
+          across multiple languages improves both comprehension and production.
+        l1_l2_pair: "L1 English / L2 Spanish"
+      - study: "Study 22: Incidental acquisition — comprehension vs. production (Shintani & Ellis 2010; Shintani, Li, & Ellis 2013)"
+        finding: |
+          Japanese 6-8 yr children, plural -s, 6 weeks comprehension OR production
+          tasks vs control. Both experimental groups outperformed control on
+          receptive AND productive measures. Comprehension-based instruction
+          especially beneficial for low-exposure learners (4 months vs 14 months
+          exposure). Review of 35 studies confirms both comp and prod beneficial.
+        l1_l2_pair: "L1 Japanese / L2 English"
+    advantages:
+      - "Provides comprehensible input which is the foundation of L2 acquisition"
+      - "Especially beneficial in initial stages of learning (Shintani & Ellis)"
+      - "Reduces inhibition / lowers affective filter (Krashen's framing)"
+      - "Vocabulary growth strongly supported by sustained reading"
+      - "Active listening and reading for meaning are valuable components of pedagogy"
+    limitations:
+      - "Considerable evidence challenges 'comprehensible input is enough' hypothesis"
+      - "Comprehension-only instruction yields incomplete grammatical accuracy"
+      - "Input flood/enhancement effects are limited; cannot override L1-based errors via positive evidence alone"
+      - "Form-meaning connection drawing requires more explicit guidance than mere noticing prompts"
+      - "Krashen's i+1 difficult to operationalize (no clear definition of 'next stage')"
+    cefr_appropriateness:
+      a1: high  # Shintani & Ellis: comp-based especially beneficial early stages
+      a2: high
+      b1: medium  # supplement at intermediate
+      b2: medium
+      c1: low  # alone insufficient at higher levels
+      c2: low
+    target_use_cases:
+      - "Initial-stage L2 learners (vocabulary + comprehension foundation)"
+      - "Vocabulary expansion via extended reading at any level"
+      - "Settings where oral production opportunities are limited"
+      - "Self-access / individualized learning supplements"
+    contraindications:
+      - "Pure form / accuracy goals at advanced levels"
+      - "L1-L2 pairs with persistent transfer errors that positive evidence alone cannot remove"
+      - "Sole approach for high-stakes accuracy targets (academic, professional)"
+    source: "Lightbown & Spada 2021, ch 6, pp. 225-232 (PDF), Studies 17-22"
+    confidence: high
+    lyster_relation: "ALTERNATIVE / partial overlap — represents the meaning-only pole. Lyster argues content-based input alone insufficient; counterbalanced approach adds form-focused options to comprehension-based core."
+
+  - id: lets_talk
+    name: "Let's talk"
+    short_definition: |
+      Emphasizes access to BOTH comprehensible input AND conversational interaction.
+      Negotiation for meaning (clarification requests, confirmation checks, etc.)
+      drives acquisition by making form-meaning connections salient. Theoretical
+      view underlying task-based language teaching (TBLT) and the interaction
+      hypothesis (Long 1996).
+    theoretical_basis: |
+      Long's interaction hypothesis (1983, updated 1996): conversational
+      interaction with meaning-negotiation modifications promotes L2 development.
+      Updated version integrates learner capacities (attention) and interactional
+      features (corrective feedback) facilitating learning. Swain's (1985)
+      comprehensible output hypothesis adds: producing language reveals
+      interlanguage limitations, pushing learners.
+    classroom_practices:
+      - "Pair and small-group communicative tasks (information-gap, jigsaw, decision tasks)"
+      - "Task-based language teaching (TBLT) with goal-oriented conversation"
+      - "Negotiation-for-meaning modifications: clarification requests, confirmation, repetition with rising intonation"
+      - "Implicit corrective feedback (recasts) embedded in pair-work interaction"
+      - "Genuine information exchange over scripted dialogues"
+    research_evidence:
+      - study: "Long & Porter (1985) early descriptive"
+        finding: |
+          Adult ESL learners talked MORE with other learners than with native
+          speakers. Intermediate-intermediate pairs made no more errors than
+          intermediate-advanced/native pairs. Calls into question 'native speaker
+          model needed' assumption. Learners offer each other genuine communicative
+          practice with negotiation, even if not always providing accurate input.
+        l1_l2_pair: "Mixed L1s / L2 English"
+      - study: "Yule & Macdonald (1990)"
+        finding: |
+          Two-way interaction tasks: low-proficiency + high-proficiency learners
+          paired. Interactions LONGER and more VARIED when less-proficient learner
+          had dominant role. Suggests teachers should sometimes place advanced
+          students in less-dominant roles with lower-level learners.
+        l1_l2_pair: "Mixed / L2 English"
+      - study: "Study 23: The dynamics of pair work (Storch 2002)"
+        finding: |
+          Australian university adult ESL, 10 pairs, 1 semester. Four interaction
+          patterns: collaborative, dominant-dominant, dominant-passive, expert-novice.
+          COLLABORATIVE and EXPERT-NOVICE pairs maintained more L2 knowledge over
+          time. Dominant-dominant and dominant-passive maintained least. Supports
+          Vygotskian co-construction.
+        l1_l2_pair: "Mixed / L2 English"
+      - study: "Study 24: Interaction and L2 development (Mackey 1999)"
+        finding: |
+          Adult ESL learners assigned to 5 groups: Interactors (engaged with NS
+          modified language), Interactor Unreadies (similar input but less advanced),
+          Observers (listened only), Scripteds (no breakdown/negotiation), Control.
+          Both Interactor groups showed sustained progress in question formation
+          (delayed post-test 1 month). Observers, Scripteds, Control: little change.
+          Supports negotiated interaction → L2 development.
+        l1_l2_pair: "Mixed / L2 English"
+      - study: "Study 25: Learner-learner interaction in a Thai classroom (McDonough 2004)"
+        finding: |
+          Thai EFL pair/small-group, conditional clauses via environmental
+          discussion. Learners using more negative feedback + modified output
+          significantly improved conditional clause accuracy. BUT students
+          themselves did NOT perceive pair/group activities as useful — suggests
+          teachers should explain rationale and take learners' beliefs into account.
+        l1_l2_pair: "L1 Thai / L2 English"
+      - study: "Foster (1998) lab vs. classroom"
+        finding: |
+          Young adult ESL: when interacting with each other, learners often PRETEND
+          to understand rather than negotiate for meaning. Lab studies overestimate
+          the amount of negotiation that occurs in real classrooms. Teachers need
+          adequate preparation/guidance/supervision before and during interaction.
+        l1_l2_pair: "Mixed / L2 English"
+      - study: "Mackey & Goo (2007) review of 28 studies"
+        finding: |
+          Implicit CF (recasts) in pair work beneficial, strongest in lab settings.
+          Recasts more salient in pair work when one form is consistently recast
+          (Nicholas, Lightbown, & Spada 2001). Combination of feedback types
+          (including explicit) may be more helpful with classroom learners."
+        l1_l2_pair: "Mixed / various"
+    advantages:
+      - "Increases communicative competence and conversational management ability"
+      - "Genuine information exchange enhances motivation"
+      - "Learner-learner interaction provides practice opportunities even without native model"
+      - "Negotiation-for-meaning produces noticing of form-meaning gaps"
+      - "Compatible with task-based teaching and learner agency"
+    limitations:
+      - "Slow progress on acquiring more accurate / advanced language without focus on form"
+      - "Especially problematic when learners share L1 — communication succeeds despite errors, no need to negotiate"
+      - "Recasts in meaning-focused interaction may be misperceived as continuation, not correction"
+      - "Foster (1998): real classroom negotiation less frequent than lab studies suggest"
+      - "Programmes based on 'Let's talk' alone are incomplete — gains in confidence not matched by accuracy/complexity"
+    cefr_appropriateness:
+      a1: low  # very limited proficiency makes negotiation hard
+      a2: medium
+      b1: high
+      b2: high
+      c1: medium  # less effective without form-focus to push complexity
+      c2: low
+    target_use_cases:
+      - "Intermediate learners (B1-B2) developing fluency/conversational skill"
+      - "Mixed-L1 classrooms (need to negotiate for meaning is genuine)"
+      - "Task-based / project-based curricula"
+      - "Pair work between learners of different proficiency levels"
+    contraindications:
+      - "Shared-L1 classrooms where learners can communicate around errors"
+      - "Sole approach when accuracy/advanced grammar are goals"
+      - "Classes without teacher preparation/supervision of pair work"
+      - "Beginning learners with insufficient resources to negotiate"
+    source: "Lightbown & Spada 2021, ch 6, pp. 232-238 (PDF), Studies 23-25"
+    confidence: high
+    lyster_relation: "PARTIAL OVERLAP — Lyster's content-based options include 'negotiation as scaffolding'. But pure 'Let's talk' relies on negotiation alone; Lyster argues for adding form-focused negotiation (prompts) especially in shared-L1 immersion contexts."
+
+  - id: get_two_for_one
+    name: "Get two for one"
+    short_definition: |
+      Content-based language teaching (CBLT) — students acquire L2 while being
+      taught subject matter in that L2. Encompasses immersion, dual-language,
+      CLIL (Europe/Asia/Latin America), and English Medium Instruction (EMI).
+      Expectation: simultaneous mastery of content + language. L/S argue this
+      expectation is qualified by research showing language learning does NOT
+      'take care of itself'.
+    theoretical_basis: |
+      Comprehensible input + meaningful purpose for language. Cognitive challenge
+      of academic content motivates language use. Roots in cognitive theory
+      (input + processing for content) and Cummins' BICS/CALP framework. Recent
+      shift toward integrated language objectives (Echevarria, Vogt, & Short 2015;
+      Tedick & Lyster 2020).
+    classroom_practices:
+      - "Subject matter taught entirely or partly in L2 (immersion, CLIL, EMI)"
+      - "Dual-language / two-way immersion (instruction split between L1 and L2)"
+      - "Late immersion (Hong Kong, secondary-level English)"
+      - "Subject-area scaffolding: vocabulary pre-teaching, simplified texts, charts"
+      - "Both content objectives AND language objectives in lesson planning"
+    research_evidence:
+      - study: "Study 26: French immersion programmes in Canada (Lambert & Tucker 1972; Genesee 1987; Harley & Swain 1984; Swain 1988; Lyster 1994; Tarone & Swain 1995)"
+        finding: |
+          Canadian families since 1960s: French immersion students develop fluency,
+          listening comprehension, confidence; English/academic skills comparable
+          to English-only peers. BUT do not always achieve high performance on
+          French grammar/pragmatics — even after years of L2 exposure. Causes
+          identified: little learner production (teacher-centered), lack of pressure
+          for accuracy, rare features (vous, past tense in 'historical present'),
+          shared L1 → no need for meaning negotiation. FFI on specific features
+          benefited learners.
+        l1_l2_pair: "L1 English / L2 French (children/adolescents)"
+      - study: "Study 27: Late immersion under stress in Hong Kong (Johnson 1997; Hoare & Kong 2008)"
+        finding: |
+          1960s shift: Cantonese L1 primary → English L2 secondary. Students lacked
+          English proficiency for secondary curriculum; teachers used Cantonese,
+          English, and 'Mix'. Strategies (vocab reduction, simplified grammar,
+          bilingual dictionaries, pre-teaching) helped content but NOT language
+          development. English reading at age 15 significantly lower than Cantonese.
+          Examination pressure leads teachers to revert to L1 / simplified English.
+          Cantonese L1 reading proficiency remained high.
+        l1_l2_pair: "L1 Cantonese / L2 English (adolescents)"
+      - study: "Study 28: Specific language features by CLIL students (Martínez Adrián & Gutiérrez Mangado 2015; Llinares & Lyster 2014)"
+        finding: |
+          Spanish/Basque secondary, English as L3. CLIL group (started age 8, 1150
+          hrs) vs. non-CLIL early starters (age 4, same hours) vs. non-CLIL late
+          starters (age 8, 17-18 yr). On general proficiency: CLIL and OLDER
+          non-CLIL outperformed early non-CLIL. On oral production of specific
+          features (present tense, past endings — non-salient): older non-CLIL
+          BETTER than CLIL OR early non-CLIL. Older-at-testing advantage; non-salient
+          features under-acquired in content-based settings.
+        l1_l2_pair: "L1 Basque/Spanish / L2 English (adolescents)"
+      - study: "Study 29: Inuit children in content-based programmes (Spada & Lightbown 2002)"
+        finding: |
+          Inuit children, L1 Inuktitut to Grade 2, then French/English. Most had
+          difficulty coping with subject-matter L2. French secondary level: students
+          understood little of texts (e.g., beluga whales social studies). Lacked
+          terminology for grammatical gender + adjective agreement. Oral abilities
+          limited for academic subjects. Cummins' 5-7 year delay confirmed; for
+          disadvantaged minorities the delay has lasting effects (subtractive
+          bilingualism risk).
+        l1_l2_pair: "L1 Inuktitut / L2 French (children)"
+      - study: "Study 30: Dual language or two-way immersion (Lightbown 2007; Howard et al. 2007; Lindholm-Leary 2001; Steele et al. 2017)"
+        finding: |
+          School with equal numbers native-English + native-Spanish. From kindergarten
+          through Grade 3, half instruction English (NS English teacher), half Spanish
+          (NS Spanish teacher). Coordinated, complementary not redundant. Programme
+          beneficial for English development; Spanish-speakers made rapid reading
+          progress; both groups continued L1 development. USA reviews confirm dual
+          language better outcomes than English-only or transitional. Lindholm-Leary
+          (2001): may 'eradicate negative status of bilingualism in USA'.
+        l1_l2_pair: "L1 English ↔ L1 Spanish, L2 each other (children)"
+    advantages:
+      - "Increases L2 exposure time substantially"
+      - "Genuine need to communicate (motivating purpose)"
+      - "Cognitively challenging interesting content (esp. older students)"
+      - "Successful for content learning AND for fluency/confidence in L2"
+      - "Dual-language programmes support continued L1 development (additive bilingualism)"
+    limitations:
+      - "L2 grammar/pragmatic accuracy often falls short of expectations even after years"
+      - "Non-salient features (gender, verbal endings) under-acquired without explicit attention"
+      - "Cummins' 5-7 year delay before academic L2 is age-appropriate"
+      - "For disadvantaged minorities: delay has lasting subtractive bilingualism effects"
+      - "Late immersion (Hong Kong): exam pressure → L1 retreat or simplified L2"
+      - "Language learning does NOT 'take care of itself' — needs explicit guidance"
+    cefr_appropriateness:
+      a1: medium  # only with strong scaffolding + L1 support
+      a2: medium
+      b1: high
+      b2: high
+      c1: medium  # only if FFI integrated for non-salient features
+      c2: low
+    target_use_cases:
+      - "School-age learners with strong L1 foundation (additive bilingualism setting)"
+      - "Cognitively challenging academic / professional content"
+      - "Settings where dual-language model can be implemented (mixed L1 background)"
+      - "Long-term programmes (5-7+ years to age-appropriate L2)"
+    contraindications:
+      - "Disadvantaged minority-L1 students without L1 support"
+      - "Late immersion under exam-driven pressure (Hong Kong stress)"
+      - "Settings expecting language to 'take care of itself' without integrated language objectives"
+      - "Sole approach for accuracy on non-salient grammatical features"
+    source: "Lightbown & Spada 2021, ch 6, pp. 238-247 (PDF), Studies 26-30"
+    confidence: high
+    lyster_relation: |
+      DIRECT ALIGNMENT with Lyster 2007 — "Get two for one" describes the SAME
+      content-based settings (Quebec French immersion, dual language) Lyster
+      analyzes. L/S explicitly cite Tedick & Lyster (2020) on counterbalanced
+      scaffolding. Lyster's counterbalance principle is the proposed solution to
+      this proposal's documented limitations (non-salient features, no negotiation,
+      shared-L1 communication-around-errors). L/S agree the counterbalanced
+      Tedick & Lyster (2020) CAPA model addresses 'Get two for one' shortcomings.
+
+  - id: teach_what_is_teachable
+    name: "Teach what is teachable"
+    short_definition: |
+      Pienemann's teachability hypothesis: developmental features (e.g., word
+      order, question stages 1-6) follow a fixed natural sequence; instruction
+      cannot make learners SKIP a stage but can accelerate within it. Variational
+      features (vocabulary, sociolinguistic forms) can be taught at any time.
+      Recommendation: assess learners' current developmental level and teach what
+      would naturally come NEXT. Linked to processability theory (Pienemann 1998).
+    theoretical_basis: |
+      Processability theory (Ch 4): linguistic structures develop along
+      predictable paths constrained by procedural processing capacity. Students
+      may produce a feature after teaching but cease using it later because not
+      integrated into interlanguage. Underlying cause: learners' developing
+      ability to notice/remember elements in stream of speech.
+    classroom_practices:
+      - "Assess developmental stage first (e.g., question Stages 1-6, Pienemann)"
+      - "Target instruction to next stage in developmental sequence"
+      - "Distinguish developmental vs. variational features in syllabus design"
+      - "Use multiple opportunities to productively use targeted features in meaning-focused communication"
+    research_evidence:
+      - study: "Study 31: Ready to learn (Pienemann 1988)"
+        finding: |
+          Australian university German learners at Stage 2 word order. Two groups
+          taught Stage 3 vs Stage 4 rules over 2 weeks (explicit + exercises).
+          Stage-3 instruction group → moved easily to Stage 3. Stage-4 instruction
+          group → either continued at Stage 2 or moved only to Stage 3. Cannot SKIP
+          a stage. Supports teachability hypothesis.
+        l1_l2_pair: "L1 English / L2 German (university)"
+      - study: "Study 32: Readies, unreadies, and recasts (Mackey & Philp 1998)"
+        finding: |
+          Adult ESL learners at different question stages, recasts in conversational
+          interaction. 'Readies' in interaction-plus-recasts improved more than
+          'readies' without recasts. 'Unreadies' exposed to recasts did NOT show
+          more rapid improvement. Developmental readiness predicts recast benefit.
+        l1_l2_pair: "Mixed / L2 English (adults)"
+      - study: "Study 33: Developmental stage and L1 influence (Spada & Lightbown 1999)"
+        finding: |
+          French-speaking 11-12 yr intensive ESL. High-frequency exposure to Stage
+          4-5 questions, no production / no CF / no explicit instruction. On oral
+          post-test: little progress for either Stage 2 or Stage 3 group. On
+          grammaticality judgement: students accepted Stage 4-5 with PRONOUN
+          subjects (e.g., 'Are you a good student?') but rejected with NOUN
+          subjects (e.g., 'Are the students watching TV?'). L1-French rule:
+          inversion permitted with pronouns, not with nouns ('*Peut-Jean venir...').
+          L1 influence interacts with developmental readiness.
+        l1_l2_pair: "L1 French / L2 English"
+      - study: "Study 34: Predicted vs reversed orders (Mansouri & Duffy 2005)"
+        finding: |
+          Six young adult ESL, English questions taught Stages 3-6, predicted vs
+          reversed order over 6 weeks. Both groups similar at lower stages. At
+          higher stages: PREDICTED-order group did much better (short and long
+          term, oral and written). Supports developmentally-aligned sequencing
+          for advanced features.
+        l1_l2_pair: "Mixed / L2 English"
+      - study: "Study 35: Developmental readiness and task-based teaching (Roos 2019)"
+        finding: |
+          German secondary EFL, 12 learners, 3rd person singular -s, TBLT with
+          focus on form, 4 lessons of 20 min over 2 weeks. 4/12 learners
+          'developmentally ready'. Increase for all but greatest growth for
+          'ready' learners. TBLT compatible with developmental approach when FFI
+          embedded.
+        l1_l2_pair: "L1 German / L2 English (secondary)"
+    advantages:
+      - "Realistic expectations about ways learners' interlanguage may change"
+      - "Powerful reminder: progress measured beyond just accuracy in production"
+      - "Helps explain why students don't learn what they're taught immediately"
+      - "Even 'too advanced' instruction provides language samples for later integration"
+    limitations:
+      - "Number of features studied within this framework is too small for syllabus"
+      - "Description of developmental path is NOT in itself a syllabus template"
+      - "Counter-evidence from accessibility hierarchy / relative clauses (Doughty 1991; Ammar & Lightbown 2005; Eckman et al. 1988) — learners can leap when taught higher levels of certain hierarchies"
+      - "Different processing mechanisms for different feature types complicate the principle"
+      - "L1 influence interacts with readiness in ways not captured by stage assessment alone"
+    cefr_appropriateness:
+      a1: medium  # very early stages have less stage-knowledge applicable
+      a2: high
+      b1: high
+      b2: high
+      c1: medium
+      c2: low  # advanced learners often have idiosyncratic stages
+    target_use_cases:
+      - "Diagnostic-driven syllabus (assess developmental stage → align instruction)"
+      - "Settings where teachers can observe learners over multiple lessons"
+      - "Combined with TBLT + FFI when learners are 'ready' for the target"
+      - "Setting realistic expectations about non-immediate effects of instruction"
+    contraindications:
+      - "Pure accessibility-hierarchy features (relative clauses) where higher-level instruction can pull learners up"
+      - "Settings without resources to assess each learner's stage"
+      - "Sole basis for syllabus (developmental sequence ≠ syllabus)"
+      - "Variational features (vocabulary, register) — teachable at any time, no readiness needed"
+    source: "Lightbown & Spada 2021, ch 6, pp. 247-256 (PDF), Studies 31-35"
+    confidence: high
+    lyster_relation: |
+      INDIRECT alignment with Lyster — Lyster's counterbalanced approach is
+      consistent with teaching-readiness in that it emphasizes proceduralizing
+      forms learners are "becoming aware of". Lyster argues for pushing
+      learners' interlanguage at recalcitrant plateaus (similar to teachability
+      framing for stuck stages). However, Lyster does NOT focus on Pienemann's
+      stage-based readiness — instead he emphasizes orientation-counterbalance
+      (form vs meaning) regardless of stage. Distinct dimension.
+
+  - id: get_it_right_in_the_end
+    name: "Get it right in the end"
+    short_definition: |
+      Form-focused instruction (FFI) and corrective feedback are essential
+      components within a primarily meaning-focused programme. Many features will
+      be acquired naturally with adequate exposure + motivation, BUT some aspects
+      must be taught (sometimes quite explicitly). Differs from 'Get it right
+      from beginning' in acknowledging that learners benefit from meaningful
+      language use from the very start. Differs from 'Teach what is teachable'
+      in emphasizing that some features must be taught and may need explicit
+      attention. L/S's ENDORSED framework — counterbalanced position.
+    theoretical_basis: |
+      Form-focused instruction within communicative/meaning-based context.
+      Noticing hypothesis (Schmidt). Skill acquisition theory (declarative-to-procedural).
+      Long's focus on form (FonF). Transfer-appropriate processing (TAP) — match
+      learning conditions to retrieval conditions. Counterbalance hypothesis
+      (Lyster & Mori 2006).
+    classroom_practices:
+      - "Communicative/content-based core with focused, planned, explicit attention to language"
+      - "Form-focused activities embedded in / alongside meaningful tasks"
+      - "Corrective feedback (recasts, prompts, explicit correction) responsive to learner errors"
+      - "Targeting features that share-L1 errors, salient differences, persistent plateaus"
+      - "Both isolated FFI (separated grammar) AND integrated FFI (within tasks) — complementary"
+      - "Awareness-raising: contrasts between L1 and L2, noticing tasks"
+      - "Collaborative dialogue / language-related episodes (LREs)"
+      - "Pronunciation FFI + immediate CF (Saito & Lyster type)"
+    research_evidence:
+      - study: "Study 36: Form-focus experiments in intensive ESL (Lightbown & Spada 1990, 1994; White 1991; White, Spada, Lightbown, Ranta 1991; Spada & Lightbown 1993; Spada, Lightbown, & White 2005; White 2008)"
+        finding: |
+          French-speaking Quebec intensive ESL Grade 5-6 (aged 10-12), 5 months
+          mostly communicative. Descriptive: teachers rarely focused on form;
+          learners had good comprehension/confidence but poor accuracy/complexity.
+          Experimental: Adverb FFI (~8 hrs over 2 wks, explicit teaching + CF) →
+          dramatic immediate gains, but DISAPPEARED 1 year later (rare in classroom
+          input). Question FFI → significant gains MAINTAINED 6 weeks AND 6 months
+          later (because hundreds of opportunities to hear/use questions daily).
+          Possessive determiners FFI: improved more on his/her than questions
+          because stronger form-meaning connection. Form-meaning salience matters.
+        l1_l2_pair: "L1 French / L2 English"
+      - study: "Study 37: Focusing on gender in French immersion (Harley 1998)"
+        finding: |
+          Grade 2 (7-8 yr), 6 classes, gender FFI 20 min/day for 5 weeks via
+          children's games modified to draw attention. Improved gender accuracy
+          on familiar nouns. Did NOT generalize to NEW nouns — too much new
+          vocabulary in later activities crowded out noun-ending pattern noticing.
+          Input on noun endings 'not available in sufficient quantity and
+          intensity' (p. 169).
+        l1_l2_pair: "L1 English / L2 French (children)"
+      - study: "Study 38: Focusing on sociolinguistic forms in French immersion (Lyster 1994)"
+        finding: |
+          Grade 8 French immersion (~13 yr), tu/vous + other forms, 12 hours over
+          5 weeks. Explicit instruction + role-plays + CF. Experimental classes
+          significantly outperformed comparison on written + oral production +
+          multiple-choice, gains MAINTAINED at 1 month. Sociolinguistic FFI
+          works (variational feature, Pienemann would say teachable any time).
+        l1_l2_pair: "L1 English / L2 French (adolescents)"
+      - study: "Study 39: Focus on language and content in mainstream social studies (Trahey 2016; Trahey & Spada 2020)"
+        finding: |
+          18 adolescent ELL, social studies-embedded FFI, 12 hrs over 15 weeks,
+          present tense + passive voice. Limited overall improvement immediately.
+          Higher-pretest learners did better on passive (more meaning-bearing,
+          frequent in academic texts, salient). Trahey concluded INTEGRATED FFI
+          may not be enough for some features; ISOLATED FFI may be needed (cf
+          Study 43). 'If learners allocate attentional resources to meaning before
+          form... they may attend more to content over language' (p. 234).
+        l1_l2_pair: "Mixed / L2 English (adolescents)"
+      - study: "Study 40: Form-focused instruction, CF, and pronunciation (Saito & Lyster 2012)"
+        finding: |
+          Japanese learners of English, target /r/. 3 groups: FFI only, FFI+CF
+          (explicit pronunciation-focused recasts), Control. 4 hours of meaning-based
+          activities ('English argumentative skills'). FFI+CF significantly improved
+          pronunciation /r/, FFI-only did not. Greater progress was LIMITED to
+          words exposed in instruction (no transfer to unfamiliar words). 'Students
+          need to (a) receive teachers' feedback on intelligibility (negative
+          evidence) and (b) practice the correct form in response to teachers' model
+          pronunciation (positive evidence)' (p. 627).
+        l1_l2_pair: "L1 Japanese / L2 English"
+      - study: "Study 41: Focus on form through collaborative dialogue (Swain & Lapkin 2002)"
+        finding: |
+          Grade 7 French immersion (~14 yr), collaborative story-writing + noticing
+          (compare with reformulated version) + stimulated recall. Recorded
+          language-related episodes (LREs) — talk about own language production.
+          Both learners more accurate on individual post-test version vs original.
+          Multiple opportunities to engage in collaborative talk → greater
+          understanding of correct use.
+        l1_l2_pair: "L1 English / L2 French"
+      - study: "Study 42: Focus on form in task-based instruction (Samuda 2001)"
+        finding: |
+          Adult ESL, 'meaning to form to meaning' progression task: identify
+          unknown person from objects → group presentations → posters. Teacher
+          shifted attention from meaning to form using students' own production
+          (e.g., '50% he smokes' → 'You're not certain he smokes' → 'must be a
+          businessman'). Increase in modal auxiliary use across task stages.
+          Task-based FFI works when teacher actively scaffolds form-meaning shift.
+        l1_l2_pair: "Mixed / L2 English (adults)"
+      - study: "Study 43: Timing of FFI — integrated vs isolated (Spada et al. 2014)"
+        finding: |
+          Adult intermediate ESL, passive voice, 12 hrs. Integrated FFI (form
+          attention embedded in communicative activities) vs Isolated FFI (form
+          separated from communication). Both improved. TAP-supportive: integrated
+          FFI learners outperformed isolated on ORAL communication task. Isolated
+          FFI learners outperformed integrated on WRITTEN grammar test. The two
+          types are COMPLEMENTARY — different conditions yield different
+          knowledge types.
+        l1_l2_pair: "Mixed / L2 English (adults)"
+      - study: "Study 44: Timing of CF — immediate vs delayed (Quinn 2014; Quinn & Nakata 2017; Li, Ellis, & Zhu 2016)"
+        finding: |
+          Adult intermediate ESL, passive voice, 90 learners. Immediate CF, delayed
+          CF, no CF. ALL groups improved (instruction effect). No clear advantage
+          for immediate vs delayed CF on most measures. Li et al. (2016) found
+          immediate CF better for explicit/declarative knowledge (grammaticality
+          judgement). One explanation: in Li study no prior instruction → CF less
+          salient than in Quinn's pre-instructed design.
+        l1_l2_pair: "Mixed / L2 English (adults)"
+    advantages:
+      - "Combines benefits of meaning-based instruction (fluency, motivation, communication) with form-focused needs (accuracy, persistent errors)"
+      - "Compatible with TBLT, immersion, content-based programmes (counterbalance)"
+      - "FFI especially effective for: shared-L1 errors, L1-L2 contrasts, salient form-meaning links"
+      - "Both isolated AND integrated FFI complementary (TAP)"
+      - "CF can be flexibly timed — immediate for explicit knowledge, delayed for retention"
+      - "Pronunciation FFI+CF effective when explicit recasts target intelligibility"
+    limitations:
+      - "FFI effects not always long-lasting (Study 36 adverbs disappeared at 1 year)"
+      - "Depends on continued exposure to target feature in classroom input"
+      - "Limited transfer to unfamiliar words/contexts (Saito & Lyster: no transfer beyond instruction-exposed words)"
+      - "Some features benefit more than others (form-meaning salience matters)"
+      - "When meaning is challenging/high-stakes, learners' attentional resources may not allocate to form (Trahey & Spada 2020)"
+      - "Implicit vs explicit knowledge measurement remains unresolved (Ellis et al. 2009)"
+    cefr_appropriateness:
+      a1: medium  # high if FFI is calibrated, medium because heavy meaning-base required
+      a2: high
+      b1: high
+      b2: high
+      c1: high
+      c2: medium  # advanced learners may need specialized FFI for fossilized errors
+    target_use_cases:
+      - "Communicative/content-based programmes wanting accuracy gains"
+      - "Shared-L1 classrooms with persistent transfer errors"
+      - "Quebec-style intensive ESL and immersion contexts"
+      - "Settings with both content and language objectives"
+      - "Mature learners needing pronunciation accuracy (Saito & Lyster)"
+      - "Plateau-stuck learners at any level"
+    contraindications:
+      - "Settings without communicative/meaning-focused base (becomes 'Get it right from beginning')"
+      - "Pure transmission classrooms unwilling to integrate form attention into tasks"
+      - "Features for which form-meaning connection is too weak/abstract (e.g. English article system)"
+    source: "Lightbown & Spada 2021, ch 6, pp. 256-269 (PDF), Studies 36-44"
+    confidence: high
+    lyster_relation: |
+      DIRECT ALIGNMENT — 'Get it right in the end' IS L/S's name for the
+      counterbalanced approach. They explicitly cite Lyster (1998, 2004),
+      Lyster & Saito (2010), Lyster & Mori (2006), Lyster 2007, Tedick & Lyster
+      (2020). The recommendation to 'provide learners with a variety of different
+      types of corrective feedback and to keep in mind the counterbalance
+      hypothesis presented in Chapter 5, which suggests that more explicit CF
+      may be effective in contexts where learners' attention is focused on
+      meaning/content, while implicit feedback may be sufficient to attract
+      learners' attention in contexts where the focus of instruction is typically
+      on language form (Lyster, 2007; Lyster & Mori, 2006)' is verbatim Lyster's
+      counterbalance principle. PROPOSAL 6 IS LYSTER COUNTERBALANCE OPERATIONALIZED
+      IN A 6-PROPOSAL DECISION FRAMEWORK.
+
+assessing_proposals:
+  l_s_summary_judgement: |
+    Although there is still much work to do, it seems evident that proposals
+    representing an almost exclusive focus on form OR those representing an almost
+    exclusive focus on meaning CANNOT BE RECOMMENDED. Approaches that provide
+    attention to form within communicative and content-based interaction receive
+    the most support from classroom research.
+
+    Grammar translation and audiolingual approaches will continue to be used, but
+    'Get it right from the beginning' does not correspond to the way the majority
+    of successful L2 learners have acquired their proficiency. On the other hand,
+    in throwing out contrastive analysis, feedback on error, and metalinguistic
+    explanations and guidance, the 'communicative revolution' may have gone too
+    far. There is increasing evidence that learners continue to have difficulty
+    with basic vocabulary and grammar in programmes that offer little or no
+    form-focused instruction. This calls into question extreme versions of the
+    'Just listen ... and read' and 'Get two for one' proposals.
+
+    The 'Let's talk' proposal raises similar concerns. Opportunities for
+    conversational interaction can lead to increased communicative competence,
+    however, learners may make slow progress on acquiring more accurate and
+    advanced language if there is no focus on form. This is especially true in
+    classes where students' shared language and learning backgrounds allow them
+    to communicate successfully in spite of their errors.
+
+    Research investigating 'Teach what is teachable' does NOT lead us to say
+    'Here is a list of features, teach them in this order'. The number studied
+    is too small. The principles that the developmental sequences are based on
+    require considerably more study before being mapped to instructional sequences.
+    What is most valuable: realistic expectations about how learners' interlanguage
+    may change in response to instruction. 'Teach what is teachable' is a powerful
+    reminder that genuine progress in L2 development must be measured in ways that
+    include — but are not limited to — increased accuracy in language production.
+
+    According to 'Get it right in the end', classroom activities should be built
+    primarily on creating opportunities for students to express and understand
+    meaningful language. However, this proposal is based on the hypothesis that
+    form-focused instruction and corrective feedback are also essential for
+    learners' continued growth and development. The challenge is to find the
+    BALANCE between meaning-based and form-focused activities. The right balance
+    is likely to be different according to the characteristics of the learners.
+    The learners' age, metalinguistic sophistication, prior educational
+    experiences, motivation, and goals, as well as the similarity of the target
+    language to a language they already know need to be taken into account when
+    decisions are made about the amount and type of form focus to offer.
+
+    Classroom data from a number of studies offer support for the view that
+    form-focused instruction and corrective feedback provided within the context
+    of communicative and content-based programmes are MORE EFFECTIVE in promoting
+    L2 learning than programmes that are limited to a virtually exclusive emphasis
+    on comprehension, fluency, OR accuracy. Thus, we would argue that L2 teachers
+    can (and should) provide guided, form-focused instruction and corrective
+    feedback in certain circumstances. For example, teachers should not hesitate
+    to correct persistent errors that learners seem not to notice without focused
+    attention. Teachers should also be especially aware of errors that the
+    majority of learners in a class are making when they share the same L1
+    background. They should not hesitate to provide contrastive information about
+    how a particular structure in a learner's L1 differs from — or is similar to —
+    the L2.
+  consensus_view: |
+    Most evidence supports a counterbalanced position (Proposal 6, 'Get it right
+    in the end'). Pure-form (P1) and pure-meaning (P2, P3, P4 in extreme form)
+    proposals receive less support than balanced approaches. P5 (teachability) is
+    a useful diagnostic / expectation-setting principle but not a syllabus.
+    L/S explicitly endorse Proposal 6 over the other 5 — Question for Reflection
+    #3 in the chapter ends: 'This chapter concludes with the suggestion that
+    "Get it right in the end" is the best approach. Is this consistent with your
+    own views?'
+  source: "Lightbown & Spada 2021, ch 6, pp. 271-275 (PDF) — section 'Assessing the proposals' + Summary"
+
+  summary_paragraph_quote: |
+    Many teachers are aware of the need to balance form focus and meaning focus,
+    and they may feel that recommendations based on research simply confirm their
+    current classroom practice. Although this may be true to some extent, it is
+    hardly the case that all teachers have a clear sense of how best to accomplish
+    their goal. ... it is not necessary to choose between form-based and
+    meaning-based instruction. Rather, the challenge is to find the best balance
+    between these two orientations.
+  summary_open_questions:
+    - "How can classroom instruction provide the right balance of meaning-based and form-focused instruction?"
+    - "Which features of language will respond best to form-focused instruction, and which will be acquired without explicit focus if learners have adequate access to the language?"
+    - "Which learners will respond well to metalinguistic information and which will require some other way of focusing attention on language form?"
+    - "When is it best to draw learners' attention to form — before, after, or during communicative practice?"
+    - "How should corrective feedback on language form be offered?"
+    - "When should learners be allowed to focus their attention on the content of their utterances?"
+  source_summary: "Lightbown & Spada 2021, ch 6, pp. 275-276 (PDF) — Summary section"
+
+cross_references:
+  lyster_2007_link: |
+    Proposal 4 'Get two for one' describes the SAME content-based settings (Quebec
+    French immersion, dual language, CLIL) Lyster 2007 analyzes and identifies the
+    SAME limitations (non-salient features, no negotiation, shared-L1 errors).
+    Proposal 6 'Get it right in the end' is L/S's name for Lyster's
+    counterbalanced approach — they cite Lyster 2007 + Lyster & Mori 2006
+    explicitly in the 'Interpreting the research' for the corrective feedback
+    section. Tedick & Lyster (2020) is cited in the 'Suggestions for further
+    reading' section for CAPA model + Counterbalanced Instruction.
+  pienemann_link: |
+    Proposal 5 'Teach what is teachable' is L/S's framing of Pienemann's
+    teachability hypothesis (1988) within processability theory (Pienemann 1998).
+    The developmental stages of English questions in Ch 2 are Pienemann's stages.
+    Studies 31, 32, 34, 35 are all within this framework.
+  inter_proposal_relationships:
+    p1_vs_p2: "Mutually exclusive in pure form (P1 form-only vs P2 meaning-only)"
+    p2_vs_p3: "P3 'Let's talk' adds interaction/output to P2's input-only stance (Swain output hypothesis vs Krashen input hypothesis)"
+    p3_vs_p4: "P4 'Get two for one' adds academic content as the meaning-purpose for P3 interaction"
+    p5_diagnostic: "P5 is a constraint principle applicable to any of P1-P4 instructional designs (when to teach what)"
+    p6_endorsed: "P6 synthesizes — meaning-based core (drawing from P2, P3, P4) + form-focused supplement informed by P5 readiness + L1-L2 contrast"
+
+caveats:
+  empirical_scope: |
+    Mixed empirical base across the 6 proposals: Quebec/Canada French immersion +
+    intensive ESL (Studies 26, 36-39 — same pool as Lyster 2007), USA dual-language
+    (Study 30), Hong Kong late immersion (Study 27), Spanish/Basque CLIL (Study 28),
+    Japan FL English (Studies 22, 40), Australian L2 German (Study 31), Adult ESL
+    Australian/intermediate (Studies 23, 35, 41-44). Age range broad (children 6-8
+    Shintani; adolescents 11-14 dominant; adults). NOT stratified by CEFR levels.
+    L/S do not perform CEFR mapping themselves.
+  inference_basis: |
+    CEFR mappings here are INFERRED from L/S's empirical observations on what
+    works for which learners (e.g., Shintani & Ellis comprehension-based
+    'especially beneficial in initial stages' → A1/A2 high for P2; Mackey
+    'readies' benefit more from interaction → B1+ for P3; FFI dependent on
+    learner readiness + L1-L2 contrast typical of B1-B2 → P6 high B1-C1).
+    Confidence: medium-low for CEFR mappings. L/S explicitly close the chapter
+    with the caveat that 'no single answer will be adequate for all learning
+    environments'.
+  l_s_endorsement_caveat: |
+    L/S clearly endorse Proposal 6 ('Get it right in the end' = counterbalanced)
+    over the other 5. Question for Reflection #3: 'This chapter concludes with
+    the suggestion that "Get it right in the end" is the best approach.' This is
+    L/S's explicit position consistent with Lyster 2007 (whom they cite). For
+    BIPED Step 1 cf_classifier, P6 is the synthesis target.
+  proposal_purity_caveat: |
+    L/S explicitly note (Activity 6.1 instructions): 'an activity may be
+    compatible with more than one teaching proposal'. The 6 proposals are
+    historical/theoretical types, not mutually exclusive in practice. Many
+    real-world classrooms blend multiple proposals. The decision framework is
+    about which proposal DOMINATES, not which is exclusive.
+
+# End of YAML
