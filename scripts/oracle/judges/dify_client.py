@@ -107,6 +107,29 @@ def build_full_dify_inputs(scenario, agent: str) -> dict:
     target_lang_name = {"en": "English", "es": "Español"}.get(target_lang, target_lang.upper())
     target_lang_prof = {"en": "d'anglais", "es": "d'espagnol"}.get(target_lang, "")
 
+    # Session 52 — BIPED Step 1 CF classifier (flag-gated, default OFF).
+    # Mirrors chat_router.py BIPED dispatch for harness/prod scope parity (Session 51 P0.1).
+    # On any error/timeout, classify_cf falls back to rule-based mapping (defensive).
+    cf_recommendation: dict | None = None
+    import os as _os_biped
+    if _os_biped.environ.get("BIPED_CF_CLASSIFIER_ENABLED", "false").lower() in ("1", "true", "yes"):
+        try:
+            from academie_core.pedagogy.cf_classifier import classify_cf as _classify_cf
+            import asyncio as _aio
+            cf_recommendation = _aio.run(_classify_cf(
+                learner_text=learner_text,
+                errors_detected=v2_errors,
+                level=level,
+                turn_count=turn_count,
+                lang=target_lang,
+            ))
+        except Exception as _cf_e:
+            import logging as _log
+            _log.getLogger("oracle.dify_client").warning(
+                "BIPED cf_classifier dispatch failed (chain not broken): %s", _cf_e,
+            )
+            cf_recommendation = None
+
     ctx = PromptContext(
         level=level,
         turn_count=turn_count,
@@ -119,6 +142,8 @@ def build_full_dify_inputs(scenario, agent: str) -> dict:
         self_efficacy=3,
         autonomy_pref="guided",
         post_qcm_welcome=False,
+        # Session 52 — BIPED Step 1 recommendation (None if BIPED disabled)
+        cf_recommendation=cf_recommendation,
     )
     sections = lang.build_dynamic_sections(ctx)
 
@@ -134,6 +159,19 @@ def build_full_dify_inputs(scenario, agent: str) -> dict:
         if k.startswith("_"):
             continue
         inputs[k] = v if isinstance(v, str) else ""
+
+    # Session 52 BIPED — same MVP pattern as scaffolding_block (chat_router.py):
+    # append cf_classifier_recommendation block to learner_profile_summary
+    # (already wired to llm_session), avoiding Dify workflow modification.
+    _cf_rec_block = inputs.get("cf_classifier_recommendation", "")
+    if _cf_rec_block:
+        _lps = inputs.get("learner_profile_summary", "")
+        inputs["learner_profile_summary"] = (
+            f"{_lps}\n\n{_cf_rec_block}" if _lps else _cf_rec_block
+        )
+    # Pop cf_classifier_recommendation key — Dify Start node doesn't have this var wired.
+    inputs.pop("cf_classifier_recommendation", None)
+
     return inputs
 
 

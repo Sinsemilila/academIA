@@ -994,6 +994,21 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
                 f"{_lps}\n\n{_sb}" if _lps else _sb
             )
 
+        # Session 52 BIPED Step 1 — same MVP pattern as scaffolding_block :
+        # append cf_classifier_recommendation block to learner_profile_summary
+        # (already wired to llm_session), avoiding Dify workflow modification.
+        # cf_classifier_recommendation_block is built by teacher_prompt.build_dynamic_sections
+        # only when ctx.cf_recommendation is non-None (i.e. when BIPED_CF_CLASSIFIER_ENABLED=true).
+        _cf_rec_block = dify_inputs.get("cf_classifier_recommendation", "")
+        if _cf_rec_block:
+            _lps = dify_inputs.get("learner_profile_summary", "")
+            dify_inputs["learner_profile_summary"] = (
+                f"{_lps}\n\n{_cf_rec_block}" if _lps else _cf_rec_block
+            )
+        # Pop cf_classifier_recommendation key — Dify Start node doesn't have this
+        # variable wired (we pass via learner_profile_summary instead).
+        dify_inputs.pop("cf_classifier_recommendation", None)
+
         # Sprint 5 Phase 3 — lang-specific inputs for the unified language-tutor chatflow.
         # Replaces hardcoded EN dicts (concept_hint_map + CEFR diagnostic examples) that
         # used to live inside Dify JS/prompts. Backend ships the full per-lang content
