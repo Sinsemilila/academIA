@@ -888,6 +888,42 @@ class PromptContext:
     priority_concepts: list[dict] | None = None
     # Session 38 — one-shot micro-lesson on 3-strikes detection (error_family name)
     three_strikes_family: str | None = None
+    # Session 52 — Tier 2 BIPED Step 1 CF classifier recommendation (cf_classifier.classify_cf output).
+    # Optional : if None, BIPED step 1 not active for this turn (legacy single-step path).
+    # Schema : {cf_move, target_concept, confidence, reasoning, source}
+    cf_recommendation: dict | None = None
+
+
+# ── BIPED Step 1 — CF recommendation block ─────────────────────────────
+
+
+def build_cf_recommendation_block(cf_rec: dict | None) -> str:
+    """Render BIPED step 1 classifier recommendation as a Dify-injectable block.
+
+    Empty string if cf_rec is None (BIPED disabled / single-step legacy path).
+
+    Block format injects clear directive to step 2 generator :
+      - which cf_move to use (enum)
+      - what target concept to address
+      - confidence + source (llm vs rule fallback)
+    """
+    if not cf_rec:
+        return ""
+    cf_move = cf_rec.get("cf_move", "silent")
+    concept = cf_rec.get("target_concept", "none")
+    conf = cf_rec.get("confidence", 0.0)
+    source = cf_rec.get("source", "unknown")
+    reasoning = cf_rec.get("reasoning", "")
+    return (
+        "=== CF CLASSIFIER RECOMMENDATION (BIPED Step 1) ===\n"
+        f"Recommended CF move : **{cf_move}**\n"
+        f"Target concept : {concept}\n"
+        f"Confidence : {conf:.2f} (source={source})\n"
+        f"Reasoning : {reasoning}\n"
+        "\nProduce your response USING THIS CF MOVE if confidence ≥ 0.7. "
+        "If confidence < 0.7, consult rubric tolerance for fallback decision.\n"
+        "=== END CF CLASSIFIER ==="
+    )
 
 
 def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = None) -> dict:
@@ -977,6 +1013,9 @@ def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = 
         ctx.three_strikes_family, ctx.level, ctx.target_lang,
     )
 
+    # Session 52 — BIPED Step 1 CF classifier recommendation (empty if disabled).
+    cf_recommendation_block = build_cf_recommendation_block(ctx.cf_recommendation)
+
     return {
         "rubric_for_level": rubric,
         "fewshots_block": fewshots,
@@ -989,6 +1028,7 @@ def build_dynamic_sections(ctx: PromptContext, lang_data: LanguageData | None = 
         "scaffolding_block": scaffolding_block,
         "priority_concepts_block": priority_concepts_block,
         "micro_lesson_block": micro_lesson_block,
+        "cf_classifier_recommendation": cf_recommendation_block,
         # Metadata for chat_router.py to log
         "_dosage_decision": dosage,
         "_scaffolding_cell": f"{ctx.level}|{distance}|{fla_band}",

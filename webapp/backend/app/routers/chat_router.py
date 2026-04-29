@@ -877,6 +877,29 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
                      "de": "Deutsch", "ja": "日本語", "ru": "русский"}
         _l1_display = _L1_NAMES.get((profile_l1 or "fr").lower(), "français")
 
+        # Session 52 — Tier 2 BIPED Step 1 CF classifier (flag-gated, default OFF).
+        # When enabled, classify_cf is called with current learner_input + errors before
+        # PromptContext assembly. Result is injected as `cf_classifier_recommendation`
+        # block in the Dify prompt for Step 2 generator.
+        # On any error/timeout, classify_cf falls back to rule-based mapping (defensive).
+        cf_recommendation: dict | None = None
+        if os.environ.get("BIPED_CF_CLASSIFIER_ENABLED", "false").lower() in ("1", "true", "yes"):
+            try:
+                from academie_core.pedagogy.cf_classifier import classify_cf as _classify_cf
+                cf_recommendation = await _classify_cf(
+                    learner_text=req.message or "",
+                    errors_detected=v2_errors,
+                    level=niveau or "B1",
+                    turn_count=turn_count,
+                    lang=lang.lang_target,
+                )
+            except Exception as _cf_e:
+                import logging
+                logging.getLogger("chat").warning(
+                    "BIPED cf_classifier dispatch failed (chain not broken): %s", _cf_e,
+                )
+                cf_recommendation = None
+
         ctx = PromptContext(
             level=niveau or "B1",
             turn_count=turn_count,
@@ -904,6 +927,8 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             priority_concepts=priority_concepts,
             # Session 38 — one-shot micro-lesson on 3-strikes (error_family or None)
             three_strikes_family=three_strikes_family,
+            # Session 52 — BIPED Step 1 CF classifier recommendation (None if BIPED disabled)
+            cf_recommendation=cf_recommendation,
         )
         sections = lang.build_dynamic_sections(ctx)
         for key, val in sections.items():
