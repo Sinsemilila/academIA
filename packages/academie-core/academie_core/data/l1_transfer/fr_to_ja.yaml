@@ -1,10 +1,16 @@
 # L1 transfer patterns: French → Japanese.
 # Prioritized by multiplier (higher = show first to LLM in L1 watch block).
-# STATUS: Session 51 expansion (12 entries) — needs native-JA speaker review
-#   before production activation. Currently STUB-EXPANDED.
-# Sources : I-JAS NINJAL (FR-L1 ~280 productions), JLPT N5-N2 official Japan Foundation
-#   specs, Tae Kim Guide, Imabi, Genki I/II, J-CHAT Yokohama corpus, ADR-011 native niveau.
-#   Per ADR-013 essential tier A1-B2 cap = JLPT N5-N2 only. Cf. vault/knowledge/multilang-japanese-research.md.
+# STATUS: Session 51 expansion (12 entries) — validation Pipeline 4-layer
+#   (cf vault/knowledge/multilang-validation-without-natives.md) :
+#   - Layer 1 authoritative : Japan Foundation JLPT N5-N2 specs (kanji lists + grammar points officials)
+#   - Layer 2 corpus : I-JAS NINJAL (Chunagon, ~280 FR-L1 productions — limited), J-CHAT Yokohama
+#     → synthetic compensation needed (GPT-4o-guided generation)
+#   - Layer 3 academic : Kanno 1996 JP L2, Kuno 1973 information structure, Tae Kim Guide,
+#     Imabi, Genki I/II textbook tradition
+#   - Layer 4 LLM cross-validation : GPT-4o + Claude (JP weakest among major langs but usable
+#     pour spot-check obvious errors) (TODO pre-prod)
+#   - Layer 5 oracle harness behavioral (TODO post-implementation)
+# Per ADR-013 essential tier A1-B2 cap = JLPT N5-N2 only. Cf. vault/knowledge/multilang-japanese-research.md.
 # Note: typological distance FR-JA = distant → scaffolding 70% L1 / 30% L2 attendu A1.
 l1: fr
 target: ja

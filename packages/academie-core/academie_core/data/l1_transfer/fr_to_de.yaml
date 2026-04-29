@@ -1,11 +1,14 @@
 # L1 transfer patterns: French → German.
 # Prioritized by multiplier (higher = show first to LLM in L1 watch block).
-# STATUS: Session 51 expansion (12 entries) — needs native-DE speaker review
-#   before production activation. Currently STUB-EXPANDED.
-# Sources : MERLIN-DE 1139 textes (FR-L1 subcorpus), Falko HU Berlin (C-level extension),
-#   Profile Deutsch (Glaboniat Klett ISBN 9783126065184), Pienemann/Diehl/Kessler PT for DE,
-#   ZISA original work, LanguageTool DE rules database (3000+ XML rules — goldmine for
-#   detector porting), Karagjosova IJLCR 2020 MERLIN-DE validation. Cf. vault/knowledge/multilang-german-research.md.
+# STATUS: Session 51 expansion (12 entries) — validation Pipeline 4-layer
+#   (cf vault/knowledge/multilang-validation-without-natives.md) :
+#   - Layer 1 authoritative : Profile Deutsch (Glaboniat Klett ISBN 9783126065184) + Goethe specs
+#   - Layer 2 corpus : MERLIN-DE 1139 textes (FR-L1 14 L1 filterable) + Falko HU Berlin (C1-C2 extension)
+#   - Layer 3 academic : Pienemann/Diehl/Kessler PT, ZISA original, Karagjosova IJLCR 2020,
+#     LanguageTool DE 3000+ rules (LGPL — license review needed avant import direct)
+#   - Layer 4 LLM cross-validation : GPT-4o native-quality DE (TODO pre-prod)
+#   - Layer 5 oracle harness behavioral (TODO post-implementation)
+# Cf. vault/knowledge/multilang-german-research.md pour bibliographie complète.
 l1: fr
 target: de
 transfers:

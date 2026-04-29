@@ -1,11 +1,14 @@
 # L1 transfer patterns: French → Italian.
 # Prioritized by multiplier (higher = show first to LLM in L1 watch block).
-# STATUS: Session 51 expansion (12 entries) — needs native-IT speaker review
-#   before production activation. Currently STUB-EXPANDED.
-# Sources : VALICO Torino corpus, MERLIN-IT (FR-L1 ~50-80 productions), Bagna et al.
-#   2017 Italian SLA, Pienemann/Di Biase/Bettoni Processability Theory IT, Paquet 2018
-#   typological near-identity, Cinque on clitic structures, Sorace 2011 syntax-pragmatics
-#   interface, Karagjosova IJLCR 2020. Cf. vault/knowledge/multilang-italian-research.md.
+# STATUS: Session 51 expansion (12 entries) — validation Pipeline 4-layer
+#   (cf vault/knowledge/multilang-validation-without-natives.md) :
+#   - Layer 1 authoritative : CILS Sillabo + Profilo della Lingua Italiana 2010
+#   - Layer 2 corpus : MERLIN-IT 813 textes (FR-L1 ~50-80) + VALICO Torino (FR-L1 explicit)
+#   - Layer 3 academic : Bagna 2017, Pienemann/Di Biase/Bettoni PT, Paquet 2018, Cinque,
+#     Sorace 2011, Karagjosova IJLCR 2020
+#   - Layer 4 LLM cross-validation pre-prod : GPT-4o + Claude IT-quality spot-check (TODO)
+#   - Layer 5 oracle harness behavioral validation (TODO post-implementation)
+# Cf. vault/knowledge/multilang-italian-research.md pour bibliographie complète.
 l1: fr
 target: it
 transfers:

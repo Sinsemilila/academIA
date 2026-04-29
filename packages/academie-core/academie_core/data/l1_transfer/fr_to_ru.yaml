@@ -1,10 +1,17 @@
 # L1 transfer patterns: French → Russian.
 # Prioritized by multiplier (higher = show first to LLM in L1 watch block).
-# STATUS: Session 51 expansion (12 entries) — needs native-RU speaker review
-#   before production activation. Currently STUB-EXPANDED.
-# Sources : RLC HSE (4M tokens error-tagged, FR-L1 subcorpus filterable), Pushkin Institute
-#   TORFL specs (TEU à TRKI-2 per ADR-013 essential tier), Gosstandart, "Дорога в Россию"
-#   textbook series, pymorphy3 + Natasha NLP stack. Cf. vault/knowledge/multilang-russian-research.md.
+# STATUS: Session 51 expansion (12 entries) — validation Pipeline 4-layer
+#   (cf vault/knowledge/multilang-validation-without-natives.md) :
+#   - Layer 1 authoritative : Pushkin Institute TORFL specs TEU-TRKI-2 (ADR-013 essential tier)
+#     + Gosstandart official Russian Federation standard
+#   - Layer 2 corpus : RLC HSE 4M tokens error-tagged (FR-L1 filterable, **best mature**
+#     situation parmi les 4 langues), "Дорога в Россию" textbook
+#   - Layer 3 academic : Krapivkina aspect studies, Frontiers 2023 cross-L1 aspect bottleneck
+#     confirmation, RuLEC + RLC published findings
+#   - Layer 4 LLM cross-validation : GPT-4o + Claude native-quality RU (TODO pre-prod).
+#     Geopolitical : éviter YandexGPT/GigaChat Russia-hosted, utiliser Whisper/Claude/GPT-4o
+#   - Layer 5 oracle harness behavioral (TODO post-implementation)
+# Cf. vault/knowledge/multilang-russian-research.md pour bibliographie complète.
 # Note: typological distance FR-RU = distant Slavic vs Romance, mais Indo-European same family
 #   → ~50% L2 A1 / 50% L1 scaffolding (mid-distance, easier than JP 30/70).
 l1: fr
