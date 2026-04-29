@@ -128,6 +128,54 @@ def load_micro_lessons(lang: str) -> dict[str, dict[str, str]]:
 
 
 @lru_cache(maxsize=16)
+def load_functions(lang: str) -> dict:
+    """Load communicative functions per CEFR level for a target language.
+
+    Phase D1 (Session 53) scope : Functions dimension scaffold. New top-level
+    dimension complementing structural curriculum_*.yaml (CEFR Companion 2020
+    organizes by Reception/Production/Interaction/Mediation modes ; PCIC has
+    13 inventarios including Funciones — communicative goals).
+
+    Returns full dict (domain + per-level functions). Empty if YAML absent.
+    Schema : `data/schemas.py:FunctionsPack`. See ADR-016 authority anchor strategy.
+    """
+    path = _DATA_DIR / "functions" / f"{lang}.yaml"
+    if not path.exists():
+        return {}
+    with open(path) as f:
+        data = yaml.safe_load(f)
+    return data or {}
+
+
+def build_functions_block(lang: str, level: str) -> str:
+    """Render functions block for a given CEFR level. Used by Dify chatflow.
+
+    Format :
+        Category : Function — Exponents
+    Example output for ES A1 :
+        Identificar : Yo soy..., Mi nombre es...
+        Pedir información : ¿Cómo te llamas? ¿Dónde vives?
+
+    Returns empty string if no functions defined for lang/level.
+    """
+    data = load_functions(lang)
+    if not data:
+        return ""
+    level_block = data.get(level, {})
+    funcs = level_block.get("functions", [])
+    if not funcs:
+        return ""
+    lines = []
+    for f in funcs:
+        category = f.get("category", "")
+        function = f.get("function", "")
+        exponents = f.get("exponents", [])
+        exp_str = " / ".join(exponents[:3])  # first 3 exponents max
+        lines.append(f"{category} → {function} : {exp_str}")
+    return "\n".join(lines)
+
+
+@lru_cache(maxsize=16)
 def load_cefr_diagnostics(lang: str) -> dict:
     """Load CEFR diagnostic question examples (paliers + microtasks + persona labels)
     for a target language. Empty dict if no YAML."""
