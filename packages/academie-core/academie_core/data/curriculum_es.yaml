@@ -1,18 +1,65 @@
 # Spanish curriculum — CEFR concepts + weights + groups per level.
-# DRAFT — sourced from PCIC (Plan Curricular Instituto Cervantes). Requires
-# native-speaker + pedagogy review before prod. 52 concepts total.
-# Format mirrors curriculum_anglais structure (used by Dify chatflow Teacher).
+#
+# Status : DRAFT (Session 53 honest annotation 2026-04-30) — original DRAFT
+# header pre-S52 claimed "sourced from PCIC" but PCIC was NOT acquired before
+# Session 52. Session 53 acquired PCIC Vol A (A1+A2) + Vol B (B1+B2) skimmed.
+# Vol C (C1+C2) acquisition pending (free `cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/`).
+#
+# Format mirrors curriculum_en.yaml structure (used by Dify chatflow Teacher).
 # Keys MUST match concept_hints/es.yaml and rules_es.py where applicable.
 #
 # weight = minutes estimées par concept (3 = léger, 5 = moyen, 8 = lourd)
 # group = thème fonctionnel pour les examens (regroupe concepts reliés)
+#
+# === GAPS IDENTIFIED Session 53 (vs PCIC + CEFR Companion 2020) ===
+# Action plan : see TODO.md "Phase C — P0 ES flagship audit" + see
+# `/root/sinse-vault/knowledge/books/cervantes-2006-plan-curricular-{a1-a2,b1-b2}.md`
+# for skim decisions + extraction plan.
+#
+# 1. Single dimension (grammar only) vs PCIC 13 inventarios per level
+#    (Gramática, Funciones, Pronunciación, Ortografía, Tácticas pragmáticas,
+#    Géneros discursivos, Nociones generales, Nociones específicas, Referentes
+#    culturales, Saberes y comportamientos socioculturales, Habilidades
+#    interculturales, Procedimientos de aprendizaje, Objetivos generales)
+# 2. ser/estar A1 generic (1 entry) — PCIC A1 stratifies into 7 subcategories
+#    (identidad / nacionalidad / origen / hora / fecha / posesión / cantidad)
+# 3. subjuntivo B1 = 2 entries (presente + temporal) — PCIC B1 has 12-15
+#    triggers stratified (volonté / émotion / duda / temporal / finalidad /
+#    condicional / concesivo / influencia). Judge cannot diagnose subjuntivo
+#    errors with 2 buckets.
+# 4. connectores_argumentativos B2 = 1 entry — PCIC B2 splits into 6 classes
+#    (causal / consecutivo / concesivo / final / temporal / contraargumentativo).
+#    Stratification critical for discourse-level scoring.
+# 5. verbos de cambio (ponerse / volverse / quedarse / hacerse / convertirse en)
+#    absent B1-B2 — PCIC B1-B2 dedicate dedicated subsection.
+# 6. Regional variation (voseo Río de la Plata / tuteo / vosotros peninsular)
+#    absent — PCIC default = panhispánico mais explicite. Decide flagship ES
+#    audience target before extraction.
+# 7. No FUNCTIONS dimension (PCIC Funciones inventario = pragmatic communicative
+#    goals — saludar, presentarse, expresar opinión, etc.) → Phase D.
+# 8. No PRAGMATIC STRATEGIES dimension (PCIC Tácticas = politeness, register,
+#    repair) → cross-ref Lyster cf-taxonomy.
+# 9. No CULTURAL inventario (PCIC Referentes culturales + Saberes
+#    socioculturales = 3 inventarios). Defer Phase D Phase 2.
+# 10. C1-C2 underspecified (8+5 concepts) — PCIC Vol C C1-C2 acquisition
+#     pending Sinse manual (free cvc.cervantes.es).
+#
+# Estimated post-Phase-C expansion : 52 concepts → ~120-150 concepts (still
+# Gramática-only ; +20-30 with Funciones, +30-50 with Nociones específicas).
 
 domain: es
 
 A1:
   description: "Acceso — survie communicative, présent indicatif, ser/estar basique, genre."
+  # TODO[S53-PCIC-audit Phase C]: ser_estar_basico generic — split into 7 PCIC A1
+  # subcategories (identidad / nacionalidad / origen / hora / fecha / posesión /
+  # cantidad). Action : during Phase C extract PCIC Vol A Gramática inventario A1
+  # ser/estar subsection → expand 1 key → 7 keys. Update concept_hints/es.yaml.
   concept_keys:
     - genero_masculino_femenino
+    # TODO[S53-PCIC-audit Phase C]: PCIC A1 gender includes irregularities
+    # (problema = m, mano = f, día = m, agua = f singular but el agua art).
+    # Hint should mention these. Add to concept_hints/es.yaml during expansion.
     - ser_estar_basico
     - presente_indicativo_regular
     - articulos_definidos
@@ -69,6 +116,14 @@ A2:
 
 B1:
   description: "Umbral — subjonctif triggers, imperfecto/indefinido, condicional, estilo indirecto."
+  # TODO[S53-PCIC-audit Phase C]: subjuntivo = 2 entries (presente + temporal).
+  # PCIC B1 has 12-15 triggers stratified (volonté / émotion / duda / temporal /
+  # finalidad / condicional / concesivo / influencia). Judge cannot diagnose
+  # subjuntivo errors with 2 buckets. Action : during Phase C extract PCIC Vol B
+  # Gramática inventario B1 subjuntivo subsection → split current 2 keys into 12-15.
+  # TODO[S53-PCIC-audit Phase C]: verbos de cambio (ponerse / volverse / quedarse /
+  # hacerse / convertirse en) absent — PCIC B1 dedicates a subsection. Add 5+
+  # concept_keys under new "verbos_cambio" subsection.
   concept_keys:
     - imperfecto_vs_indefinido
     - subjuntivo_presente
@@ -102,6 +157,13 @@ B1:
 
 B2:
   description: "Avanzado — subjonctif complexe, condicional compuesto, pasiva refleja, argumentation."
+  # TODO[S53-PCIC-audit Phase C]: conectores_argumentativos = 1 entry. PCIC B2
+  # splits into 6 classes (causal / consecutivo / concesivo / final / temporal /
+  # contraargumentativo). Stratification critical for discourse-level scoring.
+  # Action Phase C : split 1 → 6 keys + adjust weights + groups.
+  # TODO[S53-PCIC-audit Phase C]: voseo / tuteo / vosotros regional markers absent.
+  # Decision needed : flagship ES = panhispánico (PCIC default explicit) OR
+  # peninsular tuteo only ? Sinse review pre-Phase C.
   concept_keys:
     - condicional_compuesto
     - subjuntivo_imperfecto
