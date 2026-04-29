@@ -1,0 +1,280 @@
+# Salient features of CEFR levels — Council of Europe 2020 Companion Volume, Appendix 1.
+#
+# ADR-014 Layer 1.5 extraction (Session 53 Phase B, 2026-04-30).
+# Source : pp.173-175 (App 1) + p.175 Common Reference Levels table + pp.177-178 (App 2 Self-Assessment Grid).
+# Verbatim transcription with curated structure (level → key features + global descriptor).
+#
+# Use case : audit `data/curriculum_en.yaml` + `curriculum_es.yaml` against communicative
+# can-do salient features. Curriculum CEFR descriptions should align with these features.
+# Companion 2020 supersedes 2001 — ⚠️ pre-2020 EVP/Profile Deutsch/PCIC need cross-validation.
+
+source:
+  book: "Common European Framework of Reference for Languages — Companion Volume"
+  publisher: "Council of Europe Publishing"
+  year: 2020
+  edition: "First (Companion to CEFR 2001)"
+  pages_extracted: "173-175 (App 1) + 175 (Common Reference Levels) + 177-178 (App 2 Self-Assessment Reception+Production)"
+  url: "https://www.coe.int/en/web/common-european-framework-reference-languages"
+  notes: |
+    App 1 narrative descriptions of "salient features" per level — used to communicate
+    CEFR level meaning beyond just descriptor scales. Cross-references to "Threshold
+    Level" (van Ek/Trim 1990) and "Waystage" / "Vantage" specifications.
+    App 2 Self-Assessment Grid is verbatim CEFR 2001 + Online interaction additions 2020.
+
+# === A1 — Breakthrough =====================================================
+A1:
+  level_label: "Breakthrough"
+  band: "Basic user (lowest level of generative language use)"
+  global_descriptor: |
+    Can understand and use familiar everyday expressions and very basic phrases aimed
+    at the satisfaction of needs of a concrete type. Can introduce themselves and
+    others and can ask and answer questions about personal details such as where
+    someone lives, people they know and things they have. Can interact in a simple
+    way provided the other person talks slowly and clearly and is prepared to help.
+  salient_features: |
+    The point at which the learner can "interact in a simple way, ask and answer
+    simple questions about themselves, where they live, people they know, and things
+    they have, initiate and respond to simple statements in areas of immediate need
+    or on very familiar topics", rather than relying purely on a very finite
+    rehearsed, lexically organised repertoire of situation-specific phrases.
+  key_can_dos:
+    - "interact in a simple way"
+    - "ask and answer simple questions about themselves"
+    - "talk about where they live, people they know, things they have"
+    - "initiate and respond to simple statements in areas of immediate need"
+
+# === A2 — Waystage =========================================================
+A2:
+  level_label: "Waystage"
+  band: "Basic user"
+  global_descriptor: |
+    Can understand sentences and frequently used expressions related to areas of
+    most immediate relevance (e.g. very basic personal and family information,
+    shopping, local geography, employment). Can communicate in simple and routine
+    tasks requiring a simple and direct exchange of information on familiar and
+    routine matters. Can describe in simple terms aspects of their background,
+    immediate environment and matters in areas of immediate need.
+  salient_features: |
+    Reflects "Waystage" specification. Majority of descriptors stating social
+    functions found here. Transactional specifications include shopping, post offices,
+    banks, public transport, asking for goods and services.
+  key_can_dos:
+    social_functions:
+      - "use simple everyday polite forms of greeting and address"
+      - "greet people, ask how they are and react to news"
+      - "handle very short social exchanges"
+      - "ask and answer questions about what people do at work and in free time"
+      - "make and respond to invitations"
+      - "discuss what to do, where to go and make arrangements to meet"
+      - "make and accept offers"
+    transactional_get_around:
+      - "make simple transactions in shops, post offices or banks"
+      - "get simple information about travel"
+      - "use public transport: buses, trains, and taxis, ask for basic information, ask and give directions, and buy tickets"
+      - "ask for and provide everyday goods and services"
+
+A2_plus:
+  level_label: "Strong Waystage"
+  band: "Basic user (transition)"
+  salient_features: |
+    More active participation in conversation given some assistance and certain limitations.
+    Significantly greater ability to sustain monologues.
+  key_can_dos:
+    interaction:
+      - "initiate, maintain and close simple, restricted face-to-face conversation"
+      - "understand enough to manage simple, routine exchanges without undue effort"
+      - "make themselves understood and exchange ideas and information on familiar topics in predictable everyday situations, provided the other person helps if necessary"
+      - "communicate successfully on basic themes if they can ask for help to express what they want to"
+      - "deal with everyday situations with predictable content, though they will generally have to compromise the message and search for words/signs"
+      - "interact with reasonable ease in structured situations, given some help, but participation in open discussion is fairly restricted"
+    monologue:
+      - "express how they feel in simple terms"
+      - "give an extended description of everyday aspects of their environment, e.g. people, places, a job or study experience"
+      - "describe past activities and personal experiences"
+      - "describe habits and routines"
+      - "describe plans and arrangements"
+      - "explain what they like or dislike about something"
+      - "give short, basic descriptions of events and activities"
+      - "describe pets and possessions"
+      - "use simple descriptive language to make brief statements about and compare objects and possessions"
+
+# === B1 — Threshold ========================================================
+B1:
+  level_label: "Threshold"
+  band: "Independent user"
+  global_descriptor: |
+    Can understand the main points of clear standard input on familiar matters
+    regularly encountered in work, school, leisure, etc. Can deal with most situations
+    likely to arise while travelling in an area where the language is spoken. Can
+    produce simple connected text on topics which are familiar or of personal interest.
+    Can describe experiences and events, dreams, hopes & ambitions and briefly give
+    reasons and explanations for opinions and plans.
+  salient_features: |
+    Reflects "Threshold Level" specification for a visitor to a foreign country.
+    Two key features : (1) ability to maintain interaction and get across what you
+    want to, in a range of contexts ; (2) ability to cope flexibly with problems in
+    everyday life.
+  key_can_dos:
+    interaction_main_feature:
+      - "generally follow the main points of extended discussion around them, provided people articulate clearly in standard language"
+      - "give or seek personal views and opinions in an informal discussion with friends"
+      - "express the main point they want to make comprehensibly"
+      - "exploit a wide range of simple language flexibly to express much of what they want to"
+      - "maintain a conversation or discussion but may sometimes be difficult to follow when trying to express exactly what they would like to"
+      - "keep going comprehensibly, even though pausing for grammatical and lexical planning and repair is very evident, especially in longer stretches of free production"
+    coping_flexibly:
+      - "cope with less routine situations on public transport"
+      - "deal with most situations likely to arise when making travel arrangements through an agent or when actually travelling"
+      - "enter unprepared into conversations on familiar topics"
+      - "make a complaint"
+      - "take some initiatives in an interview/consultation (e.g. to bring up a new subject) but is very dependent on interviewer in the interaction"
+      - "ask someone to clarify or elaborate what they have just said"
+
+B1_plus:
+  level_label: "Strong Threshold"
+  band: "Independent user (transition)"
+  salient_features: |
+    Two main features of B1 still present, plus addition of descriptors focusing on
+    exchange of "quantities" of information.
+  key_can_dos:
+    - "take messages communicating enquiries, explaining problems"
+    - "provide concrete information required in an interview/consultation (e.g. describe symptoms to a doctor) but does so with limited precision"
+    - "explain why something is a problem"
+    - "summarise and give their opinion about a short story, article, talk, discussion, interview or documentary and answer further questions of detail"
+    - "carry out a prepared interview, checking and confirming information, though they may occasionally have to ask for repetition if the other person's response is rapid or extended"
+    - "describe how to do something, giving detailed instructions"
+    - "exchange accumulated factual information on familiar routine and non-routine matters within their field with some confidence"
+
+# === B2 — Vantage ==========================================================
+B2:
+  level_label: "Vantage"
+  band: "Independent user"
+  global_descriptor: |
+    Can understand the main ideas of complex text on both concrete and abstract topics,
+    including technical discussions in their field of specialisation. Can interact with
+    a degree of fluency and spontaneity that makes regular interaction with users of the
+    target language quite possible without imposing strain on either party. Can produce
+    clear, detailed text on a wide range of subjects and explain a viewpoint on a topical
+    issue giving the advantages and disadvantages of various options.
+  salient_features: |
+    NEW LEVEL — represents a "break with the content so far" — a "new threshold for a
+    language learner to cross". Three new focuses : (1) effective argument ; (2) holding
+    own in social discourse ; (3) language awareness.
+  key_can_dos:
+    effective_argument:
+      - "account for and sustain their opinions in discussion by providing relevant explanations, arguments and comments"
+      - "explain a viewpoint on a topical issue giving the advantages and disadvantages of various options"
+      - "construct a chain of reasoned argument"
+      - "develop an argument giving reasons in support of or against a particular point of view"
+      - "explain a problem and make it clear that their counterpart in a negotiation must make a concession"
+      - "speculate about causes, consequences, hypothetical situations"
+      - "take an active part in informal discussion in familiar contexts, commenting, putting their point of view clearly, evaluating alternative proposals and making and responding to hypotheses"
+    social_discourse:
+      - "converse naturally, fluently and effectively"
+      - "understand in detail what is said to them in the standard language even in an [audially/visually] noisy environment"
+      - "initiate discourse, take their turn when appropriate and end conversation when they need to, though they may not always do this elegantly"
+      - "use stock phrases (e.g. 'That's a difficult question to answer') to gain time and keep the turn while formulating what to say"
+      - "interact with a degree of fluency and spontaneity that makes regular interaction with users of the target language quite possible without imposing strain on either party"
+      - "adjust to the changes of direction, style and emphasis normally found in conversation"
+      - "sustain relationships with users of the target language without unintentionally amusing or irritating them or requiring them to behave other than they would with another proficient user"
+    language_awareness:
+      - "correct mistakes if they have led to misunderstandings"
+      - "make a note of their recurrent mistakes and consciously monitor their language"
+      - "generally correct slips and errors if they become conscious of them"
+      - "plan what is to be said and the means to say it, considering the effect on the recipient(s)"
+
+B2_plus:
+  level_label: "Strong Vantage"
+  band: "Independent user (transition)"
+  salient_features: |
+    Argument, effective social discourse and language awareness continue. New focus on
+    discourse skills via conversational management (co-operating strategies) + cohesion
+    + concentration on negotiating.
+  key_can_dos:
+    discourse_management:
+      - "give feedback on and follow up statements and inferences by others and so help the development of discussion"
+      - "relate own contribution skilfully to those of others"
+    cohesion:
+      - "use a limited number of cohesive devices to link sentences together smoothly into clear, connected discourse"
+      - "use a variety of linking expressions efficiently to mark clearly the relationships between ideas"
+      - "develop an argument systematically with appropriate highlighting of significant points, and relevant supporting detail"
+    negotiating:
+      - "outline a case for compensation, using persuasive language and simple arguments to demand satisfaction"
+      - "state clearly the limits to a concession"
+
+# === C1 — Effective Operational Proficiency ===============================
+C1:
+  level_label: "Effective Operational Proficiency"
+  band: "Proficient user"
+  global_descriptor: |
+    Can understand a wide range of demanding, longer texts, and recognise implicit
+    meaning. Can express themselves fluently and spontaneously without much obvious
+    searching for expressions. Can use language flexibly and effectively for social,
+    academic and professional purposes. Can produce clear, well-structured, detailed
+    text on complex subjects, showing controlled use of organisational patterns,
+    connectors and cohesive devices.
+  salient_features: |
+    Characterised by good access to a broad range of language, which allows fluent,
+    spontaneous communication. Continuation of B2 discourse skills with emphasis on
+    more fluency.
+  key_can_dos:
+    - "Can express themselves fluently and spontaneously, almost effortlessly"
+    - "Has a good command of a broad lexical repertoire allowing gaps to be readily overcome with circumlocutions"
+    - "There is little obvious searching for expressions or avoidance strategies"
+    - "Only a conceptually difficult subject can hinder a natural, smooth flow of language"
+    - "select a suitable phrase from a fluent repertoire of discourse functions to preface their remarks in order to get the floor, or to gain time and keep it while thinking"
+    - "produce clear, smoothly flowing, well-structured language, showing controlled use of organisational patterns, connectors and cohesive devices"
+
+# === C2 — Mastery ==========================================================
+C2:
+  level_label: "Mastery"
+  band: "Proficient user (highest)"
+  global_descriptor: |
+    Can understand virtually all types of texts. Can summarise information from
+    different oral and written sources, reconstructing arguments and accounts in a
+    coherent presentation. Can express themselves spontaneously, very fluently and
+    precisely, differentiating finer shades of meaning even in more complex situations.
+  salient_features: |
+    NOT intended to imply native-speaker or near native-speaker competence. Characterises
+    the degree of precision, appropriateness and ease with the language that typifies
+    the speech of those who have been highly successful learners.
+  important_clarification: "C2 is NOT native-speaker level — it is highly successful learner level"
+  key_can_dos:
+    - "convey finer shades of meaning precisely by using, with reasonable accuracy, a wide range of modification devices"
+    - "has a good command of idiomatic expressions and colloquialisms with awareness of connotative levels of meaning"
+    - "backtrack and restructure around a difficulty so smoothly the interlocutor is hardly aware of it"
+
+# === Self-assessment grid (App 2 — 2020 expanded with online interaction) ===
+# Use case : direct seed for `cefr_diagnostics_*.yaml` paliers_first_question.
+self_assessment_grid:
+  source: "Companion Volume App 2 (pp. 177-178)"
+  reception:
+    oral_comprehension:
+      A1: "I can recognise familiar words and very basic phrases concerning myself, my family and immediate concrete surroundings when people speak slowly and clearly."
+      A2: "I can understand phrases and the highest frequency vocabulary related to areas of most immediate personal relevance (e.g. very basic personal and family information, shopping, local geography, employment). I can catch the main point in short, clear, simple messages and announcements."
+      B1: "I can understand the main points of clear standard language on familiar matters regularly encountered in work, school, leisure, etc. I can understand the main point of many radio or TV programmes on current affairs or topics of personal or professional interest when the delivery is relatively slow and clear."
+      B2: "I can understand extended talk and lectures and follow even complex lines of argument provided the topic is reasonably familiar. I can understand most TV news and current affairs programmes. I can understand the majority of films in standard language."
+      C1: "I can understand extended talk even when it is not clearly structured and when relationships are only implied and not signalled explicitly. I can understand television programmes and films without too much effort."
+      C2: "I have no difficulty in understanding any kind of oral language, whether live or broadcast, even when delivered at fast natural speed, provided I have some time to get familiar with the accent."
+    reading_comprehension:
+      A1: "I can understand familiar names, words/signs and very simple sentences, for example on notices and posters or in catalogues."
+      A2: "I can read very short, simple texts. I can find specific, predictable information in simple everyday material such as advertisements, prospectuses, menus and timetables, and I can understand short simple personal letters."
+      B1: "I can understand texts that consist mainly of high frequency everyday or job-related language. I can understand the description of events, feelings and wishes in personal letters."
+      B2: "I can read articles and reports concerned with contemporary problems in which the writers adopt particular stances or viewpoints. I can understand contemporary literary prose."
+      C1: "I can understand long and complex factual and literary texts, appreciating distinctions of style. I can understand specialised articles and longer technical instructions, even when they do not relate to my field."
+      C2: "I can read with ease virtually all forms of the written/signed language, including abstract, structurally or linguistically complex texts, such as manuals, specialised articles and literary works."
+  production:
+    oral_production:
+      A1: "I can use simple phrases and sentences to describe where I live and people I know."
+      A2: "I can use a series of phrases and sentences to describe in simple terms my family and other people, living conditions, my educational background and my present or most recent job."
+      B1: "I can connect phrases in a simple way in order to describe experiences and events, my dreams, hopes and ambitions. I can briefly give reasons and explanations for opinions and plans. I can narrate a story or relate the plot of a book or film and describe my reactions."
+      B2: "I can present clear, detailed descriptions on a wide range of subjects related to my field of interest. I can explain a viewpoint on a topical issue giving the advantages and disadvantages of various options."
+      C1: "I can present clear, detailed descriptions of complex subjects integrating sub-themes, developing particular points and rounding off with an appropriate conclusion."
+      C2: "I can present a clear, smoothly flowing description or argument in a style appropriate to the context and with an effective logical structure that helps the recipient notice and remember significant points."
+    written_production:
+      A1: "I can produce simple isolated phrases and sentences."
+      A2: "I can produce a series of simple phrases and sentences linked with simple connectors like 'and', 'but' and 'because'."
+      B1: "I can produce straightforward connected text on topics that are familiar or of personal interest."
+      B2: "I can produce clear, detailed text on a wide range of subjects related to my interests. I can produce an essay or report, passing on information or giving reasons in support of or against a particular point of view."
+      C1: "I can express myself in clear, well-structured text, expressing points of view at some length. I can produce detailed expositions of complex subjects in an essay or a report, underlining what I consider to be the salient issues. I can produce different kinds of texts in a style appropriate to the reader I have in mind."
+      C2: "I can produce clear, smoothly flowing text in an appropriate style. I can produce complex letters, reports or articles which present a case with an effective logical structure that helps the recipient notice and remember significant points. I can produce summaries and reviews of professional or literary works."

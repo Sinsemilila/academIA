@@ -1,0 +1,137 @@
+# Substantive changes to specific descriptors published in 2001 — Council of Europe 2020 Companion Volume, Appendix 7.
+#
+# ADR-014 Layer 1.5 extraction (Session 53 Phase B, 2026-04-30).
+# Source : p.257 (App 7).
+# Format : track-changes — strikethrough = removed, additions in red.
+# Use case : audit doc curriculum_en/es to see if AcademIA inherited 2001-era descriptors
+#   that need 2020 update (mainly inclusivity language + sign language + nuanced wording).
+
+source:
+  book: "CEFR Companion Volume — Appendix 7 Substantive Changes"
+  page: 257
+  scope: "Specific descriptors revised between 2001 (original CEFR) and 2020 (Companion)"
+
+# Major patterns of revision (synthesized from App 7 entries) :
+patterns:
+  inclusivity:
+    - description: "Replace 'native speaker' / 'native speakers' with 'users of the target language' or 'speakers/signers of the target language'"
+      rationale: "Avoid privileging native speakers as norm ; recognize that target language users include non-native proficient users"
+      affected_descriptors_count_approx: 9
+    - description: "Add 'signers' alongside 'speakers' to include sign languages explicitly"
+      rationale: "Companion 2020 explicitly includes signed languages — Ch 6 dedicated to signing competences"
+      affected_descriptors_count_approx: 7
+  precision:
+    - description: "C2 'Has no difficulty with' → 'Can understand with ease virtually'"
+      rationale: "C2 is not native — hedge claim slightly to reflect 'highly successful learner' not 'native-like'"
+    - description: "C2 'fast native speed' → 'fast natural speed'"
+      rationale: "Decouple proficiency target from native speaker reference"
+    - description: "C2 'Appreciates fully virtually all the sociolinguistic and sociocultural implications' → 'Appreciates virtually all'"
+      rationale: "Remove redundancy 'fully virtually all'"
+    - description: "C2 'Can follow specialised lectures... employing a high degree of colloquialism' → '... employing colloquialism'"
+      rationale: "Simplify ; 'high degree of' was unnecessary qualification"
+  community_of_origin:
+    - description: "'their own community of origin' → 'their own community'"
+      rationale: "Remove origin-based assumption ; user may belong to community without being from it"
+  effortless_to_effortless:
+    - description: "'with complete effortless fluency' → 'with effortless fluency' (C2)"
+      rationale: "Stylistic — 'complete effortless' was redundant"
+
+# Specific descriptor changes (verbatim from App 7) :
+descriptor_changes:
+  overall_oral_comprehension:
+    title_change: "Overall listening/oral comprehension → Overall oral comprehension"
+    note: "'listening' removed (oral comprehension already implies listening — 'oral' is more inclusive of audio modality)"
+    descriptors:
+      - level: "C2"
+        old: "Has no difficulty with any kind of spoken language, whether live or broadcast, delivered at fast native speed."
+        new: "Can understand with ease virtually any kind of spoken/signed language, whether live or broadcast, delivered at fast natural speed."
+
+  understanding_conversation_between_speakers_of_target_language:
+    title_change: "Understanding conversation between other native people → Understanding conversation between speakers/signers of the target language"
+    descriptors:
+      - level: "B2+"
+        old: "Can keep up with an animated conversation between native speakers."
+        new: "Can keep up with an animated conversation between speakers/signers of the target language."
+      - level: "B2"
+        old: "Can with some effort catch much of what is said around them, but may find it difficult to participate effectively in discussion with several native speakers who do not modify their language in any way."
+        new: "Can with some effort catch much of what is said around them, but may find it difficult to participate effectively in discussion with several speakers/signers of the target language who do not modify their language in any way."
+
+  understanding_as_member_of_live_audience:
+    title_change: "Listening as a member of a live audience → Understanding as a member of a live audience"
+    descriptors:
+      - level: "C2"
+        old: "Can follow specialised lectures and presentations employing a high degree of colloquialism, regional usage or unfamiliar terminology."
+        new: "Can follow specialised lectures and presentations employing colloquialism, regional usage or unfamiliar terminology."
+
+  overall_reading_comprehension:
+    descriptors:
+      - level: "C2"
+        old: "Can understand and interpret critically virtually all forms of the written language including abstract, structurally complex, or highly colloquial literary and non-literary writings."
+        new: "Can understand virtually all types of written/signed texts including abstract, structurally complex, or highly colloquial literary and non-literary writings."
+
+  overall_oral_interaction:
+    descriptors:
+      - level: "B2"
+        old: "Can interact with a degree of fluency and spontaneity that makes regular interaction, and sustained relationships with native speakers quite possible without imposing strain on either party. Can highlight the personal significance of events and experiences, account for and sustain views clearly by providing relevant explanations and arguments."
+        new: "Can interact with a degree of fluency and spontaneity that makes regular interaction, and sustained relationships with speakers/signers of the target language quite possible without imposing strain on either party. Can highlight the personal significance of events and experiences, account for and sustain views clearly by providing relevant explanations and arguments."
+
+  understanding_an_interlocutor:
+    title_change: "Understanding a native speaker an interlocutor → Understanding an interlocutor"
+    descriptors:
+      - level: "C2"
+        old: "Can understand any native-speaker interlocutor, even on abstract and complex topics of a specialist nature beyond their own field, given an opportunity to adjust to a non-standard accent or dialect."
+        new: "Can understand any interlocutor, even on abstract and complex topics of a specialist nature beyond their own field, given an opportunity to adjust to a less familiar variety."
+
+  conversation:
+    descriptors:
+      - level: "B2"
+        old: "Can sustain relationships with native speakers without unintentionally amusing or irritating them or requiring them to behave other than they would with another native speaker."
+        new: "Can sustain relationships with users of the target language without unintentionally amusing or irritating them or requiring them to behave other than they would with another proficient speaker/signer."
+
+  informal_discussion_with_friends:
+    descriptors:
+      - level: "B2+"
+        old: "Can keep up with an animated discussion between native speakers."
+        new: "Can keep up with an animated discussion between speakers/signers of the target language."
+      - level: "B2"
+        old: "Can with some effort catch much of what is said around them in discussion, but may find it difficult to participate effectively in discussion with several native speakers who do not modify their language in any way."
+        new: "Can with some effort catch much of what is said around them in discussion, but may find it difficult to participate effectively in discussion with several speakers/signers of the target language who do not modify their language in any way."
+
+  formal_discussion_meetings:
+    descriptors:
+      - level: "C2"
+        old: "Can hold their own in formal discussion of complex issues, putting forward an articulate and persuasive argument, at no disadvantage to native speakers."
+        new: "Can hold their own in formal discussion of complex issues, putting forward an articulate and persuasive argument, at no disadvantage to other participants."
+
+  interviewing_and_being_interviewed:
+    descriptors:
+      - level: "C2"
+        old: "Can keep up their side of the dialogue extremely well, structuring the talk and interacting authoritatively with complete effortless fluency as interviewer or interviewee, at no disadvantage to native speakers."
+        new: "Can keep up their side of the dialogue extremely well, structuring the talk and interacting authoritatively with effortless fluency as interviewer or interviewee, at no disadvantage to other participants."
+
+  sociolinguistic_appropriateness:
+    descriptors:
+      - level: "C2_a"
+        old: "Can mediate effectively and naturally between speakers of the target language and of their own community of origin, taking account of sociocultural and sociolinguistic differences."
+        new: "Can mediate effectively and naturally between speakers/signers of the target language and of their own community, taking account of sociocultural and sociolinguistic differences."
+      - level: "C2_b"
+        old: "Appreciates fully virtually all the sociolinguistic and sociocultural implications of language used by native speakers and can react accordingly."
+        new: "Appreciates virtually all the sociolinguistic and sociocultural implications of language used by proficient speakers/signers of the target language and can react accordingly."
+      - level: "B2"
+        old: "Can sustain relationships with native speakers without unintentionally amusing or irritating them or requiring them to behave other than they would with another native speaker."
+        new: "Can sustain relationships with users of the target language without unintentionally amusing or irritating them or requiring them to behave other than they would with another proficient speaker."
+
+  fluency:
+    title_change: "Spoken Fluency → Fluency"
+    note: "Removed 'spoken' to include written and signed fluency"
+    descriptors:
+      - level: "B2"
+        old: "Can interact with a degree of fluency and spontaneity that makes regular interaction with native speakers quite possible without imposing strain on either party."
+        new: "Can interact with a degree of fluency and spontaneity that makes regular interaction with users of the target language quite possible without imposing strain on either party."
+
+# Implications for AcademIA curriculum_en + curriculum_es :
+implications:
+  - "Replace any 'native speaker' references in rubrics/fewshots/curriculum descriptions with 'speakers of the target language' / 'users of the target language' / 'proficient speakers'"
+  - "Add signing language awareness IF AcademIA target audience includes signed-language learners (currently no signed-language scope per ADR-013)"
+  - "C2 should be framed as 'highly successful learner' NOT 'near-native' (curriculum_en C2 description currently says 'near-native, pragmatic nuance' — REVISE)"
+  - "Add Mediation 4th skill mode (Companion 2020 NEW) — see App 8 supplementary descriptors covering Online interaction + Goal-oriented online transactions + Establishing positive atmosphere + Processing text + Visually representing information + Pluricultural space + Creative texts response"
