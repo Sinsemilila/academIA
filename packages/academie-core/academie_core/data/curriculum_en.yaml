@@ -1,17 +1,36 @@
 # English curriculum — CEFR concepts + weights + groups per level.
-# Sourced from : CEFR 2020 Companion Volume, Cambridge English Profile (EVP),
-#   Hughes & Reed B2-C2 grammars, concept_hints/en.yaml (20 concepts) +
-#   rubrics/en.yaml "Target structures" sections per level.
+#
+# Source attribution (Session 53 honest annotation 2026-04-30) :
+#   PRE-S52 : authored without primary sources (header claimed CEFR Companion
+#   Volume + Cambridge English Profile EVP + Hughes & Reed B2-C2 grammars but
+#   NONE were acquired). Marked DRAFT-without-validation.
+#   POST-S53 : 4 authority anchors now skimmed (Hawkins/Filipović 2012 Criterial
+#   Features L2 English ⭐⭐⭐ + CEFR Companion 2020 ⭐⭐ + EVP/EGP signup pending).
+#   Phase B audit pending : align concept_keys + weights with Hawkins Ch 9.1
+#   horizontal summary + CEFR Companion App 1 salient features.
+#   See TODO.md "Phase B — P0 EN flagship audit" + `/root/sinse-vault/knowledge/
+#   books/hawkins-filipovic-2012-criterial-features-l2-english.md` skim decision.
+#
 # Format mirrors curriculum_es.yaml (used by Dify chatflow Teacher +
 # error_analysis_router).
-# Keys MUST match concept_hints/en.yaml where present (additional structural keys
-# introduced here are documented in comments).
+# Keys MUST match concept_hints/en.yaml (Session 53 expansion : 20→105 entries,
+# 100% coverage). Schema validation via `data/schemas.py:CurriculumPack`.
 #
-# Updated : Session 41 (2026-04-23) — merge from DB taxonomy (53 → 94 concepts).
-# See `scripts/sprint6/19_curriculum_en_apply_merge.py` for canonical source of truth.
+# Concept count history :
+#   Session 41 (2026-04-23) : 53 → 94 concepts (DB taxonomy merge,
+#     `scripts/sprint6/19_curriculum_en_apply_merge.py`)
+#   Session 53 (2026-04-30) : 105 concepts confirmed (count drift documented)
 #
 # weight = minutes estimées par concept (3 = léger, 5 = moyen, 8 = lourd)
 # group = thème fonctionnel pour les examens (regroupe concepts reliés)
+#
+# === L1 transfer integration (FR L1 baseline) ===
+# Cross-reference : `data/l1_transfer/fr_to_en.yaml` (12 entries, S51 expansion).
+# Already consumed by `pedagogy/teacher_prompt.py:457` (module load) +
+# `teacher_prompt.py:488` (per-session load_l1_transfers(l1_code, target_code)).
+# Family mapping : `taxonomy/categories.py:50` ("l1_transfer": [PREP:CALQUE,
+# SPELL:COGNATE]). Phase D extension : add en_to_es, es_to_en, etc. when user
+# base diversifies beyond FR L1 dominant.
 
 domain: en
 A1:

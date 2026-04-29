@@ -46,6 +46,17 @@
 #
 # Estimated post-Phase-C expansion : 52 concepts → ~120-150 concepts (still
 # Gramática-only ; +20-30 with Funciones, +30-50 with Nociones específicas).
+#
+# === L1 transfer integration (FR L1 baseline) ===
+# Cross-reference : `data/l1_transfer/fr_to_es.yaml` (12 entries, S51 expansion).
+# Already consumed by `pedagogy/teacher_prompt.py:488` (per-session
+# load_l1_transfers(l1_code, target_code)). Family mapping :
+# `taxonomy/categories.py:50` ("l1_transfer": [PREP:CALQUE, SPELL:COGNATE]).
+# FR-ES proximity exploit : leverage cognates massively (educación, posibilidad,
+# información, situación) ; flag faux amis (largo ≠ large = long ; embarazada
+# ≠ embarrassed = pregnant ; sensible ≠ sensible = sensitive ; éxito ≠ exit =
+# success). Phase C will refine via PCIC contrastive notes if available.
+# Phase D extension : add en_to_es, etc. when user base diversifies.
 
 domain: es
 
