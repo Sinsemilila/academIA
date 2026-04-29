@@ -1,0 +1,361 @@
+# Criterial features by CEFR level — Hawkins & Filipović 2012, Ch 9.1 horizontal summary.
+#
+# ADR-014 Layer 1.5 extraction (Session 53 Phase B, 2026-04-30).
+# Verbatim transcription of Ch 9.1.1-9.1.5 (book pages 147-151 / PDF pages 165-169)
+# + curated structure (categorize features into syntactic / lexical / modal / negative).
+#
+# Cross-references in `ref:` fields point to chapters/sections of the same book.
+# Use case : audit `data/curriculum_en.yaml` against this list — each criterial feature
+# should map to ≥1 concept_key. Gaps = action items for Phase B audit (TODO.md).
+
+source:
+  book: "Hawkins & Filipović 2012 — Criterial Features in L2 English"
+  publisher: "Cambridge University Press"
+  year: 2012
+  series: "English Profile Studies, Vol. 1"
+  pages_extracted: "147-151 (Ch 9.1 Horizontal summary of criterial features)"
+  pages_pdf: "165-169"
+  notes: |
+    Hawkins Ch 9.1 starts at A2 — English Profile data insufficient for A1
+    (Cambridge Learner Corpus + RASP parser had insufficient A1 examiner data).
+    Sources : CLC + Wordlists + manual inspection.
+    "10-to-1 rule" (Ch 2.6) determines criteriality : 10× occurrence at level X
+    vs 1× at lower level = criterial for X.
+
+# === A2 (Threshold-1 / Waystage equivalent in CEFR Companion) ============
+A2:
+  mlu_average: 7.9
+  mlu_section: "Section 7.3"
+  syntactic_features:
+    positive:
+      - feature: "Simple intransitive clauses"
+        pattern: "NP-V"
+        ref: "7.1.1"
+      - feature: "Transitive clauses"
+        pattern: "NP-V-NP"
+        ref: "7.1.2"
+      - feature: "Ditransitive clauses"
+        pattern: "NP-V-NP-NP"
+        ref: "7.1.7"
+      - feature: "Verbs with finite complement clause"
+        pattern: "NP-V-S"
+        example: "I knew that you have a new house too."
+        ref: "7.1.3"
+      - feature: "Verbs with subject-controlled infinitival complements"
+        pattern: "NP-V-VPinfin"
+        example: "I want to buy a coat."
+        ref: "7.1.4"
+      - feature: "Direct WH-questions"
+        ref: "7.1.5"
+      - feature: "Pronoun plus infinitive"
+        example: "something to eat"
+        ref: "7.1.6"
+      - feature: "Postnominal modification with -ed"
+        example: "famous paintings painted by..."
+        ref: "7.1.8"
+      - feature: "[of [of]] double embedding of postnominal genitives"
+        example: "the colours of the back of the mobile phone"
+        ref: "7.3"
+    negative_criterial:
+      # "No X" at A2 = absence is criterial (presence would be above level)
+      - feature: "No Subject-to-Subject Raising verbs/adjectives"
+        ref: "7.2.1"
+      - feature: "No Subject-to-Object Raising verbs (unpassivised)"
+        ref: "7.2.2"
+      - feature: "No Subject-to-Object Raising verbs plus Passive"
+        ref: "7.2.3"
+      - feature: "No Tough Movement"
+        ref: "7.2.4"
+  modal_auxiliaries:
+    - modal: "MAY"
+      sense: "Possibility (Epistemic)"
+      example: "Then we may go sightseeing."
+      ref: "7.4"
+    - modal: "MIGHT"
+      sense: "Possibility (Epistemic)"
+      example: "...the paint might make our t-shirts dirty."
+      ref: "7.4"
+    - modal: "CAN"
+      sense: "Possibility (Epistemic)"
+      example: "We can meet at our school."
+      ref: "7.4"
+      note: "CAN also at A1 in Ability/Permission (Deontic) sense"
+    - modal: "MUST"
+      sense: "Obligation (Deontic)"
+      example: "We must be there at 7 o'clock in the morning."
+      ref: "7.4"
+    - modal: "SHOULD"
+      sense: "Advice (Deontic)"
+      example: "You should wear old clothes because we will get dirty."
+      ref: "7.4"
+  lexical_features:
+    single_word_verbs_first_attested:
+      # "Primary (P) senses (8.1)" — these lemmas first appear at A2 in their basic sense
+      - {lemma: "break", transitivity: "Tr."}
+      - {lemma: "brush", transitivity: "Tr."}
+      - {lemma: "climb", transitivity: "Tr."}
+      - {lemma: "cut", transitivity: "Tr."}
+      - {lemma: "fall", transitivity: "Intr."}
+      - {lemma: "hit", transitivity: "Tr."}
+      - {lemma: "jump", transitivity: "Intr."}
+      - {lemma: "paint", transitivity: "Tr."}
+      - {lemma: "push", transitivity: "Tr."}
+      - {lemma: "stand", transitivity: "Intr."}
+      - {lemma: "throw", transitivity: "Tr."}
+      - {lemma: "walk", transitivity: "Tr."}
+    verb_particle_combinations_first_attested:
+      - {combination: "put on", transitivity: "Tr.", ref: "8.2"}
+      - {combination: "take off", transitivity: "Tr.", ref: "8.2"}
+
+# === B1 (Threshold equivalent) ============================================
+B1:
+  mlu_average: 10.8
+  mlu_section: "Section 7.3"
+  syntactic_features:
+    positive:
+      - feature: "Verbs with object-controlled infinitival complements"
+        example: "I ordered him to gather my men to the hall."
+        ref: "7.1.9"
+      - feature: "Verbs with object-controlled -ing complements"
+        example: "I saw a girl standing behind me."
+        ref: "7.1.10"
+      - feature: "Postnominal modification with -ing"
+        example: "I received your mail asking for the sales report."
+        ref: "7.1.8"
+      - feature: "It Extraposition with finite clauses"
+        example: "It's true that I don't need a ring to make me remember you."
+        ref: "7.1.11"
+      - feature: "Verbs with PP plus finite complement clause"
+        pattern: "NP-V-PP-S"
+        example: "He said to me he would like to come back soon."
+        ref: "7.1.12"
+      - feature: "Relative clauses formed on a genitive position"
+        example: "painter whose pictures I like so much"
+        ref: "7.1.13"
+      - feature: "Pseudocleft with WH as direct object"
+        example: "what I saw was so amazing"
+        ref: "7.1.14"
+      - feature: "Indirect WH-questions in finite clauses"
+        example: "Guess where I have been"
+        ref: "7.1.15"
+      - feature: "Indirect WH-questions in infinitival phrases"
+        example: "I did not know where to look for it anymore"
+        ref: "7.1.16"
+      - feature: "Complex auxiliaries WOULD RATHER and HAD BETTER"
+        ref: "7.1.17"
+      - feature: "Adverbial subordinate clauses with -ing (following clause attached to)"
+        example: "...the Hotel Taj provides more facilities, including computers..."
+        ref: "7.1.18"
+      - feature: "Subject-to-Subject Raising constructions with verb seem and adjective supposed"
+        ref: "7.2.1"
+      - feature: "Subject-to-Object Raising constructions (unpassivised) with verbs expect, like, want"
+        ref: "7.2.2"
+      - feature: "Tough Movement with adjective easy"
+        ref: "7.2.4"
+      - feature: "[of [-s]] double embedding of an -s genitive within an of genitive"
+        example: "the subject of my boss's talk"
+        ref: "7.3"
+    negative_criterial:
+      - feature: "No Subject-to-Object Raising constructions plus Passive"
+        ref: "7.2.3"
+  modal_auxiliaries:
+    - modal: "MAY"
+      sense: "Permission (Deontic)"
+      example: "May I suggest that you book me in for the new accommodation?"
+      ref: "7.4"
+    - modal: "MUST"
+      sense: "Necessity (Epistemic)"
+      examples: ["She must be feeling so happy!", "We plan to see 'Cell', a new film, which must be really good."]
+      ref: "7.4"
+    - modal: "SHOULD"
+      sense: "Probability (Epistemic)"
+      example: "I have invited all his friends, [so] we should be 28 people."
+      ref: "7.4"
+  lexical_features:
+    single_word_verbs_first_attested:
+      - {lemma: "blow", transitivity: "Tr. & Intr."}
+      - {lemma: "divide", transitivity: "Tr."}
+      - {lemma: "face", transitivity: "Tr."}
+      - {lemma: "fit", transitivity: "Intr."}
+      - {lemma: "grab", transitivity: "Tr."}
+      - {lemma: "land", transitivity: "Intr."}
+      - {lemma: "pour", transitivity: "Tr. & Intr."}
+      - {lemma: "run", transitivity: "Tr."}
+      - {lemma: "spill", transitivity: "Tr."}
+      - {lemma: "stand", transitivity: "Tr."}
+      - {lemma: "stick", transitivity: "Tr."}
+      - {lemma: "tear", transitivity: "Tr."}
+    verb_particle_combinations_first_attested:
+      - {combination: "look up", transitivity: "Tr.", ref: "8.2"}
+      - {combination: "take off", transitivity: "Intr.", ref: "8.2"}
+
+# === B2 (Vantage equivalent) ==============================================
+B2:
+  mlu_average: 14.2
+  mlu_section: "Section 7.3"
+  syntactic_features:
+    positive:
+      - feature: "Adverbial subordinate clauses with -ing (preceding clause attached to)"
+        example: "Talking about spare time, I think we could go to the Art Museum"
+        ref: "7.1.18"
+      - feature: "It Extraposition with infinitival phrases"
+        example: "it would be helpful to work in your group as well"
+        ref: "7.1.11"
+      - feature: "Pseudocleft with WH as subject"
+        example: "what fascinated me was that I was able to lie on the sea surface"
+        ref: "7.1.20"
+      - feature: "Verbs with an NP plus finite complement clause"
+        pattern: "NP-V-NP-S"
+        example: "I told him I loved his songs"
+        ref: "7.1.21"
+      - feature: "Secondary predications"
+        example: "go and paint the houses yellow and blue"
+        ref: "7.1.22"
+      - feature: "Productive Subject-to-Subject Raising constructions"
+        verbs: ["appear", "cease", "fail", "happen", "prove", "turn out"]
+        adjectives: ["certain", "likely", "sure", "unlikely"]
+        ref: "7.2.1"
+      - feature: "New Subject-to-Object Raising constructions (unpassivised)"
+        verbs: ["imagine", "prefer"]
+        ref: "7.2.2"
+      - feature: "Subject-to-Object Raising constructions plus Passive"
+        verbs: ["expected", "known", "obliged", "thought"]
+        ref: "7.2.3"
+      - feature: "New Tough Movement constructions"
+        adjectives: ["difficult", "good", "hard"]
+        ref: "7.2.4"
+      - feature: "[[of] -s] double embedding of an of genitive within an -s genitive"
+        example: "the United States of America's government"
+        ref: "7.3"
+  lexical_features:
+    single_word_verbs_first_attested:
+      - {lemma: "acquire", transitivity: "Tr."}
+      - {lemma: "capture", transitivity: "Tr."}
+      - {lemma: "drag", transitivity: "Tr."}
+      - {lemma: "fit", transitivity: "Tr."}
+      - {lemma: "melt", transitivity: "Tr. & Intr."}
+      - {lemma: "ruin", transitivity: "Tr."}
+      - {lemma: "rush", transitivity: "Intr."}
+      - {lemma: "skip", transitivity: "Tr."}
+      - {lemma: "spread", transitivity: "Tr. & Intr."}
+      - {lemma: "swallow", transitivity: "Tr."}
+      - {lemma: "upset", transitivity: "Tr."}
+    verb_particle_combinations_first_attested:
+      - {combination: "blow up", transitivity: "Tr.", ref: "8.2"}
+      - {combination: "fall apart", transitivity: "Intr.", ref: "8.2"}
+      - {combination: "pour out", transitivity: "Tr. & Intr.", ref: "8.2"}
+      - {combination: "run away", transitivity: "Intr.", ref: "8.2"}
+      - {combination: "walk away", transitivity: "Intr.", ref: "8.2"}
+      - {combination: "wrap up", transitivity: "Tr.", ref: "8.2"}
+  error_type_improvements_b1_to_b2:
+    # Error types showing significant accuracy gain B1 → B2 (Section 2.3)
+    - {code: "DD", name: "Derivation of Determiner"}
+    - {code: "IV", name: "Incorrect Inflection of Verb"}
+
+# === C1 (Effective Operational Proficiency) ===============================
+C1:
+  mlu_average: 17.3
+  mlu_section: "Section 7.3"
+  syntactic_features:
+    positive:
+      - feature: "New Subject-to-Subject Raising constructions"
+        verbs: ["chance"]
+        ref: "7.2.1"
+      - feature: "New Subject-to-Object Raising constructions (unpassivised)"
+        verbs: ["believe", "find", "suppose", "take"]
+        ref: "7.2.2"
+      - feature: "New Subject-to-Object Raising constructions plus Passive"
+        verbs: ["assumed", "discovered", "felt", "found", "proved"]
+        ref: "7.2.3"
+      - feature: "[[-s] -s] double embedding of an -s genitive within an -s genitive"
+        example: "the bride's family's house"
+        ref: "7.3"
+    negative_criterial:
+      - feature: "No new Tough Movement constructions"
+        ref: "7.2.4"
+  modal_auxiliaries:
+    - modal: "MIGHT"
+      sense: "Permission (Deontic)"
+      example: "Might I tell you what we discuss?"
+      ref: "7.4"
+  lexical_features:
+    single_word_verbs_first_attested:
+      - {lemma: "accumulate", transitivity: "Tr."}
+      - {lemma: "boast", transitivity: "Tr. & Intr."}
+      - {lemma: "house", transitivity: "Tr."}
+      - {lemma: "opt", transitivity: "Intr."}
+      - {lemma: "quote", transitivity: "Tr."}
+      - {lemma: "reassure", transitivity: "Tr."}
+      - {lemma: "shape", transitivity: "Tr."}
+      - {lemma: "stain", transitivity: "Tr."}
+      - {lemma: "urge", transitivity: "Tr."}
+      - {lemma: "zoom", transitivity: "Intr."}
+  error_type_improvements_b2_to_c1:
+    - {code: "AGN", name: "Noun Agreement Error"}
+    - {code: "DD", name: "Derivation of Determiner"}
+    - {code: "MQ", name: "Missing Quantifier"}
+    - {code: "MT", name: "Missing Preposition"}
+
+# === C2 (Mastery) ==========================================================
+C2:
+  mlu_average: 19.0
+  mlu_section: "Section 7.3"
+  syntactic_features:
+    positive:
+      - feature: "New Subject-to-Object Raising constructions (unpassivised)"
+        verbs: ["declare", "presume", "remember"]
+        ref: "7.2.2"
+      - feature: "New Subject-to-Object Raising constructions plus Passive"
+        verbs: ["presumed"]
+        ref: "7.2.3"
+      - feature: "New Tough Movement constructions"
+        adjectives: ["tough"]
+        ref: "7.2.4"
+    negative_criterial:
+      - feature: "No new Subject-to-Subject Raising constructions"
+        ref: "7.2.1"
+  lexical_features:
+    single_word_verbs_first_attested:
+      - {lemma: "drag", transitivity: "Intr."}
+      - {lemma: "drain", transitivity: "Tr. & Intr."}
+      - {lemma: "limp", transitivity: "Intr."}
+      - {lemma: "pierce", transitivity: "Tr."}
+      - {lemma: "raid", transitivity: "Tr."}
+      - {lemma: "reap", transitivity: "Tr."}
+      - {lemma: "rush", transitivity: "Tr."}
+      - {lemma: "saunter", transitivity: "Intr."}
+      - {lemma: "smear", transitivity: "Tr."}
+      - {lemma: "squander", transitivity: "Tr."}
+      - {lemma: "stagger", transitivity: "Tr. & Intr."}
+      - {lemma: "sway", transitivity: "Tr. & Intr."}
+  error_type_improvements_c1_to_c2:
+    - {code: "AGN", name: "Noun Agreement Error"}
+    - {code: "DD", name: "Derivation of Determiner"}
+    - {code: "CN", name: "Noun Countability Error"}
+    - {code: "RQ", name: "Replace Quantifier"}
+    - {code: "RY", name: "Replace Adverb"}
+
+# === Cross-reference : illustrative language functions ====================
+# (Section 9.2 + Table 9.1 — Threshold 1990:39)
+# NB: Hawkins notes Van Ek/Trim Threshold series included BOTH detailed taxonomy of
+# functions AND grammatical/lexical exponents. Useful for Phase D Functions dimension.
+illustrative_language_functions:
+  source: "van Ek & Trim Threshold 1990:39 (cited in Table 9.1)"
+  page_pdf: 168
+  examples:
+    requesting_someone_to_do_something:
+      - "Please + VP imperative — Please sit down."
+      - "VP imperative + please — Stop talking please."
+      - "Would/could you (please) + VPinf — Could you please close the door?"
+      - "Would you be so kind as to + VPinf — Would you be so kind as to wait?"
+      - "Kindly + VP imperative + (please) — Kindly make less noise please"
+      - "Would you mind + VP gerund — Would you mind opening the window?"
+      - "Can I have + NP + VP past — Can I have my shirt washed?"
+    suggesting_a_course_of_action:
+      - "Let's + VPinf! — Let's go!"
+      - "Shall we + VPinfin? — Shall we dance?"
+      - "We could + VPinf — We could go for a walk."
+      - "What/How about + NP/VP gerund — How about walking home?"
+      - "We might (perhaps) + VPinf — We might perhaps go by train."
+      - "Why not + VPinf? — Why not fly there?"
+      - "Why don't we + VPinf — Why don't we go by train?"
