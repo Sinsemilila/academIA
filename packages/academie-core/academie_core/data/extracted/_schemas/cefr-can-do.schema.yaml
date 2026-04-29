@@ -1,0 +1,131 @@
+# JSON Schema (YAML form) — CEFR can-do statements + grammar required per level
+# Used for : Profile Deutsch, CILS Sillabo, JLPT 公式問題集, TORFL TEU/TBU/TRKI volumes, CEFR Companion Volume 2020
+# Consumer : curriculum_<lang>.yaml seed, mini_exam_<lang>.yaml seed, scenario authoring per band, dosage_block calibration
+
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "academia/extracted/_schemas/cefr-can-do.schema.yaml"
+title: "CEFR Can-Do Statements + Grammar Required Extraction"
+type: object
+required: [source_book, extracted_by, extracted_date, schema_version, target_lang, levels]
+additionalProperties: false
+
+properties:
+  source_book: { type: string, pattern: "^[a-z0-9-]+$" }
+  extracted_by: { enum: [claude, sinse_manual, hybrid] }
+  extracted_date: { type: string, format: date }
+  schema_version: { type: integer, minimum: 1 }
+  schema_ref:
+    type: string
+    const: "_schemas/cefr-can-do.schema.yaml"
+
+  target_lang:
+    enum: [en, es, it, de, jp, ru]
+
+  exam_alignment:
+    type: array
+    items:
+      enum:
+        # CEFR-aligned
+        - cefr_a1
+        - cefr_a2
+        - cefr_b1
+        - cefr_b2
+        - cefr_c1
+        - cefr_c2
+        # JLPT (JP)
+        - jlpt_n5
+        - jlpt_n4
+        - jlpt_n3
+        - jlpt_n2
+        - jlpt_n1
+        # TORFL (RU)
+        - torfl_teu
+        - torfl_tbu
+        - torfl_trki_1
+        - torfl_trki_2
+        - torfl_trki_3
+        - torfl_trki_4
+        # CILS (IT)
+        - cils_a1
+        - cils_a2
+        - cils_uno_b1
+        - cils_due_b2
+        - cils_tre_c1
+        - cils_quattro_c2
+        # Goethe / telc / TestDaF (DE)
+        - goethe_a1
+        - goethe_a2
+        - goethe_b1
+        - goethe_b2
+        - goethe_c1
+        - goethe_c2
+        - telc_b1
+        - telc_b2
+        - testdaf_3
+        - testdaf_4
+        - testdaf_5
+
+  levels:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      required: [level, can_do_statements, source]
+      additionalProperties: false
+      properties:
+        level:
+          enum: [a1, a2, b1, b2, c1, c2]
+
+        can_do_statements:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [skill, statement, source]
+            additionalProperties: false
+            properties:
+              skill:
+                enum:
+                  - listening
+                  - reading
+                  - spoken_interaction
+                  - spoken_production
+                  - writing
+                  - mediation
+              statement: { type: string }
+              source:
+                type: string
+                pattern: "^.+, (ch|pp\\.) .+$"
+
+        grammar_required:
+          type: array
+          items: { type: string }
+          description: "Grammatical phenomena minimally required at this level (cross-ref rules_<lang>.py error_codes)"
+
+        vocab_threshold_estimate:
+          type: object
+          properties:
+            tokens_active: { type: integer }
+            tokens_passive: { type: integer }
+            source: { type: string }
+
+        functional_repertoire:
+          type: array
+          items: { type: string }
+          description: "Communicative functions the learner can perform"
+
+        text_types_handled:
+          type: array
+          items: { type: string }
+
+        confidence:
+          enum: [high, medium, low]
+
+  cross_references:
+    type: array
+    items:
+      type: object
+      properties:
+        curriculum_seed: { type: string, description: "curriculum_<lang>.yaml entry to populate from this extraction" }
+        mini_exam_seed: { type: string, description: "mini_exam_<lang>_<level>.yaml entry to populate" }
+        rules_code_relevant: { type: string }

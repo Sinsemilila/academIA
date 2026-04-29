@@ -1,0 +1,105 @@
+# JSON Schema (YAML form) — Acquisition stages extraction (Pienemann teachability + DeKeyser practice)
+# Used for : Pienemann 2005 Processability Theory, Pienemann 1998 LPSLA, language-specific stage models
+# Consumer : dosage_block ordering, rules_<lang>.py priority gating, scenario authoring, mini_exam progression
+
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "academia/extracted/_schemas/acquisition-stages.schema.yaml"
+title: "Acquisition Stages Extraction"
+type: object
+required: [source_book, extracted_by, extracted_date, schema_version, target_lang, phenomenon, stages]
+additionalProperties: false
+
+properties:
+  source_book: { type: string, pattern: "^[a-z0-9-]+$" }
+  extracted_by: { enum: [claude, sinse_manual, hybrid] }
+  extracted_date: { type: string, format: date }
+  schema_version: { type: integer, minimum: 1 }
+  schema_ref:
+    type: string
+    const: "_schemas/acquisition-stages.schema.yaml"
+
+  target_lang:
+    enum: [en, es, it, de, jp, ru]
+
+  phenomenon:
+    type: string
+    description: "Phenomenon being staged (e.g. 'german_word_order', 'spanish_subjunctive', 'english_morphemes')"
+
+  l1_context:
+    type: array
+    items: { enum: [fr, en, es, it, de, jp, ru] }
+    description: "L1 backgrounds the stages apply to (Pienemann claims universality but L1 may modulate timing)"
+
+  teachability_principle:
+    enum: [strict_cant_skip, soft_recommended_order, no_constraint]
+    description: "Whether instruction MUST follow stages (strict) or merely benefits (soft)"
+
+  stages:
+    type: array
+    minItems: 2
+    items:
+      type: object
+      required: [stage_n, label, description, source]
+      additionalProperties: false
+      properties:
+        stage_n:
+          type: integer
+          minimum: 1
+
+        label:
+          type: string
+          description: "Telegraph identifier (e.g. 'svo_canonical', 'v2_inversion', 'verb_final_subordinate')"
+          pattern: "^[a-z0-9_]+$"
+
+        description:
+          type: string
+          description: "Concrete grammatical phenomenon at this stage"
+
+        prerequisite_stages:
+          type: array
+          items: { type: integer }
+          description: "Stages that must be acquired before this one (usually [stage_n - 1] but can be multi)"
+
+        cefr_typical_band:
+          enum: [a1, a2, b1, b2, c1, c2, beyond]
+          description: "CEFR band where this stage typically emerges in classroom learners"
+
+        examples:
+          type: array
+          items:
+            type: object
+            required: [target, gloss]
+            properties:
+              target: { type: string, description: "Example sentence in target language" }
+              gloss: { type: string, description: "L1 gloss or translation" }
+              stage_correct: { type: boolean }
+
+        observable_errors_pre_acquisition:
+          type: array
+          items: { type: string }
+          description: "Typical errors learners produce BEFORE acquiring this stage (relevant for tolerance_matrix gating)"
+
+        source:
+          type: string
+          pattern: "^.+, (ch|pp\\.) .+$"
+
+        confidence:
+          enum: [high, medium, low]
+
+  cross_references:
+    type: array
+    items:
+      type: object
+      properties:
+        l1_transfer_relevant: { type: string, description: "Pointer to l1_transfer/<l1>_to_<l2>.yaml family" }
+        rules_code_relevant: { type: string, description: "Pointer to rules_<lang>.py detector code(s)" }
+
+  empirical_validation:
+    type: array
+    items:
+      type: object
+      properties:
+        study: { type: string }
+        sample_n: { type: integer }
+        l1_l2_pair: { type: string }
+        confirmed: { type: boolean }
