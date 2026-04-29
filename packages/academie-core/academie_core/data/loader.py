@@ -83,6 +83,23 @@ def load_l1_transfers(l1: str, target: str) -> list[tuple[str, float, str]]:
 # chatflow can render them via {{#start.concept_hints_block#}} inputs instead
 # of hardcoding EN dicts in its JS code.
 
+@lru_cache(maxsize=64)
+def load_extracted(book_slug: str, extraction_name: str) -> dict | None:
+    """Load structured knowledge extracted from a canonical book (ADR-014 Layer 1.5).
+
+    Path : data/extracted/<book_slug>/<extraction_name>.yaml
+    Returns None if extraction not yet created (lazy pattern — extraction
+    triggered when first code-work consumer lands, not anticipated batch).
+
+    See docs/05-decisions/ADR-014-structured-knowledge-extraction.md.
+    """
+    path = _DATA_DIR / "extracted" / book_slug / f"{extraction_name}.yaml"
+    if not path.exists():
+        return None
+    with open(path) as f:
+        return yaml.safe_load(f)
+
+
 @lru_cache(maxsize=16)
 def load_concept_hints(lang: str) -> dict[str, str]:
     """Load concept_key → hint mapping for a target language. Empty if missing."""
