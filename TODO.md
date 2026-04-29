@@ -94,34 +94,36 @@ Voir `vault/projects/academia-ia/library-p3-roadmap.md` pour P2/P3 (~36 ouvrages
 - [x] (claude, 2026-04-30, Session 53, 3e53dba) `curriculum_en.yaml` + `curriculum_es.yaml` honest source attribution + document l1_transfer integration path (`teacher_prompt.py:488` consumer)
 - [ ] **DEFERRED Phase B** : `phrasal_verbs` stratification (A2/B1/B2/C1 per Hawkins Ch 8) — **scope creep cross-système** (touche `tolerance_matrix.yaml` + `tolerance_matrix_v2.yaml` + `webapp/backend/app/routers/profile_router.py:559` prod code + Dify workflow `concept_hint_map` + `scripts/update_teacher_chatflow.py` + `scripts/sprint6/19_curriculum_en_apply_merge.py` + `scripts/e2e_promo_test.py:42`). Migration multi-system → bundled in Phase B EN audit.
 
-### Phase B — P0 EN flagship audit (~5-7j, post Phase A)
+### Phase B — P0 EN flagship audit (Session 53, 2026-04-30, ✅ LIVRÉE 4/4 commits)
 
-- [ ] **Hawkins Ch 9.1 horizontal summary** (5p, p147-151) → `extracted/hawkins-filipovic-2012-criterial-features-l2-english/criterial-features-by-level.yaml`
-- [ ] **Hawkins Ch 7** (22 syntactic features per CEFR level, 22p) → `positive-syntactic-features.yaml`
-- [ ] **Hawkins Ch 8** (lexical/phrasal verb progression, 13p) → `lexical-progression-by-level.yaml`
-- [ ] **CEFR Companion App 1** (Salient features per niveau, 3p) → `extracted/coe-2020-cefr-companion-volume/salient-features-by-level.yaml`
-- [ ] **CEFR Companion App 7** (Substantive changes 2001→2020, 2p) → `changes-2001-to-2020.yaml`
-- [ ] Audit `curriculum_en.yaml` 94 concepts vs Hawkins criterial features → diff doc `webapp/backend/docs/audit/2026-NN-curriculum-en-vs-hawkins.md`
-- [ ] Patch `curriculum_en.yaml` apply audit findings (concept_keys gaps, weights adjust, header refs honest)
-- [ ] **phrasal_verbs cross-system migration** (deferred from Phase A) : split + tolerance_matrix update + profile_router patch + Dify workflow_history+entity dual-patch + scripts update + e2e tests + golden re-record. ~1-2j cross-system effort.
-- [ ] **EVP/EGP signup englishprofile.org** (Sinse manual, gratuit) → Excel data extract for vocab/grammar profiles
+- [x] (claude, 2026-04-30, S53, 8fbf718) **Hawkins Ch 9.1 horizontal summary** → `extracted/hawkins-filipovic-2012-criterial-features-l2-english/criterial-features-by-level.yaml`
+- [x] (claude, 2026-04-30, S53, c4307b2) **CEFR Companion App 1** salient features + **App 7** changes 2001→2020 → 2 YAMLs
+- [x] (claude, 2026-04-30, S53, a9d884f) Audit doc `webapp/backend/docs/audit/2026-04-30-curriculum-en-vs-authority.md` (105 concepts vs Hawkins criterial)
+- [x] (claude, 2026-04-30, S53, 9925400) Patch `curriculum_en.yaml` 105→**131 concepts** (+26 criterial features added) + sync `concept_hints/en.yaml` 105→131 entries + C2 wording fix ("near-native" → "highly successful learner")
+- [ ] **DEFERRED Phase B5** : Hawkins Ch 7 (22 syntactic features, 22p) full extraction — audit doc covered top-yield, full Ch 7 deferred
+- [ ] **DEFERRED Phase B6** : Hawkins Ch 8 lexical/phrasal verb progression (13p) — bundled with phrasal_verbs cross-system migration
+- [ ] **phrasal_verbs cross-system migration** : split A2/B1/B2/C1 + tolerance_matrix v1+v2 + profile_router.py:559 + Dify workflow + scripts update + e2e tests + golden re-record (~1-2j)
+- [ ] **EVP/EGP signup englishprofile.org** (Sinse manual, gratuit) → Excel data extract
 
-### Phase C — P0 ES flagship audit (~5-7j, post Phase B)
+### Phase C — P0 ES flagship audit (Session 53, 2026-04-30, ✅ LIVRÉE 4/4 commits)
 
-- [ ] **PCIC Vol A Gramática inventario A1+A2** (extraction sections "Gramática" du Vol A 515p) → `extracted/cervantes-2006-plan-curricular-a1-a2/grammar-by-level.yaml`
-- [ ] **PCIC Vol B Gramática inventario B1+B2** → `extracted/cervantes-2006-plan-curricular-b1-b2/grammar-by-level.yaml`
-- [ ] **PCIC Funciones inventario A1-B2** → `functions-by-level.yaml`
-- [ ] **PCIC Nociones específicas A1-B2** → `lexical-by-topic-by-level.yaml`
-- [ ] **PCIC Tácticas y estrategias pragmáticas (B1+B2)** → `pragmatic-strategies.yaml` (cross-ref Lyster cf-taxonomy)
-- [ ] Audit `curriculum_es.yaml` 52 concepts vs PCIC Gramática → expansion ~120-150 concepts (stratifier ser/estar A1, subjuntivo B1, connectores B2, ajouter verbos de cambio, etc.)
+- [x] (claude, 2026-04-30, S53, 4fd7fda) **PCIC Vol A Gramática inventario A1+A2** → `extracted/cervantes-2006-plan-curricular-a1-a2/grammar-by-level.yaml` (extraction via WebFetch cvc.cervantes.es — preferred over scanned PDF 515p)
+- [x] (claude, 2026-04-30, S53, 9c96c5b) **PCIC Vol B Gramática inventario B1+B2** → `extracted/cervantes-2006-plan-curricular-b1-b2/grammar-by-level.yaml`
+- [x] (claude, 2026-04-30, S53, 41222ef) Audit doc `webapp/backend/docs/audit/2026-04-30-curriculum-es-vs-pcic.md` (51 concepts vs PCIC Gramática)
+- [x] (claude, 2026-04-30, S53, 34ea884) Patch `curriculum_es.yaml` 51→**98 concepts** (split ser/estar A1 1→6 keys ; split subjuntivo B1 2→6 keys per trigger taxonomy ; split conectores B2 1→6 keys per discourse function ; +verbos_cambio_b2 critical gap ; +pasiva_perifrástica_b2) + sync `concept_hints/es.yaml` 34→103 entries + C1+C2 deferred (PCIC Vol C pending)
 - [ ] **PCIC Vol C C1-C2 acquisition** (Sinse manual, gratuit `cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/`) — bloquant ES flagship audit complet A1-C2
+- [ ] **DEFERRED Phase C5** : PCIC Funciones B1+B2 extraction (only A1+A2 covered Phase D1)
+- [ ] **DEFERRED Phase C6** : PCIC Nociones específicas A1-B2 → `lexical-by-topic-by-level.yaml`
+- [ ] **DEFERRED Phase C7** : PCIC Tácticas y estrategias pragmáticas B1+B2 → `pragmatic-strategies.yaml` (cross-ref Lyster cf-taxonomy)
 - [ ] DELE A2/B1/C1/C2 oficial Modelos acquisition (dele.org signup gratuit, Sinse manual)
 
-### Phase D — P1 nouvelles dimensions (multi-session, ~10-13j)
+### Phase D — P1 nouvelles dimensions (Session 53 D1 LIVRÉE, D2/D3/D4 deferred)
 
-- [ ] **Functions dimension** (CEFR Companion Ch 3 + PCIC Funciones) → nouveau `data/functions/{en,es}.yaml` + `loader.py:load_functions(lang)` + `schemas.py:FunctionsPack`
-- [ ] **Mediation dimension NEW 2020** (CEFR Companion Ch 3 mediation scales) → nouveau `data/mediation/{en,es}.yaml` + loader + schema (différenciateur marché vs Duolingo/Babbel pre-2020)
-- [ ] **Skills-based reorganization** (Reception / Production / Interaction / Mediation per niveau) — major refactor, possiblement parallel structure plutôt que rewrite curriculum existing
+- [x] (claude, 2026-04-30, S53, 6bb02fa+996407f+4a984c5+316423c) **D1 Functions dimension scaffold** : Pydantic `FunctionsPack` schema + `load_functions(lang)` loader + `build_functions_block(lang, level)` Dify consumer + `data/functions/es.yaml` (26 PCIC Funciones A1 + 16 A2 = 42 entries) + `data/functions/en.yaml` (5 A1 + 5 A2 = 10 entries stub) + tests `test_functions_schema` parametrized 6 langs (EN+ES active, IT/DE/JA/RU skip Phase D2). 4 commits granulaires.
+- [ ] **DEFERRED Phase D2** : Functions B1+B2+C1+C2 expansion (PCIC Vol B Funciones + CEFR Companion Ch 3 production/interaction full + Threshold/Vantage 1990) ~3-4j
+- [ ] **DEFERRED Phase D3** : Mediation dimension NEW 2020 (CEFR Companion Ch 3 mediation scales pp.90-122 = 33p) → `data/mediation/{en,es}.yaml` + loader + schema (différenciateur marché vs Duolingo/Babbel pre-2020) ~3-4j
+- [ ] **DEFERRED Phase D4** : Skills-based reorganization (Reception / Production / Interaction / Mediation per niveau) — major design refactor, requires Sinse decision (parallel structure vs rewrite)
+- [ ] **DEFERRED Phase D5** : Cultural inventario (PCIC Referentes culturales + Saberes socioculturales + Habilidades interculturales = 3 inventarios)
 - [ ] EN flagship full A1-C2 audit Phase 2 (post-EVP/EGP integration)
 
 ### Wave 2 IT (~13j Phase 1, P2 mai-juin 2026)
