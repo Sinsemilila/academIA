@@ -252,6 +252,50 @@ ERROR_CODE_TO_FAMILY = {
     "PREP:A_PERSONAL": "preposition",
     "CONCORD:GEN": "morphology",
     "V:SUBJ": "verb_tense",
+    # ── Wave 2 IT (Session 51 pre-registered, rules_it.py implementation pending) ──
+    "IT:FALSE_FRIEND": "vocabulary",
+    "IT:CLITICI_DOUBLES": "morphology",
+    "IT:ART_CONTRACT": "preposition",
+    "IT:AUX_ESSERE_AVERE": "verb_usage",
+    "IT:CONGIUNTIVO_TRIGGER": "verb_tense",
+    "IT:GENDER_E_NOUN": "morphology",
+    "IT:PASSATO_PROSSIMO_REMOTO": "verb_tense",
+    "IT:PRONOMI_CLITICI": "morphology",
+    # ── Wave 2 DE (Session 51 pre-registered, rules_de.py implementation pending) ──
+    "DE:FALSE_FRIEND": "vocabulary",
+    "DE:CASE_MISMATCH": "morphology",
+    "DE:V2_VIOLATION": "word_order",
+    "DE:TRENNBARE_VERB": "verb_usage",
+    "DE:ADJ_DECLENSION": "morphology",
+    "DE:GENITIV_TO_DATIV": "morphology",
+    "DE:WERDEN_PASSIVE_FUTURE": "verb_usage",
+    "DE:MODALPARTIKEL": "morphology",
+    "DE:KOMPOSITA_UNATTEMPTED": "morphology",
+    "DE:PLURAL_FORM_REGRESSION": "morphology",
+    # ── Wave 3 JP (Session 51 pre-registered, rules_jp.py implementation pending) ──
+    # JP uses JLPT N5-N2 only per ADR-013 (essential tier A1-B2 cap).
+    "JP:PARTICLE_WA_GA": "morphology",
+    "JP:PARTICLE_WO_GA": "morphology",
+    "JP:PARTICLE_NI_DE_E": "morphology",
+    "JP:POLITENESS_REGISTER_MIX": "discourse",
+    "JP:VERB_TRANSITIVITY_PAIR": "verb_usage",
+    "JP:COUNTER_MISMATCH": "morphology",
+    "JP:KANA_KANJI_LEVEL": "surface",
+    "JP:ASPECT_TE_IRU": "verb_tense",
+    "JP:TOPIC_OVER_EXPLICIT": "discourse",
+    "JP:CONDITIONAL_4WAY": "verb_tense",
+    "JP:TE_FORM_FORMATION": "morphology",
+    # ── Wave 4 RU (Session 51 pre-registered, rules_ru.py implementation pending) ──
+    # RU uses TORFL TEU-TRKI-2 only per ADR-013 (essential tier A1-B2 cap).
+    "RU:CASE_MISMATCH": "morphology",
+    "RU:ASPECT_PAIR": "verb_tense",
+    "RU:MOTION_VERB_DIRECTIONAL": "verb_usage",
+    "RU:REFLEXIVE_SYA": "verb_usage",
+    "RU:NUMERAL_NOUN_AGREEMENT": "morphology",
+    "RU:SOFT_SIGN_OMISSION": "surface",
+    "RU:ASPECT_PREFIX_OVERGEN": "verb_tense",
+    "RU:GENDER_SOFT_ENDING": "morphology",
+    "RU:WORD_ORDER_PRAGMATIC": "discourse",
 }
 
 def detect_errors(text: str, lang: str = "en") -> list[RuleDetection]:

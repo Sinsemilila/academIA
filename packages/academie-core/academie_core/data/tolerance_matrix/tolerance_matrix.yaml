@@ -9,15 +9,15 @@ families:
   verb_tense:
     label: "Temps & conjugaison"
     label_en: "Tense & conjugation"
-    # Session 51 — ES codes V:PRET, ASPECT:PERF_OVERUSE, V:SUBJ folded in
-    codes: ["V:TENSE", "V:SVA", "V:FORM", "V:COND", "V:ASPECT", "V:AUX", "V:INFL", "V:PRET", "ASPECT:PERF_OVERUSE", "V:SUBJ"]
+    # Session 51 — ES + IT/DE/JP/RU pre-registered codes folded in
+    codes: ["V:TENSE", "V:SVA", "V:FORM", "V:COND", "V:ASPECT", "V:AUX", "V:INFL", "V:PRET", "ASPECT:PERF_OVERUSE", "V:SUBJ", "IT:CONGIUNTIVO_TRIGGER", "IT:PASSATO_PROSSIMO_REMOTO", "JP:ASPECT_TE_IRU", "JP:CONDITIONAL_4WAY", "RU:ASPECT_PAIR", "RU:ASPECT_PREFIX_OVERGEN"]
     mode: active
 
   verb_usage:
     label: "Verbes (usage)"
     label_en: "Verb usage"
-    # Session 51 — ES codes V:SER_ESTAR, V:GUSTAR_SUBJECT folded in
-    codes: ["V:MODAL", "V:PASS", "V:EXIST", "V:CHOICE", "V:PHRASAL", "V:SER_ESTAR", "V:GUSTAR_SUBJECT"]
+    # Session 51 — ES + IT/DE/JP/RU pre-registered codes folded in
+    codes: ["V:MODAL", "V:PASS", "V:EXIST", "V:CHOICE", "V:PHRASAL", "V:SER_ESTAR", "V:GUSTAR_SUBJECT", "IT:AUX_ESSERE_AVERE", "DE:TRENNBARE_VERB", "DE:WERDEN_PASSIVE_FUTURE", "JP:VERB_TRANSITIVITY_PAIR", "RU:MOTION_VERB_DIRECTIONAL", "RU:REFLEXIVE_SYA"]
     mode: active
 
   noun_det:
@@ -36,7 +36,8 @@ families:
   word_order:
     label: "Ordre des mots"
     label_en: "Word order"
-    codes: ["WO", "WO:QUEST"]
+    # Session 51 — DE pre-registered code folded in
+    codes: ["WO", "WO:QUEST", "DE:V2_VIOLATION"]
     mode: active
 
   sentence:
@@ -48,29 +49,29 @@ families:
   morphology:
     label: "Morphologie"
     label_en: "Morphology"
-    # Session 51 — ES codes QUANT:MUY_MUCHO, CONCORD:GEN folded in
-    codes: ["MORPH:DERIV", "MORPH:WORDCLASS", "ADJ:CHOICE", "ADJ:FORM", "ADJ:ORDER", "ADV:CHOICE", "QUANT:MUY_MUCHO", "CONCORD:GEN"]
+    # Session 51 — ES + IT/DE/JP/RU pre-registered codes folded in
+    codes: ["MORPH:DERIV", "MORPH:WORDCLASS", "ADJ:CHOICE", "ADJ:FORM", "ADJ:ORDER", "ADV:CHOICE", "QUANT:MUY_MUCHO", "CONCORD:GEN", "IT:CLITICI_DOUBLES", "IT:GENDER_E_NOUN", "IT:PRONOMI_CLITICI", "DE:CASE_MISMATCH", "DE:ADJ_DECLENSION", "DE:GENITIV_TO_DATIV", "DE:MODALPARTIKEL", "DE:KOMPOSITA_UNATTEMPTED", "DE:PLURAL_FORM_REGRESSION", "JP:PARTICLE_WA_GA", "JP:PARTICLE_WO_GA", "JP:PARTICLE_NI_DE_E", "JP:COUNTER_MISMATCH", "JP:TE_FORM_FORMATION", "RU:CASE_MISMATCH", "RU:NUMERAL_NOUN_AGREEMENT", "RU:GENDER_SOFT_ENDING"]
     mode: active
 
   surface:
     label: "Surface"
     label_en: "Surface errors"
-    # Session 51 — ES codes PUNCT:INTERROG, ORTH:NY folded in
-    codes: ["SPELL", "SPELL:COGNATE", "ORTH:CASE", "ORTH:SPACE", "PUNCT", "PUNCT:COMMA", "PUNCT:APOST", "CONTR", "REDUND", "PUNCT:INTERROG", "ORTH:NY"]
+    # Session 51 — ES + IT/DE/JP/RU pre-registered codes folded in
+    codes: ["SPELL", "SPELL:COGNATE", "ORTH:CASE", "ORTH:SPACE", "PUNCT", "PUNCT:COMMA", "PUNCT:APOST", "CONTR", "REDUND", "PUNCT:INTERROG", "ORTH:NY", "JP:KANA_KANJI_LEVEL", "RU:SOFT_SIGN_OMISSION"]
     mode: active
 
   preposition:
     label: "Prépositions"
     label_en: "Prepositions"
-    # Session 51 — ES codes PREP:POR_PARA, PREP:MOVEMENT, PREP:A_PERSONAL folded in
-    codes: ["PREP", "PREP:POR_PARA", "PREP:MOVEMENT", "PREP:A_PERSONAL"]
+    # Session 51 — ES + IT pre-registered codes folded in
+    codes: ["PREP", "PREP:POR_PARA", "PREP:MOVEMENT", "PREP:A_PERSONAL", "IT:ART_CONTRACT"]
     mode: active
 
   vocabulary:
     label: "Vocabulaire"
     label_en: "Vocabulary"
-    # Session 51 — ES code IDIOM:HACE_AGO folded in
-    codes: ["LEX:CHOICE", "LEX:COLLOC", "LEX:FALSE", "LEX:IDIOM", "LEX:ARGSTRUCT", "IDIOM:HACE_AGO"]
+    # Session 51 — ES + IT/DE pre-registered codes folded in
+    codes: ["LEX:CHOICE", "LEX:COLLOC", "LEX:FALSE", "LEX:IDIOM", "LEX:ARGSTRUCT", "IDIOM:HACE_AGO", "IT:FALSE_FRIEND", "DE:FALSE_FRIEND"]
     mode: active
 
   calque:
@@ -83,7 +84,8 @@ families:
   discourse:
     label: "Discours & registre"
     label_en: "Discourse & register"
-    codes: ["DISC:TRANS", "DISC:COHER", "REG:LEVEL", "REG:PRAGMA"]
+    # Session 51 — JP politeness + RU word-order pragmatic pre-registered
+    codes: ["DISC:TRANS", "DISC:COHER", "REG:LEVEL", "REG:PRAGMA", "JP:POLITENESS_REGISTER_MIX", "JP:TOPIC_OVER_EXPLICIT", "RU:WORD_ORDER_PRAGMATIC"]
     mode: active
 
 # ══════════════════════════════════════════════════════════

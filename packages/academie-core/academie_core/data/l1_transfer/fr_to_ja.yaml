@@ -1,10 +1,11 @@
 # L1 transfer patterns: French → Japanese.
 # Prioritized by multiplier (higher = show first to LLM in L1 watch block).
-# STATUS: STUB Wave 3 — expand before production activation.
-# Sources placeholder: I-JAS L2 learner corpus, Lang-8 FR→JA subcorpus,
-#   Japan Foundation JF Standard for JLPT-CEFR mapping, Tae Kim. Wave 3 will
-#   add ~15 entries validated against I-JAS error tags + Bunpro progression.
-# Note: typological distance FR-JA = distant → scaffolding doit être systématique.
+# STATUS: Session 51 expansion (12 entries) — needs native-JA speaker review
+#   before production activation. Currently STUB-EXPANDED.
+# Sources : I-JAS NINJAL (FR-L1 ~280 productions), JLPT N5-N2 official Japan Foundation
+#   specs, Tae Kim Guide, Imabi, Genki I/II, J-CHAT Yokohama corpus, ADR-011 native niveau.
+#   Per ADR-013 essential tier A1-B2 cap = JLPT N5-N2 only. Cf. vault/knowledge/multilang-japanese-research.md.
+# Note: typological distance FR-JA = distant → scaffolding 70% L1 / 30% L2 attendu A1.
 l1: fr
 target: ja
 transfers:
@@ -16,7 +17,31 @@ transfers:
     description: "Ordre SOV en JA (sujet-objet-verbe) vs SVO en FR. 'Je mange une pomme' → 'Watashi wa ringo wo tabemasu' (私はりんごを食べます — litt. 'moi quant à pomme manger'). Calque SVO systématique en A1. Verbe TOUJOURS final — les modifications, négations, temps, politesse s'empilent après le radical verbal."
   - family: keigo_formality
     multiplier: 1.5
-    description: "JA a 3+ niveaux de formalité obligatoires (sonkeigo respectueux, kenjougo humble, teineigo poli -masu). FR n'a que tu/vous. Apprenant·e mélange contextes pro/amical → impolitesse involontaire. N4+ critique. Registre par défaut en apprentissage = teineigo (-masu forms) mais colloquial (普通形) requis avec pairs."
+    description: "JA a 3+ niveaux de formalité obligatoires (sonkeigo respectueux, kenjougo humble, teineigo poli -masu). FR n'a que tu/vous. Apprenant·e mélange contextes pro/amical → impolitesse involontaire. N4+ critique. Registre par défaut en apprentissage = teineigo (-masu forms) mais colloquial (普通形) requis avec pairs. Politeness errors = social-gravity élevée (face-threatening, pas cosmetic)."
   - family: no_articles_no_plural
     multiplier: 1.3
     description: "JA n'a ni articles (le/la/un/une) ni marque systématique du pluriel. 'J'ai acheté une voiture' → 'Kuruma wo kaimashita' (車を買いました — litt. 'voiture ai-acheté'). Apprenant·e FR tente de traduire 'un/une' via numéraux (hitotsu/ichidai) — souvent inapproprié hors insistance quantitative. Aussi : pas de genre grammatical."
+  - family: counters_classifiers
+    multiplier: 1.4
+    description: "Système de classifieurs numériques productifs JA, sans équivalent FR : 一人 (hitori) personne, 二枚 (nimai) feuilles plates, 三本 (sanbon) longs objets, 四頭 (yontou) gros animaux, 五匹 (gohiki) petits animaux, 六冊 (rokusatsu) livres, 七杯 (nanahai) verres-coupes. Apprenant·e oublie ou choisit mauvais classifieur. N5-N4 fréquent."
+  - family: subject_elision_zero_anaphora
+    multiplier: 1.3
+    description: "JA élit massivement le sujet (zero anaphora) — déductible du contexte. 'A: Genki?' (vas bien ?) — sujet 'tu' implicite. Apprenant·e FR explicite anata wa (tu as) systématiquement → discours surchargé de 'anata' (deuxième personne) considéré impoli/distant en JA. N5+ omniprésent."
+  - family: te_form_aspect
+    multiplier: 1.3
+    description: "Forme -te + auxiliaire = aspect riche : -te iru (en train de / résultat), -te shimau (involontaire/regret), -te oku (préparation), -te miru (essayer), -te aru (état résultatif). Subtilités : 'kekkon shite imasu' = 'est marié·e' (état) PAS 'est en train de se marier'. FR distingue mal continuous vs result. N4-N3 fréquent."
+  - family: conditional_4_way
+    multiplier: 1.2
+    description: "JA distingue 4 conditionnels (vs FR 'si' unique) : -tara (si/quand, fait accompli), -ba (condition générale), -nara (présupposition contextuelle), -to (cause-effet automatique). 'Si vous venez' → 'kitara' / 'kureba' / 'kuru nara' / 'kuru to' selon nuance. N4-N3 fréquent confusion."
+  - family: verb_transitivity_pairs
+    multiplier: 1.3
+    description: "Paires intransitive/transitive systématiques JA (akeru/aku, tsukeru/tsuku, kowasu/kowareru, hajimeru/hajimaru). FR souvent même verbe + agent/pronominal réfléchi : 'la porte (s')ouvre' → 'doa ga akimasu' (intr) vs 'doa wo akemasu' (tr). Apprenant·e choisit mauvaise forme. N4 fréquent."
+  - family: kana_kanji_mixing
+    multiplier: 1.0
+    description: "JA standard exige hiragana (mots grammaticaux), katakana (loanwords étrangers), kanji (vocabulaire core par level). Apprenant·e A1-A2 écrit tout en romaji ou hiragana — admissible apprentissage début mais erreur orthographique post-N4. Listes kanji par JLPT (~100 N5, ~300 N4, ~650 N3, ~1000 N2)."
+  - family: loanword_katakana_pronunciation
+    multiplier: 0.9
+    description: "Loanwords FR/anglais en katakana ont prononciation/usage adaptés JA, pas FR : コーヒー (koohii) = café ; アルバイト (arubaito, de Arbeit DE) = job étudiant ; サラリーマン (sarariiman) = employé bureau. Apprenant·e prononce 'à la française' → incompréhension. Aussi sens dérivé : メリット (meritto) ≠ mérite FR (= avantage)."
+  - family: pitch_accent_minimal_pairs
+    multiplier: 0.8
+    description: "JA standard tokyo (hyōjungo) a pitch accent contrastive : ámeame (pluie) vs amèame (bonbon) ; háshi (baguettes) vs hashí (pont) vs hashǐ (bord). FR stress final invariant. Apprenant·e FR n'entend pas → minimal pairs confusion. N5+ ; voice features post-launch primarily concerned. Hors-scope rules detector."

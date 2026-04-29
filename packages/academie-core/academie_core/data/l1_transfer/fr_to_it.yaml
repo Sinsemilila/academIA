@@ -1,9 +1,11 @@
 # L1 transfer patterns: French → Italian.
 # Prioritized by multiplier (higher = show first to LLM in L1 watch block).
-# STATUS: STUB Wave 2 — expand before production activation.
-# Sources placeholder: VALICO learner corpus, Bagna et al. 2017 on IT L2 acquisition,
-#   Paquet 2018 for typological near-identity patterns. Wave 2 will add ~15 entries
-#   with corpus-validated multipliers.
+# STATUS: Session 51 expansion (12 entries) — needs native-IT speaker review
+#   before production activation. Currently STUB-EXPANDED.
+# Sources : VALICO Torino corpus, MERLIN-IT (FR-L1 ~50-80 productions), Bagna et al.
+#   2017 Italian SLA, Pienemann/Di Biase/Bettoni Processability Theory IT, Paquet 2018
+#   typological near-identity, Cinque on clitic structures, Sorace 2011 syntax-pragmatics
+#   interface, Karagjosova IJLCR 2020. Cf. vault/knowledge/multilang-italian-research.md.
 l1: fr
 target: it
 transfers:
@@ -18,7 +20,28 @@ transfers:
     description: "Contractions préposition + article obligatoires : 'a il/di il/in il/su il/da il' → 'al/del/nel/sul/dal'. 'vado a il cinema' → 'vado al cinema'. Idem pour feminin (alla, della, nella). A1-A2 très fréquent."
   - family: false_friends
     multiplier: 1.3
-    description: "libreria ≠ library (= librairie, pas bibliothèque = biblioteca) ; fattoria = ferme (pas factory = fabbrica) ; sensibile = sensé/raisonnable (pas sensible FR = sensibile émotionnel partagé mais contexte diverge) ; morbido = moelleux (pas morbide FR = morboso) ; camera = chambre (pas caméra = telecamera)."
+    description: "Top faux amis FR→IT (50+ catalog research file §3) : libreria = librairie (pas bibliothèque = biblioteca) ; fattoria = ferme (pas factory = fabbrica) ; sensibile = émotionnel-partagé contexte diverge ; morbido = moelleux (pas morbide = morboso) ; camera = chambre (pas caméra = telecamera) ; carta = papier (pas carte = mappa/tessera) ; conferenza = conférence (mais aussi cours universitaire). Note anti-pattern : 'burro' = beurre IT (vrai cognate FR), faux ami uniquement en ES. A1-B2 fréquent."
   - family: pronoun_clitic
     multiplier: 1.2
     description: "Clitiques combinés IT : 'glielo/gliela/glieli/gliele' (lui/elle + le/la) compressés en 1 forme. Calque FR 'je le lui dis' → 'glielo dico' (pas 'lo gli dico'). Aussi 'ce l'ho' (je l'ai) — particule ci + l' obligatoire avec avere possession. B1 modéré."
+  - family: gender_e_noun
+    multiplier: 1.3
+    description: "Noms IT en -e ambigus M/F (vs FR -e majoritairement F). Masculins : il fiore, il pane, il sole, il latte, il cane, il dente. Féminins : la chiave, la classe, la notte, la madre. Apprenant·e transfère le genre FR systématiquement. A1-A2 très fréquent."
+  - family: passato_prossimo_remoto_register
+    multiplier: 1.0
+    description: "Italien standard a passato prossimo (oral, nord-IT, default learner) + passato remoto (sud, littéraire, formel). FR passé composé seul → apprenant·e n'utilise jamais remoto. À B2+ : exposition à littérature/registre formel. Pas une erreur A1-B2, juste sub-utilisation."
+  - family: congiuntivo_trigger
+    multiplier: 1.4
+    description: "Subjonctif IT obligatoire après volonté/doute/émotion + 'che' : voglio che, spero che, penso che (forme négative), benché, sebbene, prima che. Calque FR indicatif : 'voglio che tu vieni' → 'voglio che tu venga'. Pas 1:1 avec FR (fr accepte indicatif après 'penser que' positif). B1-B2 fréquent."
+  - family: si_passivante_impersonale
+    multiplier: 1.0
+    description: "Italien si passivante (si + verbe 3e pers + sujet pluriel = se + infinitif FR : 'si vendono case' = 'on vend des maisons'). Calque FR 'on' → uno + verbe 3e sing en IT (forme moins idiomatique). B1 modéré."
+  - family: cognate_pronunciation_orthography
+    multiplier: 1.1
+    description: "Cognates FR-IT 85% mais orthographe diverge : double consonants IT (mamma, latte, anno, verrà — vs FR maman, lait, an, viendra). Apprenant·e omet : 'ano' au lieu de 'anno'. Aussi accents : caffè, perché, città, virtù — finals stressed. A1-A2 fréquent."
+  - family: ne_partitive_quantitative
+    multiplier: 1.0
+    description: "Particule 'ne' IT pour quantitatif/partitif obligatoire : 'quanti libri hai?' → 'ne ho tre' (j'en ai trois) ; 'parli di Marco?' → 'ne parlo' (j'en parle). FR 'en' similaire mais distribution diverge. B1 fréquent."
+  - family: tu_lei_register
+    multiplier: 1.2
+    description: "Tu (informel) vs Lei (formel, 3e pers sing, capital L) — Lei conjugation = elle. FR vous (2e pers plur) ne mappe pas directement à Lei. Apprenant·e dit 'voi' (= vous pluriel collectif) en contexte formel sing → 'Lei'. A2-B1 fréquent professionnel/commercial."
