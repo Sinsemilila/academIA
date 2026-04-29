@@ -1,0 +1,224 @@
+# Corrective feedback taxonomy extracted from Lyster (2007), Learning and Teaching Languages Through Content
+# Chapters 4 (Negotiating language through content) + 5 (Counterbalanced instruction)
+# Taxonomy origin: Lyster & Ranta (1997) error treatment sequence, refined in Lyster (2004a) and Lyster & Mori (2006)
+
+source_book: "lyster-2007-counterbalanced-content"
+extracted_by: claude
+extracted_date: 2026-04-29
+schema_version: 1
+schema_ref: "_schemas/cf-taxonomy.schema.yaml"
+
+cf_moves:
+  # ====================================================================
+  # RECAST FAMILY (implicit reformulations)
+  # Lyster Ch 4.3.1 — most frequent type; 54-65% of feedback in immersion
+  # ====================================================================
+  - id: implicit_recast
+    definition: "Reformulation of the learner's utterance minus the error(s), without explicit indication that the utterance was incorrect. Implicit insofar as it contains no metalinguistic information. In content-based settings recasts often appear in confirmations, confirmation checks, or expansions, intended to confirm or disconfirm the veracity of the student's message rather than to provide negative evidence about form."
+    cefr_appropriateness:
+      a1: low           # Likely missed by absolute beginners; ambiguous as positive evidence
+      a2: medium        # Some uptake possible but ambiguity persists
+      b1: medium        # Useful for scaffolding subject-matter beyond current ability
+      b2: medium        # Effective when learners noticing-ready and form-oriented
+      c1: low           # Often perceived as non-corrective; less added value
+      c2: low           # Beyond developmental plateau — recasts ineffective
+    counter_indications:
+      - "Meaning-oriented classrooms where learners expect teacher response to confirm/disconfirm message veracity, not form (Lyster 2002a)"
+      - "Binary contrasts (e.g., être/avoir, être/avoir, le/la, his/her) where recast may appear to confirm forms are interchangeable"
+      - "Beyond a developmental plateau in stabilized interlanguages (Nicholas et al. 2001:752)"
+      - "When teacher uses signs of approval (oui, OK, c'est ça) immediately after, amplifying ambiguity"
+    co_occurrence_warning:
+      - "Often paired indiscriminately with non-corrective repetition in content-based classrooms (Lyster 1998a)"
+      - "Approval markers (Très bien, Bravo, Excellent) used equally often with recasts and non-corrective repetitions, blurring corrective function"
+    empirical_effect_size:
+      study: "Lyster & Mori (2006) — distribution figure 2; Lyster & Ranta (1997) repair rates"
+      l1_l2_pair: "L1 English / L2 French (Quebec immersion); also L1 English / L2 Japanese immersion"
+    source: "Lyster 2007, ch 4, pp. 93-102"
+    confidence: high
+
+  - id: explicit_recast
+    definition: "Recast that has been shortened/reduced and/or marked with added intonational stress to highlight the error and make the corrective force more salient (Long 2007 'corrective recast', 'focused recast'). More likely to be perceived as corrective than implicit recasts that are neither reduced nor stressed (Ellis & Sheen 2006; Loewen & Philp 2006; Nicholas et al. 2001)."
+    cefr_appropriateness:
+      a1: medium        # Phonological/prosodic salience helps but metalinguistic load still high
+      a2: medium
+      b1: high          # Form-oriented learners notice well when stress + reduction signal
+      b2: high          # Most effective when learner already attending to form
+      c1: medium        # Can work but learner may have moved past plateau
+      c2: low
+    counter_indications:
+      - "Meaning-oriented learners may still treat as confirmation check despite stress"
+      - "Phonological errors are inherently more noticeable as recasts than morphosyntactic — explicit prosody less needed (Carpenter et al. 2006)"
+    co_occurrence_warning:
+      - "Doughty & Varela (1998) 'corrective recasting': repetition with stress + recast in sequence — the repetition (a prompt) precedes the recast"
+    empirical_effect_size:
+      study: "Doughty & Varela (1998) content-based ESL — significant improvement vs no-feedback; effect attributed especially to repetition step preceding recast"
+      l1_l2_pair: "L1 mixed / L2 English (content-based ESL)"
+    source: "Lyster 2007, ch 4, pp. 97-98, 120"
+    confidence: high
+
+  - id: full_recast
+    definition: "Recast that reformulates the whole of the learner's utterance, often functioning as semantic paraphrase or expansion. In content-based instruction (Mohan & Beckett 2001; Day & Shapson 1996) used to model more academically appropriate language and to maintain academic discourse rather than to correct grammar. Useful for editing discourse and shifting register (Gibbons 2003: scientific register)."
+    cefr_appropriateness:
+      a1: low           # Heavy cognitive load; learner may track only meaning
+      a2: medium        # Effective for input enrichment, weak for form
+      b1: medium        # Register-shifting valuable for academic literacy
+      b2: medium
+      c1: medium        # Useful for sociolinguistic register refinement
+      c2: low
+    counter_indications:
+      - "When goal is grammatical accuracy of a specific target form rather than discourse-level academic register"
+    source: "Lyster 2007, ch 4, pp. 94-95, 102, 104"
+    confidence: medium
+
+  - id: partial_recast
+    definition: "Recast that reformulates only part of the learner's utterance, isolating the error. Reduced length increases likelihood of being noticed as corrective (Ellis & Sheen 2006; Nicholas et al. 2001). Functions closer to explicit_recast when accompanied by stress."
+    cefr_appropriateness:
+      a1: medium        # Shorter target makes mismatch more salient than full recast
+      a2: medium
+      b1: high          # Sweet spot for noticing without disrupting meaning
+      b2: high
+      c1: medium
+      c2: low
+    counter_indications:
+      - "Binary form contrasts where the partial recast may still appear to confirm interchangeability"
+    source: "Lyster 2007, ch 4, pp. 97-98"
+    confidence: medium
+
+  # ====================================================================
+  # EXPLICIT CORRECTION (supplies form + indicates incorrectness)
+  # Lyster Ch 4.3 — 7-9% of feedback in immersion classrooms
+  # ====================================================================
+  - id: explicit_correction
+    definition: "Teacher provides the correct form along with a clear indication that what the student said was inaccurate (e.g., 'We say crane', 'No, it's…'). Like recasts, supplies the form unilaterally — does not allow for negotiation or self-repair, only repetition. Distinguished from recast by the explicit metalinguistic/evaluative signal that the original was wrong."
+    cefr_appropriateness:
+      a1: medium        # Limited metalanguage; works as direct supply
+      a2: medium
+      b1: medium
+      b2: low           # Bypasses learner self-repair; autonomy-blocking
+      c1: low
+      c2: low
+    counter_indications:
+      - "When learner has the form available in declarative knowledge — prompts more effective at procedural retrieval (de Bot 1996; DeKeyser 1998)"
+      - "Communicatively-oriented classrooms where flow matters and self-repair achievable"
+    co_occurrence_warning:
+      - "Often confused empirically with explicit_recast when researchers distinguish only by surface stress vs. explicit signal"
+    empirical_effect_size:
+      study: "Lyster & Mori (2006:285) Figure 2 — 7% French immersion, 9% Japanese immersion"
+      l1_l2_pair: "L1 English / L2 French; L1 English / L2 Japanese"
+    source: "Lyster 2007, ch 4, pp. 107-108"
+    confidence: high
+
+  # ====================================================================
+  # PROMPT FAMILY (withhold form, push self-repair)
+  # Lyster Ch 4.3.1 — 26-38% of feedback in immersion; 4 sub-types
+  # Defined as moves that "withhold correct forms and instead offer learners
+  # an opportunity to self-repair by generating their own modified response"
+  # ====================================================================
+  - id: clarification_request
+    definition: "Teacher indicates to the student, by phrases such as 'Pardon me' or 'I don't understand', that the message has not been understood or that the utterance is ill-formed in some way, and that a repetition or a reformulation is required. Pushes learners to modify their non-target output (Pica et al. 1996). Often used not because teacher misunderstands but to feign incomprehension and intentionally draw attention to non-target forms."
+    cefr_appropriateness:
+      a1: low           # May genuinely confuse beginners; risk of breakdown
+      a2: medium        # Works if learner has form available declaratively
+      b1: high          # Ideal — pushes self-repair without metalanguage
+      b2: high
+      c1: medium        # Less needed; learners often self-monitor
+      c2: low
+    counter_indications:
+      - "When learner has not yet acquired the target form (prompting cannot retrieve unacquired knowledge — Lyster & Ranta 1997)"
+      - "May be misread as genuine non-comprehension if not paired with intonation cue"
+    source: "Lyster 2007, ch 4, pp. 109"
+    confidence: high
+
+  - id: repetition
+    definition: "Teacher repeats the student's erroneous utterance, adjusting the intonation to highlight the error (e.g., S: 'Du laine?' T: 'Du laine?' [rising intonation]). Functions as prompt by drawing attention to error while withholding correct form. In Doughty & Varela's (1998) 'corrective recasting' the repetition step is the prompt component preceding the recast."
+    cefr_appropriateness:
+      a1: medium        # Salience high; minimal metalanguage needed
+      a2: high          # Especially effective when learner has alternate form available
+      b1: high
+      b2: medium        # May feel infantilizing at higher proficiency
+      c1: low
+      c2: low
+    counter_indications:
+      - "Confusable with non-corrective repetition (which equally common in immersion as confirmation/floor-holding device — Lyster 1998a)"
+      - "Without rising intonation, learner may interpret as confirmation"
+    co_occurrence_warning:
+      - "Effective in tandem with other feedback types as immediate-repair-yielding combo (Doughty & Varela 1998; Lyster 1998a)"
+    empirical_effect_size:
+      study: "Doughty & Varela (1998) — by treatment session 2, 'students were beginning to self-correct before the teacher had the opportunity to recast' (p. 135)"
+    source: "Lyster 2007, ch 4, pp. 109-110, 120"
+    confidence: high
+
+  - id: metalinguistic_feedback
+    definition: "Teacher provides comments, information, or questions related to the well-formedness of the student's utterance, without explicitly providing the correct form (e.g., 'Do we say goed in English?', 'We don't say that in French', 'No', 'Is it masculine?'). Engages metalinguistic awareness; pushes self-repair via rule-based reasoning."
+    cefr_appropriateness:
+      a1: contraindicated  # Limited metalanguage; cognitive overload
+      a2: low              # Some use possible if metalanguage scaffolded
+      b1: medium           # Effective once learners can manipulate basic metaterms
+      b2: high             # Sweet spot — learners benefit from rule-based perspective
+      c1: high             # Conscious-awareness processing leads to robust rule-based change (Skehan 1998)
+      c2: medium
+    counter_indications:
+      - "Without prior metalanguage instruction, learners cannot decode the metalinguistic cue"
+      - "May break communicative flow more than other prompts in meaning-oriented contexts"
+    empirical_effect_size:
+      study: "Ellis et al. (2006) — metalinguistic feedback effective 'in part from high level of awareness it generates and in part from being embedded in a communicative context' (p. 363)"
+      l1_l2_pair: "L1 mixed / L2 English (adult ESL — simple past tense)"
+    source: "Lyster 2007, ch 4, pp. 110, 122"
+    confidence: high
+
+  - id: elicitation
+    definition: "Teacher directly elicits correct forms from students by (a) asking questions such as 'How do we say that in French?', (b) pausing to allow students to complete the teacher's utterance ('C'est un…?'), or (c) asking students to reformulate their utterance ('Try again'). Hands the floor explicitly back to the student, pushing modified output."
+    cefr_appropriateness:
+      a1: low           # Risk of silence if form unavailable
+      a2: medium
+      b1: high          # Productive retrieval ideal at this stage
+      b2: high          # Especially effective for lower-proficiency within group (Ammar & Spada 2006)
+      c1: medium
+      c2: low
+    counter_indications:
+      - "When form not yet acquired declaratively (cannot retrieve what isn't there)"
+      - "Anxiety risk for low-confidence learners if used cold without scaffolding"
+    co_occurrence_warning:
+      - "Often combined with metalinguistic clue + repetition in 'multi-move' prompt sequences observed in Lyster (1998d, 2002b)"
+    empirical_effect_size:
+      study: "Lyster (2004a) Grade 5 immersion gender study — prompt group only group to outperform comparison on all 8 measures; recast group outperformed comparison on only 5 of 8"
+      cohen_d: null
+      l1_l2_pair: "L1 English / L2 French (Grade 5 immersion)"
+    source: "Lyster 2007, ch 4, pp. 110-111, 121"
+    confidence: high
+
+  # ====================================================================
+  # COMBINED MOVES
+  # ====================================================================
+  - id: prompt_plus_remediation
+    definition: "Sequenced feedback in which a prompt (clarification request, repetition, metalinguistic clue, or elicitation) is followed, only if the learner fails to self-repair, by a teacher-supplied recast or explicit correction. Operationalized as 'corrective recasting' by Doughty & Varela (1998): repetition first, recast only as remediation. Allows opportunity for self-repair while preserving safety net."
+    cefr_appropriateness:
+      a1: medium        # Safety net of remediation makes prompts viable earlier
+      a2: high
+      b1: high          # Ideal counterbalanced sequence
+      b2: high
+      c1: medium
+      c2: low
+    counter_indications:
+      - "If teacher remediates too quickly (before pause for self-repair), reduces to recast and loses prompt effect"
+    co_occurrence_warning:
+      - "Doughty & Varela's design has 'students beginning to self-correct before teacher had opportunity to recast' by session 2 — indicates remediation step often becomes unnecessary as effect compounds"
+    empirical_effect_size:
+      study: "Doughty & Varela (1998) — significant improvement vs no-feedback group, maintained at 2-month delayed post-test"
+      l1_l2_pair: "L1 mixed / L2 English (content-based ESL Grade 6-7, simple + conditional past)"
+    source: "Lyster 2007, ch 4, pp. 120, 122"
+    confidence: high
+
+# ====================================================================
+# COUNTERBALANCED PRINCIPLE — bridge to Ch 4.4 + Ch 5 (full extraction in counterbalanced-principle.yaml)
+# ====================================================================
+counterbalanced_principle:
+  rule: "Teachers should orchestrate a wide range of feedback types befitting the instructional context, balancing prompts (which push self-repair and modified output) with recasts (which scaffold meaning during subject-matter delivery), rather than relying exclusively on any single type. The choice should counterbalance the classroom's overriding communicative orientation: in meaning-oriented (immersion/CBI) classrooms, increase prompts; in form-oriented classrooms, recasts can deliver their double role of corrective + scaffolding."
+  conditions:
+    - "Match feedback type to learner familiarity with content: recasts when content is new (scaffold), prompts when content is familiar (push accuracy)"
+    - "Match feedback to error type: prompts for lexical and grammatical errors, recasts for phonological errors (Lyster 1998b)"
+    - "Match feedback to interlanguage stage: recasts useful pre-plateau, prompts essential beyond developmental plateau (Nicholas et al. 2001:752)"
+    - "Avoid signs of approval immediately following recasts/repetitions of errors (amplifies ambiguity)"
+    - "Avoid binary-distinction recasts (être/avoir, his/her) without prosodic or explicit marking — risk learner inference of interchangeability"
+    - "Within prompts, sequence multi-move (e.g., metalinguistic + repetition + elicitation) for compound salience"
+  source: "Lyster 2007, ch 4 sec 4 (pp. 122-124) + ch 5 (pp. 125-138)"

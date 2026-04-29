@@ -1,0 +1,172 @@
+# Counterbalanced approach principle extracted from Lyster (2007) Ch 5
+# Free-form structured YAML — no formal schema yet (custom)
+# Counterpart literature note: vault/knowledge/books/lyster-2007-counterbalanced-content.md
+
+source_book: "lyster-2007-counterbalanced-content"
+extracted_by: claude
+extracted_date: 2026-04-29
+schema_version: 1
+
+counterbalanced_approach:
+  core_definition: |
+    The counterbalance hypothesis (Lyster & Mori 2006) predicts that interlanguage
+    restructuring is triggered by instructional interventions that orient learners
+    in the direction OPPOSITE to that which their target language learning environment
+    has accustomed them. Counterbalanced instruction systematically integrates
+    content-based and form-focused instructional options to promote shifts in learners'
+    attentional focus, balancing awareness of "getting two for one" — i.e., learning
+    both language and content together. It extends the scope of form-focused instruction
+    by encompassing instructional practices ranging from form-focused interventions
+    at one end of the spectrum to content-based interventions at the other.
+  source: "Lyster 2007, ch 5, pp. 125-126, 129-138"
+
+  why_counterbalanced:
+    - rationale: |
+        Predicated on Skehan's (1998) argument for pushing learners who are either
+        form-oriented or meaning-oriented in the OPPOSITE direction in order to strike
+        a balance. Analytic learners need to build in greater concern for fluency and
+        the capacity to express meanings in real time without becoming excessively
+        concerned with focus on form. Memory-oriented learners need limits set to the
+        natural tendency to prioritize communicative outcome above all else.
+      empirical_support: "Skehan (1998:171-172) individual learner styles; Lyster & Mori (2006) extended to group-level classroom orientation"
+      source: "Lyster 2007, ch 5.1, p. 126"
+
+    - rationale: |
+        Destabilization of interlanguage forms results from instruction that requires
+        learners to vary their attentional focus between the content to which they
+        usually attend and target language features that are not otherwise attended to.
+        The effort extended to shift attention between form and meaning, and to maintain
+        a recursive interplay, strengthens connections in memory and facilitates access
+        to newly analyzed or reanalyzed representations during online production.
+      empirical_support: "Cognitive theory of attention shifts strengthening memory traces; transfer-appropriate processing (Segalowitz 1997)"
+      source: "Lyster 2007, ch 5.1, pp. 126-127"
+
+    - rationale: |
+        Effectiveness of proactive instructional interventions may depend on the extent
+        to which they are DIFFERENT from the classroom's overall communicative orientation,
+        as long as principles of transfer-appropriate learning are not violated. Sudden
+        injections of decontextualized grammar instruction are NOT predicted to yield
+        positive results because of their non-integrated approach.
+      empirical_support: "Six FFI studies in French immersion (Day & Shapson 1991; Harley 1989, 1998; Lyster 1994a, 2004a; Wright 1996); contrast outcomes across studies"
+      source: "Lyster 2007, ch 5.1.1, pp. 127-129"
+
+  proactive_approaches_support:
+    summary: |
+      Comparison of six form-focused intervention studies in French immersion (reviewed in
+      Ch 2 Table 3) reveals variable outcomes that map onto degree of counterbalance with
+      classroom routine. Studies targeting verbs of motion (Wright 1996), second-person
+      pronouns (Lyster 1994a), and grammatical gender (Harley 1998; Lyster 2004a) yielded
+      more positive short- and long-term results than studies on past tense forms (Harley 1989)
+      or conditional mood (Day & Shapson 1991). The successful studies featured: (a) noticing
+      tasks accentuating salience through typographical enhancement and increased frequency,
+      (b) awareness tasks contrasting French/English or interlanguage/target patterns,
+      (c) controlled production via role-plays/games/riddles. The less successful studies
+      over-emphasized meaning-oriented content tasks (designing space colonies, childhood
+      albums) that did not sufficiently differ from typical immersion activities and did not
+      push noticing/use of target forms in oral production.
+    studies_cited:
+      - "Harley (1989) — past tense, no long-term improvement"
+      - "Day & Shapson (1991) — conditional mood, written gain only"
+      - "Wright (1996) — verbs of motion, positive short + long term"
+      - "Lyster (1994a) — second-person pronouns tu/vous, positive"
+      - "Harley (1998) — grammatical gender, positive"
+      - "Lyster (2004a) — grammatical gender, positive (with prompts feedback condition)"
+      - "Norris & Ortega (2000) meta-analysis caveat re measurement bias"
+      - "Ranta & Lyster (2007) — declarative-to-procedural transition rationale"
+    key_takeaway: "Form-focused activities must MAINTAIN conditions for transfer-appropriate learning while DISTINGUISHING themselves from the classroom's overall communicative orientation. Production practice that is more form-focused than meaning-focused was likely more effective across the six studies. With respect to recalcitrant interlanguage forms (developmental plateau), continued meaning-oriented interaction is unlikely to drive change."
+    source: "Lyster 2007, ch 5.1.1, pp. 127-129"
+
+  reactive_approaches_support:
+    summary: |
+      Different types of repair (repetition vs. self-repair) entail different retrieval
+      processes contributing differentially to language development over time. Self-repair
+      triggered by prompts requires deeper processing, leaving stronger memory traces.
+      Recent studies (Ammar & Spada 2006; Ellis et al. 2006; Lyster 2004a) show prompts
+      superior to recasts. However, Lyster & Mori (2006) comparative study of French vs.
+      Japanese immersion showed that recasts can elicit immediate repair MORE in some
+      settings than others: Japanese immersion classrooms (analytic orientation due to
+      typological difference + cultural/training factors) showed greater recast-repair,
+      while French immersion (cognate, more meaning-oriented) showed greater prompt-repair.
+      This indicates feedback choices need to be made in accordance with specific
+      interactional contexts AND the classroom's overriding communicative orientation:
+      counterbalance the orientation rather than fix one feedback type as universally best.
+    studies_cited:
+      - "Ammar & Spada (2006) — prompts > recasts, Grade 6 ESL his/her"
+      - "Ellis et al. (2006) — prompts > recasts adult ESL simple past"
+      - "Lyster (2004a) — prompts > recasts Grade 5 immersion gender"
+      - "Mackey et al. (2000) — laboratory recast-repetition correlated with noticing"
+      - "Havranek & Cesnik (2001) — recasts eliciting repetition more effective than not"
+      - "Loewen (2005) — recast repetition predictor of subsequent learning adult ESL"
+      - "Lyster & Mori (2006) — French (54-65% recasts) vs Japanese (similar distribution but different repair patterns) immersion"
+      - "Sheen (2004) — adult EFL Korea, more recast-repair"
+      - "Mori (2002) — Japanese immersion, more recast-repair"
+    key_takeaway: |
+      Form-oriented classrooms (regular focused production practice, accuracy emphasis):
+      recasts play their double role (corrective + meaning-scaffolding) effectively,
+      reorienting learners' attention toward meaning to avoid form-overemphasis.
+      Meaning-oriented classrooms (immersion/CBI, no isolated production practice):
+      prompts enable teachers to draw students' attention to form and momentarily away
+      from meaning; learners detect the overtly corrective function of prompts more
+      easily than the covert signals to infer from recasts. The principle: counterbalance
+      the classroom's prevailing orientation.
+    source: "Lyster 2007, ch 5.1.2, pp. 129-133"
+
+  engaging_with_language_across_curriculum:
+    overview: |
+      Counterbalanced instruction is designed to encourage students to "engage with language"
+      regardless of whether its orientation is more form-focused or more content-based.
+      Content-based activities can equally incite engagement IF they integrate or complement
+      form-focused activities so that language permeates instructional activities across the
+      curriculum. Following Schleppegrell et al. (2004), Handscombe (1990), and Stern (1990,
+      1992): "no content is taught without reference to the language through which that content
+      is expressed, and no language is taught without being contextualized within a thematic
+      and human environment" (Handscombe 1990:185).
+    instructional_options_to_counterbalance:
+      content_based_options:
+        - "Comprehensible input through exposure to subject matter"
+        - "Content-based tasks for production (using L2 to mediate content learning)"
+        - "Negotiation as scaffolding (questions and feedback ensuring participation and content appropriation)"
+      form_focused_options:
+        - "Enhanced input through noticing and awareness tasks (typographical enhancement, salience-raising)"
+        - "Practice activities for production (proceduralization of target language knowledge)"
+        - "Negotiation as feedback (teacher prompts pushing students to draw on developing knowledge)"
+      framework: "Figure 4 (p. 135) — Two columns (Content-Based vs Form-Focused), three rows (input, production, negotiation). Vertical orientation is NOT hierarchical; columns are NOT dichotomous but complementary pairs along a continuum (Stern 1990, 1992)."
+    prescriptions:
+      - "Interweave learning activities that vary from more content-based to more form-focused, orchestrating diverse opportunities for processing and negotiating language across the curriculum"
+      - "Cover a range of input options: from making content-based input comprehensible to making language features more salient via noticing/awareness"
+      - "Cover a range of production options: from content-based academic-purpose tasks to controlled practice activities procedularizing target forms otherwise avoided/misused/unnoticed"
+      - "Exploit a range of interactional techniques: from implicit recasts (scaffolding participation) to prompts (pushing learners beyond recalcitrant interlanguage forms)"
+      - "Adapt to entry point: late immersion students benefit from MORE meaning-focused activities (their analytic ability is developed); early immersion students benefit from MORE form-focused age-appropriate activities (their analytic ability is developing — Dicks 1992; Harley & Hart 1997; Ranta 2002)"
+      - "Avoid surface-feature-only emphasis that overlooks language's role as medium for learning in all subject areas (Day & Shapson 1996:44 caveat)"
+    source: "Lyster 2007, ch 5.2, pp. 133-136"
+
+  conclusion_key_points:
+    - point: "Both proactive and reactive form-focused approaches need to be counterbalanced in complementary ways within the broader context of language across the curriculum and its associated literacy-based approaches."
+      source: "Lyster 2007, ch 5.3, p. 137"
+
+    - point: "Proactive form-focused instruction is crucial because content/meaning-based activities alone are insufficient — characterized as (a) noticing/language-awareness activities for restructuring interlanguage representations and (b) practice activities for proceduralizing more target-like representations."
+      source: "Lyster 2007, ch 5.3, p. 137"
+
+    - point: "Reactive form-focused instruction allows learners to put into practice during purposeful interaction the target language knowledge they gain from proactive activities. Exclusive reliance on reactive approaches discourages learners (random pushes without systematic linguistic support)."
+      source: "Lyster 2007, ch 5.3, p. 137"
+
+    - point: "Contrary to 'common sense' approaches that avoid interrupting communicative interaction, transfer-appropriate learning theory suggests feedback 'in the heat of the moment' may be the most efficient and effective technique."
+      source: "Lyster 2007, ch 5.3, p. 137"
+
+    - point: "Teacher prompts pushing students to retrieve more accurate target forms from their own linguistic resources are particularly effective in meaning-oriented classrooms — and seamlessly consistent with feedback in subject-matter classrooms (McHoul 1990 'clueing'/'withholding') and expert-novice tutoring (Lepper et al. 1990)."
+      source: "Lyster 2007, ch 5.3, p. 137"
+
+    - point: "Negotiation in which teachers provide helpful scaffolding (joint mentor-novice effort) facilitates participation and appropriation of target content, fusing content and language for instructional coherence across the curriculum."
+      source: "Lyster 2007, ch 5.3, p. 137"
+
+    - point: "The counterbalanced approach is a tentative framework for systematically addressing the integration of language and content. Educators in meaning-based classrooms should integrate more focus on language; those in traditional language-focused classrooms should integrate more content-based instruction to enrich classroom discourse."
+      source: "Lyster 2007, ch 5.3, p. 138"
+
+  source: "Lyster 2007, ch 5, pp. 125-138"
+
+# Notes on extraction limitations / caveats for downstream consumers
+caveats:
+  - "Empirical base is overwhelmingly Quebec/Canada French immersion (children/adolescents ~9-14 y.o., L1 English / L2 French) plus Japanese immersion comparison (Lyster & Mori 2006). NOT stratified by CEFR levels."
+  - "CEFR mappings in cf-taxonomy.yaml are INFERRED from Lyster's empirical observations on uptake and proficiency-stratification effects (e.g., Ammar & Spada 2006 finding prompts especially effective for lower-proficiency learners). Treat as medium/low confidence priors, not direct claims."
+  - "The taxonomy here uses the Lyster & Ranta (1997) 6-type scheme + Lyster & Mori (2006) 3-supercategory grouping (recasts, explicit correction, prompts). Schema enum includes implicit_recast, explicit_recast, full_recast, partial_recast as separate IDs to allow finer-grained downstream consumption — Lyster himself does not always cleanly distinguish these in surface taxonomy."
+  - "The 'counterbalance' principle is empirically grounded for school-age immersion. Adult CBI/content-based ESL evidence is suggestive (Doughty & Varela 1998; Ellis et al. 2006) but more limited."
