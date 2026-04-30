@@ -47,6 +47,85 @@ Voir `vault/projects/academia-ia/library-p3-roadmap.md` pour P2/P3 (~36 ouvrages
 
 ## 🔝 EN COURS — RESUME AU PROCHAIN /pickup
 
+### 🎯 Sprint Oracle EN cohérence — 2026-05 (Session 53+)
+
+**Plan détaillé** : [`docs/01-pedagogy/sprint-oracle-en-coherence-2026-05.md`](docs/01-pedagogy/sprint-oracle-en-coherence-2026-05.md)
+
+**DoD** : Oracle EN trustworthy → switch Maestro ES. Score 22-24/26 stable + AC2 ≥ 0.7 + κ vs Sinse ≥ 0.7 + 0 stable structural fail.
+
+#### Phase 0 — Capacity unlock (DONE Session 53)
+
+- [x] (claude, 2026-04-30, S53) Cerebras key + LiteLLM proxy : `cerebras-judge-fast` + `cerebras-judge-deep` + `mistral-medium`
+- [x] (claude, 2026-04-30, S53) rpm bump mistral-small 2→100
+- [x] (claude, 2026-04-30, S53) Admin `/admin` judge-budget : 7-tier multi-provider display
+- [ ] **Sinse ship** : 3 commits granulaires (LiteLLM config / admin tracker / frontend label)
+
+#### Phase 1 — Foundation (Day 1, ~30 min) ✅
+
+- [x] (claude, 2026-04-30, S53) `n_votes 3→5` + judge model → `cerebras-judge-fast` dans `scripts/oracle/config.yaml`
+- [x] (claude, 2026-04-30, S53) Gwet's AC2 module : `scripts/oracle/kappa/ac2.py` (binary + bootstrap CI + per-dim/global aggregation)
+- [x] (claude, 2026-04-30, S53) Standalone CLI `scripts/oracle/kappa/compute_ac2.py` (inter-run + intra-run modes)
+- [x] (claude, 2026-04-30, S53) Tests `test_kappa.py` (9 unit tests green)
+- [x] **Exit gate** : pytest 9/9 green + smoke run + AC2 CLI fonctionnel
+
+#### Phase 2 — Multi-judge panel cross-provider (Day 2-3, ~2h) ✅
+
+- [x] (claude, 2026-04-30, S53) Refactor `judges/llm_pairwise.py` : `_call_judge` + `_vote_n` accept `model_override` param
+- [x] (claude, 2026-04-30, S53) New `_vote_panel` + `_cross_judge_majority` helpers (per-judge intra-majority → cross-judge majority)
+- [x] (claude, 2026-04-30, S53) 3 `_score_X` accept `panel_models: list[str] | None` (backward compat preserved)
+- [x] (claude, 2026-04-30, S53) `score_all` accept `panel_models` arg
+- [x] (claude, 2026-04-30, S53) CLI flag `harness.py --panel cross-provider`
+- [x] (claude, 2026-04-30, S53) `config.yaml` panel block (members + agreement_threshold)
+- [x] (claude, 2026-04-30, S53) Tests `test_multi_judge.py` : 10 unit tests green (mock 3 judges + cross-judge majority + failure modes)
+- [x] (claude, 2026-04-30, S53) **Validated end-to-end** : smoke panel run sur 6 scenarios → 4 pass / 2 fail / AC2 inter-run = 1.0 sur 5 dims
+- [x] **Exit gate** : pytest 39/39 green + smoke panel green + cosmos 16/17
+
+**Insight Phase 2** : panel révèle vraie cross-provider variance — sur `a2_t2_past_simple_001`, 3 modèles donnent 3 moves différents (`partial_recast` / `prompt_plus_remediation` / `full_recast`) — tous dans acceptable_set donc cross-judge cap converge en pass. Single-judge mode masquait cette divergence. Validates Rating Roulette ACL 2025 thesis.
+
+#### Phase 3 — Re-mesure baseline + κ calibration (Day 3, ~4h)
+
+- [ ] Battery full panel run (~1M tokens, ~25 min)
+- [ ] Compare panel vs gemini-only baseline (S51 18-19/26)
+- [ ] Sinse manual κ scoring (~30-45 min Sinse) + `calibration.py`
+- [ ] **Exit gate** : κ ≥ 0.7 → continue Phase 4 / 0.5-0.7 → inject Phase 3.5 / <0.5 → STOP
+
+#### Phase 3.5 — Judge prompts audit (conditional)
+
+- [ ] Audit 3 prompts judge `llm_pairwise.py` (output schema strict + CoT + few-shots disambig)
+- [ ] A/B test v1 vs v2 sur smoke
+- [ ] **Exit gate** : κ ≥ 0.7 post-prompt-fix
+
+#### Phase 4 — Fix 2 stable structural fails (Day 4-5, ~2j)
+
+- [ ] `b2_t3_passive_001` : add 2-3 fewshots `implicit_recast` Lyster B2-passive + re-record golden
+- [ ] `b1_edge_t2t3_prepositions_001` : add fewshot `partial_recast` B1-preposition + re-record golden
+- [ ] **Exit gate** : 2 fails passent en `pass` sur 3 runs consécutifs + 0 régression
+
+#### Phase 5 — Battery V1 audit (Day 5, ~1j)
+
+- [ ] Re-read 26 scenarios vs Hughes 2020 + Lyster 2007 + Companion 2020
+- [ ] Audit doc `docs/audit/2026-05-XX-oracle-battery-v1-audit.md`
+- [ ] Patches conservatifs only (argument académique fort requis)
+- [ ] **Exit gate** : score stable 22-24/26 + audit doc commit
+
+#### Phase 6 — Cache verdicts hash-based (Day 6, ~1j)
+
+- [ ] New `scripts/oracle/cache.py` (SQLite hash-indexed)
+- [ ] Edit `harness.py` + `llm_pairwise.py` (lookup pre-call, write post-call)
+- [ ] CLI flag `--no-cache` + TTL 30j + invalidation `judge_prompt_version` bump
+- [ ] **Exit gate** : hit rate ≥ 50% sur 2è run + tests green
+
+#### Phase 7 — V2 battery seed (post-MVP)
+
+- [ ] Plan doc `docs/01-pedagogy/oracle-v2-battery-design.md` (skeleton only)
+- Implementation différée post-Maestro ES launch.
+
+═══════════════════════════════════════════════════════════
+✅ MVP Oracle EN trustworthy → **switch Maestro ES**
+═══════════════════════════════════════════════════════════
+
+---
+
 **Session 51 (2026-04-28/29) livré** :
 - ✅ P0.1 — harness/prod scope alignment (`build_full_dify_inputs`, commit `7a7fae1`). Découverte : harness mesurait Teacher EN lobotomized (2 inputs vs 11 prod).
 - ✅ P0.2 — scoring stabilization tier 0 : judge retry/back-off (`2b76917`), Dify temp 0.7→0.2 (SQL direct), goldens re-recorded (`535c09b`).
