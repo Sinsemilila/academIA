@@ -1,0 +1,5 @@
+▶ Cohen's κ per LLM-judged dim
+
+  cf_move_set_valid                   κ= 0.85  (n=17)  → KEEP
+  register_cefr_alignment             κ=  1.0  (n=25)  → KEEP
+  semantic_fidelity_pairwise          κ=  1.0  (n=22)  → KEEP

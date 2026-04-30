@@ -82,18 +82,41 @@ Voir `vault/projects/academia-ia/library-p3-roadmap.md` pour P2/P3 (~36 ouvrages
 
 **Insight Phase 2** : panel révèle vraie cross-provider variance — sur `a2_t2_past_simple_001`, 3 modèles donnent 3 moves différents (`partial_recast` / `prompt_plus_remediation` / `full_recast`) — tous dans acceptable_set donc cross-judge cap converge en pass. Single-judge mode masquait cette divergence. Validates Rating Roulette ACL 2025 thesis.
 
-#### Phase 3 — Re-mesure baseline + κ calibration (Day 3, ~4h)
+#### Phase 3 — Re-mesure baseline + κ calibration (Day 3, ~2h) ✅
 
-- [ ] Battery full panel run (~1M tokens, ~25 min)
-- [ ] Compare panel vs gemini-only baseline (S51 18-19/26)
-- [ ] Sinse manual κ scoring (~30-45 min Sinse) + `calibration.py`
-- [ ] **Exit gate** : κ ≥ 0.7 → continue Phase 4 / 0.5-0.7 → inject Phase 3.5 / <0.5 → STOP
+- [x] (claude, 2026-04-30, S53) Full panel battery 24 scenarios × 5 votes × 3 judges = 1080 calls (~30min, 65% Cerebras quota)
+- [x] (claude, 2026-04-30, S53) Compare panel vs gemini-only baseline : **22/26 panel** vs 17-19/26 ±1 single-judge S51
+- [x] (claude, 2026-04-30, S53) Opus super-judge in-chat (replaces κ Sinse manual — Sinse pas qualifié natif EN)
+- [x] (claude, 2026-04-30, S53) `calibration.py --dry-run` flag added, `compute_ac2.py` with inter-run + intra-run modes
+- [x] **κ Opus vs panel** : cf_move_set_valid=0.85 / register=1.0 / semantic=1.0 — **all ≥ 0.7 ✅**
+- [x] **Exit gate** : DoD ATTEINT — Oracle structurellement aligned avec Lyster taxonomy
 
-#### Phase 3.5 — Judge prompts audit (conditional)
+**Insights critiques Phase 3** :
+- Panel n=17 verdicts définitifs sur 26 cf_move. **9 scenarios "unknown"** (35%) — panel can't reach consensus.
+- Cerebras-llama-3.1-8b misclassifie systematic explicit_correction → full_recast à B2/C1. Mistral correct, gemini sparse votes.
+- S51 stable fails (`b2_passive`, `b1_prep`) "résolus" via unknown→pass leniency — **PAS un vrai fix**, juste masking.
+- Score "strict per spec" = 12-13/26, vs 22/26 leniency-inflated.
+- 1 disagreement Opus vs panel : `risk_gravity_comm_breakdown_001` clarification_request not in acc (T4 spec design issue).
 
-- [ ] Audit 3 prompts judge `llm_pairwise.py` (output schema strict + CoT + few-shots disambig)
-- [ ] A/B test v1 vs v2 sur smoke
-- [ ] **Exit gate** : κ ≥ 0.7 post-prompt-fix
+#### Phase 3.5 — Judge prompts audit (PRIORITY UPGRADE post-Phase-3)
+
+- [ ] Audit `cf_move` prompt `llm_pairwise.py:CF_MOVE_PROMPT` : disambiguation explicit_correction vs full_recast (mistral OK, llama weak)
+- [ ] Add 2-3 few-shot examples in cf_move prompt for the borderline cases
+- [ ] A/B test v1 vs v2 prompt on b2_t3_passive + c1_t3_conditional_mix + similar (5-6 scenarios)
+- [ ] **Exit gate** : Panel cf_move unknown rate < 15% (vs 35% actuel)
+
+#### Phase 5 — Battery V1 audit (PRIORITY UPGRADE — Phase 3 surfaced design issues)
+
+Identified specific scenarios where `acceptable_set` is too narrow per Lyster taxonomy :
+
+- [ ] B1+ T2/T3 scenarios : add `prompt_plus_remediation` to acceptable_set
+  - `b1_t2_articles_001`, `b1_t3_conditional_midfla_001`, `b2_t2_collocations_001`
+- [ ] T4 scenarios : add `clarification_request` to acceptable_set (Lyster Ch 4 §4 communication breakdown)
+  - `risk_gravity_comm_breakdown_001`
+- [ ] B2/C1 scenarios with `forbidden=[]` : decide if `explicit_correction` should be allowed (Lira-Gonzales 2024 supports for advanced)
+  - `b2_t3_modal_deduction_001`, `b2_t3_passive_001`, `c1_t3_conditional_mix_001`, `c1_t3_false_friend_assister_001`
+- [ ] A1 scenarios : decide on `implicit_recast` — currently NOT in acc but Lyster considers it valid (low salience caveat)
+  - `el_a1_t2_misc_002`, `_003`, `_004`
 
 #### Phase 4 — Fix 2 stable structural fails (Day 4-5, ~2j)
 

@@ -54,6 +54,9 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--manual", required=True)
     ap.add_argument("--oracle", required=True, help="oracle run JSON (baseline)")
+    ap.add_argument("--dry-run", action="store_true",
+                    help="report κ only, do NOT auto-drop dims in config.yaml "
+                         "(use for exploratory calibration e.g. Opus super-judge)")
     args = ap.parse_args()
 
     manual = yaml.safe_load(Path(args.manual).read_text())["scores"]
@@ -91,14 +94,16 @@ def main() -> int:
         print(f"  {dim:<35} κ={kappa:>5}  (n={n})  → {decision}")
         decisions.append((dim, kappa, decision))
 
-    # Update config.yaml::dropped_dims if any DROP
+    # Update config.yaml::dropped_dims if any DROP (skip in dry-run)
     to_drop = [d for d, k, dec in decisions if dec == "DROP"]
-    if to_drop:
+    if to_drop and not args.dry_run:
         cfg_path = ROOT / "config.yaml"
         cfg = yaml.safe_load(cfg_path.read_text())
         cfg["dropped_dims"] = list(set((cfg.get("dropped_dims") or []) + to_drop))
         cfg_path.write_text(yaml.safe_dump(cfg, sort_keys=False))
         print(f"\n▶ Dropped dims appended to config: {to_drop}")
+    elif to_drop:
+        print(f"\n▶ Would drop (dry-run, config NOT modified): {to_drop}")
 
     Path("/tmp/oracle_calibration.json").write_text(json.dumps(per_dim_kappa, indent=2))
     return 0

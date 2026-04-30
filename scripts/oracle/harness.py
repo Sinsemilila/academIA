@@ -181,6 +181,10 @@ def score_scenario(
         result.overall = "skip"
         return result
 
+    # Phase 2 Sprint Oracle EN cohérence — persist response for super-judge review
+    # via format_run_for_review.py. ScenarioResult is _Lax so extra fields ok.
+    result.response_text = response
+
     result.lint = run_lint(scenario, response)
 
     # Stub — Phase B1 fills with real dim scoring

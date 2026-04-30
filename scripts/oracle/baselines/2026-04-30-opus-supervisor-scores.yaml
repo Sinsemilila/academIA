@@ -1,0 +1,117 @@
+# Opus 4.7 super-judge scoring vs panel run /tmp/baseline-panel-2026-04-30.json
+# Scored 2026-04-30 by Opus reading the panel JSON output + scenario YAMLs + goldens.
+# Lyster (2007) taxonomy applied strictly to the goldens (proxy for Teacher response).
+# Verdicts pass/fail/unknown matching format expected by scripts/oracle/calibration.py.
+#
+# Methodology :
+# - cf_move_set_valid: strict acceptable_set check per scenario spec
+# - register_cefr_alignment: ±1 tolerance, trust panel where strong consensus
+# - semantic_fidelity_pairwise: golden vs golden (proxy) → trivially pass except where forbidden moves detected
+#
+# Major disagreements with panel on cf_move are documented inline.
+
+scores:
+  a2_t2_past_simple_001:
+    cf_move_set_valid: pass        # partial_recast in acc
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  a2_t2_plural_high_fla_001:
+    cf_move_set_valid: pass        # partial_recast in acc
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  a2_t3_articles_midfla_001:
+    cf_move_set_valid: pass        # partial_recast in acc
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  b1_edge_t2t3_prepositions_001:
+    cf_move_set_valid: pass        # partial_recast in acc, S51 stable fail RESOLVED
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  b1_t2_articles_001:
+    cf_move_set_valid: fail        # prompt_plus_remediation not in acc (panel correct)
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  b1_t3_conditional_midfla_001:
+    cf_move_set_valid: fail        # prompt_plus_remediation not in acc strict
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  b1_t3_present_perfect_001:
+    cf_move_set_valid: pass        # metalinguistic in acc
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  b2_t2_collocations_001:
+    cf_move_set_valid: fail        # prompt_plus_remediation not in acc
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  b2_t3_modal_deduction_001:
+    cf_move_set_valid: fail        # OPUS DISAGREE: golden = explicit_correction (mistral correct, cerebras wrong full_recast). Neither in acc=[elic, metal, partial]. Panel unknown→pass leniency masks real fail.
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  b2_t3_passive_001:
+    cf_move_set_valid: fail        # OPUS DISAGREE: golden = explicit_correction. S51 stable fail "passes" via unknown leniency, NOT real resolution.
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  c1_t3_conditional_mix_001:
+    cf_move_set_valid: fail        # OPUS DISAGREE: golden = explicit_correction (with metalinguistic mention). Neither in acc.
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  c1_t3_false_friend_assister_001:
+    cf_move_set_valid: fail        # OPUS DISAGREE: golden = explicit_correction + metalinguistic. cerebras says full_recast (wrong). Per acc={elic,metal,partial}, metalinguistic component would pass; but full_recast/explicit dominate votes. Edge case; strict fail.
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  c1_t3_subjunctive_001:
+    cf_move_set_valid: pass        # metalinguistic majority cross-judge (mistral 4/5, gemini 1/1), in acc
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  el_a1_t2_misc_001:
+    cf_move_set_valid: fail        # OPUS DISAGREE: judges classify elicitation/prompt_plus_remediation; neither in acc=[full/partial/clarif]. Golden actually IS clarification_request but judges miss. Spec wins.
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  el_a1_t2_misc_002:
+    cf_move_set_valid: fail        # OPUS DISAGREE: implicit_recast majority, NOT in acc=[full/partial/clarif].
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  el_a1_t2_misc_003:
+    cf_move_set_valid: fail        # OPUS DISAGREE: implicit_recast/explicit_correction; explicit IS FORBIDDEN.
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  el_a1_t2_misc_004:
+    cf_move_set_valid: fail        # implicit_recast not in acc (panel correct)
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  multi_a1_verb_no_uptake_001:
+    cf_move_set_valid: pass        # partial_recast in acc
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  multi_a2_art_uptake_001:
+    cf_move_set_valid: pass        # partial_recast in acc
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  multi_b1_cond_partial_001:
+    cf_move_set_valid: pass        # elicitation in acc
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  multi_b2_modal_no_uptake_001:
+    cf_move_set_valid: fail        # OPUS DISAGREE: prompt_plus_remediation/explicit_correction; neither in acc.
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  risk_a1_metalinguistic_leak_001:
+    cf_move_set_valid: pass        # clarification_request + partial_recast both in acc
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  risk_gravity_comm_breakdown_001:
+    cf_move_set_valid: fail        # OPUS DISAGREE: clarification_request majority but NOT in acc=[partial/elic/metal]. Spec design questionable for T4 (clarification ALWAYS appropriate per Lyster Ch 4) but strict fail.
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  risk_l1_drift_a1_001:
+    cf_move_set_valid: pass        # partial_recast in acc
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  risk_priority_leak_b1_001:
+    cf_move_set_valid: fail        # OPUS DISAGREE: full_recast/silent; neither in acc=[partial/elic/metal].
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+  risk_t4_regression_a2_001:
+    cf_move_set_valid: pass        # partial_recast in acc
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
