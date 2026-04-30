@@ -1,5 +1,5 @@
 general_settings:
-    database_url: ENC[AES256_GCM,data:rh6x0b0NjCW5WcH+KCC+AXiEm4DQLXRvQeuQiFWr3lZgFMEASQ1XrOLqa5gCH+pE1vDQBcEeoz/iROcqGg/55CQI/FmapAbRjBdHLNUnR4FEAA==,iv:lxmX1f9FB2OzIaRi4KLxezJSnViaPURXIKs6UVNeUM4=,tag:zIttYrjWBOe6ZzmNMqPu3Q==,type:str]
+    database_url: ENC[AES256_GCM,data:2CS17COsb7FXIhCNnZZo65X8teqs3r5G7V/OEGsmclZ58u6JIzFBUmyCfniVqiUF/scVfOW+SpZy6w/MJuzKUjOYwXnXJvVjcmLiFvikgiUMbw==,iv:1Z2Ri8V02VRFi951vSmzy64dlbOx5a26ApwJH3QVtpQ=,tag:BoRKq8zP4hKrVYeOIEQ4gg==,type:str]
     disable_spend_logs: false
     disable_spend_updates: false
     # économie disque, on n'a pas besoin du contenu
@@ -43,7 +43,7 @@ model_list:
     - model_name: gpt-4o-mini
       litellm_params:
         model: openai/gpt-4o-mini
-        api_key: ENC[AES256_GCM,data:lCfdLPXwtm7A5j5rbIql8UjUi/R2p0zRtKT1hOxCIgttab9/hQ0hU9yXow53oEA+rPH6KqGzeZpK+4XiLQHSoKPH5ikbLi6EyCCo/1fdsDBZpVkDN4gV6MJy91iDYmffLsSNbMlT0BWk78gyKP4x+HXaLNOlRwOhuXhKGMcFSnrS3I2TJhrj6VPho/aYS9in7oLGd/MAFxIiQEk1YSAtFny1rnk=,iv:ZwYoCHkaCbB1rxDQfCrOzHwxQYvw71CzxHd/PYF2Uac=,tag:ctsMBWIN2+wSnY+QpncoIA==,type:str]
+        api_key: ENC[AES256_GCM,data:yZvtC1nAlUoCS2f5HJAb7OQgDdaPAPXc+f1kWdZEDv3LieExM51EYi3lP08vuEp1SU6gd1S7FaVusvoHApHw/2ndYfT5k5r4DQ6uwRoPdiPQJnXvJ+utKkJfX+R+WLBOKiMyynwcwQ7Z2LcMRbZHzfHfZxM/FFNWvg1G1YIAj5h+ias7et1n7QUdkFrjDjzlWvUQn4zZLA2zzK7pT66trv9A0v0=,iv:/xkwgWYaMUKd0oRe3I9GO+ck2MYtUrvjmCgS4TFFCho=,tag:JTknpXj3xE6ALYtpBEuNxA==,type:str]
       model_info:
         owner: sinse
         tier: free
@@ -51,7 +51,7 @@ model_list:
     - model_name: ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v2:DTurinhs
       litellm_params:
         model: openai/ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v2:DTurinhs
-        api_key: ENC[AES256_GCM,data:lCfdLPXwtm7A5j5rbIql8UjUi/R2p0zRtKT1hOxCIgttab9/hQ0hU9yXow53oEA+rPH6KqGzeZpK+4XiLQHSoKPH5ikbLi6EyCCo/1fdsDBZpVkDN4gV6MJy91iDYmffLsSNbMlT0BWk78gyKP4x+HXaLNOlRwOhuXhKGMcFSnrS3I2TJhrj6VPho/aYS9in7oLGd/MAFxIiQEk1YSAtFny1rnk=,iv:ZwYoCHkaCbB1rxDQfCrOzHwxQYvw71CzxHd/PYF2Uac=,tag:ctsMBWIN2+wSnY+QpncoIA==,type:str]
+        api_key: ENC[AES256_GCM,data:YttJVyNI9kerPwwSYLb/EFiQq14RDWU+MQ6OpNn0W7HkwQa+av7KAO+AeQG66dS17kfd/KoRNnQ2VQZIKrz3yEdmS8+Avo+R9P+gO/UufEwuzfySrQ4Mi1ykZy28GAD0RQeUJr28qsEeW0M9SYuz+fNk6F97ly7ZzB1EtB9Gi1NRYV3guO2hBFX+R6P1pC1DOOUMOhEj4MSnxmxaK5f/YJtNNks=,iv:14ShCFfi0ZBjUrZiMLvSIAduad43rRVDrDf440emTPQ=,tag:sWDmKcDb09CLy6RWh2zrlQ==,type:str]
       model_info:
         owner: sinse
         tier: paid
@@ -59,7 +59,7 @@ model_list:
     - model_name: ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v3:DU6GUv6v
       litellm_params:
         model: openai/ft:gpt-4o-mini-2024-07-18:personal:academie-errors-v3:DU6GUv6v
-        api_key: ENC[AES256_GCM,data:lCfdLPXwtm7A5j5rbIql8UjUi/R2p0zRtKT1hOxCIgttab9/hQ0hU9yXow53oEA+rPH6KqGzeZpK+4XiLQHSoKPH5ikbLi6EyCCo/1fdsDBZpVkDN4gV6MJy91iDYmffLsSNbMlT0BWk78gyKP4x+HXaLNOlRwOhuXhKGMcFSnrS3I2TJhrj6VPho/aYS9in7oLGd/MAFxIiQEk1YSAtFny1rnk=,iv:ZwYoCHkaCbB1rxDQfCrOzHwxQYvw71CzxHd/PYF2Uac=,tag:ctsMBWIN2+wSnY+QpncoIA==,type:str]
+        api_key: ENC[AES256_GCM,data:LAjMRUBRICKcXE42YEg+N5L85uMXjWqXXySDJK8ZVmD00bIedFSrnHbdbKUAzQ2c35WJJC5qJKAVJki11ZlyiCWE30Nr/hUPw+KIOtCG+vOxFon80YVuyH+bIw6dwr/OOG31cjDiH/3etEgc5+G/IBAeWBfrjjpen7+ow0mFl+ImSQ+q9XN5QDj6Ai4gLtj23/SrnU1qHwg7ZmBkdwmkiyqiSKE=,iv:M3Dwt8huODazSmi4YmkU/Br/MakMzd1PBmUiYgvMJLU=,tag:MtP7y1qO5v1KIF5JimeKzg==,type:str]
       model_info:
         owner: sinse
         tier: paid
@@ -73,7 +73,7 @@ model_list:
     - model_name: groq-standard
       litellm_params:
         model: groq/llama-3.3-70b-versatile
-        api_key: ENC[AES256_GCM,data:OvwAtQuzaopDcRVCNOiI/Ur7YfoSQQw95hGjssx1VvtxoOOwo1zx4ka4nmljd5RoLfFG0yxHfZE=,iv:iLgSNAWpBR4MpCuAnv+QXrYS0YJaB/2VmGKOPNK1a0Y=,tag:86iG121umSgV1skHlVvRWw==,type:str]
+        api_key: ENC[AES256_GCM,data:RICJOSlFcsGk4QqToobnqdKddYS3FSf1n0lyKRgxaB5gODJ6ksvDF5RrMVPxz/k/7R9w+Ya1gZc=,iv:7E6O3+ou/jTbTka0Olh2pIzCOIP5ZA7Um2eCaonhSmA=,tag:v9guoDH0k/5sFlJHp5vi3A==,type:str]
         # throttle à 83% du max (12K) → bounce avant saturation
         tpm: 10000
         # throttle à 83% du max (30)
@@ -84,7 +84,7 @@ model_list:
     - model_name: groq-standard
       litellm_params:
         model: groq/llama-3.3-70b-versatile
-        api_key: ENC[AES256_GCM,data:S/3yxLMpqGfreIcSj3HJjRO/xLRwagt0ZqsAorD1Y/RytOLXxHOnL1Mtobr2DUUKilOLLvcxQi0=,iv:CkaHO9Kq1/Q8G58pAysXM1RUe4Vamv7ByX4QJ8ErC3c=,tag:mahel8YseUfuzUEYKG2LEQ==,type:str]
+        api_key: ENC[AES256_GCM,data:R2QmW14kp2movwW2Bbmy2pvPp38HZSfaAAwRWaStd5bQqCRKdxAs5p9L7vxlWzrLshe8te4bel4=,iv:HqlJrN6j1yFbmdFseRKBlKtUf4OUOMAymLvoySrxqhQ=,tag:MjKnX3jkVvKYb21K0nOtFg==,type:str]
         tpm: 10000
         rpm: 25
       model_info:
@@ -121,7 +121,7 @@ model_list:
     - model_name: groq-snapshot
       litellm_params:
         model: groq/llama-3.1-8b-instant
-        api_key: ENC[AES256_GCM,data:OvwAtQuzaopDcRVCNOiI/Ur7YfoSQQw95hGjssx1VvtxoOOwo1zx4ka4nmljd5RoLfFG0yxHfZE=,iv:iLgSNAWpBR4MpCuAnv+QXrYS0YJaB/2VmGKOPNK1a0Y=,tag:86iG121umSgV1skHlVvRWw==,type:str]
+        api_key: ENC[AES256_GCM,data:hAKe90KROAALaY2K/AuLzQ9kO35XtQjgENBq97X3Bpea6lu/6WZZaCneNBX7mE5KJz+cWMkzEyo=,iv:Oq3nEJRTHylc4dH3l3VP1Dv0SEt8TWz6X7GkieS8GGU=,tag:Ot+44ZFjvBs2NfoyfQc44Q==,type:str]
         tpm: 5000
         rpm: 25
       model_info:
@@ -130,7 +130,7 @@ model_list:
     - model_name: groq-snapshot
       litellm_params:
         model: groq/llama-3.1-8b-instant
-        api_key: ENC[AES256_GCM,data:S/3yxLMpqGfreIcSj3HJjRO/xLRwagt0ZqsAorD1Y/RytOLXxHOnL1Mtobr2DUUKilOLLvcxQi0=,iv:CkaHO9Kq1/Q8G58pAysXM1RUe4Vamv7ByX4QJ8ErC3c=,tag:mahel8YseUfuzUEYKG2LEQ==,type:str]
+        api_key: ENC[AES256_GCM,data:T00sPJA1/JNdMBh9OlNiEAvAGDPwpgesMK0uHcs7haSYtJdRMLGiTCBhFxXQF3t18WRVOBu+Fpc=,iv:AL5mKooLoeWaTCqV6Y1nsaGAh3CfCEgOQmIhYvWt+M8=,tag:7ZT1Ns5PRfZAkSFbQ279tA==,type:str]
         tpm: 5000
         rpm: 25
       model_info:
@@ -167,7 +167,7 @@ model_list:
     - model_name: groq-qwen
       litellm_params:
         model: groq/qwen/qwen3-32b
-        api_key: ENC[AES256_GCM,data:OvwAtQuzaopDcRVCNOiI/Ur7YfoSQQw95hGjssx1VvtxoOOwo1zx4ka4nmljd5RoLfFG0yxHfZE=,iv:iLgSNAWpBR4MpCuAnv+QXrYS0YJaB/2VmGKOPNK1a0Y=,tag:86iG121umSgV1skHlVvRWw==,type:str]
+        api_key: ENC[AES256_GCM,data:oxksrd1tJ8TRguHqkAB2orZTQXTD7NJ/URDRdT1yxx8cOBfytYFJmC5p36V1nVOtb02J61Jq3tM=,iv:bHMIevc3xkkk1aNWKg2rGRL1Ag117v5s30CRBrVHIhU=,tag:Eg684CcNvW21hjILewV/hg==,type:str]
         tpm: 5000
         rpm: 50
       model_info:
@@ -191,7 +191,7 @@ model_list:
     - model_name: ollama-cloud
       litellm_params:
         model: openai/nemotron-3-nano:30b-cloud
-        api_key: ENC[AES256_GCM,data:XiVUmIdCS8++Fm3Jfx7tKRhrCNp1jDCWah4rCTKU2EBj3P1U0iCceTqeOmveS3MfhsuaUPjxZSfC,iv:otxYKmNPbmEaZNGnH/MwzIk/bjliODmqZGe0vyL27mo=,tag:r/6FEJfJbdxKyA1W3p0duQ==,type:str]
+        api_key: ENC[AES256_GCM,data:RIHl0mk0oWMnWh4MyZkS3mGB7Prfg/5sj8ey2DZl38QHpM7kC7+GjSTGePTE8nSd5P0dKbzWiJ3i,iv:eLSg6fVIN4KwYXXNudy4PGiv5scauF+8B0ttfXvcK64=,tag:gzsBbdQ8zrmZuY2JQ7J8Yg==,type:str]
         api_base: https://ollama.com/v1
       model_info:
         owner: sinse
@@ -207,7 +207,7 @@ model_list:
     - model_name: gemini-flash
       litellm_params:
         model: gemini/gemini-2.5-flash
-        api_key: ENC[AES256_GCM,data:N/qiZH7pnAS+MtXjbjOBZhBMbxM/skMg8Q==,iv:nhKHKAWPzoneYlIhuy0vWBhm4/9fd2AbXbhC9nGQ48A=,tag:cIwuVzUaRgOfrpqN3pG7Qw==,type:str]
+        api_key: ENC[AES256_GCM,data:NAXrZQD38i0pe6fffdMV+l46NkqDLzhfUQ==,iv:DEqoDJCAu4PbNJLzltylLYXbRuV4DOzExFtBuyfF4xk=,tag:pvwK72N9nKHVUmyTKpDSAQ==,type:str]
         # Gemini free-tier per-model limits (observed 2026-04-22) :
         #   2.5 Flash      :  5 RPM,  20 RPD
         #   3 Flash preview:  5 RPM,  20 RPD
@@ -223,7 +223,7 @@ model_list:
     - model_name: gemini-3-flash
       litellm_params:
         model: gemini/gemini-3-flash-preview
-        api_key: ENC[AES256_GCM,data:N/qiZH7pnAS+MtXjbjOBZhBMbxM/skMg8Q==,iv:nhKHKAWPzoneYlIhuy0vWBhm4/9fd2AbXbhC9nGQ48A=,tag:cIwuVzUaRgOfrpqN3pG7Qw==,type:str]
+        api_key: ENC[AES256_GCM,data:Vg/IkuLleknd7n+hmRYw9jt2tXFrfGrd0Q==,iv:BA4HgmrUjOsqMbKZI4W9VCkfzxovms0x5eK66KJTHqM=,tag:n/mbq544qhlp07vQjNKvIg==,type:str]
         rpm: 5
       model_info:
         owner: sinse
@@ -231,7 +231,7 @@ model_list:
     - model_name: gemini-3-1-flash-lite
       litellm_params:
         model: gemini/gemini-3.1-flash-lite-preview
-        api_key: ENC[AES256_GCM,data:N/qiZH7pnAS+MtXjbjOBZhBMbxM/skMg8Q==,iv:nhKHKAWPzoneYlIhuy0vWBhm4/9fd2AbXbhC9nGQ48A=,tag:cIwuVzUaRgOfrpqN3pG7Qw==,type:str]
+        api_key: ENC[AES256_GCM,data:FJ1jviofNAFZRdYA7XDo+9QjDRPSfRUmtQ==,iv:tTw4K9y7ZasmHQaQPh8NzAQQ5gvDe8I1s18hnOMXWMs=,tag:fFNGp/96V8+44dDiuJftLg==,type:str]
         rpm: 15
       model_info:
         owner: sinse
@@ -244,9 +244,49 @@ model_list:
     - model_name: mistral-small
       litellm_params:
         model: mistral/mistral-small-latest
-        api_key: ENC[AES256_GCM,data:UfcQOLd3myRXUvTqjz3A+Vh83Usl+uov9Ag=,iv:yzJ7e7dj1mnzhCAUfPcuhwNDbbHU9dG9J6+zhqIkhOQ=,tag:81woMLDE2RTdf0tliZSWAQ==,type:str]
-        # limite réelle Mistral free
-        rpm: 2
+        api_key: ENC[AES256_GCM,data:FGuGQH0Zo7aYUUNFP65Z3CkjZQa/6N2vY0Y=,iv:OH/CV0gSdOx3l75E4IKQ9nWWIQnIDk4TRc/ItQmmRyw=,tag:DvnoSWoy9Zpy+fgLkJhJvw==,type:str]
+        # Free tier réel observé via x-ratelimit headers (2026-04-30) :
+        # 400 RPM · 1.5M tok/min · 1B tok/mois. Conservé 100 RPM pour
+        # marge multi-usages (judge oracle + fallback Groq + dev).
+        rpm: 100
+      model_info:
+        owner: sinse
+        tier: free
+    # ══════════════════════════════════════════════════════════════
+    #  MISTRAL MEDIUM — Judge backup deeper (Session 53+ scaling Tier 1)
+    #  mistral-medium-latest = 70B class, free tier accessible.
+    #  Path : panel cross-provider avec cerebras-judge-fast + gemini-flash.
+    # ══════════════════════════════════════════════════════════════
+    - model_name: mistral-medium
+      litellm_params:
+        model: mistral/mistral-medium-latest
+        api_key: ENC[AES256_GCM,data:8gU3w4cTwI+GXjaEAaZT5kxURdCNVcqB9NA=,iv:m9dQwETk/8/hHCcuJB4SeODqksZonrFUT+gMM5oQUuE=,tag:k8dA7ISHtZGXyPzkAaMBQw==,type:str]
+        rpm: 60
+      model_info:
+        owner: sinse
+        tier: free
+    # ══════════════════════════════════════════════════════════════
+    #  CEREBRAS — Free tier judge (Session 53+ scaling Tier 1)
+    #  Free tier observé via x-ratelimit headers (2026-04-30) :
+    #    Llama-3.1-8B : 30 RPM · 900 RPH · 14400 RPD · 1M tok/day
+    #                   latency ~5ms (queue 0ms) — quasi-instant
+    #    Qwen-3-235B  : RPM moins généreux mais qualité ++
+    #  Path : "cerebras-judge-fast" pour battery routine (RPD high),
+    #         "cerebras-judge-deep" pour calibration ponctuelle.
+    # ══════════════════════════════════════════════════════════════
+    - model_name: cerebras-judge-fast
+      litellm_params:
+        model: cerebras/llama3.1-8b
+        api_key: ENC[AES256_GCM,data:lQAw9WeM/fZLKJv84wNwsYIr/MQfKv9sy6jX,iv:6e9Qqxvv0oARV7xQQCmkHwOZj4tC8j/u4MypjF8TvXM=,tag:UYTpQgcQKzrdNz0YCyJLTg==,type:str]
+        rpm: 30
+      model_info:
+        owner: sinse
+        tier: free
+    - model_name: cerebras-judge-deep
+      litellm_params:
+        model: cerebras/qwen-3-235b-a22b-instruct-2507
+        api_key: ENC[AES256_GCM,data:AQvwNCKNVH2VDWd66jEjC88OJXcsJlVivkPc,iv:mECN3D+LL3RumtyfCuHpdQK4id+gYgSjh/n0xlJr1wU=,tag:pn0hQm7X9urzEuo2pC17uw==,type:str]
+        rpm: 5
       model_info:
         owner: sinse
         tier: free
@@ -303,13 +343,13 @@ sops:
         - recipient: age18jr3jdq05a4wr9hdgpdfz3vtya9u4rng88tu58lnv7jlw5hkxszsl00nnv
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBYdldzZnV6TlBmSTl6OUlr
-            anNZbHBicERNMkZER3FHa0t3Q1lwYzloQ1ZFCmNsWVZXYWV1Nkx4QURPbmhMcTJP
-            VG8rMjJTeUpKTVhkU1JYZEFWelpmRlEKLS0tIGx4UjhYejdYNHpOeGNGQ3JmbTNP
-            L2UyMVpXZlNUSUYrcXdOWW94bjB6SEkKaiUf/BJfRSHLPx1bRuwo0Cq6+Gqolu+Y
-            lyj+mJdZXf259qszpesqBBkVCJamfaMqlimABW2kqJkwFwV2e6bzIg==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXQnc1NG5rT2NjcU1hUHh6
+            bHNpdDMybXZCaU16dEZYcFFRYU5vczJQMWdNCnN1ZjFHWGhjT0Zyb0llMHFlTkFS
+            aFZnWlNsRWx5VCtHaHpiYlcxa0ZQb0kKLS0tIFVlbFdvSmI2VzdGR0puRGozeXZH
+            WjRHTytTSzlqWC8vZ2JlSXlGTWxZUk0KmiwIyeQwCfJXfZAZNzRY0Sb3Oijlmn6X
+            vHbNhnhZahW614aL3zQgvSiWjfxIycc2iWm8X/lSlJZ8iX4AOSUBpA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-04-25T09:30:02Z"
-    mac: ENC[AES256_GCM,data:6tkBi6lkBCVW96pXFvS09D2aiuzC+635RzFYLy29r88LQoclvidaNoOeInyd7LAdRrjNLkmLFWrRFdNomZqdxp0ZA98gg5RQ3Py0l+v7ugtolt6Lfkk+rvtXkPmNa+eUKaI2HabOWCuCFobwB2bzU5vK9ZrRS9SO8U6wgoI7uHM=,iv:ok5CdNjTIr0fN4fch3P7vw8dH8igORiB89wcAXX8slo=,tag:mn11Plfk7UThbJMLIrm04w==,type:str]
+    lastmodified: "2026-04-30T14:34:28Z"
+    mac: ENC[AES256_GCM,data:AMmpTeX+ZfHxuD3mv2OowtKqou/TW9a8fskW71Za3+4dRn0UUN9uhLuKirmDqwOfie4iOUdrfKc5+nfjX78kBz2IeCwLwJ7o0uk/JTcfBrByod2Mj//DQudNkzo+giWwBmXISoxC1QpYSvsJKaZy4k+qY+b98nNhYD0a+nUuHE0=,iv:P1o0kL7Xl7FMQRQSZzvN9lckPGP9bNTiqMhxH9b/HAE=,tag:4DpNMvSNoMZCVGv+WHL6YA==,type:str]
     encrypted_regex: ^(api_key|database_url|master_key|salt_key)$
     version: 3.12.2
