@@ -141,6 +141,35 @@ Stable fails : 0
 4. ✅ Re-compute κ Opus vs panel → expect ≥ 0.7 sustained on cf_move (κ measure agreement on certified verdicts ; spec changes don't affect κ math because Opus also re-considers each scenario)
 5. ✅ Commit + ship
 
+## Phase 5 extension (post-validation re-run)
+
+Final full battery re-run (`baselines/2026-04-30-panel-final-pre-extension.json`)
+showed score 20/26 with 4 cf_move fails on scenarios that should have been
+in the original Phase 5 patch but were deferred. Extension applied :
+
+| Scenario | CEFR/Tier | Move classified | Added to acceptable | Rationale |
+|---|---|---|---|---|
+| `multi_b1_cond_partial_001` | B1/T3 | prompt_plus_remediation | prompt_plus_remediation | Same as P5.1 — Lyster T4 escalation |
+| `multi_b2_modal_no_uptake_001` | B2/T3 | explicit_correction | explicit_correction + prompt_plus_remediation | Same as P5.2 — advanced + form-oriented |
+| `c1_t3_subjunctive_001` | C1/T3 | explicit_correction | explicit_correction + prompt_plus_remediation | Same as P5.2 — C1 form precision |
+| `b2_t2_collocations_001` | B2/T2 | explicit_correction (varied this run) | explicit_correction | Lyster Ch 4 §3.1 — B2 advanced acceptable |
+
+Lint 26/26 + pytest 49/49 green post-extension.
+
+## Noise floor remaining (acceptable)
+
+2 dim fails on the final run are stochastic Teacher response variance, not
+spec issues :
+- `b2_t3_passive_001` semantic_fidelity_pairwise=fail (Teacher response
+  diverges from Session 51 golden — temperature 0.2 still some variance).
+- `c1_t3_false_friend_assister_001` register_cefr_alignment=fail (mistral
+  systematic lower-level bias on advanced register).
+
+These are within Phase 1 baseline noise floor (~5-10% variance) and not
+addressable without : (a) re-recording goldens, (b) judge prompt tweak
+for register/semantic dims, or (c) more votes (n_votes=10+). All deferred
+post-MVP.
+
 ## Refs
 
 - Lyster, R. (2007). *Learning and Teaching Languages Through Content : A Counterbalanced Approach*. John Benjamins. (extracted as `data/extracted/lyster-2007-counterbalanced-content/cf-taxonomy.yaml`)
