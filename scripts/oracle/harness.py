@@ -149,7 +149,10 @@ def fetch_current_response(scenario: ScenarioSchema, agent: str) -> str | None:
     return call_agent(agent, first_learner.text, scenario.id, scenario=scenario)
 
 
-def score_scenario(scenario: ScenarioSchema, agent: str, mode: str, cfg: dict) -> ScenarioResult:
+def score_scenario(
+    scenario: ScenarioSchema, agent: str, mode: str, cfg: dict,
+    panel_models: list[str] | None = None,
+) -> ScenarioResult:
     """Single-scenario scoring. Lint always runs ; LLM dims only in smoke/full."""
     result = ScenarioResult(scenario_id=scenario.id, mode=mode)
 
@@ -185,7 +188,11 @@ def score_scenario(scenario: ScenarioSchema, agent: str, mode: str, cfg: dict) -
     golden = load_golden(scenario, agent) or ""
     result.dims = (
         deterministic.score_all(scenario, response)
-        + llm_pairwise.score_all(scenario, response, golden, cfg, n=cfg["modes"][mode]["n_votes"])
+        + llm_pairwise.score_all(
+            scenario, response, golden, cfg,
+            n=cfg["modes"][mode]["n_votes"],
+            panel_models=panel_models,
+        )
     )
 
     # Aggregate : fail if any lint fails OR any dim is fail
@@ -224,6 +231,9 @@ def main() -> int:
     ap.add_argument("--mode", choices=["lint", "smoke", "full"], default="lint")
     ap.add_argument("--gate-mode", choices=["strict", "relaxed"], default="strict",
                     help="strict = exit 1 on any fail ; relaxed = always exit 0 (warn only)")
+    ap.add_argument("--panel", choices=["off", "cross-provider"], default="off",
+                    help="off = single judge (default) ; cross-provider = "
+                         "multi-judge panel from config.yaml panel.members")
     ap.add_argument("--out", default="/tmp/oracle_run.json")
     args = ap.parse_args()
 
@@ -235,15 +245,30 @@ def main() -> int:
         print(f"no scenarios found for {args.agent}", file=sys.stderr)
         return 0 if args.gate_mode == "relaxed" else 1
 
-    print(f"▶ Oracle {args.mode} — {args.agent} — {len(scenarios)} scenarios", flush=True)
+    panel_models: list[str] | None = None
+    if args.panel == "cross-provider":
+        panel_cfg = cfg.get("panel") or {}
+        members = panel_cfg.get("members") or []
+        if not members:
+            print("--panel cross-provider but config.panel.members empty",
+                  file=sys.stderr)
+            return 2
+        panel_models = list(members)
+
+    print(f"▶ Oracle {args.mode} — {args.agent} — {len(scenarios)} scenarios"
+          f"{' [panel: ' + ','.join(panel_models) + ']' if panel_models else ''}",
+          flush=True)
     results = []
     for s in scenarios:
-        results.append(score_scenario(s, args.agent, args.mode, cfg))
+        results.append(score_scenario(s, args.agent, args.mode, cfg, panel_models))
 
     # Write JSON (full structured output)
     out_path = Path(args.out)
     out_path.write_text(json.dumps(
         {"mode": args.mode, "agent": args.agent,
+         "panel": panel_models,
+         "judge_model": cfg["judge"]["model"] if not panel_models else None,
+         "n_votes": cfg["modes"][args.mode].get("n_votes"),
          "results": [r.model_dump() for r in results]},
         indent=2,
     ))

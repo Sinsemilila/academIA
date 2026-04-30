@@ -108,11 +108,20 @@ def _extract_json(text: str | None) -> dict | None:
 
 
 async def _call_judge(
-    client: httpx.AsyncClient, cfg: dict, messages: list[dict]
+    client: httpx.AsyncClient,
+    cfg: dict,
+    messages: list[dict],
+    model_override: str | None = None,
 ) -> dict | None:
+    """Single judge call.
+
+    model_override : if set, use this LiteLLM model_name instead of
+    cfg["judge"]["model"]. Used by panel mode (Phase 2) where each
+    panel member is queried in turn.
+    """
     jcfg = cfg["judge"]
     payload = {
-        "model": jcfg["model"],
+        "model": model_override or jcfg["model"],
         "messages": messages,
         "temperature": jcfg.get("temperature", 0.0),
         "max_tokens": jcfg.get("max_tokens", 200),
@@ -169,14 +178,45 @@ async def _call_judge(
 
 
 async def _vote_n(
-    client: httpx.AsyncClient, cfg: dict, messages: list[dict], n: int,
+    client: httpx.AsyncClient,
+    cfg: dict,
+    messages: list[dict],
+    n: int,
+    model_override: str | None = None,
 ) -> list[dict]:
+    """Collect N votes from a single judge model.
+
+    Each vote dict tagged with `_judge_model` for downstream panel
+    breakdown / AC2 cross-judge analysis.
+    """
+    model = model_override or cfg["judge"]["model"]
     results = []
     for _ in range(n):
-        r = await _call_judge(client, cfg, messages)
+        r = await _call_judge(client, cfg, messages, model_override=model)
         if r:
+            r["_judge_model"] = model
             results.append(r)
     return results
+
+
+async def _vote_panel(
+    client: httpx.AsyncClient,
+    cfg: dict,
+    messages: list[dict],
+    n_per_judge: int,
+    panel_models: list[str],
+) -> list[dict]:
+    """Collect votes from multiple judge models (panel mode).
+
+    Each model contributes n_per_judge votes. Returns flat list of vote
+    dicts, each tagged with `_judge_model`. Order preserved per panel
+    member ordering.
+    """
+    flat: list[dict] = []
+    for model in panel_models:
+        votes = await _vote_n(client, cfg, messages, n_per_judge, model_override=model)
+        flat.extend(votes)
+    return flat
 
 
 def _majority_move(votes: list[dict]) -> tuple[str | None, float]:
@@ -207,7 +247,43 @@ def _majority_level(votes: list[dict]) -> tuple[str | None, float]:
 CEFR_ORDER = {"A1": 1, "A2": 2, "B1": 3, "B2": 4, "C1": 5, "C2": 6}
 
 
-async def _score_cf_move(client, cfg, scenario: ScenarioSchema, bot: str, n: int) -> DimVerdict:
+def _group_by_judge(votes: list[dict]) -> dict[str, list[dict]]:
+    """Group flat panel votes by `_judge_model` tag."""
+    grouped: dict[str, list[dict]] = {}
+    for v in votes:
+        m = v.get("_judge_model", "<unknown>")
+        grouped.setdefault(m, []).append(v)
+    return grouped
+
+
+def _cross_judge_majority(
+    votes: list[dict], majority_fn
+) -> tuple[object, float]:
+    """Aggregate panel votes : intra-judge majority per model → cross-judge
+    majority across models.
+
+    majority_fn(votes) -> (winner, intra_ratio) — pass _majority_move,
+    _majority_level, or partial (_majority_bool, key=...).
+
+    Returns (cross_winner, cross_ratio) where cross_ratio = max_count /
+    n_judges_with_signal. If no judge produced a verdict, returns (None, 0.0).
+    """
+    by_judge = _group_by_judge(votes)
+    intra_winners: list[object] = []
+    for _, jvotes in by_judge.items():
+        winner, _ratio = majority_fn(jvotes)
+        if winner is not None:
+            intra_winners.append(winner)
+    if not intra_winners:
+        return None, 0.0
+    cross_winner, cross_count = Counter(intra_winners).most_common(1)[0]
+    return cross_winner, cross_count / len(intra_winners)
+
+
+async def _score_cf_move(
+    client, cfg, scenario: ScenarioSchema, bot: str, n: int,
+    panel_models: list[str] | None = None,
+) -> DimVerdict:
     spec = (scenario.expected_dimensions or {}).get("cf_move_set_valid") or {}
     acceptable = set(spec.get("acceptable", []))
     forbidden = set(spec.get("forbidden", []))
@@ -216,8 +292,12 @@ async def _score_cf_move(client, cfg, scenario: ScenarioSchema, bot: str, n: int
         {"role": "system", "content": "You are a Lyster CF-move classifier. Output JSON only."},
         {"role": "user", "content": CF_MOVE_PROMPT.format(learner=learner, tutor=bot)},
     ]
-    votes = await _vote_n(client, cfg, msgs, n)
-    move, ratio = _majority_move(votes)
+    if panel_models:
+        votes = await _vote_panel(client, cfg, msgs, n, panel_models)
+        move, ratio = _cross_judge_majority(votes, _majority_move)
+    else:
+        votes = await _vote_n(client, cfg, msgs, n)
+        move, ratio = _majority_move(votes)
     if not move:
         return DimVerdict(dim="cf_move_set_valid", verdict="unknown",
                           reasoning="no consensus", judge_votes=votes)
@@ -240,7 +320,10 @@ async def _score_cf_move(client, cfg, scenario: ScenarioSchema, bot: str, n: int
                       reasoning=f"move={move} ({ratio:.2f})", judge_votes=votes)
 
 
-async def _score_cefr_register(client, cfg, scenario: ScenarioSchema, bot: str, n: int) -> DimVerdict:
+async def _score_cefr_register(
+    client, cfg, scenario: ScenarioSchema, bot: str, n: int,
+    panel_models: list[str] | None = None,
+) -> DimVerdict:
     spec = (scenario.expected_dimensions or {}).get("register_cefr_alignment") or {}
     target = spec.get("target") or scenario.scenario_key.cefr
     tolerance = spec.get("tolerance", 1)
@@ -248,8 +331,12 @@ async def _score_cefr_register(client, cfg, scenario: ScenarioSchema, bot: str, 
         {"role": "system", "content": "You classify CEFR register. Output JSON only."},
         {"role": "user", "content": CEFR_REGISTER_PROMPT.format(tutor=bot)},
     ]
-    votes = await _vote_n(client, cfg, msgs, n)
-    level, ratio = _majority_level(votes)
+    if panel_models:
+        votes = await _vote_panel(client, cfg, msgs, n, panel_models)
+        level, ratio = _cross_judge_majority(votes, _majority_level)
+    else:
+        votes = await _vote_n(client, cfg, msgs, n)
+        level, ratio = _majority_level(votes)
     if not level:
         return DimVerdict(dim="register_cefr_alignment", verdict="unknown",
                           reasoning="no consensus", judge_votes=votes)
@@ -268,7 +355,10 @@ async def _score_cefr_register(client, cfg, scenario: ScenarioSchema, bot: str, 
                       judge_votes=votes)
 
 
-async def _score_pairwise(client, cfg, scenario: ScenarioSchema, bot: str, golden: str, n: int) -> DimVerdict:
+async def _score_pairwise(
+    client, cfg, scenario: ScenarioSchema, bot: str, golden: str, n: int,
+    panel_models: list[str] | None = None,
+) -> DimVerdict:
     if not golden:
         return DimVerdict(dim="semantic_fidelity_pairwise", verdict="unknown",
                           reasoning="no golden recorded")
@@ -278,8 +368,14 @@ async def _score_pairwise(client, cfg, scenario: ScenarioSchema, bot: str, golde
         {"role": "user", "content": PAIRWISE_PROMPT.format(
             learner=learner, response_a=bot, response_b=golden)},
     ]
-    votes = await _vote_n(client, cfg, msgs, n)
-    eq, ratio = _majority_bool(votes, "equivalent")
+    if panel_models:
+        votes = await _vote_panel(client, cfg, msgs, n, panel_models)
+        eq, ratio = _cross_judge_majority(
+            votes, lambda vs: _majority_bool(vs, "equivalent"),
+        )
+    else:
+        votes = await _vote_n(client, cfg, msgs, n)
+        eq, ratio = _majority_bool(votes, "equivalent")
     if eq is None:
         return DimVerdict(dim="semantic_fidelity_pairwise", verdict="unknown",
                           reasoning="no consensus", judge_votes=votes)
@@ -295,13 +391,23 @@ async def _score_pairwise(client, cfg, scenario: ScenarioSchema, bot: str, golde
                       reasoning=f"majority divergent ({ratio:.2f})", judge_votes=votes)
 
 
-def score_all(scenario: ScenarioSchema, response: str, golden: str, cfg: dict, n: int = 3) -> list[DimVerdict]:
-    """Sync wrapper — runs the 3 LLM-judged dims concurrently via gather."""
+def score_all(
+    scenario: ScenarioSchema, response: str, golden: str, cfg: dict,
+    n: int = 3, panel_models: list[str] | None = None,
+) -> list[DimVerdict]:
+    """Sync wrapper — runs the 3 LLM-judged dims concurrently via gather.
+
+    panel_models : if provided, cross-provider panel mode. Each member
+    queried n times, intra-judge majority, then cross-judge majority for
+    final verdict. judge_fail_threshold applies to cross_ratio.
+
+    Single-judge mode preserved (panel_models=None) for backward compat.
+    """
     async def _run():
         async with httpx.AsyncClient() as client:
             return list(await asyncio.gather(
-                _score_cf_move(client, cfg, scenario, response, n),
-                _score_cefr_register(client, cfg, scenario, response, n),
-                _score_pairwise(client, cfg, scenario, response, golden, n),
+                _score_cf_move(client, cfg, scenario, response, n, panel_models),
+                _score_cefr_register(client, cfg, scenario, response, n, panel_models),
+                _score_pairwise(client, cfg, scenario, response, golden, n, panel_models),
             ))
     return asyncio.run(_run())

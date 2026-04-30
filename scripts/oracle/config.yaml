@@ -1,6 +1,13 @@
 judge:
-  model: gemini-3-1-flash-lite
-  n_votes: 3
+  # Session 53 — switched gemini → cerebras-judge-fast (llama-3.1-8b)
+  # Capacity unlock 540 RPD → 14400 RPD (26×). Latency 5ms (vs 300ms gemini).
+  # gemini-3-1-flash-lite kept as panel member (Phase 2) for cross-provider
+  # AC2 + κ=0.84 baseline reference.
+  model: cerebras-judge-fast
+  # n_votes 3→5 (Sprint Oracle EN cohérence Phase 1.1) — Wang 2022
+  # self-consistency, tighter confidence interval. Cerebras absorbs +66%
+  # cost (battery 360 calls × 5/3 = 600 calls vs 14400 RPD budget).
+  n_votes: 5
   temperature: 0.0
   max_tokens: 500
   timeout_s: 30
@@ -18,7 +25,20 @@ modes:
 # agreement_ratio ≥ this threshold ; below → "unknown" (treated as pass-through
 # at scenario aggregation, harness.py:193). Avoids penalizing Teacher EN for
 # free-tier judge variance documented in inbox bibliography.
+# Session 53 — when panel mode active (--panel cross-provider), this threshold
+# applies to CROSS-judge agreement ratio (e.g. 2/3 = 0.67, below threshold
+# 0.7 → unknown). Each judge member contributes its intra-judge majority.
 judge_fail_threshold: 0.7
+# Session 53 Sprint Oracle EN cohérence Phase 2 — multi-judge panel.
+# Opt-in via `python3 harness.py --panel cross-provider`. Default off
+# (single judge from `judge.model`). Each member queried n_votes/3 times
+# (smoke=1, full=5/3≈2 per member) ; intra-judge majority then cross-judge.
+panel:
+  members:
+    - cerebras-judge-fast      # llama-3.1-8b, 14400 RPD
+    - mistral-small            # mistral-small-latest, 100 RPM
+    - gemini-3-1-flash-lite    # κ=0.84 baseline reference
+  agreement_threshold: 0.66    # 2/3 minimum (handled via judge_fail_threshold)
 axis_thresholds:
   policy_compliance: 0.66
   output_shape: 0.66
