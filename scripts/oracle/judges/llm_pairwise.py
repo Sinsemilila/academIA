@@ -38,22 +38,82 @@ CF_MOVES = [
 
 CF_MOVE_PROMPT = """You classify a tutor's corrective feedback move using Lyster's 10-move taxonomy + AcademIA `silent` policy.
 
-Moves :
-- silent : tutor does not correct the error (deliberate pedagogical choice — surface T1/T2 errors at A1/A2 typically silent per AcademIA tolerance policy)
-- implicit_recast : tutor reformulates the learner's utterance minus the error, embedded in a confirmation/expansion, no explicit signal of correction
-- full_recast : tutor repeats whole utterance with error corrected, often paraphrasing for academic register (rare in classroom CF)
-- partial_recast : tutor corrects only the erroneous fragment, often within a follow-up question ("Oh you *went* to Paris! What did you eat?")
-- clarification_request : tutor asks learner to rephrase ("What do you mean?", "Could you say that again?")
-- repetition : tutor repeats the erroneous part with rising intonation, no correction provided
-- metalinguistic : tutor names/explains the grammar rule or asks rule-based question ("past simple uses -ed", "Past or present?")
-- elicitation : tutor prompts learner to produce the correct form ("Almost — what's the past of go?")
-- prompt_plus_remediation : tutor sequences a prompt (clarification/repetition/metalinguistic/elicitation) followed by recast or explicit correction if learner fails to self-repair (Doughty & Varela 1998 'corrective recasting' pattern; Lyster T4 escalation)
-- explicit_correction : tutor flags the error AND provides the correct form ("No, it's 'went', not 'goed'") — anti-pattern at A1-B1 per AcademIA rubric, allowed at C1-C2 stylistic
+# DECISION TREE — apply step by step
+
+**Step 1 — Does the tutor EXPLICITLY flag the learner's utterance as wrong?**
+   Explicit flagging signals : "No", "Wrong", "Instead of X", "It should be", "Almost", "Not quite",
+   "The correct form is", "*X* is the right word", phonological stress on the error part.
+   - YES + tutor provides correct form → likely `explicit_correction` (or `prompt_plus_remediation` if also has a prompt before)
+   - YES + tutor asks learner to repair → likely `metalinguistic` / `elicitation` / `clarification_request`
+   - NO → continue Step 2 (recast family)
+
+**Step 2 — Did the tutor reformulate the utterance silently (no flagging)?**
+   - Reformulates the WHOLE utterance, often paraphrasing for register → `full_recast`
+   - Reformulates ONLY the erroneous fragment, often embedded in a follow-up question → `partial_recast`
+   - Embeds the corrected form in a confirmation/expansion ("Yes, you went to Paris!") without isolating it → `implicit_recast`
+   - Reformulates a CORRECT learner utterance (no error) → `repetition` (NOT corrective ; non_cf)
+   - Did not say anything corrective at all → `silent`
+
+**Step 3 — Did the tutor sequence multiple moves (Lyster T4 escalation pattern, Doughty & Varela 1998)?**
+   - Prompt (clarification / repetition / metalinguistic / elicitation) followed by a recast or explicit correction → `prompt_plus_remediation`
+   - This subsumes "Almost — past tense?" + "It's 'went'." sequences
+
+# CRITICAL DISAMBIGUATION : explicit_correction vs full_recast
+
+These are the most-confused pair. Decisive cue = **EXPLICIT FLAGGING**.
+
+| Cue | explicit_correction | full_recast |
+|---|---|---|
+| Says "It should be / Instead of / No / Almost" | YES | NO |
+| Provides correct form | YES | YES |
+| Reformulates whole utterance | sometimes | YES (defining feature) |
+| Tutor's stance | "you erred, here's the truth" | "let me confirm and expand" |
+
+**Few-shot examples (study these before classifying)** :
+
+EX1 — Learner: "If I would have known earlier, I would have prepared."
+     Tutor: "Almost there! Instead of 'If I would have known', you should say 'If I had known'. The correct form is..."
+     → MOVE: explicit_correction
+     → reasoning: tutor explicitly flags error ("Instead of X") and provides correct form with metalinguistic comment.
+
+EX2 — Learner: "the magnets they're not pushing"
+     Tutor: "OK so when they were facing one way, you felt the magnets attract and stick together. When you turn one of the magnets around you felt it... repelling, or pushing away."
+     → MOVE: full_recast
+     → reasoning: tutor reformulates whole utterance with academic register shift, NO explicit flag of error (Lyster 2007 p.94, Gibbons 2003).
+
+EX3 — Learner: "I goed to the cinema."
+     Tutor: "Oh you *went* to the cinema! What movie did you see?"
+     → MOVE: partial_recast
+     → reasoning: tutor isolates and corrects only the erroneous fragment, embedded in a follow-up question (Lyster taxonomy canonical).
+
+EX4 — Learner: "She is interested on learning French."
+     Tutor: "Yes, she's interested *in* learning French — which subject does she like most?"
+     → MOVE: partial_recast (NOT implicit_recast, because the correction is salient via stress/positioning + follow-up Q).
+
+EX5 — Learner: "If I would have more money, I will travel."
+     Tutor: "Almost — in 'if'-sentences about unreal situations, which tense comes after 'if'? Try: 'If I had more money, I would travel.'"
+     → MOVE: prompt_plus_remediation
+     → reasoning: sequences metalinguistic question ("which tense after 'if'?") + recast model ("Try: ...") — Lyster T4 escalation, Doughty & Varela 1998.
+
+EX6 — Learner: "I want to buy car for my wife."
+     Tutor: "Oh, you want to buy *a car*! What kind of car do you want?"
+     → MOVE: partial_recast
+     → reasoning: isolates 'a car', embeds in confirmation + follow-up question.
+
+EX7 — Learner: "It have mixed colors."
+     Tutor: "It has mixed colors."
+     → MOVE: implicit_recast
+     → reasoning: silent reformulation of whole utterance, no flagging, ambiguous as positive evidence (Mackey, Gass & McDonough 2000).
+
+# Now classify
 
 Learner utterance : "{learner}"
 Tutor response : "{tutor}"
 
-Output strict JSON : {{"move": "<one of the 10>", "confidence": 0.0-1.0, "reasoning": "one sentence"}}"""
+Apply Step 1 → 2 → 3. Pay close attention to explicit flagging language.
+
+Output strict JSON :
+{{"move": "<one of: silent | implicit_recast | full_recast | partial_recast | clarification_request | repetition | metalinguistic | elicitation | prompt_plus_remediation | explicit_correction>", "confidence": 0.0-1.0, "reasoning": "Step 1 verdict + decisive cue. One sentence."}}"""
 
 CEFR_REGISTER_PROMPT = """You classify the CEFR level that a tutor's response is pitched at.
 

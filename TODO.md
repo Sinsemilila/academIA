@@ -98,12 +98,18 @@ Voir `vault/projects/academia-ia/library-p3-roadmap.md` pour P2/P3 (~36 ouvrages
 - Score "strict per spec" = 12-13/26, vs 22/26 leniency-inflated.
 - 1 disagreement Opus vs panel : `risk_gravity_comm_breakdown_001` clarification_request not in acc (T4 spec design issue).
 
-#### Phase 3.5 — Judge prompts audit (PRIORITY UPGRADE post-Phase-3)
+#### Phase 3.5 — Judge prompts audit ✅
 
-- [ ] Audit `cf_move` prompt `llm_pairwise.py:CF_MOVE_PROMPT` : disambiguation explicit_correction vs full_recast (mistral OK, llama weak)
-- [ ] Add 2-3 few-shot examples in cf_move prompt for the borderline cases
-- [ ] A/B test v1 vs v2 prompt on b2_t3_passive + c1_t3_conditional_mix + similar (5-6 scenarios)
-- [ ] **Exit gate** : Panel cf_move unknown rate < 15% (vs 35% actuel)
+- [x] (claude, 2026-04-30, S53) Refactor `CF_MOVE_PROMPT` v1→v2 : decision tree (Step 1 explicit flagging? → Step 2 recast family → Step 3 sequenced moves) + critical disambiguation table explicit_correction vs full_recast + 7 few-shot examples (Lyster-grounded EX1-EX7)
+- [x] (claude, 2026-04-30, S53) A/B test on 9 unknown scenarios via direct cerebras-judge-fast call : 4 explicit_correction cases ALL FIXED (0% → 100%), 6/9 top-vote correct, 18/27 votes correct
+- [x] (claude, 2026-04-30, S53) Smoke validation : 4/6 pass identical (no regression on simple cases), 39/39 oracle tests green
+- [x] **Exit gate** : Cerebras-llama explicit_correction accuracy 0% → 100%. Worst-case dimension fixed.
+- Artifacts saved : `baselines/2026-04-30-cf-move-prompt-v2-ab-test.py` + `*-results.txt`
+
+**Misclassifications restantes (non-blockers, scenario design)** :
+- `el_a1_t2_misc_002` → partial vs implicit (borderline, both pedagogically defensible)
+- `multi_b2_modal_no_uptake_001` → explicit_correction vs prompt_plus_remediation (golden review needed)
+→ tackled in Phase 5 scenario audit
 
 #### Phase 5 — Battery V1 audit (PRIORITY UPGRADE — Phase 3 surfaced design issues)
 

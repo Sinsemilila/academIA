@@ -1,0 +1,28 @@
+A/B test cf_move prompt v2 vs v1 baseline — 2026-04-30 — Phase 3.5
+
+Test : 9 scenarios where panel verdict was 'unknown' due to cerebras-llama-3.1-8b
+       misclassifying explicit_correction as full_recast.
+
+Run : 9 scenarios × 3 votes via cerebras-judge-fast direct call (no panel)
+      using v2 prompt with CoT decision tree + 7 disambiguating few-shots.
+
+Results :
+  Total : 18/27 votes correct (67%)
+  Top-vote correct : 6/9 (67%)
+
+  4 explicit_correction cases ALL FIXED (b2_modal_deduction, b2_passive,
+  c1_conditional_mix, c1_false_friend) — the worst-case dimension.
+
+  v1 baseline on same scenarios : cerebras-llama said 'full_recast' for all 4
+  explicit_correction cases (0% correct).
+
+Misclassifications remaining :
+  - el_a1_t2_misc_002 → partial_recast vs implicit (genuine borderline)
+  - el_a1_t2_misc_003 → 0 parseable votes (transient — direct retest works)
+  - multi_b2_modal_no_uptake_001 → explicit_correction vs prompt_plus_remediation
+    (need scenario re-review)
+
+Verdict : v2 prompt SHIP.
+  - cerebras-llama explicit_correction accuracy : 0% → 100%
+  - No regression on simple cases (smoke 4/6 same as v1)
+  - No regression on tests (39/39 green)
