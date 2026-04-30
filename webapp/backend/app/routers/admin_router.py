@@ -755,24 +755,35 @@ async def model_budgets(admin: dict = Depends(require_admin)):
 
 
 # ── Session 45 P4.5 — Oracle judge chain budget ─────────────────────
+# ── Session 53 — extended cross-provider (Cerebras + Mistral) ───────
 
-# Gemini judge chain config (mirrors scripts/oracle/preflight_gemini.py).
+# Multi-provider judge chain (mirrors LiteLLM proxy fallback config).
 # `db_model` is what LiteLLM actually writes to litellm_cache_stats.model
-# (raw provider name), `alias` is the LiteLLM model_group we cascade to
-# in the fallback chain. Limits are per-model on Google free tier.
+# (raw provider name), `alias` is the LiteLLM model_group we cascade to.
+# Order = priority (Tier 1 = primary judge, last = legacy fallback).
+# RPD limits sourced from x-ratelimit headers observed 2026-04-30.
 _JUDGE_CHAIN = [
-    {"alias": "gemini-flash",          "db_model": "gemini-2.5-flash",              "label": "Gemini 2.5 Flash",       "rpd_limit": 20},
-    {"alias": "gemini-3-flash",        "db_model": "gemini-3-flash-preview",        "label": "Gemini 3 Flash Preview", "rpd_limit": 20},
-    {"alias": "gemini-3-1-flash-lite", "db_model": "gemini-3.1-flash-lite-preview", "label": "Gemini 3.1 Flash Lite",  "rpd_limit": 500},
+    # Primary — Cerebras Llama-3.1-8B (14400 RPD strict, ~5ms latency)
+    {"alias": "cerebras-judge-fast",   "db_model": "llama3.1-8b",                    "label": "Cerebras Llama-3.1-8B",  "rpd_limit": 14400},
+    # Backup — Mistral Small (100 RPM cap, no strict RPD on free tier; conservative est.)
+    {"alias": "mistral-small",         "db_model": "mistral-small-latest",           "label": "Mistral Small",          "rpd_limit": 100000},
+    # Backup deeper — Mistral Medium (60 RPM cap, ~70B class)
+    {"alias": "mistral-medium",        "db_model": "mistral-medium-latest",          "label": "Mistral Medium",         "rpd_limit": 50000},
+    # Calibration — Cerebras Qwen-3-235B (5 RPM, deep eval)
+    {"alias": "cerebras-judge-deep",   "db_model": "qwen-3-235b-a22b-instruct-2507", "label": "Cerebras Qwen-3-235B",   "rpd_limit": 1440},
+    # Legacy Gemini chain (κ=0.84 baseline, kept for cross-provider validation)
+    {"alias": "gemini-flash",          "db_model": "gemini-2.5-flash",               "label": "Gemini 2.5 Flash",       "rpd_limit": 20},
+    {"alias": "gemini-3-flash",        "db_model": "gemini-3-flash-preview",         "label": "Gemini 3 Flash Preview", "rpd_limit": 20},
+    {"alias": "gemini-3-1-flash-lite", "db_model": "gemini-3.1-flash-lite-preview",  "label": "Gemini 3.1 Flash Lite",  "rpd_limit": 500},
 ]
 
 
 @router.get("/api/admin/judge-budget")
 async def judge_budget(admin: dict = Depends(require_admin)):
-    """Aggregate today's usage across the 3-tier Gemini judge chain used
-    by the Oracle harness. Mirrors the CLI at preflight_gemini.py but
-    renders on /admin. Active tier = highest-priority model that still
-    has budget left ; if tier 1 exhausted, LiteLLM is cascading to tier 2."""
+    """Aggregate today's usage across the multi-provider judge chain used
+    by the Oracle harness (Cerebras → Mistral → Gemini fallback).
+    Active tier = highest-priority model that still has budget left ;
+    if tier 1 exhausted, LiteLLM cascades to tier 2 automatically."""
     db_models = [t["db_model"] for t in _JUDGE_CHAIN]
     async with db.pool.acquire() as conn:
         rows = await conn.fetch(

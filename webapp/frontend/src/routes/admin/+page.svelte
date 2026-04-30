@@ -160,12 +160,12 @@
     {/if}
   </div>
 
-  <!-- Oracle judge budget (Gemini chain 540 RPD cumulated) -->
+  <!-- Oracle judge budget (multi-provider Cerebras → Mistral → Gemini) -->
   <div class="bg-surface border border-border-subtle rounded-xl p-4 space-y-3">
     <div>
       <h2 class="text-sm font-semibold text-text-primary">Oracle judge budget</h2>
       <p class="text-xs text-text-muted">
-        Chaîne Gemini κ=0.84 — LiteLLM cascade automatique quand 429. Reset 00:00 UTC.
+        Chaîne multi-provider Cerebras → Mistral → Gemini — LiteLLM cascade auto quand saturé. Reset 00:00 UTC.
       </p>
     </div>
     {#if !judgeBudget || !judgeBudget.tiers}
