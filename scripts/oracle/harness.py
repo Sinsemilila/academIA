@@ -238,6 +238,10 @@ def main() -> int:
     ap.add_argument("--panel", choices=["off", "cross-provider"], default="off",
                     help="off = single judge (default) ; cross-provider = "
                          "multi-judge panel from config.yaml panel.members")
+    ap.add_argument("--cache", choices=["on", "off"], default=None,
+                    help="override cfg.cache.enabled (default config.yaml value). "
+                         "on = enable verdict cache hash-indexed by content. "
+                         "off = bypass for noise floor / fault injection runs.")
     ap.add_argument("--out", default="/tmp/oracle_run.json")
     args = ap.parse_args()
 
@@ -248,6 +252,10 @@ def main() -> int:
     if not scenarios:
         print(f"no scenarios found for {args.agent}", file=sys.stderr)
         return 0 if args.gate_mode == "relaxed" else 1
+
+    # Phase 6 — cache override via CLI flag
+    if args.cache is not None:
+        cfg.setdefault("cache", {})["enabled"] = (args.cache == "on")
 
     panel_models: list[str] | None = None
     if args.panel == "cross-provider":

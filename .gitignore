@@ -17,3 +17,6 @@ venv/
 litellm/config.yaml
 litellm/config.yaml.backup*
 .agent
+
+# Phase 6 Sprint Oracle EN cohérence — verdict cache (gitignored, local dev only)
+scripts/oracle/.cache/

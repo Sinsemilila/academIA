@@ -178,10 +178,25 @@ async def _call_judge(
     model_override : if set, use this LiteLLM model_name instead of
     cfg["judge"]["model"]. Used by panel mode (Phase 2) where each
     panel member is queried in turn.
+
+    Cache (Phase 6) : if cfg.cache.enabled, content-addressed lookup before
+    LLM call. Cache key = sha256(messages_json + model). Auto-invalidates
+    on prompt/response/model changes.
     """
     jcfg = cfg["judge"]
+    model = model_override or jcfg["model"]
+    # Phase 6 — cache lookup
+    cache_enabled = bool((cfg.get("cache") or {}).get("enabled"))
+    cache_key = None
+    if cache_enabled:
+        from .. import cache as _cache
+        cache_key = _cache.compute_key(messages, model)
+        cached = _cache.get(cache_key)
+        if cached is not None:
+            return cached
+
     payload = {
-        "model": model_override or jcfg["model"],
+        "model": model,
         "messages": messages,
         "temperature": jcfg.get("temperature", 0.0),
         "max_tokens": jcfg.get("max_tokens", 200),
@@ -220,6 +235,10 @@ async def _call_judge(
                     "(content_empty=%s, finish_reason=%s)",
                     not text, choice.get("finish_reason"),
                 )
+            # Phase 6 — cache write (skip if None to avoid memoizing failures)
+            if cache_enabled and cache_key and result is not None:
+                from .. import cache as _cache
+                _cache.put(cache_key, model, result)
             return result
         except httpx.ReadTimeout:
             if attempt < max_attempts - 1:

@@ -39,6 +39,15 @@ panel:
     - mistral-small            # mistral-small-latest, 100 RPM
     - gemini-3-1-flash-lite    # κ=0.84 baseline reference
   agreement_threshold: 0.66    # 2/3 minimum (handled via judge_fail_threshold)
+# Session 53 Sprint Oracle EN cohérence Phase 6 — verdict cache.
+# Hash-indexed (sha256 of messages JSON + model). Auto-invalidates on
+# any change to prompt / Teacher response / model. SQLite local store at
+# scripts/oracle/.cache/verdicts.sqlite (gitignored).
+# CLI override : `--cache off` for noise_floor / fault_injection runs
+# (need fresh LLM calls). `--cache on` to force during dev.
+cache:
+  enabled: true
+  ttl_days: 30                 # purge via `python3 -m scripts.oracle.cache purge --days 30`
 axis_thresholds:
   policy_compliance: 0.66
   output_shape: 0.66
