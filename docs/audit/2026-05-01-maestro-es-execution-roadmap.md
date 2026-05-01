@@ -227,7 +227,7 @@ G8.2 (rules_es spaCy migration) **DEFER P3** — strategic decision : si Tier 1+
 - [ ] G7.3b Cronómetro B2 (Edinumen 217p) extraction → `extracted/bech-tormo-2013-cronometro-dele-b2/`
 - [ ] G7.3c Preparación B2 Soluciones extraction (companion 26p) → rubric calibration B2
 - [~] G7.3d Sinse acquisition DELE A2-C2 (S56 — Sinse downloaded **hojas de respuestas** instead of **modelos de examen** — re-DL needed for full content. Hojas useful for structural calibration only)
-- [ ] G7.3e Claude extract DELE A2-C2 mini_exam (blocked on G7.3d full re-DL)
+- [~] G7.3e Claude extract DELE A2-C2 (S56 partial) — `extracted/cervantes-dele-a2-c2/rubrics-structurel.yaml` (4 niveaux structures + mini_exam calibration targets v2). Sinse re-DL'ed modelos complets A2/B1/B2/C1 + audio. Full content extraction (textos, items, claves) deferred (~2-3j × 4 niveaux).
 - [x] G7.3f Patch `rubrics/es.yaml` DELE Criterios (S56) — 4 dimensions (Adecuación / Coherencia / Corrección / Alcance) avec indicators_by_level A1-C2 + scoring_template 0-3. RubricPack schema relaxed to _Lax (forward-compat). Tests green.
 
 **Tier 4** (rules + L1, parallel) :

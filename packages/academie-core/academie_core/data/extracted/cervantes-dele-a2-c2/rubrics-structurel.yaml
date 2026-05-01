@@ -1,0 +1,287 @@
+# DELE A2 / B1 / B2 / C1 — rubrics structurels (S56 G7.3e partial).
+#
+# Source PDFs : library/by-domain/cervantes-dele/ (Sinse acquisition S56)
+# - DELE_A2_v2020_Modelo0.pdf (2.6MB) — Pruebas 1+2 escritas
+# - dele_b1_modelo0.pdf (1.6MB) — 4 pruebas complètes + claves + transcripción
+# - dele_b2_modelo0.pdf (0.9MB) — 4 pruebas complètes
+# - INS_CERV_Modelo-0_C1_2.pdf (2.7MB) — 4 pruebas complètes
+# - DELE_A1_v2020_Modelo0.pdf (4.5MB) — extracted G7.3a S56 → cervantes-dele-a1/rubric.yaml
+#
+# AUDIO files acquired S56 (in library/by-domain/cervantes-dele/) :
+# - AUDIOS-A1/, AUDIOS-A2/ (folders)
+# - MASTER DELE B1.mp3, MASTER DELE B2.mp3
+# - c1-audios-modelo-0-ca-eie3.mp3
+#
+# Use case : calibration mini_exam/es_*.yaml task buckets + augment rubrics/es DELE Criterios
+# (already done G7.3f). Full item bank extraction (textos, items, claves correctas) deferred
+# to dedicated sprint (~2-3j × 4 niveaux = 8-12j cumul).
+
+source:
+  publisher: "Instituto Cervantes"
+  exam_series: "DELE Modelo 00"
+  fetch_date: 2026-05-01
+  notes: |
+    DELE certified levels A2, B1, B2, C1 — official sample exams free download
+    via examenes.cervantes.es. Each modelo includes Pruebas 1-4 + claves + audio.
+    Cut-off DELE = 60% per group (lectura+auditiva ; escritura+oral).
+
+# ============================================================================
+# === DELE A2 (Plataforma) ===================================================
+# ============================================================================
+A2:
+  certificate_name: "DELE A2 (Plataforma)"
+  total_pruebas: 4
+  total_preguntas: 50  # 25 lectura + 25 auditiva
+  duracion_total_min: ~110  # 60 lectura + 30 auditiva + ~30 escritas + ~12 orales
+  approval_threshold: 30/50
+  pruebas:
+    - prueba: 1
+      name: "Comprensión de lectura"
+      duracion_min: 60
+      total_preguntas: 25
+      total_tareas: 4
+      tareas:
+        - tarea: 1
+          type: "multiple_choice_ABC_after_email"
+          n_preguntas: 5
+          example: "Email Marta→Carmen sur amis (Paula travail nouveau, Ahmed Rabat) + 5 Q ABC"
+        - tarea: 2
+          type: "matching_anuncios_ABC"
+          n_preguntas: 8
+          example: "8 anuncios courts (pisos, billetes metro, oferta) + 8 Q ABC"
+        - tarea: 3
+          type: "matching_text_to_persons"
+          n_preguntas: 6
+          example: "6-8 personas + textes/profils → match"
+        - tarea: 4
+          type: "fill_blanks_short_text"
+          n_preguntas: 6
+          example: "Texte court avec blancs, 6 options de mots à choisir"
+    - prueba: 2
+      name: "Comprensión auditiva"
+      duracion_min: 30
+      total_preguntas: 25
+      total_tareas: 4
+      tareas:
+        - tarea: 1
+          type: "audio_short_messages_image_ABC"
+          n_preguntas: 5
+        - tarea: 2
+          type: "audio_announcements_matching"
+          n_preguntas: 6
+        - tarea: 3
+          type: "audio_dialogue_ABC"
+          n_preguntas: 7
+        - tarea: 4
+          type: "audio_monologue_fill_or_match"
+          n_preguntas: 7
+    - prueba: 3
+      name: "Expresión e interacción escritas"
+      duracion_min: 50
+      total_tareas: 2
+      tareas:
+        - tarea: 1
+          type: "complete_form_or_message"
+          word_count: ~30
+        - tarea: 2
+          type: "write_personal_email_or_postal"
+          word_count: 60-70
+    - prueba: 4
+      name: "Expresión e interacción orales"
+      duracion_min: ~12
+      duracion_preparacion: 12
+      total_tareas: 4
+
+# ============================================================================
+# === DELE B1 (Umbral) =======================================================
+# ============================================================================
+B1:
+  certificate_name: "DELE B1 (Umbral)"
+  total_pruebas: 4
+  total_preguntas: 60  # 30 lectura + 30 auditiva
+  duracion_total_min: ~140
+  approval_threshold: 36/60
+  notes: "PDF includes claves de respuestas + transcripción audio (référence S56)"
+  pruebas:
+    - prueba: 1
+      name: "Comprensión de lectura"
+      duracion_min: 70
+      total_preguntas: 30
+      total_tareas: 5
+      tareas:
+        - tarea: 1
+          type: "multiple_choice_ABC_after_text"
+          n_preguntas: 6
+          input: "texto largo (~300 palabras) sobre experiencia personal"
+        - tarea: 2
+          type: "matching_personas_to_texts"
+          n_preguntas: 6
+          input: "6 personas + 8 textos courts (anuncios, perfiles)"
+        - tarea: 3
+          type: "multiple_choice_ABC_long_text"
+          n_preguntas: 6
+        - tarea: 4
+          type: "fill_blanks_text_with_word_bank"
+          n_preguntas: 6
+        - tarea: 5
+          type: "fill_blanks_grammar_ABC"
+          n_preguntas: 6
+    - prueba: 2
+      name: "Comprensión auditiva"
+      duracion_min: 40
+      total_preguntas: 30
+      total_tareas: 5
+    - prueba: 3
+      name: "Expresión e interacción escritas"
+      duracion_min: 60
+      total_tareas: 2
+      tareas:
+        - tarea: 1
+          type: "write_personal_message_after_listening"
+          word_count: 100-120
+        - tarea: 2
+          type: "write_essay_topic"
+          word_count: 130-150
+    - prueba: 4
+      name: "Expresión e interacción orales"
+      duracion_min: 15
+      duracion_preparacion: 15
+      total_tareas: 4
+
+# ============================================================================
+# === DELE B2 (Avanzado) =====================================================
+# ============================================================================
+B2:
+  certificate_name: "DELE B2 (Avanzado)"
+  total_pruebas: 4
+  total_preguntas: ~58  # ~26 lectura + ~30 auditiva (varies by edition)
+  duracion_total_min: ~190
+  approval_threshold: ~35/58
+  pruebas:
+    - prueba: 1
+      name: "Comprensión de lectura"
+      duracion_min: 70
+      total_preguntas: 36
+      total_tareas: 4
+      tareas:
+        - tarea: 1
+          type: "multiple_choice_ABC_long_text"
+          n_preguntas: 6
+        - tarea: 2
+          type: "matching_text_extracts_to_personas"
+          n_preguntas: 10
+        - tarea: 3
+          type: "fill_blanks_with_paragraph_choices"
+          n_preguntas: 6
+        - tarea: 4
+          type: "multiple_choice_ABC_grammar_lex"
+          n_preguntas: 14
+    - prueba: 2
+      name: "Comprensión auditiva"
+      duracion_min: 40
+      total_preguntas: 30
+      total_tareas: 5
+    - prueba: 3
+      name: "Expresión e interacción escritas"
+      duracion_min: 80
+      total_tareas: 2
+      tareas:
+        - tarea: 1
+          type: "write_formal_letter_after_audio_input"
+          word_count: 150-180
+        - tarea: 2
+          type: "write_argumentative_essay"
+          word_count: 150-180
+    - prueba: 4
+      name: "Expresión e interacción orales"
+      duracion_min: 20
+      duracion_preparacion: 20
+      total_tareas: 3
+
+# ============================================================================
+# === DELE C1 (Dominio operativo eficaz) ====================================
+# ============================================================================
+C1:
+  certificate_name: "DELE C1 (Dominio operativo eficaz)"
+  total_pruebas: 4  # but grouped differently : 2 group integrated skills
+  total_preguntas: ~76
+  duracion_total_min: ~225
+  approval_threshold: ~46/76
+  notes: |
+    DELE C1 integra destrezas (combina lectura+auditiva con escritura/oral).
+    Different from A1-B2 modular structure.
+  pruebas:
+    - prueba: 1
+      name: "Comprensión de lectura y uso de la lengua"
+      duracion_min: 90
+      total_preguntas: 40
+      total_tareas: 5
+    - prueba: 2
+      name: "Comprensión auditiva y uso de la lengua"
+      duracion_min: 50
+      total_preguntas: 30
+      total_tareas: 4
+    - prueba: 3
+      name: "Destrezas integradas : Comprensión auditiva + expresión e interacción escritas"
+      duracion_min: 80
+      total_tareas: 2
+      notes: "Integrated skill : listen+write essay (max 200-250 palabras)"
+    - prueba: 4
+      name: "Destrezas integradas : Comprensión de lectura + expresión e interacción orales"
+      duracion_min: 20
+      duracion_preparacion: 20
+      total_tareas: 3
+      notes: "Integrated skill : read text + monologue + dialogue"
+
+# ============================================================================
+# === Notes pour Tier 5 G9.1 (scenarios rebalance, future session) ==========
+# ============================================================================
+# When designing C1 oracle scenarios (G9.1 add 3-4 C1 scenarios), use DELE C1
+# integrated tasks as inspiration :
+# - learner reads short article (e.g. opinion piece) → tutor asks for summary + opinion
+# - learner listens monologue → tutor probes nuance/register
+# - learner writes structured argument → tutor flags coherence/lexical precision
+
+calibration_targets:
+  mini_exam_es_a2_v2:
+    target_total_items: 12
+    distribution:
+      reading_email_mcq: 3
+      reading_anuncios_match: 2
+      reading_personas_match: 2
+      reading_fillblanks: 2
+      audio_short_msg: 2
+      writing_short_email: 1
+
+  mini_exam_es_b1_v2:
+    target_total_items: 14
+    distribution:
+      reading_long_text_mcq: 3
+      reading_match_personas: 2
+      reading_fillblanks_grammar: 3
+      audio_dialogue: 2
+      audio_monologue: 2
+      writing_personal_msg: 1
+      writing_essay: 1
+
+  mini_exam_es_b2_v2:
+    target_total_items: 16
+    distribution:
+      reading_long_text_mcq: 3
+      reading_match_extracts: 3
+      reading_fillblanks_paragraph: 2
+      reading_grammar_lex: 3
+      audio_monologue: 2
+      audio_dialogue: 2
+      writing_formal_letter: 1
+
+  mini_exam_es_c1_v2:
+    target_total_items: 18
+    distribution:
+      reading_use_of_language: 4
+      audio_use_of_language: 3
+      integrated_listen_write: 3
+      integrated_read_speak: 3
+      writing_argumentative: 2
+      oral_monologue: 2
+      oral_dialogue: 1
