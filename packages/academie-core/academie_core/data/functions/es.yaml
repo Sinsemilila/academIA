@@ -384,7 +384,353 @@ A2:
         - "Shhhh / Silencio, por favor"
       pcic_ref: "6.21-6.23"
 
-# B1+B2 Phase D2 future :
-# - Extend functions per PCIC Vol B Funciones inventario
-# - Add Mediation dimension (CEFR Companion 2020 NEW)
-# C1+C2 Phase D3 : pending PCIC Vol C acquisition (Sinse manual cvc.cervantes.es)
+# ============================================================================
+# === B1 (Umbral) — S56 G7.1 from PCIC Vol B Funciones extraction ============
+# ============================================================================
+B1:
+  level_label: "Umbral"
+  functions:
+    - id: b1.f.1.1.identificar_relativas
+      category: "Dar y pedir información"
+      function: "Identificar con relativas"
+      exponents:
+        - "El + sustantivo + O. relativa (El libro que lees)"
+        - "Es + un + sustantivo + O. relativa (Es un colega que conozco)"
+      pcic_ref: "1.1"
+
+    - id: b1.f.1.4.pedir_confirmacion
+      category: "Dar y pedir información"
+      function: "Pedir confirmación"
+      exponents:
+        - "¿Puedes / Podrías decirme si...?"
+        - "Quería saber si..."
+      pcic_ref: "1.4"
+
+    - id: b1.f.2.2.dar_opinion
+      category: "Expresar opiniones"
+      function: "Dar opinión"
+      exponents:
+        - "En mi opinión..."
+        - "Me parece que..."
+        - "Pienso que..."
+        - "No creo que + subjuntivo"
+      pcic_ref: "2.2"
+
+    - id: b1.f.2.9.expresar_acuerdo
+      category: "Expresar opiniones"
+      function: "Expresar acuerdo"
+      exponents:
+        - "Sí / no, claro"
+        - "Tienes razón"
+        - "Yo pienso lo mismo"
+        - "Estoy de acuerdo"
+      pcic_ref: "2.9"
+
+    - id: b1.f.2.10.expresar_desacuerdo
+      category: "Expresar opiniones"
+      function: "Expresar desacuerdo"
+      exponents:
+        - "Yo no pienso lo mismo"
+        - "No, no es verdad que + subjuntivo"
+        - "No estoy de acuerdo"
+      pcic_ref: "2.10"
+
+    - id: b1.f.2.13.expresar_certeza
+      category: "Expresar opiniones"
+      function: "Expresar certeza y evidencia"
+      exponents:
+        - "Estoy (totalmente) seguro de que..."
+        - "Seguro que..."
+        - "Está claro / Es evidente"
+      pcic_ref: "2.13"
+
+    - id: b1.f.2.16.expresar_posibilidad
+      category: "Expresar opiniones"
+      function: "Expresar posibilidad"
+      exponents:
+        - "Quizá(s) / Tal vez + subjuntivo"
+        - "Puede (ser) que + subjuntivo"
+        - "Es posible / probable que + subjuntivo"
+        - "A lo mejor + indicativo"
+      pcic_ref: "2.16"
+
+    - id: b1.f.2.17.obligacion
+      category: "Expresar opiniones"
+      function: "Expresar obligación y necesidad"
+      exponents:
+        - "Es obligatorio / necesario..."
+        - "Debes + infinitivo"
+        - "No puedes + infinitivo"
+      pcic_ref: "2.17"
+
+    - id: b1.f.3.2.expresar_gustos
+      category: "Gustos, deseos y sentimientos"
+      function: "Expresar gustos e intereses"
+      exponents:
+        - "Me gusta / Me encanta que + subjuntivo"
+        - "Me interesa que + subjuntivo"
+        - "No me importa + SN"
+      pcic_ref: "3.2"
+
+    - id: b1.f.3.5.expresar_preferencia
+      category: "Gustos, deseos y sentimientos"
+      function: "Expresar preferencia"
+      exponents:
+        - "Prefiero + SN / inf. + a..."
+        - "Prefiero que + subjuntivo"
+        - "Me gusta / interesa más que + subjuntivo"
+      pcic_ref: "3.5"
+
+    - id: b1.f.3.8.expresar_deseos
+      category: "Gustos, deseos y sentimientos"
+      function: "Expresar deseos"
+      exponents:
+        - "Quiero que + subjuntivo"
+        - "Tengo ganas de / Me apetece..."
+        - "Espero que + subjuntivo"
+        - "Sueño con..."
+        - "Ojalá (que) + subjuntivo"
+      pcic_ref: "3.8"
+
+    - id: b1.f.3.10.planes_intenciones
+      category: "Gustos, deseos y sentimientos"
+      function: "Expresar planes e intenciones"
+      exponents:
+        - "Pienso + infinitivo"
+        - "Estoy pensando en + infinitivo"
+        - "Mi intención es + infinitivo"
+      pcic_ref: "3.10"
+
+    - id: b1.f.3.13.expresar_tristeza
+      category: "Gustos, deseos y sentimientos"
+      function: "Expresar tristeza y aflicción"
+      exponents:
+        - "Estoy triste / deprimido"
+        - "Siento + inf. / que + subjuntivo"
+        - "Me duele... / Me da pena / lástima..."
+        - "Es una pena / lástima que + subjuntivo"
+      pcic_ref: "3.13"
+
+    - id: b1.f.3.17.expresar_enfado
+      category: "Gustos, deseos y sentimientos"
+      function: "Expresar enfado e indignación"
+      exponents:
+        - "Estoy (+ cuantif.) enfadado (con)..."
+        - "Me enfado / Me molesta / No soporto + que + subjuntivo"
+      pcic_ref: "3.17"
+
+    - id: b1.f.3.27.expresar_sorpresa
+      category: "Gustos, deseos y sentimientos"
+      function: "Expresar sorpresa y extrañeza"
+      exponents:
+        - "Me sorprende / Me extraña + SN / inf. / que + subjuntivo"
+        - "Es increíble / raro / extraño..."
+        - "¡Qué sorpresa / raro / extraño!"
+        - "¿De verdad? / ¿En serio?"
+      pcic_ref: "3.27"
+
+# ============================================================================
+# === B2 (Avanzado) — additions cumulatives à B1 — S56 G7.1 ==================
+# ============================================================================
+B2:
+  level_label: "Avanzado"
+  functions:
+    - id: b2.f.1.1.identificar
+      category: "Dar y pedir información"
+      function: "Identificar (estructuras avanzadas)"
+      exponents:
+        - "El / Este + de + SN (El de Madrid es mi primo)"
+        - "Lo / Eso de... (Eso de la fiesta no me convence)"
+        - "Se trata de... (Se trata de un problema técnico)"
+      pcic_ref: "1.1"
+
+    - id: b2.f.2.2.dar_opinion
+      category: "Expresar opiniones"
+      function: "Dar opinión (formal)"
+      exponents:
+        - "A mi modo de ver..."
+        - "Considero que..."
+        - "Opino que..."
+        - "Veo que..."
+      pcic_ref: "2.2"
+
+    - id: b2.f.2.12.contraargumentar
+      category: "Expresar opiniones"
+      function: "Presentar un contraargumento"
+      exponents:
+        - "Bueno / ya, pero..."
+        - "Puede que sí / no, pero..."
+        - "No dudo (de) que..., pero..."
+      pcic_ref: "2.12"
+
+    - id: b2.f.2.14.falta_certeza
+      category: "Expresar opiniones"
+      function: "Expresar falta de certeza"
+      exponents:
+        - "Es dudoso..."
+        - "Tengo la sensación / impresión..."
+        - "Tengo (mis) dudas sobre..."
+      pcic_ref: "2.14"
+
+    - id: b2.f.2.17.obligacion_avanzada
+      category: "Expresar opiniones"
+      function: "Obligación / necesidad (avanzada)"
+      exponents:
+        - "Es imprescindible / indispensable que + subjuntivo"
+        - "Hace falta que + subjuntivo"
+        - "No tienes / hay por qué + infinitivo"
+      pcic_ref: "2.17-2.18"
+
+    - id: b2.f.3.8.deseos_corteses
+      category: "Gustos, deseos y sentimientos"
+      function: "Expresar deseos corteses"
+      exponents:
+        - "Querría / Quisiera que + subjuntivo"
+        - "Me gustaría / Me apetecería / Me encantaría que + subjuntivo"
+        - "Me hace ilusión..."
+      pcic_ref: "3.8"
+
+    - id: b2.f.3.10.planes_avanzados
+      category: "Gustos, deseos y sentimientos"
+      function: "Expresar planes (avanzados)"
+      exponents:
+        - "Mi propósito es..."
+        - "Voy a hacer lo posible por..."
+        - "Estoy planeando... / Tengo planeado / previsto..."
+        - "Tengo en mente..."
+      pcic_ref: "3.10"
+
+    - id: b2.f.3.18.expresar_miedo
+      category: "Gustos, deseos y sentimientos"
+      function: "Expresar miedo, ansiedad y preocupación"
+      exponents:
+        - "Tengo miedo a / de que + subjuntivo"
+        - "Me da miedo / pánico / terror que + subjuntivo"
+        - "Siento miedo / terror / angustia"
+        - "Me asusta... / Estoy agobiado / inquieto..."
+      pcic_ref: "3.18"
+
+    - id: b2.f.3.27.expresar_sorpresa_avanzada
+      category: "Gustos, deseos y sentimientos"
+      function: "Expresar sorpresa (avanzada)"
+      exponents:
+        - "Me sorprende / Me extraña / Me asombra que + subjuntivo"
+        - "Es sorprendente / asombroso / alucinante..."
+        - "No me lo esperaba / ¡Qué casualidad! / ¡No puede ser!"
+      pcic_ref: "3.27"
+
+# ============================================================================
+# === C1 (Dominio operativo eficaz) — S56 G7.1 ===============================
+# ============================================================================
+C1:
+  level_label: "Dominio operativo eficaz"
+  functions:
+    - id: c1.f.1.5.confirmar_informacion
+      category: "Dar y pedir información"
+      function: "Confirmar información (rotunda)"
+      exponents:
+        - "Que sí / no, que..."
+        - "Así es / Efectivamente"
+        - "¡Y tanto (que...)!"
+        - "De hecho"
+      pcic_ref: "1.5"
+
+    - id: c1.f.2.2.dar_opinion_modesta
+      category: "Expresar opiniones"
+      function: "Dar opinión (modesta/formal)"
+      exponents:
+        - "A mi entender / parecer / juicio"
+        - "En mi modesta / humilde opinión"
+        - "(A mí) me da la sensación / impresión de que..."
+      pcic_ref: "2.2"
+
+    - id: c1.f.2.13.expresar_certeza_culta
+      category: "Expresar opiniones"
+      function: "Expresar certeza (registro culto)"
+      exponents:
+        - "Sé con (absoluta / completa / total) certeza / seguridad"
+        - "No (me) cabe (la menor) duda (+ de...)"
+        - "Es indudable / innegable que..."
+        - "Es un hecho que..."
+        - "Sin lugar a dudas... / Lo que es evidente / está claro es que..."
+      pcic_ref: "2.13"
+
+    - id: c1.f.3.5.preferencia_culta
+      category: "Gustos, deseos y sentimientos"
+      function: "Expresar preferencia (registro culto)"
+      exponents:
+        - "Si tengo que elegir / Si me dan a elegir..."
+        - "Me quedo con / Me decido / Opto por..."
+        - "No cambio... por nada (del mundo)"
+      pcic_ref: "3.5"
+
+    - id: c1.f.3.12.alegria_intensa
+      category: "Gustos, deseos y sentimientos"
+      function: "Expresar alegría intensa"
+      exponents:
+        - "Estoy de buenas / Estoy eufórico"
+        - "Estoy como loco (de contento)"
+        - "Estoy encantado de la vida"
+        - "Me llena de alegría / felicidad / satisfacción / orgullo..."
+        - "Tengo el gusto / el placer / la satisfacción de..."
+      pcic_ref: "3.12"
+
+    - id: c1.f.3.17.enfado_intenso
+      category: "Gustos, deseos y sentimientos"
+      function: "Expresar enfado intenso"
+      exponents:
+        - "Me irrita... / Siento rabia / impotencia / indignación..."
+        - "Me llena de rabia / impotencia / indignación..."
+        - "Es indignante..."
+        - "Me pongo / Me pone enfermo / de un humor de perros..."
+      pcic_ref: "3.17"
+
+# ============================================================================
+# === C2 (Maestría) — S56 G7.1 (cumulative C1) ===============================
+# ============================================================================
+C2:
+  level_label: "Maestría"
+  functions:
+    - id: c2.f.2.13.certeza_culta
+      category: "Expresar opiniones"
+      function: "Expresar certeza (registro culto/idiomatic)"
+      exponents:
+        - "Me apuesto / me juego lo que quieras (+ a que...)"
+        - "Pongo la(s) mano(s) en el fuego"
+        - "Me consta que... / Tengo constancia de que..."
+        - "Sé de sobra / a ciencia cierta / de buena tinta / de buena fuente"
+        - "Salta a la vista que... / Es de cajón que... / Cae por su propio peso que..."
+      pcic_ref: "2.13"
+
+    - id: c2.f.3.12.alegria_idiomatica
+      category: "Gustos, deseos y sentimientos"
+      function: "Expresar alegría (idiomatic)"
+      exponents:
+        - "¡Menuda / Vaya alegría (que me has dado)!"
+        - "Me colma de dicha / satisfacción"
+        - "Celebro / Me complace / Me satisface"
+        - "Me congratulo de que... / Me congratula que..."
+        - "Estoy / Me siento pletórico / exultante / radiante"
+        - "Estoy como unas pascuas / unas castañuelas / un niño con zapatos nuevos"
+        - "No quepo en mí de gozo / dicha / júbilo"
+      pcic_ref: "3.12"
+
+    - id: c2.f.3.17.enfado_idiomatico
+      category: "Gustos, deseos y sentimientos"
+      function: "Expresar enfado (idiomatic)"
+      exponents:
+        - "Me revienta / Me llevan los demonios"
+        - "Me sale humo por las orejas"
+        - "Estoy que muerdo / trino"
+        - "(Estoy que) me subo por las paredes"
+        - "Me hierve la sangre / Monto en cólera"
+        - "Me pongo rojo de ira / rabia / como una furia / fiera"
+      pcic_ref: "3.17"
+
+# ============================================================================
+# Notes :
+# - B1+B2 sections 4 (Influir interlocutor), 5 (Relacionarse socialmente),
+#   6 (Estructurar discurso) + C1+C2 sections 4-6 partial : WebFetch truncated.
+#   Sources extraites : extracted/cervantes-2006-plan-curricular-{b1-b2,c1-c2}/funciones-by-level.yaml
+#   Fallback acquisition future si needed (manual scrape sections 4-6).
+# - Mediation dimension (CEFR Companion 2020 NEW) : sprint dédié post-MVP.
