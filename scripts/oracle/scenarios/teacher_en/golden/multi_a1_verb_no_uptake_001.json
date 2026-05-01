@@ -1,12 +1,12 @@
 {
   "scenario_id": "multi_a1_verb_no_uptake_001",
-  "sha": "a02a47564c88",
-  "recorded_at": "2026-05-01T12:40:52Z",
+  "sha": "95088a822fea",
+  "recorded_at": "2026-05-01T13:26:13Z",
   "response": "Oh, you *went* to the park with your mum! What did you do there?",
-  "dify_conversation_id": "1e8777c2-a25c-4568-ae4b-fd7f44473603",
-  "dify_message_id": "1e8eb800-9541-47a9-a05a-d91a3699d1a6",
+  "dify_conversation_id": "3f6af900-fdc4-4d3b-aa7f-5729d4cc2ccf",
+  "dify_message_id": "0c3e44ed-48f3-49ba-afa4-df0e85cf0a1a",
   "usage": {
-    "prompt_tokens": 4113,
+    "prompt_tokens": 4539,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
@@ -14,11 +14,11 @@
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 4132,
+    "total_tokens": 4558,
     "total_price": "0",
     "currency": "USD",
-    "latency": 0.806,
-    "time_to_first_token": 1.161,
+    "latency": 0.79,
+    "time_to_first_token": 1.203,
     "time_to_generate": 0.0
   }
 }

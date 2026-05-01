@@ -1,12 +1,12 @@
 {
   "scenario_id": "multi_b1_cond_partial_001",
-  "sha": "a02a47564c88",
-  "recorded_at": "2026-05-01T12:40:57Z",
-  "response": "Almost — in conditional sentences about unreal situations, which tense comes after \"if\"? Try: \"If I *had* won the lottery, I *would* buy a house.\" Want to give it another shot?",
-  "dify_conversation_id": "2e062a9a-66d3-4bbd-9fda-c6edfe5ca127",
-  "dify_message_id": "f77a970a-e898-45af-8baa-3ecbbc37396d",
+  "sha": "95088a822fea",
+  "recorded_at": "2026-05-01T13:26:21Z",
+  "response": "Almost — in conditional sentences about unreal situations, which tense comes after \"if\"? Try: \"If I *had* won the lottery, I *would* buy a house.\" Want to give it another try?",
+  "dify_conversation_id": "a8029149-01a1-4600-a8b8-a8f3d918c900",
+  "dify_message_id": "95563b19-dc23-4931-a803-1ae7dd0f84ab",
   "usage": {
-    "prompt_tokens": 5150,
+    "prompt_tokens": 5576,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
@@ -14,11 +14,11 @@
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 5193,
+    "total_tokens": 5619,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.525,
-    "time_to_first_token": 1.891,
+    "latency": 2.026,
+    "time_to_first_token": 2.439,
     "time_to_generate": 0.0
   }
 }

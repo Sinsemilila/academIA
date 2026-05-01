@@ -1,12 +1,12 @@
 {
   "scenario_id": "el_a1_t2_misc_002",
-  "sha": "a02a47564c88",
-  "recorded_at": "2026-05-01T12:40:45Z",
+  "sha": "95088a822fea",
+  "recorded_at": "2026-05-01T13:26:07Z",
   "response": "Oh, I see! You mean \"for a long time.\" It's a common expression. What have you been doing for a long time?",
-  "dify_conversation_id": "8fc29fc1-9e0d-4358-b9d5-567adb3534a1",
-  "dify_message_id": "be43799e-16bc-47d9-be00-fcd3fd099725",
+  "dify_conversation_id": "15870e37-f4c1-4b3c-b0ba-0fab3dc9ca9a",
+  "dify_message_id": "2e41253e-a27f-432f-9bd3-efb4bdc42ed5",
   "usage": {
-    "prompt_tokens": 4107,
+    "prompt_tokens": 4533,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
@@ -14,11 +14,11 @@
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 4135,
+    "total_tokens": 4561,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.462,
-    "time_to_first_token": 1.824,
+    "latency": 1.339,
+    "time_to_first_token": 1.704,
     "time_to_generate": 0.0
   }
 }

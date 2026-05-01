@@ -1,12 +1,12 @@
 {
   "scenario_id": "b1_t3_present_perfect_001",
-  "sha": "a02a47564c88",
-  "recorded_at": "2026-05-01T12:40:21Z",
+  "sha": "95088a822fea",
+  "recorded_at": "2026-05-01T13:25:44Z",
   "response": "Hmm — *yesterday* pins the action to finished past time. Which tense matches finished past time?",
-  "dify_conversation_id": "6dbfa7d0-aaf1-479c-9f58-c990e1e4a559",
-  "dify_message_id": "520dea1c-ae20-4d2d-abf9-e3c49296efc7",
+  "dify_conversation_id": "1e50ed01-3496-438e-a8a4-c7d176ae634d",
+  "dify_message_id": "46d88c4a-7039-434d-a32c-cd522df8b486",
   "usage": {
-    "prompt_tokens": 4515,
+    "prompt_tokens": 4941,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
@@ -14,11 +14,11 @@
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 4536,
+    "total_tokens": 4962,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.002,
-    "time_to_first_token": 1.375,
+    "latency": 0.809,
+    "time_to_first_token": 1.181,
     "time_to_generate": 0.0
   }
 }

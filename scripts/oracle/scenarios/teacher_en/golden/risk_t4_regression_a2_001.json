@@ -1,12 +1,12 @@
 {
   "scenario_id": "risk_t4_regression_a2_001",
-  "sha": "a02a47564c88",
-  "recorded_at": "2026-05-01T12:41:12Z",
+  "sha": "95088a822fea",
+  "recorded_at": "2026-05-01T13:26:34Z",
   "response": "Oh, you *went* to the park yesterday! What did you do there?",
-  "dify_conversation_id": "6428a518-b742-4561-bfbd-6bd51ebea1fb",
-  "dify_message_id": "7c4c1576-4015-46cb-b82d-0f587f56143a",
+  "dify_conversation_id": "e57cc7a0-d953-4f31-b3b8-7b06bc45230c",
+  "dify_message_id": "b088a306-4071-43c8-9a66-2c0fa6472f69",
   "usage": {
-    "prompt_tokens": 4670,
+    "prompt_tokens": 5096,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
@@ -14,11 +14,11 @@
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 4687,
+    "total_tokens": 5113,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.329,
-    "time_to_first_token": 1.713,
+    "latency": 0.814,
+    "time_to_first_token": 1.186,
     "time_to_generate": 0.0
   }
 }

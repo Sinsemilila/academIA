@@ -1,12 +1,12 @@
 {
   "scenario_id": "b1_t3_conditional_midfla_001",
-  "sha": "a02a47564c88",
-  "recorded_at": "2026-05-01T12:40:19Z",
+  "sha": "95088a822fea",
+  "recorded_at": "2026-05-01T13:25:42Z",
   "response": "Almost — in 'if'-sentences about unreal situations, which tense comes after 'if'? Try: \"If I *had* more money, I *would* travel to Japan.\"",
-  "dify_conversation_id": "87dfcbb0-36e4-4676-9a0d-ec381fa5c6da",
-  "dify_message_id": "fbcba209-3fdd-441b-857f-c96c3260b7a3",
+  "dify_conversation_id": "d2859515-cabc-463e-95fc-f3fa6fc4ffb6",
+  "dify_message_id": "be0d4755-b3c7-4dc0-915d-af94f1531e09",
   "usage": {
-    "prompt_tokens": 4529,
+    "prompt_tokens": 4955,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
@@ -14,11 +14,11 @@
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 4567,
+    "total_tokens": 4993,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.636,
-    "time_to_first_token": 2.033,
+    "latency": 1.01,
+    "time_to_first_token": 1.627,
     "time_to_generate": 0.0
   }
 }

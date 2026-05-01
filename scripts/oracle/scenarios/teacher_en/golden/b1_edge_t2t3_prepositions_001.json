@@ -1,12 +1,12 @@
 {
   "scenario_id": "b1_edge_t2t3_prepositions_001",
-  "sha": "a02a47564c88",
-  "recorded_at": "2026-05-01T12:40:14Z",
+  "sha": "95088a822fea",
+  "recorded_at": "2026-05-01T13:25:38Z",
   "response": "Oh, she's interested *in* learning French and *in* playing the piano — which one does she enjoy more?",
-  "dify_conversation_id": "904a52e4-17eb-452b-be4b-26f94b7031f2",
-  "dify_message_id": "7dd288fc-cd54-416e-a3ee-93b485b57214",
+  "dify_conversation_id": "d16834d4-4d07-48cd-9ff8-ac24d7175acb",
+  "dify_message_id": "77539d21-b3c7-4498-bb66-f15e84d30794",
   "usage": {
-    "prompt_tokens": 4514,
+    "prompt_tokens": 4940,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
@@ -14,11 +14,11 @@
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 4538,
+    "total_tokens": 4964,
     "total_price": "0",
     "currency": "USD",
-    "latency": 2.248,
-    "time_to_first_token": 2.621,
+    "latency": 1.694,
+    "time_to_first_token": 2.117,
     "time_to_generate": 0.0
   }
 }

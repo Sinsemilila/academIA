@@ -1,12 +1,12 @@
 {
   "scenario_id": "a1_t2_ser_estar_loc_001",
-  "sha": "bd8f7c4e1f67",
-  "recorded_at": "2026-05-01T12:34:58Z",
+  "sha": "95088a822fea",
+  "recorded_at": "2026-05-01T13:20:50Z",
   "response": "¡Vale! Tu casa *está* en Madrid, cerca del parque. ¿Te gusta vivir allí?",
-  "dify_conversation_id": "1bdf01a2-44dd-4c74-921c-2b3407e833da",
-  "dify_message_id": "16e880cd-dcc8-495d-8f50-6bfaaff2de50",
+  "dify_conversation_id": "0216e3aa-9dfb-4b02-a2fc-81b6cdd0e955",
+  "dify_message_id": "3fee79f7-ae1c-472f-8360-359442a42352",
   "usage": {
-    "prompt_tokens": 4436,
+    "prompt_tokens": 4863,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
@@ -14,11 +14,11 @@
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 4458,
+    "total_tokens": 4885,
     "total_price": "0",
     "currency": "USD",
-    "latency": 0.863,
-    "time_to_first_token": 1.238,
+    "latency": 1.422,
+    "time_to_first_token": 1.829,
     "time_to_generate": 0.0
   }
 }
