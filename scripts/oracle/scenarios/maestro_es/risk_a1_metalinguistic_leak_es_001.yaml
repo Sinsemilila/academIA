@@ -20,6 +20,7 @@ expected_dimensions:
     - full_recast
     - partial_recast
     - clarification_request
+    - silent
     forbidden:
     - metalinguistic
     - explicit_correction

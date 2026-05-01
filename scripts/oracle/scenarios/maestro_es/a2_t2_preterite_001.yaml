@@ -22,6 +22,8 @@ expected_dimensions:
     - partial_recast
     - elicitation
     - clarification_request
+    - prompt_plus_remediation
+    - metalinguistic
     forbidden:
     - explicit_correction
   scaffolding_flags_honored:

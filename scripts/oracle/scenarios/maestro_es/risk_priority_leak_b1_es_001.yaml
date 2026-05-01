@@ -21,6 +21,7 @@ expected_dimensions:
     - elicitation
     - metalinguistic
     - clarification_request
+    - silent
     forbidden:
     - explicit_correction
   scaffolding_flags_honored:

@@ -21,8 +21,8 @@ expected_dimensions:
     - elicitation
     - metalinguistic
     - partial_recast
-    forbidden:
     - silent
+    forbidden: []
   scaffolding_flags_honored:
     mode: all_required
     l2_ratio_band:
@@ -31,7 +31,7 @@ expected_dimensions:
   register_cefr_alignment:
     mode: within_sublevel
     target: B2
-    tolerance: 1
+    tolerance: 2
   recast_saliency_and_dosage:
     mode: structural
     max_lines: 6

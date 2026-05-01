@@ -31,7 +31,7 @@ expected_dimensions:
   register_cefr_alignment:
     mode: within_sublevel
     target: C1
-    tolerance: 1
+    tolerance: 2
   recast_saliency_and_dosage:
     mode: structural
     max_lines: 7

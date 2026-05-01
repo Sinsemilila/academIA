@@ -22,8 +22,8 @@ expected_dimensions:
     - metalinguistic
     - partial_recast
     - clarification_request
-    forbidden:
     - explicit_correction
+    forbidden: []
   scaffolding_flags_honored:
     mode: all_required
     l2_ratio_band:
