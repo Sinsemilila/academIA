@@ -63,3 +63,49 @@ transfers:
   - family: ne_pas_residue
     multiplier: 1.0
     description: "Résidus FR 'ne…pas' en ES : 'no como no nada' (double négation artificielle) ou traces 'pas'. ES a simple 'no' + négatifs postverbaux (no…nada, no…nadie, no…nunca). A1 faible mais signal clair d'interférence."
+
+  # ── Wave 3 G8.4 (S56) — +11 entries pour atteindre 25+ ──
+
+  - family: tener_age
+    multiplier: 1.4
+    description: "FR 'avoir' + âge ≠ ES 'tener'. 'Soy 25 años' (calque) → 'Tengo 25 años'. Pareil : 'tengo hambre/sed/sueño/frío/calor/miedo/razón/prisa' (≠ FR 'avoir faim'). A1 très fréquent."
+
+  - family: gender_calque_cognat
+    multiplier: 1.4
+    description: "Cognat avec genre différent ou identique : 'le problème' FR masc → 'el problema' (masc — cohérent). MAIS 'la méthode' fém → 'el método' masc. Toujours genre cognat -ma masc : 'el sistema/programa/idioma/clima/poema/tema/mapa'."
+
+  - family: subjuntivo_volonte
+    multiplier: 1.5
+    description: "Subjuntivo après volonté/désir/permission/prohibición + 2e sujet : 'quiero que vienes' → 'vengas' ; 'pido que vas' → 'vayas' ; 'prefiero que comes' → 'comas'. FR utilise subjonctif aussi mais moins systématique. B1 fréquent."
+
+  - family: subjuntivo_duda_negacion
+    multiplier: 1.4
+    description: "Subjuntivo après dudo/no creo/niego que + cláusula : 'dudo que viene' → 'venga' ; 'no creo que es cierto' → 'sea cierto'. FR subjonctif similaire mais relâché en oral. B1 fréquent."
+
+  - family: subjuntivo_concesivo_temporal
+    multiplier: 1.3
+    description: "Subjuntivo après aunque (futur/incertain), cuando/en cuanto + futur, antes (de) que, a pesar de que : 'cuando vengo mañana' (calque) → 'cuando venga' (subj). 'Antes de que llegas' → 'llegues'. B1-B2 fréquent."
+
+  - family: estar_progresivo
+    multiplier: 1.3
+    description: "Progressive FR 'être en train de + inf' → ES 'estar + gerundio' : 'soy comiendo' → 'estoy comiendo'. Less marked qu'EN — used pour acción en cours real-time. A2 fréquent."
+
+  - family: acabar_venir_de
+    multiplier: 1.3
+    description: "Calque FR 'venir de + inf' → ES 'acabar de + inf' : 'vengo de comer' (= 'I just ate') → 'acabo de comer'. 'Venir de' en ES = origine/provenance physique seulement. A2-B1 fréquent."
+
+  - family: imperativo_pronombres
+    multiplier: 1.3
+    description: "Pronombres átonos avec impératif : positivo enclítico (díme-lo, cómpra-lo) ; negativo proclítico (no me lo digas, no lo compres). Calques FR : 'me dilo' → 'dímelo' ; 'no dimelo' → 'no me lo digas'. Acento gráfico obligatoire (díme/cómpra). A2 fréquent."
+
+  - family: cleft_sentences
+    multiplier: 1.2
+    description: "Cleft FR 'C'est X que/qui...' → ES 'Es X quien/el que...' (humano) ou 'Lo que... es X' (chose). 'Es Juan que canta' → 'Es Juan QUIEN canta' ou 'Es Juan EL QUE canta'. B1-B2 fréquent."
+
+  - family: possessive_placement
+    multiplier: 1.2
+    description: "ES posesivos átonos PRÉ-nom (mi/tu/su...) ; tóniques POST-nom (mío/tuyo/suyo). Body parts : ES préfère artículo déf + dativo ('me duele LA cabeza' vs FR 'ma tête me fait mal'). A1-A2 fréquent."
+
+  - family: acentuacion_diacritica
+    multiplier: 1.1
+    description: "Acentos diacríticos ES : monosyllabes différenciés (sí 'oui'/si 'si' ; tú 'tu'/tu 'ton' ; él 'lui'/el 'le' ; sé 'je sais'/se 'pron' ; té 'thé'/te 'pron'). FR ne distingue pas. Interrogatif/exclamatif TOUJOURS accent : qué, cómo, dónde, cuándo, cuánto, quién. Source FP fréquente A1-B2."

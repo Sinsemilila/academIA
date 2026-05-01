@@ -232,8 +232,8 @@ G8.2 (rules_es spaCy migration) **DEFER P3** — strategic decision : si Tier 1+
 
 **Tier 4** (rules + L1, parallel) :
 - [x] G8.1 `rules_es.py` +12 codes (S56) — V:TENSE, V:FORM, V:SVA, V:ASPECT, V:AUX, V:MODAL, V:COND, V:INFL, V:PHRASAL, V:PASS, V:EXIST, V:CHOICE. Regex-light high-precision low-recall. Tests 14/14 patterns. ERROR_CODE_TO_FAMILY pre-registered S51 — auto-integrates with tolerance_matrix pipeline.
-- [ ] G8.3 FP whitelists ES
-- [ ] G8.4 `l1_transfer/fr_to_es.yaml` 25+
+- [x] G8.3 FP whitelists ES (S56) — PROPER_NOUNS_ES expanded (countries/cities/regions/monuments) + CONTRACTIONS_ES (al/del) + LEX_CALQUE_ES_WHITELIST (cognates) + FRENCH_COGNATES_ES whitelist (defensive infrastructure for future calque detectors).
+- [x] G8.4 `l1_transfer/fr_to_es.yaml` 14→**30** (S56, +16 entries — tener_age, gender_calque_cognat, 3 subjuntivo families, estar_progresivo, acabar_venir_de, imperativo_pronombres, cleft_sentences, possessive_placement, acentuacion_diacritica + 5 more).
 
 **Milestone** : data layer ES parity Teacher EN + DELE corpus integrated + rules detector mature.
 

@@ -54,10 +54,88 @@ PROPER_NOUNS_ES = {
 }
 # Correction: in Spanish, days/months/languages/nationalities are LOWERCASE.
 # Only city/country names are capitalized.
+# Wave 3 G8.3 (S56) expanded — proper nouns countries + cities + regions + monuments.
 PROPER_NOUNS_ES = {
-    "españa", "francia", "argentina", "méxico", "mexico",
-    "madrid", "barcelona", "sevilla", "valencia",
-    "europa", "américa", "asia", "áfrica",
+    # Countries
+    "españa", "francia", "argentina", "méxico", "mexico", "italia", "alemania",
+    "portugal", "japón", "japon", "china", "rusia", "brasil", "perú", "peru",
+    "colombia", "venezuela", "chile", "uruguay", "paraguay", "bolivia",
+    "ecuador", "guatemala", "honduras", "panamá", "panama", "cuba",
+    "estados unidos", "reino unido", "canadá", "canada", "australia",
+    # Cities (ES + LATAM)
+    "madrid", "barcelona", "sevilla", "valencia", "bilbao", "málaga", "malaga",
+    "granada", "zaragoza", "salamanca", "santander", "alicante", "córdoba", "cordoba",
+    "buenos aires", "lima", "bogotá", "bogota", "caracas", "santiago", "montevideo",
+    "ciudad de méxico", "ciudad de mexico", "guadalajara", "monterrey", "habana",
+    # Regions / continents
+    "europa", "américa", "america", "asia", "áfrica", "africa", "oceanía", "oceania",
+    "cataluña", "catalunya", "andalucía", "andalucia", "galicia", "país vasco",
+    "castilla", "extremadura", "aragón", "aragon",
+    # Monuments / landmarks
+    "alhambra", "prado", "guggenheim", "sagrada familia",
+}
+
+# ── Wave 3 G8.3 (S56) — Contractions ES (al/del) — must NOT be flagged ──
+# These are MANDATORY contractions in Spanish. FP guard for any rule that might
+# accidentally flag "al" (a + el) or "del" (de + el) as preposition errors.
+CONTRACTIONS_ES = {"al", "del"}
+
+# ── Wave 3 G8.3 — Spanish words that LOOK like FR calques but ARE correct ──
+# Whitelist for false-positive prevention in calque/false_friend detectors.
+LEX_CALQUE_ES_WHITELIST = {
+    # Word : reason (why it's NOT a calque even though it resembles FR)
+    "actual": "actual ES = 'current/present' (≠ FR 'actuel' = current too — same meaning)",
+    "exacto": "exacto = exact (cognate FR exact, semantically identical)",
+    "preciso": "preciso = precise (cognate, identical semantics)",
+    "delicado": "delicado = delicate (cognate, identical)",
+    "elegante": "elegante = elegant (cognate, identical)",
+    "evidente": "evidente = evident (cognate, identical)",
+    "natural": "natural = natural (cognate, identical)",
+    "personal": "personal = personal (cognate, identical)",
+    "social": "social = social (cognate, identical)",
+    "general": "general = general (cognate, identical)",
+    # Verbs
+    "estudiar": "estudiar = to study (cognate, identical)",
+    "celebrar": "celebrar = to celebrate (cognate, identical)",
+    "considerar": "considerar = to consider (cognate, identical)",
+    "decidir": "decidir = to decide (cognate, identical)",
+    "diferenciar": "diferenciar = to differentiate (cognate, identical)",
+    # Common nouns
+    "universidad": "universidad = university (cognate, identical)",
+    "información": "información = information (cognate, identical)",
+    "comunicación": "comunicación = communication (cognate, identical)",
+    "organización": "organización = organization (cognate, identical)",
+    "situación": "situación = situation (cognate, identical)",
+    "decisión": "decisión = decision (cognate, identical)",
+    "atención": "atención = attention (cognate, identical)",
+    "operación": "operación = operation (cognate, identical)",
+    "región": "región = region (cognate, identical)",
+    "religión": "religión = religion (cognate, identical)",
+    "tradición": "tradición = tradition (cognate, identical)",
+}
+
+# ── Wave 3 G8.3 — French cognates that ARE valid Spanish (whitelist) ──
+# Common FR words that are also valid ES (when FR L1 learner uses them, NOT a calque).
+# Used as defense for LEX:FR_RESIDUE detector to avoid false-positives.
+FRENCH_COGNATES_ES = {
+    # Both languages share these forms with same meaning — NOT calques
+    "natural", "social", "general", "real", "moral", "central", "personal",
+    "actual", "ideal", "principal", "fundamental", "esencial", "especial",
+    "international", "internacional", "regional", "nacional",
+    # Verb-like cognates
+    "celebrar", "considerar", "criticar", "publicar", "ocupar", "estudiar",
+    "examinar", "verificar", "organizar", "imaginar", "decorar",
+    # Nouns
+    "actor", "doctor", "profesor", "director", "autor",
+    "región", "religión", "tradición", "decisión", "atención",
+    "información", "comunicación", "organización", "situación", "operación",
+    # Adjectives (with -e ending common to both)
+    "elegante", "evidente", "diferente", "importante", "interesante",
+    "presente", "permanente", "constante", "frecuente", "consciente",
+    # Days/months that LOOK like FR but happen to be lowercase in ES
+    "lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo",
+    "enero", "febrero", "marzo", "abril", "mayo", "junio",
+    "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre",
 }
 
 # Classic false friends FR→ES
