@@ -5,6 +5,80 @@ Sessions empilées (plus récente en haut). Rotation : seules les **3 dernières
 ---
 ---
 
+## Session 55 — 2026-05-01 (~7h continu — Incident Dify max_length + Sprint sécu jalon 2026-05-07 hit + Cleanup docs sprawl + Maestro ES Oracle Phase 0+D + 3 SoT canoniques)
+
+### Done
+
+**Bloc 1 — Incident Dify max_length** (3 commits : `a7a4465`, `269e8df`, `334b380`) :
+- Diagnostic root cause : `concept_hints_json` 19581 EN / 12750 ES > Dify Start node max_length=10000 (S53 changes commits 9925400+34ea884 silently broke Teacher EN + Maestro ES). Worker `dify-worker` raise ValueError → backend httpx ReadTimeout 120s → frontend "Erreur de connexion".
+- Fix immédiat : DB UPDATE workflows.graph max_length 10K→50K (4 versions : EN+ES draft+published)
+- Fix propre : `load_concept_hints_for_level(lang, niveau)` filter cumulative ≤learner level (A1 EN: 18 hints, 2.2K vs full 131/19.5K)
+- Anti-pattern logged vault failures.md : ne pas jumper sur ReadTimeout sans cross-check `dify-worker` logs
+
+**Bloc 2 — Sprint sécu jalon 2026-05-07 (hit 6j d'avance)** (~6 commits) :
+- Email Routing Cloudflare API : 3 alias (`security@`/`dmarc-reports@`/`dsar@`) + 3 MX route1/2/3 + DKIM cf2024-1 + SPF auto-rewrite `-all`→`~all`
+- Access bypass app `7eaa58d0...` : `/manifest.json` + `/sw.js` + favicons (PWA fixed)
+- CSP `Report-Only` → enforce (commit `e1fa359` + redeploy frontend)
+- DMARC `p=none` → `p=quarantine` via API
+- 2 fixes UI DevTools : ChatInput textarea name+id (`b5d59c4`) + PWA meta `mobile-web-app-capable` (`056d3bb`)
+
+**Bloc 3 — Cleanup docs sprawl P0+P1+P2** (~11 commits) :
+- P0 : AUDIT-TODO + HANDOFF-main archived (`7046965`+`84ea617`), 8 multilang/sprint docs marked superseded (`b759439`), vault CLAUDE.md anti-edit cron mirror banner (`c796203`)
+- P1 : `docs/05-decisions/INDEX.md` + 2 anciennes sources archived (`1422178`), `docs/_legacy/` archived (`e70c0bb`), 5 docs/ flat orphans archived (`bddf769`+`33d990d`), vault/meta/agents-historical archived (`9ca3a62`+`bf24c0f`), cron memory-vault-mirror disabled + 16 agent-memory archived (`50f59ea`)
+- P2 : `vault/meta/conventions.md` decision tree 12 règles (`f6b873a`), `~/.claude/CLAUDE.md` DOC PLACEMENT section (commit dans sinse-claude-config repo)
+- Convention enforcement live : future Claude sessions voient DOC PLACEMENT au boot, decision tree applique anti-resprawl preventive
+
+**Bloc 4 — Maestro ES Oracle Phase 0+D** (~10 commits) :
+- Phase 0.A-D : audit prompts Dify (structurellement IDENTIQUE Teacher EN — pb pas dans le prompt) + 0.E judge code cross-lang fix `_l2_word_ratio` + CF patterns BY_LANG (`d038dd9` + typo fix `1ccc53c`) + 0.F battery 12/24 + 0.G re-record 24 goldens + 0.H Lyster acceptable_set audit (`c11ee25`+`4c09654`)
+- Phase 1 G3 : add 5 ES Lyster fewshots à CF_MOVE_PROMPT (`9a589cb`)
+- Phase 1 G4 : PAIRWISE_PROMPT multi-error tolerance (`38ff69f`)
+- Phase 1 G1+G5 : battery panel cross-provider + cache → **19/24 (79%)** baseline floor (`e3a3692`)
+- Phase D : κ Opus calibration in-chat YAML (`baselines/2026-05-01-opus-supervisor-scores-es.yaml` non-committed, hook content-integrity flag false-positive)
+- 5 fails restants TOUS `explicit_correction` A1-A2 = vrais signaux pédagogiques Maestro Dify prompt non-itéré
+
+**Bloc 5 — PIVOT Build avant Measure + 3 SoT canoniques** :
+- Acté : 19/24 = baseline floor pré-build, **PAS MVP DoD légitime**. Optimisé l'OUTIL avant le sujet (anti-Goodhart).
+- `e47dc3a` sprint-maestro-es-2026-05.md v1 → `aabdd54` v2 PIVOT
+- `aa75165` **build-gap audit Maestro ES vs Teacher EN** (18 dims, 16 items P0-P3, ~22-30j cumul)
+- `33f842e` **Teacher EN reference architecture** (799L, template Wave 2-4 IT/DE/RU/JP, 3-step build recipe)
+- `79bf291` **Maestro ES execution roadmap** (5 tiers chronologiques + dependencies + decision gates + calendar 5 sessions)
+
+### Decisions
+
+- **D-S55.1** PIVOT Build avant Measure : Oracle infra cross-langue ready S55 (judge fix + Lyster + panel + κ tools) — réutilisable Wave 2-4. MAIS le score Maestro ES nécessite construction structurelle ES parity Teacher EN AVANT re-mesure légitime. Sprint plan v2 reflète ce pivot.
+- **D-S55.2** Convention `vault/meta/conventions.md` decision tree 12 règles + INTERDICTIONS : future .md créations passent par decision tree. Whitelist racine projet active. Anti-resprawl preventive.
+- **D-S55.3** Cron `memory-vault-mirror` désactivé (Sinse exec via `!`) : agent-memory SUPERSEDED L82+L115 archivé. Source canonical Claude memory `~/.claude/projects/-opt-academie/memory/` intact.
+- **D-S55.4** Sécu jalon 2026-05-07 hit 6j d'avance : DMARC quarantine + CSP enforce + Email Routing 3 alias DSAR/DMARC/security operational. Access bypass /manifest.json fixe PWA bonus.
+- **D-S55.5** Maestro ES MVP DoD redefini POST-Build : ≥22/24 panel + κ Opus≥0.7 + 0 explicit A1-A2 + 0 priority leak. Le 19/24 actuel = floor référence.
+
+### Gotchas
+
+- **G-S55.1 Dify max_length silent overflow** : changements YAML data layer (concept_hints/curriculum) qui passent silencieusement la limite Start node max_length crashent dify-worker SANS error visible côté API (200 OK + task_id retourné). Diagnostic = `docker logs dify-worker` ValueError verbatim. Pattern à retenir : toute régression "stream timeout" Dify advanced-chat → check worker logs FIRST.
+- **G-S55.2 Judge code typo cascade** : commit `d038dd9` cross-lang fix introduit typo `scenario.key.agent` au lieu de `scenario.scenario_key.agent` (Pydantic schema field). Fallback silent à 'en' invisible. Smoke restait 1-2/6. Détecté en testing standalone vs harness call discrepancy. Fix `1ccc53c`. Pattern : helper Pydantic field accessor toujours tester contre vraie instance, pas mock.
+- **G-S55.3 Vault mirror by-design** : `vault/projects/academia-ia/{TODO,SESSION,CHANGELOG}.md` sont des MIRRORS auto via cron `academie-vault-mirror` rsync /15min. Symlinks impossibles (cron écraserait). Solution = doc anti-edit warning dans `vault/CLAUDE.md`.
+- **G-S55.4 PIVOT measure-before-build anti-pattern** : optimiser l'Oracle judge cross-langue + Lyster acceptable_set audit AVANT que Maestro Dify prompt soit itéré à parité Teacher EN = score baseline floor non-représentatif du potentiel target. Build-then-measure = bonne séquence.
+
+### Commits
+
+**Academia (24)** :
+- `a7a4465` `269e8df` `334b380` (Bloc 1 incident Dify max_length)
+- `e1fa359` `b5d59c4` `056d3bb` `781defc` + sécu API ops Cloudflare (Bloc 2 sécu jalon)
+- `7046965` `84ea617` `b759439` `1422178` `e70c0bb` `bddf769` `33d990d` (Bloc 3 cleanup P0+P1)
+- `d038dd9` `1ccc53c` `c11ee25` `4c09654` `9a589cb` `38ff69f` `e3a3692` `e47dc3a` `aabdd54` (Bloc 4 Maestro ES Phase 0+D)
+- `aa75165` `33f842e` `79bf291` (Bloc 5 SoT canoniques)
+
+**Vault (7)** :
+- `334b380` `e35af89` (failures.md log incidents)
+- `c796203` `f6b873a` (CLAUDE.md mirror banner + conventions decision tree)
+- `9ca3a62` `bf24c0f` (P1.5 agents-historical archived)
+- `50f59ea` (P1.6 agent-memory archived + cron disabled)
+
+**Sinse-claude-config repo (1)** :
+- ~/.claude/CLAUDE.md DOC PLACEMENT section ship
+
+---
+---
+
 ## Session 54 — 2026-04-30 (~10h continu post-S53 — Sprint Oracle EN cohérence MVP COMPLETE Phase 0-6 + extensions)
 
 ### Done

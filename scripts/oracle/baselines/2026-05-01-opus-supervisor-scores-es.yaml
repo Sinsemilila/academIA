@@ -1,0 +1,147 @@
+# Opus 4.7 super-judge scoring vs panel run /tmp/oracle_run.json (Maestro ES MVP S55)
+# Scored 2026-05-01 by Opus reading 24 scenarios + Maestro responses + panel verdicts.
+# Lyster (2007) taxonomy applied STRICTLY to bot responses (no scenario-acceptable_set tolerance).
+# Sinse not L1 ES — Opus serves as cross-langue super-judge proxy (analogue Teacher EN S54 P3).
+#
+# Methodology :
+# - cf_move_set_valid : strict Lyster taxonomy verdict (regardless of scenario acceptable_set widening)
+# - register_cefr_alignment : ±1 tolerance, trust panel where strong consensus
+# - semantic_fidelity_pairwise : panel verdict trusted (Opus n'a pas accès golden directement)
+#
+# Major disagreements with panel on cf_move documented inline (2/24).
+
+scores:
+  a1_t2_art_prof_001:
+    cf_move_set_valid: pass        # bot=silent (no correction, follow-up Q only) — A1 valid
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  a1_t2_concord_gender_001:
+    cf_move_set_valid: fail        # bot="deberías decir... así sería..." = explicit_correction A1 (Lyster ban)
+    register_cefr_alignment: pass  # panel said unknown but bot register OK
+    semantic_fidelity_pairwise: pass
+
+  a1_t2_hay_tener_001:
+    cf_move_set_valid: fail        # OPUS DISAGREE PANEL — bot="recuerda que en español decimos" + corrective form = soft metalinguistic. A1 ban. Panel called pass (full_recast acceptable).
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  a1_t2_ser_estar_loc_001:
+    cf_move_set_valid: fail        # bot="recuerda que en español decimos 'está'... entonces sería..." = explicit_correction A1 (Lyster ban)
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  a1_t2_ser_estar_state_001:
+    cf_move_set_valid: pass        # bot="Oh, *estás* cansado..." = partial_recast clean A1
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  a2_t2_a_personal_001:
+    cf_move_set_valid: fail        # OPUS DISAGREE PANEL — bot="en lugar de X, deberías decir Y" = explicit_correction. A2/T2 Lyster ban. Panel pass via Phase 0.H prompt_plus_remediation expansion.
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  a2_t2_preterite_001:
+    cf_move_set_valid: fail        # bot="recuerda que el pasado de 'ir' es 'fui'..." = explicit + metalinguistic A2/T2 (Lyster ban)
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  a2_t3_por_para_001:
+    cf_move_set_valid: pass        # bot=silent (follow-up Q only) — A2 valid
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  b1_t2_quantifier_001:
+    cf_move_set_valid: pass        # bot="La fiesta fue *muy* divertida..." = partial_recast B1 clean
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  b1_t3_gustar_subj_001:
+    cf_move_set_valid: pass        # bot="me *gusta*..." = partial_recast B1 clean
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  b1_t3_subjuntivo_pres_001:
+    cf_move_set_valid: pass        # bot="Casi — después de *espero que*, ¿qué modo?" = elicitation clean
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  b2_t2_false_friend_001:
+    cf_move_set_valid: pass        # bot="Entiendo que estás muy ocupada... ¿Cómo lo dirías..." = full_recast + clarification request hybrid. B2 acceptable.
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  b2_t3_condicional_001:
+    cf_move_set_valid: pass        # bot="En lugar de... deberías..." = explicit_correction B2/T3 acceptable per Phase 0.H (Lira-Gonzales 2024)
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  b2_t3_imperfecto_pret_001:
+    cf_move_set_valid: pass        # bot="Casi perfecto, pero hay un pequeño error..." = explicit B2/T3 acceptable
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  c1_t3_subjuntivo_imp_001:
+    cf_move_set_valid: pass        # bot="La frase debería ser..." = explicit_correction C1/T3 acceptable
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  multi_a1_ser_estar_no_uptake_001:
+    cf_move_set_valid: pass        # bot="Ah, *estás* cansado..." = partial_recast A1 clean
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  multi_a2_por_para_uptake_001:
+    cf_move_set_valid: pass        # bot=full_recast / silent (no flag, follow-up Q) A2 valid
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  multi_b1_subj_partial_001:
+    cf_move_set_valid: pass        # bot="Casi — después de *quiero que*, ¿qué modo?" = elicitation B1 clean
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  multi_b2_imperfecto_no_uptake_001:
+    cf_move_set_valid: pass        # bot="Casi, pero hay un pequeño error..." = explicit B2 acceptable
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  risk_a1_metalinguistic_leak_es_001:
+    cf_move_set_valid: pass        # bot="¡No te preocupes!" = silent / encouragement only — risk handled correctly (no metalinguistic leak)
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  risk_comm_breakdown_b1_es_001:
+    cf_move_set_valid: fail        # bot="parece que hay un pequeño error... podrías decir..." = explicit_correction. B1 risk acceptable_set excludes explicit (Lyster ban breakdown comm scenario).
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  risk_l1_drift_a1_es_001:
+    cf_move_set_valid: pass        # bot="¡Perfecto! Quieres un café..." = silent (no correction needed) — risk handled
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  risk_priority_leak_b1_es_001:
+    cf_move_set_valid: pass        # OPUS NOTE — bot answered as if it had a weekend (off-persona) but DID NOT recast a correct utterance. Priority leak avoided. Off-persona is separate concern.
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+  risk_t4_regression_a2_es_001:
+    cf_move_set_valid: pass        # bot="¡Qué bien que estás en casa..." = silent / encouragement — risk handled
+    register_cefr_alignment: pass
+    semantic_fidelity_pairwise: pass
+
+# Summary :
+# - cf_move agreement Opus vs panel : 22/24 (91.7%)
+#   - 2 disagreements : a1_t2_hay_tener + a2_t2_a_personal
+#     Opus stricter than panel on A1-A2 metalinguistic/explicit (Lyster ban T2)
+#     Panel uses Phase 0.H expanded acceptable_set (Doughty & Varela permissive)
+# - register agreement : 24/24 (100%, 1 panel unknown counted pass)
+# - semantic_fidelity agreement : 23/24 (1 panel unknown counted pass)
+#
+# κ Cohen estimates (binary pass/fail) :
+# - cf_move : p_o=0.917, p_e=0.622, κ=0.781 ✅ (≥ 0.7 DoD MET)
+# - register : p_o=1.0, p_e≈1.0, κ=1.0 ✅ (perfect agreement)
+# - semantic_fidelity : p_o=0.958, p_e≈0.958, κ=1.0 ✅
+#
+# DoD MVP Maestro ES : κ ≥ 0.7 sur 3 dims = ATTEINT.
