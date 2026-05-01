@@ -20,8 +20,8 @@ import argparse
 import json
 import subprocess
 import sys
-from pathlib import Path
 from collections import defaultdict
+from pathlib import Path
 
 import yaml
 
@@ -60,7 +60,7 @@ def main() -> int:
     # FPR per dim = fraction of (scenario, dim) cells where verdicts disagree
     dim_totals: dict[str, int] = defaultdict(int)
     dim_disagree: dict[str, int] = defaultdict(int)
-    for sid, dims in verdicts.items():
+    for _sid, dims in verdicts.items():
         for dim, vlist in dims.items():
             if len(vlist) < args.runs:
                 continue

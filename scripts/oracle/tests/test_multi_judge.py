@@ -13,9 +13,7 @@ import asyncio
 from unittest.mock import patch
 
 import pytest
-
 from scripts.oracle.judges import llm_pairwise as lp
-
 
 # ── Cross-judge majority unit tests ─────────────────────────────────
 
@@ -67,7 +65,7 @@ def test_cross_judge_one_judge_fails():
 
 def test_cross_judge_no_signal():
     """All judges returned no parseable verdicts → (None, 0.0)."""
-    votes = []
+    votes: list = []
     winner, ratio = lp._cross_judge_majority(votes, lp._majority_move)
     assert winner is None
     assert ratio == 0.0

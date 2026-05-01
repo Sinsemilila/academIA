@@ -55,14 +55,14 @@ def main() -> int:
     for sc in scenarios:
         sid = sc["id"]
         ckey = sc["scenario_key"]
-        learner = next((t for t in sc["turns"] if t["role"] == "learner"), {})
+        learner: dict = next((t for t in sc["turns"] if t["role"] == "learner"), {})
         golden = _load_golden(args.agent, sid)
         out.append(f"  {sid}:")
         out.append(f"    # learner [{ckey['cefr']}/{ckey['target_tier']}/{ckey['fla']}]: {learner.get('text', '')[:80]}")
         out.append(f"    # bot: {golden[:120].replace(chr(10), ' ')}")
-        out.append(f"    cf_move_set_valid: unknown       # pass | fail | unknown")
-        out.append(f"    register_cefr_alignment: unknown")
-        out.append(f"    semantic_fidelity_pairwise: unknown")
+        out.append("    cf_move_set_valid: unknown       # pass | fail | unknown")
+        out.append("    register_cefr_alignment: unknown")
+        out.append("    semantic_fidelity_pairwise: unknown")
     out.append("```")
     print("\n".join(out))
     return 0

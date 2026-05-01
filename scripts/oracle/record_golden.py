@@ -20,14 +20,14 @@ import os
 import subprocess
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import httpx
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from oracle.judges.dify_client import call_agent, _agent_config, _cfg  # noqa: E402
+from oracle.judges.dify_client import _agent_config, _cfg  # noqa: E402
 from oracle.schemas import GoldenFile, ScenarioSchema  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
@@ -44,7 +44,9 @@ def _current_sha() -> str:
 
 
 # Session 42 O1 — helper moved to judges/dify_client.py as shared util.
-from oracle.judges.dify_client import build_oracle_profile as _build_oracle_profile  # noqa: F401
+from oracle.judges.dify_client import (  # noqa: E402,F401
+    build_oracle_profile as _build_oracle_profile,
+)
 
 
 def record_one(client: httpx.Client, agent: str, key: str, scenario: ScenarioSchema, sha: str) -> GoldenFile | None:
@@ -97,7 +99,7 @@ def record_one(client: httpx.Client, agent: str, key: str, scenario: ScenarioSch
     return GoldenFile(
         scenario_id=scenario.id,
         sha=sha,
-        recorded_at=datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
+        recorded_at=datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
         response=response,
         dify_conversation_id=resp.get("conversation_id"),
         dify_message_id=resp.get("message_id"),

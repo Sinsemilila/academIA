@@ -40,7 +40,7 @@ def cohens_kappa(rater_a: list[int], rater_b: list[int]) -> float:
     if not rater_a or len(rater_a) != len(rater_b):
         return 0.0
     n = len(rater_a)
-    agree = sum(1 for a, b in zip(rater_a, rater_b) if a == b)
+    agree = sum(1 for a, b in zip(rater_a, rater_b, strict=True) if a == b)
     p_o = agree / n
     p_a1 = sum(rater_a) / n
     p_b1 = sum(rater_b) / n

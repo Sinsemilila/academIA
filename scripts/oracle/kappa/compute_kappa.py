@@ -17,9 +17,9 @@ Produces :
 from __future__ import annotations
 
 import json
-from pathlib import Path
-from itertools import combinations
 from collections import Counter
+from itertools import combinations
+from pathlib import Path
 
 DIR = Path(__file__).parent
 DIMS = ["cf_move_set_valid", "register_cefr_alignment"]
@@ -53,7 +53,7 @@ def cohen_kappa(a: list[str], b: list[str]) -> float:
     if n == 0:
         return float("nan")
     # observed agreement
-    agree = sum(1 for x, y in zip(a, b) if x == y)
+    agree = sum(1 for x, y in zip(a, b, strict=True) if x == y)
     po = agree / n
     # expected agreement under independence
     labels = {"pass", "fail"}
@@ -70,11 +70,16 @@ def cohen_kappa(a: list[str], b: list[str]) -> float:
 def interpret(k: float) -> str:
     if k != k:  # NaN
         return "undefined (no variance)"
-    if k < 0:    return f"{k:+.2f}  negative (worse than chance)"
-    if k < 0.20: return f"{k:+.2f}  slight"
-    if k < 0.40: return f"{k:+.2f}  fair"
-    if k < 0.60: return f"{k:+.2f}  moderate"
-    if k < 0.80: return f"{k:+.2f}  substantial ✓"
+    if k < 0:
+        return f"{k:+.2f}  negative (worse than chance)"
+    if k < 0.20:
+        return f"{k:+.2f}  slight"
+    if k < 0.40:
+        return f"{k:+.2f}  fair"
+    if k < 0.60:
+        return f"{k:+.2f}  moderate"
+    if k < 0.80:
+        return f"{k:+.2f}  substantial ✓"
     return f"{k:+.2f}  almost perfect ★"
 
 
@@ -112,17 +117,17 @@ for dim in DIMS:
 print("\n══ Most-contested scenarios (where judges split) ══")
 for dim in DIMS:
     print(f"\n  [{dim}]")
-    splits = []
+    splits: list[tuple[int, str, dict[str, int]]] = []
     for sid in scenario_ids:
-        c = Counter(verdicts[name][sid][dim] for name in JUDGES)
+        ctr = Counter(verdicts[name][sid][dim] for name in JUDGES)
         # contested = minority count / total
-        most_common_count = c.most_common(1)[0][1]
+        most_common_count = ctr.most_common(1)[0][1]
         split = len(JUDGES) - most_common_count
         if split >= 2:  # at least 2 dissenting
-            splits.append((split, sid, dict(c)))
+            splits.append((split, sid, dict(ctr)))
     splits.sort(reverse=True)
-    for split, sid, c in splits[:8]:
-        print(f"    {sid:<40} split={split} verdicts={c}")
+    for split, sid, votes_d in splits[:8]:
+        print(f"    {sid:<40} split={split} verdicts={votes_d}")
 
 # ── cf_move_used (what CF move did each judge SEE) ──────────────────
 print("\n══ cf_move_used classification consensus ══")

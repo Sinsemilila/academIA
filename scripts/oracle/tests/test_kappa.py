@@ -2,13 +2,12 @@
 from __future__ import annotations
 
 import pytest
-
 from scripts.oracle.kappa.ac2 import (
     AC2Result,
     ac2_binary,
     ac2_with_ci,
-    aggregate_per_dim,
     aggregate_global,
+    aggregate_per_dim,
 )
 
 
@@ -65,7 +64,7 @@ def test_aggregate_per_dim():
     }
     out = aggregate_per_dim(verdicts, n_boot=100, seed=42)
     assert set(out.keys()) == {"cf_move_set_valid", "register_cefr_alignment"}
-    for dim, res in out.items():
+    for _dim, res in out.items():
         assert isinstance(res, AC2Result)
         assert res.n_items == 3
 

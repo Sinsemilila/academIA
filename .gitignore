@@ -20,3 +20,8 @@ litellm/config.yaml.backup*
 
 # Phase 6 Sprint Oracle EN cohérence — verdict cache (gitignored, local dev only)
 scripts/oracle/.cache/
+
+# S56 oracle/ tooling venv (ruff + mypy, local dev only)
+scripts/oracle/.venv-tools/
+.mypy_cache/
+.ruff_cache/

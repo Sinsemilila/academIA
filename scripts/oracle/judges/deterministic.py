@@ -79,7 +79,7 @@ def _scenario_lang(scenario: ScenarioSchema) -> str:
 
 
 def _count_lines(response: str) -> int:
-    return len([l for l in response.split("\n") if l.strip()])
+    return len([line for line in response.split("\n") if line.strip()])
 
 
 def _count_questions(response: str) -> int:
@@ -129,7 +129,7 @@ _FR_LEAK_STOPWORDS_BY_TARGET: dict[str, set[str]] = {
 #   + diaeresis on i/u) are unambiguous FR leak signals.
 # - IT target : IT uses à è é ì ò ù — same restrictive set as ES.
 # - DE target : DE uses ä ö ü ß — FR accents are FR.
-_FR_ACCENT_RE_BY_TARGET: dict[str, "re.Pattern[str]"] = {
+_FR_ACCENT_RE_BY_TARGET: dict[str, re.Pattern[str]] = {
     "en": re.compile(r"[éèêëàâîïôûùüç]"),
     "es": re.compile(r"[çêëîïôûù]"),
     "it": re.compile(r"[çêëîïôûù]"),

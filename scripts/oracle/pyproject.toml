@@ -1,0 +1,36 @@
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = [".venv-tools", "baselines/2026-*-results*.txt", "scenarios"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long — handled by formatter when used
+    "B008",  # function call in default arg (FastAPI/CLI patterns)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E402", "F401"]  # tests may import for side effects, set sys.path
+"baselines/*" = ["E402", "F401", "F841"]  # archived experiments, immutable
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+follow_imports = "silent"
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = true
+check_untyped_defs = true
+exclude = ["\\.venv-tools/", "baselines/", "scenarios/"]
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+ignore_errors = true
