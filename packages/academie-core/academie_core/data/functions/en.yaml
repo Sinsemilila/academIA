@@ -115,3 +115,343 @@ A2:
 # - CEFR Companion 2020 Ch 3 Mediation NEW 2020 (pp.90-122) — separate `data/mediation/en.yaml`
 # - Threshold 1990 + Vantage 1990 (van Ek/Trim) inventory of microfunctions
 # - English Profile EVP/EGP signup (englishprofile.org) — Excel exports
+
+# ============================================================================
+# === B1 (Threshold) — S56 G7.2 from CEFR Companion 2020 + Threshold 1990 ====
+# ============================================================================
+B1:
+  level_label: "Threshold"
+  functions:
+    - id: b1.f.1.identifying_relative
+      category: "Giving and asking for information"
+      function: "Identify with relative clauses"
+      exponents:
+        - "The + noun + relative clause (The book that you read)"
+        - "It's a + noun + relative clause (It's a colleague I know)"
+      cefr_companion_ref: "Ch 3 Production - sustained monologue"
+
+    - id: b1.f.2.giving_opinion
+      category: "Expressing opinions"
+      function: "Give opinion"
+      exponents:
+        - "In my opinion..."
+        - "I think (that)..."
+        - "I believe (that)..."
+        - "It seems to me that..."
+        - "I don't think + clause"
+      cefr_companion_ref: "Ch 3 Production - giving information / informal discussion"
+
+    - id: b1.f.3.agreement
+      category: "Expressing opinions"
+      function: "Express agreement"
+      exponents:
+        - "I agree (with you)"
+        - "Yes, exactly / definitely"
+        - "I think the same"
+        - "That's true"
+      cefr_companion_ref: "Threshold 1990 §5.4 expressing agreement"
+
+    - id: b1.f.4.disagreement
+      category: "Expressing opinions"
+      function: "Express disagreement (politely)"
+      exponents:
+        - "I don't agree / I disagree"
+        - "I'm not sure about that"
+        - "I see your point, but..."
+        - "Actually, I think..."
+      cefr_companion_ref: "Threshold 1990 §5.5 expressing disagreement"
+
+    - id: b1.f.5.certainty
+      category: "Expressing opinions"
+      function: "Express certainty"
+      exponents:
+        - "I'm (absolutely / completely) sure that..."
+        - "Definitely / Certainly"
+        - "It's clear / obvious that..."
+        - "I'm confident that..."
+      cefr_companion_ref: "Ch 3 Production - sustained monologue"
+
+    - id: b1.f.6.uncertainty
+      category: "Expressing opinions"
+      function: "Express uncertainty / possibility"
+      exponents:
+        - "Maybe / Perhaps + clause"
+        - "I'm not sure / I doubt that..."
+        - "It might / could be that..."
+        - "It's possible / probable that..."
+      cefr_companion_ref: "Threshold 1990 §3.6 expressing certainty/uncertainty"
+
+    - id: b1.f.7.obligation
+      category: "Expressing opinions"
+      function: "Express obligation and necessity"
+      exponents:
+        - "I have to / I must + base"
+        - "It's necessary to + base"
+        - "You should + base (advice)"
+        - "I need to + base"
+      cefr_companion_ref: "Threshold 1990 §3.4 obligation"
+
+    - id: b1.f.8.preferences
+      category: "Tastes, desires and feelings"
+      function: "Express preferences"
+      exponents:
+        - "I prefer X to Y"
+        - "I'd rather + base (than + base)"
+        - "I like X more than Y"
+        - "My favourite is..."
+      cefr_companion_ref: "Threshold 1990 §6.3 preferences"
+
+    - id: b1.f.9.wishes
+      category: "Tastes, desires and feelings"
+      function: "Express wishes / desires"
+      exponents:
+        - "I want / I'd like to + base"
+        - "I hope (that)..."
+        - "I wish + past simple (counterfactual)"
+        - "I dream of + gerund"
+      cefr_companion_ref: "Threshold 1990 §6.5 expressing wishes"
+
+    - id: b1.f.10.plans_intentions
+      category: "Tastes, desires and feelings"
+      function: "Express plans and intentions"
+      exponents:
+        - "I'm going to + base (planned)"
+        - "I'm thinking of + gerund"
+        - "I plan / intend to + base"
+        - "My intention is to + base"
+      cefr_companion_ref: "Ch 3 Production - announcements"
+
+    - id: b1.f.11.feelings_emotions
+      category: "Tastes, desires and feelings"
+      function: "Express feelings (sadness/anger/fear/joy)"
+      exponents:
+        - "I'm sad / depressed about..."
+        - "I'm angry with X for Y"
+        - "I'm scared / worried about..."
+        - "I'm thrilled / delighted that..."
+      cefr_companion_ref: "CEFR Companion 2020 Ch 3 Production - emotional"
+
+    - id: b1.f.12.surprise
+      category: "Tastes, desires and feelings"
+      function: "Express surprise / amazement"
+      exponents:
+        - "I'm surprised that..."
+        - "It's amazing / incredible that..."
+        - "Really? / Seriously? / No way!"
+        - "How surprising / weird / strange!"
+      cefr_companion_ref: "Threshold 1990 §6.10 expressing surprise"
+
+# ============================================================================
+# === B2 (Vantage) — additions cumulatives à B1 — S56 G7.2 ===================
+# ============================================================================
+B2:
+  level_label: "Vantage"
+  functions:
+    - id: b2.f.1.identifying_advanced
+      category: "Giving and asking for information"
+      function: "Identify (advanced structures)"
+      exponents:
+        - "The one in/from + place (The one from Madrid)"
+        - "It's about... / The thing about... is..."
+        - "It concerns... / It deals with..."
+      cefr_companion_ref: "Ch 3 Production - sustained monologue describing experience"
+
+    - id: b2.f.2.opinion_formal
+      category: "Expressing opinions"
+      function: "Give opinion (formal)"
+      exponents:
+        - "From my point of view..."
+        - "I would argue that..."
+        - "It is my view that..."
+        - "I'm of the opinion that..."
+      cefr_companion_ref: "Ch 3 Production - sustained monologue presenting case for argument"
+
+    - id: b2.f.3.counterargument
+      category: "Expressing opinions"
+      function: "Present a counterargument"
+      exponents:
+        - "Yes, but... / However..."
+        - "On the other hand..."
+        - "While I agree that..., I would also point out that..."
+        - "That may be true, but..."
+      cefr_companion_ref: "CEFR Companion 2020 Ch 3 Production - argumentative discourse"
+
+    - id: b2.f.4.advanced_certainty
+      category: "Expressing opinions"
+      function: "Express advanced certainty"
+      exponents:
+        - "There is no doubt that..."
+        - "Without (a / any) doubt..."
+        - "It is clear / evident / obvious that..."
+        - "I'm absolutely convinced that..."
+      cefr_companion_ref: "Vantage 1990 §3.6"
+
+    - id: b2.f.5.advanced_uncertainty
+      category: "Expressing opinions"
+      function: "Express advanced uncertainty / hedging"
+      exponents:
+        - "It's debatable whether..."
+        - "I have my doubts about..."
+        - "It would seem that..."
+        - "One might argue that..."
+      cefr_companion_ref: "CEFR Companion 2020 Ch 3 Production - hedging"
+
+    - id: b2.f.6.advanced_obligation
+      category: "Expressing opinions"
+      function: "Advanced obligation / necessity"
+      exponents:
+        - "It's essential / crucial / vital that..."
+        - "It's of the utmost importance that..."
+        - "There's no need to + base"
+        - "You don't have to / needn't + base"
+      cefr_companion_ref: "Vantage 1990 §3.4"
+
+    - id: b2.f.7.polite_wishes
+      category: "Tastes, desires and feelings"
+      function: "Express polite wishes / requests"
+      exponents:
+        - "I would like to + base (more formal than 'I want')"
+        - "I would appreciate it if you could + base"
+        - "If only + past simple (regret)"
+        - "I wish + past perfect (counterfactual past)"
+      cefr_companion_ref: "Vantage 1990 §6.5"
+
+    - id: b2.f.8.advanced_plans
+      category: "Tastes, desires and feelings"
+      function: "Express advanced plans"
+      exponents:
+        - "My aim / goal / objective is to + base"
+        - "I'm in the process of + gerund"
+        - "I've made up my mind to + base"
+        - "I'm thinking long-term about..."
+      cefr_companion_ref: "CEFR Companion 2020 Ch 3 Production - planning"
+
+    - id: b2.f.9.fear_anxiety
+      category: "Tastes, desires and feelings"
+      function: "Express fear, anxiety, worry"
+      exponents:
+        - "I'm afraid / scared that + clause"
+        - "It terrifies / horrifies me that..."
+        - "I'm anxious / worried / concerned about..."
+        - "It's making me uneasy that..."
+      cefr_companion_ref: "Vantage 1990 §6.7"
+
+    - id: b2.f.10.advanced_surprise
+      category: "Tastes, desires and feelings"
+      function: "Advanced surprise / amazement"
+      exponents:
+        - "I find it astonishing / astounding / remarkable that..."
+        - "I would never have imagined that..."
+        - "What a coincidence! / How unbelievable!"
+        - "It's beyond belief that..."
+      cefr_companion_ref: "Vantage 1990 §6.10"
+
+# ============================================================================
+# === C1 (Effective Operational Proficiency) — S56 G7.2 ======================
+# ============================================================================
+C1:
+  level_label: "Effective Operational Proficiency"
+  functions:
+    - id: c1.f.1.confirming_emphatic
+      category: "Giving and asking for information"
+      function: "Confirm information emphatically"
+      exponents:
+        - "Indeed / Absolutely / Precisely"
+        - "That is correct / accurate"
+        - "As a matter of fact..."
+        - "To be precise..."
+      cefr_companion_ref: "CEFR Companion 2020 C1 descriptors"
+
+    - id: c1.f.2.opinion_modest
+      category: "Expressing opinions"
+      function: "Give opinion (modest/formal register)"
+      exponents:
+        - "To my mind / In my view..."
+        - "From a personal standpoint..."
+        - "Speaking for myself..."
+        - "If I may venture an opinion..."
+      cefr_companion_ref: "CEFR Companion 2020 C1 - register awareness"
+
+    - id: c1.f.3.refined_certainty
+      category: "Expressing opinions"
+      function: "Express certainty (refined)"
+      exponents:
+        - "I am firmly convinced that..."
+        - "There can be no question that..."
+        - "It is beyond dispute that..."
+        - "I would stake my reputation on it"
+      cefr_companion_ref: "CEFR Companion 2020 C1 - register"
+
+    - id: c1.f.4.refined_preferences
+      category: "Tastes, desires and feelings"
+      function: "Express refined preferences"
+      exponents:
+        - "I have a (slight) preference for..."
+        - "I lean towards / I'm inclined to + base"
+        - "All things considered, I would choose..."
+        - "I would much rather + base"
+      cefr_companion_ref: "CEFR Companion 2020 C1 - sustained monologue"
+
+    - id: c1.f.5.intense_joy
+      category: "Tastes, desires and feelings"
+      function: "Express intense joy / satisfaction"
+      exponents:
+        - "I'm overjoyed / elated / thrilled that..."
+        - "I'm beside myself with joy"
+        - "It fills me with great pride / satisfaction that..."
+        - "I have the great pleasure of + gerund"
+      cefr_companion_ref: "CEFR Companion 2020 C1 - emotional register"
+
+    - id: c1.f.6.intense_anger
+      category: "Tastes, desires and feelings"
+      function: "Express intense anger / indignation"
+      exponents:
+        - "I'm outraged / appalled / infuriated by..."
+        - "It's an absolute disgrace that..."
+        - "I find it utterly unacceptable that..."
+        - "It makes my blood boil that..."
+      cefr_companion_ref: "CEFR Companion 2020 C1 - intensity register"
+
+# ============================================================================
+# === C2 (Mastery) — S56 G7.2 (cumulative C1) ================================
+# ============================================================================
+C2:
+  level_label: "Mastery"
+  functions:
+    - id: c2.f.1.idiomatic_certainty
+      category: "Expressing opinions"
+      function: "Express certainty (idiomatic / cultured)"
+      exponents:
+        - "I'd bet my bottom dollar on it"
+        - "It's a foregone conclusion that..."
+        - "Without a shadow of a doubt..."
+        - "I can vouch for the fact that..."
+      cefr_companion_ref: "CEFR Companion 2020 C2 - idiomatic mastery"
+
+    - id: c2.f.2.idiomatic_joy
+      category: "Tastes, desires and feelings"
+      function: "Express joy (idiomatic / native-like)"
+      exponents:
+        - "I'm walking on air"
+        - "I'm over the moon / on cloud nine"
+        - "It's a dream come true"
+        - "I couldn't be happier"
+      cefr_companion_ref: "CEFR Companion 2020 C2 - phraseological mastery"
+
+    - id: c2.f.3.idiomatic_anger
+      category: "Tastes, desires and feelings"
+      function: "Express anger (idiomatic / native-like)"
+      exponents:
+        - "I'm seeing red"
+        - "I've had it up to here with..."
+        - "It really gets my goat / ticks me off"
+        - "I'm fit to be tied"
+      cefr_companion_ref: "CEFR Companion 2020 C2 - colloquial register mastery"
+
+# ============================================================================
+# Notes :
+# - Sources : CEFR Companion 2020 Ch 3 (Production + Interaction scales) +
+#   Threshold 1990 + Vantage 1990 (van Ek/Trim) microfunctions inventory.
+# - Mediation dimension (CEFR Companion 2020 NEW Ch 3.4) : separate sprint, defer
+#   to dedicated `data/mediation/en.yaml` post-MVP.
+# - Phase D3 future : English Profile EVP/EGP Excel exports (englishprofile.org signup).
