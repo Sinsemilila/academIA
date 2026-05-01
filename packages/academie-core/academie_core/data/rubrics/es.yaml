@@ -68,3 +68,170 @@ rubrics:
     - T4: prompt + reflexión metapragmática.
     Fraseos preferidos: 'Funciona, pero un nativo diría X por la connotación de Y.', pushed creative ('¿Puedes decirlo menos directamente?').
     Estructuras objetivo: oraciones hendidas (Fue Juan quien…), estructuras de foco, implicatura pragmática, sarcasmo/ironía, marcadores de fluidez nativa (pues, vale, oye).
+
+# ============================================================================
+# === DELE Criterios oficiales de calificación (S56 G7.3f) ==================
+# ============================================================================
+# Source : DELE A1-C2 modelos officiels Instituto Cervantes (S56 acquisition).
+# These 4 criterios are the DELE-official rubrics for expresión escrita + oral.
+# Apply ALONGSIDE per-level rubrics above for parity grading with Cervantes.
+# Extracted from extracted/cervantes-dele-a1/rubric.yaml (S56 G7.3a).
+# Cross-referenced : DELE B1, B2, C1, C2 modelos in library/by-domain/cervantes-dele/.
+
+dele_criterios:
+  description: |
+    4 dimensiones de calificación oficial DELE (Cervantes) para producciones
+    escritas (Prueba 3) y orales (Prueba 4). Cada dimensión recibe una nota
+    0-3 según el modelo, total prueba = 25 puntos. Cut-off DELE = 60% por
+    grupo de pruebas (lectura+auditiva ; escritura+oral).
+  apply_to:
+    - "writing_short_message (mini_exam writing items)"
+    - "writing_long_essay (B2+ extended writing)"
+    - "oral_monologue (Prueba 4 Tarea 1-3)"
+    - "oral_dialogue_examiner (Prueba 4 Tarea 4)"
+
+  adecuacion:
+    name: "Adecuación al género discursivo y a la situación"
+    weight: 0.25
+    description: |
+      ¿El candidato/a respeta el género del texto pedido (correo, formulario, anuncio,
+      conversación) ? ¿Se ajusta al registro (formal/informal) y al destinatario ?
+    indicators_by_level:
+      A1: |
+        - Selección apropiada del género básico (saludos, despedidas)
+        - Registro coherente tú vs usted (forma de tratamiento)
+        - Cumple longitud requerida (50-70 palabras)
+      A2: |
+        - Cumplimiento estructura básica del género
+        - Fórmulas adecuadas (Querido amigo / Estimado señor)
+        - Adaptación informal vs neutro
+      B1: |
+        - Selección autónoma del registro según destinatario
+        - Marcadores de género (texto narrativo, descriptivo, argumentativo básico)
+        - Cohesión entre apertura/cierre
+      B2: |
+        - Registro formal/informal con matices según contexto
+        - Cumplimiento convenciones del género (formal letter structure, opinion piece)
+        - Tono consistente
+      C1: |
+        - Maestría del registro y del género
+        - Adaptación fina a destinatario y propósito
+        - Convenciones explotadas con creatividad
+      C2: |
+        - Native-like adaptación pragmática
+        - Subgéneros y variaciones estilísticas
+        - Adecuación cultural completa
+
+  coherencia:
+    name: "Coherencia y cohesión textual"
+    weight: 0.25
+    description: |
+      ¿El texto/intervención está organizado lógicamente ? ¿Las ideas se conectan
+      mediante marcadores apropiados al nivel ?
+    indicators_by_level:
+      A1: |
+        - Organización secuencial básica
+        - Conectores frecuentes (y, pero, también, porque, después)
+        - Repetición léxica controlada
+      A2: |
+        - Secuencia temporal/lógica simple (primero, luego, después)
+        - Pronombres simples para evitar repetición
+        - Marcadores básicos (entonces, también, además)
+      B1: |
+        - Conectores variados (sin embargo, mientras que, por eso)
+        - Estructura narrativa/expositiva clara
+        - Anáforas pronominales correctas
+      B2: |
+        - Conectores avanzados (no obstante, en cambio, dado que)
+        - Marcadores discursivos sofisticados
+        - Cohesión léxica (sinonimia, hiperonimia)
+      C1: |
+        - Marcadores discursivos formales (por consiguiente, en cuanto a)
+        - Articulación argumentativa compleja
+        - Variedad estilística en transiciones
+      C2: |
+        - Mastery completa de marcadores y registros discursivos
+        - Cohesión nativa con creatividad
+        - Articulación retórica avanzada
+
+  correccion:
+    name: "Corrección lingüística (gramática + ortografía)"
+    weight: 0.25
+    description: |
+      ¿La gramática + ortografía permiten la comprensión ? Errores no impiden el sentido.
+      Tolerancia decreciente según nivel.
+    indicators_by_level:
+      A1: |
+        - Concordancia género/número en SN simples
+        - Conjugación presente indicativo regular + ser/estar
+        - Ortografía palabras frecuentes (errores tolerados si comprensible)
+        - Acentuación básica no obligatoria
+      A2: |
+        - Pretérito indefinido + perfecto formas frecuentes
+        - Concordancia adj-sust extendida
+        - Acentuación básica obligatoria (interrogativos, palabras agudas)
+        - Errores no sistemáticos en estructuras nuevas
+      B1: |
+        - Subjuntivo presente en triggers básicos
+        - Imperfecto vs indefinido contraste
+        - Errores residuales en estructuras inferiores tolerados con menor frecuencia
+      B2: |
+        - Subjuntivo extendido (todos los tiempos)
+        - Pretérito pluscuamperfecto + pasiva refleja
+        - Acentuación correcta sistemática
+        - Errores raros en estructuras de nivel
+      C1: |
+        - Precisión casi nativa
+        - Acentos diacríticos sin error
+        - Concordancia en estructuras complejas
+        - Solo errores residuales no sistemáticos
+      C2: |
+        - Native-like precision
+        - Errores son fluidez normal nativa
+        - Inversión enfática + estructuras hendidas correctas
+
+  alcance:
+    name: "Alcance lingüístico (riqueza léxica + estructural)"
+    weight: 0.25
+    description: |
+      ¿El candidato/a usa el repertorio esperado del nivel (PCIC inventario) ?
+      ¿Hay variedad léxica suficiente para el tipo de texto ?
+    indicators_by_level:
+      A1: |
+        - Repertorio léxico A1 (familia, casa, comida, trabajo, ocio básicos)
+        - Estructuras A1 : presente, ser/estar, hay/tener, ir a + inf
+        - Adjetivos calificativos A1 (alto/bajo, grande/pequeño)
+        - Suficiente para 50-70 palabras sin repetición excesiva
+      A2: |
+        - Léxico ampliado a contextos cotidianos
+        - Pretérito indefinido + perfecto + comparativos
+        - Conectores temporales y lógicos básicos
+        - Cohesión léxica con sinónimos simples
+      B1: |
+        - Léxico para temas familiares + abstractos básicos
+        - Subjuntivo presente + condicional
+        - Estilo indirecto básico
+        - Variedad estructural visible
+      B2: |
+        - Léxico precisión registros formal/informal
+        - Subjuntivo todos los tiempos + condicional compuesto
+        - Estructuras pasivas + impersonales
+        - Colocaciones idiomáticas frecuentes
+      C1: |
+        - Léxico preciso con matices semánticos
+        - Modismos transparentes + colocaciones avanzadas
+        - Inversión enfática + perífrasis aspectuales
+        - Registro formal/culto disponible
+      C2: |
+        - Mastery léxico nativo + cultismos
+        - Modismos opacos + literarios
+        - Estructuras hendidas + nominalizaciones
+        - Creatividad lingüística pragmática
+
+  scoring_template:
+    description: "Template DELE official 0-3 par dimension (max 12 par tarea, 25 par prueba)"
+    levels:
+      "0": "No cumple el descriptor del nivel"
+      "1": "Cumple parcialmente"
+      "2": "Cumple satisfactoriamente"
+      "3": "Cumple plenamente con margen"

@@ -43,8 +43,12 @@ class _Lax(BaseModel):
 
 # ── Rubrics pack ─────────────────────────────────────────────────────
 
-class RubricPack(_Strict):
-    """rubrics/{lang}.yaml — one rubric prose per CEFR level."""
+class RubricPack(_Lax):
+    """rubrics/{lang}.yaml — one rubric prose per CEFR level.
+
+    S56 G7.3f : Allow extra top-level keys (e.g. `dele_criterios` for ES) for
+    forward-compat. Core validation = `rubrics` dict per CEFR level.
+    """
     rubrics: dict[CEFRLevel, str]
 
     @field_validator("rubrics")

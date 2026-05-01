@@ -228,7 +228,7 @@ G8.2 (rules_es spaCy migration) **DEFER P3** — strategic decision : si Tier 1+
 - [ ] G7.3c Preparación B2 Soluciones extraction (companion 26p) → rubric calibration B2
 - [~] G7.3d Sinse acquisition DELE A2-C2 (S56 — Sinse downloaded **hojas de respuestas** instead of **modelos de examen** — re-DL needed for full content. Hojas useful for structural calibration only)
 - [ ] G7.3e Claude extract DELE A2-C2 mini_exam (blocked on G7.3d full re-DL)
-- [ ] G7.3f Patch `rubrics/es.yaml` DELE Criterios (Adecuación / Coherencia / Corrección / Alcance — extracted in G7.3a rubric.yaml, ready to merge)
+- [x] G7.3f Patch `rubrics/es.yaml` DELE Criterios (S56) — 4 dimensions (Adecuación / Coherencia / Corrección / Alcance) avec indicators_by_level A1-C2 + scoring_template 0-3. RubricPack schema relaxed to _Lax (forward-compat). Tests green.
 
 **Tier 4** (rules + L1, parallel) :
 - [x] G8.1 `rules_es.py` +12 codes (S56) — V:TENSE, V:FORM, V:SVA, V:ASPECT, V:AUX, V:MODAL, V:COND, V:INFL, V:PHRASAL, V:PASS, V:EXIST, V:CHOICE. Regex-light high-precision low-recall. Tests 14/14 patterns. ERROR_CODE_TO_FAMILY pre-registered S51 — auto-integrates with tolerance_matrix pipeline.
