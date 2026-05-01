@@ -1,0 +1,24 @@
+{
+  "scenario_id": "c1_t3_perifrasis_aspectuales_001",
+  "sha": "8ea13d14e1fd",
+  "recorded_at": "2026-05-01T15:20:30Z",
+  "response": "¡Bien! La frase está bien construida, pero hay un pequeño ajuste que podrías considerar. En lugar de \"llegó a ser otra muy distinta\", podrías usar \"se convirtió en otra muy distinta\" para mayor claridad. \n\nEntonces, la frase quedaría: \"Después de años de trabajo, acabé por entender que mi vocación se convirtió en otra muy distinta.\" \n\n¿Qué opinas de este cambio?",
+  "dify_conversation_id": "5779381e-65b2-4db6-9263-80a4d6f5a6a6",
+  "dify_message_id": "34a383db-d3ae-4dc9-b80b-0ee0e50195af",
+  "usage": {
+    "prompt_tokens": 4388,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 86,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 4474,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 2.139,
+    "time_to_first_token": 2.526,
+    "time_to_generate": 0.0
+  }
+}

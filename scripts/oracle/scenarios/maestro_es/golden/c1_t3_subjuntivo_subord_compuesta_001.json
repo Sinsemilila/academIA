@@ -1,0 +1,24 @@
+{
+  "scenario_id": "c1_t3_subjuntivo_subord_compuesta_001",
+  "sha": "8ea13d14e1fd",
+  "recorded_at": "2026-05-01T15:20:39Z",
+  "response": "Tu frase tiene un par de detalles que podemos ajustar. Primero, en lugar de \"sé\", deberías usar \"sepa\" porque estás hablando de un deseo o una necesidad. Además, \"llega\" debería ser \"llegue\" para mantener la concordancia en el subjuntivo. \n\nAsí quedaría: \"Me lo dijo a fin de que yo *sepa* la verdad antes de que *llegue* el día de la reunión.\" \n\n¿Qué opinas de esta corrección?",
+  "dify_conversation_id": "547689f4-5eb8-4a01-8570-5baeb4223974",
+  "dify_message_id": "0862cbbf-5ae0-4695-b144-0f23a54164f4",
+  "usage": {
+    "prompt_tokens": 4388,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 103,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 4491,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 3.383,
+    "time_to_first_token": 3.756,
+    "time_to_generate": 0.0
+  }
+}

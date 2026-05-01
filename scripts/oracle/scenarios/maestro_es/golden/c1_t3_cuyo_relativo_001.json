@@ -1,0 +1,24 @@
+{
+  "scenario_id": "c1_t3_cuyo_relativo_001",
+  "sha": "8ea13d14e1fd",
+  "recorded_at": "2026-05-01T15:20:24Z",
+  "response": "¡Bien! Has hecho un buen intento. Sin embargo, hay un pequeño error en la estructura de la frase. Deberías decir \"La autora cuyos libros leí en la universidad publicó una nueva novela\". \n\nLa palabra \"cuyos\" es la que se utiliza para referirse a la posesión en este contexto. ¿Qué te parece la nueva novela?",
+  "dify_conversation_id": "9d36e0b0-d653-4f8f-88a8-4fc2ddd90562",
+  "dify_message_id": "6c786023-ae1f-42fb-a2be-657c157a472f",
+  "usage": {
+    "prompt_tokens": 4382,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 74,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 4456,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 2.238,
+    "time_to_first_token": 2.64,
+    "time_to_generate": 0.0
+  }
+}

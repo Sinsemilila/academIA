@@ -1,0 +1,43 @@
+id: c1_t3_perifrasis_aspectuales_001
+source: handcrafted
+scenario_key:
+  agent: maestro_es
+  cefr: C1
+  target_tier: T3
+  error_category: V:PHRASAL
+  fla: low
+  style_profile: direct
+multi_turn: false
+turns:
+- role: learner
+  text: Después de años de trabajo, acabé por entender que mi vocación llegó a ser otra muy distinta.
+  turn_number: 5
+  expected_errors:
+  - V:PHRASAL
+expected_dimensions:
+  cf_move_set_valid:
+    mode: set_membership
+    acceptable:
+    - elicitation
+    - metalinguistic
+    - partial_recast
+    - explicit_correction
+    forbidden: []
+  scaffolding_flags_honored:
+    mode: all_required
+    l2_ratio_band:
+    - 0.95
+    - 1.0
+  register_cefr_alignment:
+    mode: within_sublevel
+    target: C1
+    tolerance: 1
+  recast_saliency_and_dosage:
+    mode: structural
+    max_lines: 7
+    max_questions: 2
+    error_form_isolated: true
+    mini_lesson_allowed: false
+  semantic_fidelity_pairwise:
+    mode: llm_pairwise
+    vs_golden: true

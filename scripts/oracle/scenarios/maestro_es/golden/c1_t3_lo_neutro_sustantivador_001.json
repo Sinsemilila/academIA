@@ -1,0 +1,24 @@
+{
+  "scenario_id": "c1_t3_lo_neutro_sustantivador_001",
+  "sha": "8ea13d14e1fd",
+  "recorded_at": "2026-05-01T15:20:27Z",
+  "response": "¡Bien! Tu frase es clara y correcta. Sin embargo, podrías considerar una ligera variación para darle un matiz más enfático: \"Lo que me sorprende es que ellos no llegaron a tiempo después de tantas promesas.\" Esto resalta más la sorpresa. ¿Qué opinas?",
+  "dify_conversation_id": "4cc6b353-49be-4c21-9f61-888815c05a05",
+  "dify_message_id": "88ffc9f4-a266-48da-9e8c-d18b982f6727",
+  "usage": {
+    "prompt_tokens": 4385,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 60,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 4445,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 2.406,
+    "time_to_first_token": 2.774,
+    "time_to_generate": 0.0
+  }
+}

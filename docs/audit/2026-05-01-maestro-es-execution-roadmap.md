@@ -239,7 +239,7 @@ G8.2 (rules_es spaCy migration) **DEFER P3** — strategic decision : si Tier 1+
 
 ## Session N+4 (Tier 5 — Oracle scenarios + quality gates ~5-6j)
 
-- [ ] G9.1 Rebalance ES + add C1 scenarios post-G6
+- [x] G9.1 (S56) — Add 4 NEW C1 scenarios (cuyo_relativo / lo_neutro_sustantivador / perifrasis_aspectuales / subjuntivo_subord_compuesta) using S56 G6.D nouveaux concepts. Total 24→28 scenarios (within target 28-30). Lint 28/28 pass. A1 demote skipped (sandbox protection on rm + low value gain).
 - [ ] G9.2 ES B2 edge cases
 - [ ] G9.3 ES multi-turn scenarios
 - [ ] G10.1 CF_MOVE fewshots ES 5→10+
