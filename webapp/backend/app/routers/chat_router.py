@@ -13,6 +13,7 @@ from .. import database as db
 from academie_core.taxonomy.rules import ERROR_CODE_TO_FAMILY
 from ..openai_reconcile import reconcile_openai_usage
 from academie_core.pedagogy.teacher_prompt import PromptContext
+from academie_core.domain.accounting import AccountingDomain
 from academie_core.domain.language import LanguageDomain
 import yaml
 import tiktoken
@@ -53,22 +54,29 @@ _tiktoken_enc = tiktoken.encoding_for_model("gpt-4o-mini")
 # LanguageDomain(...) will raise otherwise.
 from ..agents_config import active_agents
 
-_DOMAIN_REGISTRY: dict[str, tuple[str, LanguageDomain]] = {}
+# S57 — registry accepts both LanguageDomain and AccountingDomain (premier non-langue).
+# Branchement par préfixe `language` : "compta_*" → AccountingDomain, sinon LanguageDomain.
+_DOMAIN_REGISTRY: dict[str, tuple[str, LanguageDomain | AccountingDomain]] = {}
 for _agent_def in active_agents():
     try:
-        _DOMAIN_REGISTRY[_agent_def.slug] = (
-            _agent_def.language, LanguageDomain(_agent_def.language)
-        )
+        if _agent_def.language.startswith("compta"):
+            _DOMAIN_REGISTRY[_agent_def.slug] = (
+                _agent_def.language, AccountingDomain(_agent_def.language)
+            )
+        else:
+            _DOMAIN_REGISTRY[_agent_def.slug] = (
+                _agent_def.language, LanguageDomain(_agent_def.language)
+            )
     except Exception as _e:
         import logging
         logging.getLogger("chat").error(
-            "Agent %s (lang=%s) failed to initialize LanguageDomain: %s",
+            "Agent %s (lang=%s) failed to initialize Domain: %s",
             _agent_def.slug, _agent_def.language, _e,
         )
 
 
-def _get_domain(agent: str) -> tuple[str, LanguageDomain]:
-    """Resolve agent name to (domain, LanguageDomain). Raises 404 if unknown."""
+def _get_domain(agent: str) -> tuple[str, LanguageDomain | AccountingDomain]:
+    """Resolve agent name to (domain, Domain instance). Raises 404 if unknown."""
     entry = _DOMAIN_REGISTRY.get(agent)
     if not entry:
         raise HTTPException(status_code=404, detail=f"Agent '{agent}' non disponible")
