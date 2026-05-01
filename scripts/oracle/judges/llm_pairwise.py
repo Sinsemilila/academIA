@@ -131,23 +131,44 @@ What CEFR level is this response pitched at ? Output strict JSON :
 
 PAIRWISE_PROMPT = """You judge pedagogical equivalence between two tutor responses to the same learner utterance.
 
-Two responses are EQUIVALENT if :
-- They address the same error(s) with a comparable corrective feedback type
-- They aim at the same CEFR level
-- They pitch the same tier (silent / recast / elicit / explicit)
-- Stylistic differences (tone, word choice) are acceptable
+# CORE PRINCIPLE — multi-error tolerance (S55 G4 update)
 
-They are DIVERGENT if :
-- One corrects a different error than the other
-- One uses a materially different CF type (e.g., recast vs metalinguistic)
-- One is pitched at a materially different CEFR level
-- One exhibits a doctrinal violation (A1 metalinguistic, priority leak, etc.) that the other does not
+When the learner utterance contains MULTIPLE errors, two valid pedagogical strategies may select DIFFERENT errors to address (Lyster doctrinal "salience prioritization"). Both can be EQUIVALENT if they pick legitimate errors with compatible CF strategy. Different-error focus alone ≠ divergence.
+
+# EQUIVALENT if (ALL must hold) :
+
+- Both address AT LEAST ONE legitimate error from the learner utterance (multi-error utterances : different valid error focus is OK).
+- Both use a COMPATIBLE CF tier :
+  * silent ≈ silent
+  * full_recast ≈ partial_recast ≈ implicit_recast (all "recast family")
+  * metalinguistic ≈ elicitation ≈ clarification_request (all "prompt family")
+  * prompt_plus_remediation = composite, equivalent to either parent family
+  * explicit_correction stands alone (only equivalent to itself or prompt_plus_remediation containing explicit step)
+- Both pitch SAME CEFR level (±0 ; not ±1 if scenario is fragile).
+- NEITHER commits a doctrinal anti-pattern absent in the other.
+
+# DIVERGENT if ANY of these hold :
+
+- One commits a doctrinal violation absent in the other :
+  * A1 metalinguistic / explicit_correction (Lyster ban under A2)
+  * Priority leak : recasting a CORRECT learner utterance (over-correction without error)
+  * Over-explicit at A1-A2 T2 (recast preferred at low CEFR low tier)
+  * Materially wrong CEFR pitch (B2+ jargon at A1 learner)
+- Materially DIFFERENT CF tier across families (recast vs explicit_correction, silent vs metalinguistic).
+- One IGNORES all errors when the other addresses at least one legitimate error (uptake mismatch).
+- One pitch CEFR level materially different (≥±2 levels).
+
+# DECISION HELPER
+
+If the divergence is "different-but-both-valid-error-focus" + same CF family + same CEFR → **EQUIVALENT**.
+If the divergence is "doctrinal violation" or "materially different CF family/CEFR" → **DIVERGENT**.
+Stylistic differences (tone, word choice, follow-up question topic) are NEVER decisive.
 
 Learner : "{learner}"
 Response A (bot) : "{response_a}"
 Response B (golden) : "{response_b}"
 
-Output strict JSON : {{"equivalent": true|false, "confidence": 0.0-1.0, "reasoning": "one sentence"}}"""
+Output strict JSON : {{"equivalent": true|false, "confidence": 0.0-1.0, "reasoning": "one sentence — cite which family + which doctrinal status"}}"""
 
 
 def _extract_json(text: str | None) -> dict | None:
