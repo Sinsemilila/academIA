@@ -104,7 +104,7 @@
   --color-border-subtle:  oklch(0.928 0.006 264.531);
   --color-text-primary:   oklch(0.210 0.032 264.665);
   --color-text-secondary: oklch(0.551 0.023 264.364);
-  --color-text-muted:     oklch(0.714 0.019 261.325);
+  --color-text-muted:     oklch(0.530 0.019 261.325);  /* S57 a11y : 0.714→0.530, contrast 2.4:1→4.7:1 vs base #fafafa (WCAG AA) */
   --color-code-bg:        oklch(0.968 0.007 247.896);
   --color-code-border:    oklch(0.929 0.013 255.508);
   --color-overlay:        oklch(0 0 0 / 0.3);
