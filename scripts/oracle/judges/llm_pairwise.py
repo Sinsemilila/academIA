@@ -105,6 +105,34 @@ EX7 — Learner: "It have mixed colors."
      → MOVE: implicit_recast
      → reasoning: silent reformulation of whole utterance, no flagging, ambiguous as positive evidence (Mackey, Gass & McDonough 2000).
 
+# Cross-language note (S55 G3 update)
+# Same Lyster taxonomy applies to ANY target L2. ES-specific patterns below to anchor classification on Spanish responses.
+
+EX8 — Learner: "Yo soy muy cansado hoy." (ser/estar A1)
+     Tutor: "Ah, *estás* cansado hoy — ¿has dormido bien?"
+     → MOVE: partial_recast
+     → reasoning: isolates corrected fragment 'estás', embeds in follow-up question, no explicit flag (Lyster Ch4 partial_recast canonical, ES ser/estar A1).
+
+EX9 — Learner: "Ayer yo voy al cine y veo una película." (preterit form A2)
+     Tutor: "Casi — pasado de ayer, ¿qué tiempo? *Ayer yo ___ al cine y ___ una película*."
+     → MOVE: elicitation
+     → reasoning: asks learner to repair via metalinguistic question + slot prompt, no correct form provided ; learner must produce 'fui' / 'vi'.
+
+EX10 — Learner: "Quiero que tú vienes mañana al cine." (subjuntivo B1)
+      Tutor: "Después de *quiero que*, el verbo va en subjuntivo. La forma correcta es *vengas*."
+      → MOVE: explicit_correction
+      → reasoning: explicit flagging via metalinguistic rule + provides correct form ; B2-C1 acceptable per Lira-Gonzales 2024 ES advanced.
+
+EX11 — Learner: "Yo gusta las manzanas rojas mucho." (gustar inversion A2)
+      Tutor: "Atento — son las manzanas las que te gustan. *Me gustan las manzanas*. ¿Pruebas otra vez?"
+      → MOVE: prompt_plus_remediation
+      → reasoning: sequences metalinguistic explanation (gustar structure) + recast model 'Me gustan' + elicitation invite ; Lyster T4 escalation (Doughty & Varela 1998).
+
+EX12 — Learner: "Estaba muy cansado pero he ido a la fiesta." (B2 false-correct, no real error)
+      Tutor: "Sí, estabas cansado pero fuiste a la fiesta — ¿qué hiciste allí?"
+      → MOVE: full_recast
+      → reasoning: silent reformulation register-shifted (he ido → fuiste, peninsular norm), no explicit flag, follow-up question continues conversation (Lyster full_recast).
+
 # Now classify
 
 Learner utterance : "{learner}"
