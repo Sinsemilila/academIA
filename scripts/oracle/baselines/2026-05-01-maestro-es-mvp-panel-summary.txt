@@ -1,0 +1,31 @@
+**Scorecard** : 19 passed / 5 failed / 0 skipped / 24 total
+- ✅ **a1_t2_art_prof_001**
+- ❌ **a1_t2_concord_gender_001**
+    - dim `cf_move_set_valid_partial` : forbidden CF move detected: ['explicit_correction']
+    - dim `cf_move_set_valid` : move=explicit_correction in forbidden set (1.00)
+- ✅ **a1_t2_hay_tener_001**
+- ❌ **a1_t2_ser_estar_loc_001**
+    - dim `cf_move_set_valid` : move=explicit_correction in forbidden set (1.00)
+- ✅ **a1_t2_ser_estar_state_001**
+- ❌ **a2_t2_a_personal_001**
+    - dim `cf_move_set_valid_partial` : forbidden CF move detected: ['explicit_correction']
+- ❌ **a2_t2_preterite_001**
+    - dim `cf_move_set_valid` : move=explicit_correction in forbidden set (1.00)
+- ✅ **a2_t3_por_para_001**
+- ✅ **b1_t2_quantifier_001**
+- ✅ **b1_t3_gustar_subj_001**
+- ✅ **b1_t3_subjuntivo_pres_001**
+- ✅ **b2_t2_false_friend_001**
+- ✅ **b2_t3_condicional_001**
+- ✅ **b2_t3_imperfecto_pret_001**
+- ✅ **c1_t3_subjuntivo_imp_001**
+- ✅ **multi_a1_ser_estar_no_uptake_001**
+- ✅ **multi_a2_por_para_uptake_001**
+- ✅ **multi_b1_subj_partial_001**
+- ✅ **multi_b2_imperfecto_no_uptake_001**
+- ✅ **risk_a1_metalinguistic_leak_es_001**
+- ❌ **risk_comm_breakdown_b1_es_001**
+    - dim `cf_move_set_valid` : move=explicit_correction not in acceptable set ['clarification_request', 'elicitation', 'metalinguistic', 'partial_recas
+- ✅ **risk_l1_drift_a1_es_001**
+- ✅ **risk_priority_leak_b1_es_001**
+- ✅ **risk_t4_regression_a2_es_001**
