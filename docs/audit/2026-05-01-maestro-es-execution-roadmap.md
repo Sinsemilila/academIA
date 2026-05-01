@@ -207,9 +207,9 @@ G8.2 (rules_es spaCy migration) **DEFER P3** — strategic decision : si Tier 1+
 - [x] G5.2 Teacher EN apply same — script 03_*.py FR/EN equivalent (S56). Smoke 6/6 ✅ post re-record 26 goldens. No regression EN.
 - [x] G5.3 Runbook Dify patch — `docs/99-runbooks/dify-prompt-patch.md` (S56). 6-step procedure, dual-patch, $$-quoting, cache gotchas, rollback.
 - [x] Battery quick post Tier 1 (S56) — **16/24 (67%) ❌ GATE FAIL** (forecast 22-23 raté, regression vs baseline 19/24). Postmortem : `webapp/backend/docs/audit/2026-05-01-maestro-es-tier1-battery-postmortem.md`. 8 fails / 4 patterns identifiés. **Phase 1.B v3 patch needed avant Tier 2** per gate L264-265.
-- [ ] **Phase 1.B v3** (~0.5j) — refactor v2 blocks : (a) A1 prefer partial_recast over implicit, (b) ANTI-LEAK conditional on error_feedback empty, (c) extend caveat to T2 cross-niveau (B1/T2 + B2/T2 ban explicit), (d) add B2/C1 ✅ examples for register balance.
+- [x] **Phase 1.B v3** (S56, ~0.5j) — refactor v2 blocks (4 fixes Pattern 1+2+3+4). Scripts 04+05. Smoke ES 6/6 + EN 6/6 ✅. Battery v3 = **18/24 (75%)** : +2 vs v2, -1 vs baseline. Postmortem : `webapp/backend/docs/audit/2026-05-01-maestro-es-tier1-v3-postmortem.md`.
 
-**Milestone réel S56** : smoke 6/6 ✅ EN+ES, battery 16/24 ❌. Phase 1.B v3 décision : Sinse choisit (i) iterate v3 ou (ii) scope-cap 19-20/24 et passer à Tier 2.
+**Milestone final S56 — Tier 1 close partial** : Per Option C strict (<19 → scope-cap), prompt iteration locked at v3 floor 18/24. Tier 2 unblocked. Les 6 fails restants (3 ANTI-LEAK silent + 1 false_friend bypass + 2 acceptable_set) seront résolus par Tier 5 (acceptable_set rebalance) + Tier 6 RE-MEASURE post Build complet.
 
 ## Session N+2 to N+3 (Tier 2+3+4 parallel — ~10-14j)
 
