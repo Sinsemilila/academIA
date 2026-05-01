@@ -233,9 +233,9 @@ Action : reporter à quand on aura un registry. Pas bloquant pour beta privée f
 - [x] Dependabot security updates + vulnerability alerts activés (API GitHub)
 - [x] CI security-audit créé (pip-audit + npm audit + syft + Trivy)
 - [ ] CI green sur main (vérif après push)
-- [x] SPF record TXT ajouté (`v=spf1 -all`)
-- [x] DMARC record TXT ajouté (phase 1 `p=none`)
-- [ ] DKIM (si envoi mail tiers) record TXT ajouté
+- [x] SPF record TXT ajouté (`v=spf1 -all` Session 47, auto-rewrite Session 55 par CF Email Routing → `v=spf1 include:_spf.mx.cloudflare.net ~all`)
+- [x] DMARC record TXT ajouté (phase 1 `p=none` Session 47, **bumped `p=quarantine` Session 55 jalon 2026-05-07**)
+- [x] DKIM record TXT ajouté (`cf2024-1._domainkey` Session 55, auto via Cloudflare Email Routing)
 - [x] Cloudflare Free Managed Ruleset activé
 - [ ] Cloudflare Bot Fight Mode ON (manuel dashboard, perm account-level)
 - [ ] Cloudflare Cache rule `/_app/immutable/` (manuel dashboard, perm Cache Rules)
@@ -245,4 +245,6 @@ Action : reporter à quand on aura un registry. Pas bloquant pour beta privée f
 - [ ] Mozilla Observatory A+ (peut attendre A3 CSP origin)
 - [ ] Docker hardening appliqué + smoke-test green (A7b prochaine session)
 - [ ] Restore restic testé une fois
-- [ ] DMARC bumped à `p=quarantine` après 2 semaines collecte clean (jalon : 2026-05-07)
+- [x] DMARC bumped à `p=quarantine` après 2 semaines collecte clean (**jalon 2026-05-07 hit Session 55**)
+- [x] A3 CSP `Report-Only` → enforce flip (Session 55 jalon 2026-05-07, commit `e1fa359` + Access bypass app PWA assets id `7eaa58d0-c3df-4e73-bd12-3fb2291a904e`)
+- [x] Cloudflare Email Routing — 3 alias `security@/dmarc-reports@/dsar@petit-pont.com` → forward `sinseproduction@gmail.com` (Session 55)
