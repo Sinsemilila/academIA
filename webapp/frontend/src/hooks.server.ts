@@ -20,12 +20,12 @@ if (_SSR_DSN) {
   });
 }
 
-// Refactor 2026-H2 Phase A3 — CSP Report-Only.
-// Initial directives are intentionally permissive (still allowing
-// 'unsafe-inline' for script/style) to capture the baseline of what
-// SvelteKit + Dify + LLM endpoints actually load. After 2 weeks of
-// collection at /api/csp-report, we tighten and flip to enforce mode.
-const CSP_REPORT_ONLY_DIRECTIVES = [
+// Refactor 2026-H2 Phase A3 — CSP enforce (jalon 2026-05-07).
+// Flipped Report-Only → enforce after 2-week collection (S47→S55).
+// Only violations were manifest-src (Cloudflare Access blocking PWA assets)
+// — fixed Phase 2 via Access bypass app for /manifest.json + /sw.js + favicons.
+// 'unsafe-inline' kept for script/style (SvelteKit hydration + inline styles).
+const CSP_DIRECTIVES = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
   "style-src 'self' 'unsafe-inline'",
@@ -92,7 +92,7 @@ const customHandle: Handle = async ({ event, resolve }) => {
   // SvelteKit-rendered HTML pages — apply CSP report-only + COOP/COEP
   const response = await resolve(event);
 
-  response.headers.set('Content-Security-Policy-Report-Only', CSP_REPORT_ONLY_DIRECTIVES);
+  response.headers.set('Content-Security-Policy', CSP_DIRECTIVES);
   response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
   response.headers.set('Cross-Origin-Resource-Policy', 'same-origin');
   response.headers.set('X-Content-Type-Options', 'nosniff');
