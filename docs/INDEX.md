@@ -14,6 +14,7 @@ Vision, cap produit, glossaire, sprints actifs.
 - [roadmap.md](00-project/roadmap.md) — sprints en cours + jalons architecture [authoritative]
 - [glossary.md](00-project/glossary.md) — CECRL, tier, snapshot, domain, L1→L2, IRT, GRM, FSRS, etc. (60+ termes) [authoritative]
 - [sprint-maestro-es-2026-05.md](00-project/sprint-maestro-es-2026-05.md) — sprint Maestro ES MVP-acceptable (Build avant Measure pivot S55) [active]
+- [sprint-maitre-comptable-2026-05.md](00-project/sprint-maitre-comptable-2026-05.md) — **Sprint Maître Comptable Mode B livré S57 + roadmap P0-P5** ⭐ [active]
 
 **Archived/superseded** (gardés pour traçabilité, NE PAS appliquer) :
 - `roadmap_multilang.md` [superseded] — remplacé par execution roadmap multi-vagues post ADR-013
