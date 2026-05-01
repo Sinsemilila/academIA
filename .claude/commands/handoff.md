@@ -9,7 +9,19 @@ Session end. Execute in order.
 - Fail → STOP + fix before continuing.
 
 ## 2. Update state
-- `/opt/academie/TODO.md`: mark completed tasks as DONE.
+
+### 2.1 TODO.md reconciliation (commit-driven)
+
+Éviter drift "checkbox `[ ]` mais commit existe" (bug repéré Session 53 : sub-items Tier 1 n_votes/Dify temp/goldens marqués `[ ]` malgré commits `535c09b`/`d672cbd` cités prose Session 51) :
+
+1. List commits session : `git -C /opt/academie log --since="$SESSION_START" --oneline` (fallback : commits depuis dernière entry SESSION.md `### Commits`)
+2. Read TODO.md OPEN sections en entier (pas juste `🔝 EN COURS`)
+3. **Pour chaque commit** : grep TODO.md pour items dont wording (ou sub-bullet) matche le scope. Match flou OK.
+4. **Mark format canonique** : `[x] (claude, YYYY-MM-DD, Session N) <texte> — commit `<sha>`` (cohérent entries Session 46-47)
+5. **Drift check inverse** : pour chaque section avec prose `✅ Session N livré` ou similaire, vérifier sub-checkboxes correspondants sont `[x]`. Sinon fix.
+6. Ambigu (commit matche 0 ou 2+ checkboxes) → flag dans `### Gotchas` SESSION.md "TODO reconciliation ambiguë : <commit> vs <candidates>" + demander Sinse au recap.
+
+### 2.2 Autres
 - `/opt/academie/CHANGELOG.md`: append via `log <type> "<message>"` tool.
 - **Docs consistency check**: for each structural change this session (schema, architecture, pedagogy rules, infra), verify the corresponding `docs/*.md` was updated in the same session. If not, update `last_reviewed` OR flip `status: needs-review`. For new architectural decisions, create `docs/05-decisions/ADR-NNN-<slug>.md` from template.
 
