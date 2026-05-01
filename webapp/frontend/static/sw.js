@@ -1,7 +1,7 @@
 // Service Worker — Academie-IA
 // Cache static assets + provide offline fallback
 
-const CACHE_NAME = 'academie-v1';
+const CACHE_NAME = 'academie-v2-s57-compta';
 const OFFLINE_URL = '/offline.html';
 
 // Assets to pre-cache on install

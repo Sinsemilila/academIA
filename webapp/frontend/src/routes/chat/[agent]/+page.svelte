@@ -11,7 +11,6 @@
   import MiniExamModal from '$lib/components/MiniExamModal.svelte';
   import ConsolidationDecisionModal from '$lib/components/ConsolidationDecisionModal.svelte';
   import AIBanner from '$lib/components/AIBanner.svelte';
-  import ModuleDropdown from '$lib/components/compta/ModuleDropdown.svelte';
   import RGPDDisclaimer from '$lib/components/compta/RGPDDisclaimer.svelte';
   import { toastXP, toastError, toastSuccess } from '$lib/stores/toasts';
 
@@ -55,26 +54,6 @@
 
   // Extra inputs to send with next message
   let pendingInputs = $state<Record<string, string>>({});
-
-  // S57 — Maître Comptable Mode B : dropdown α "Module en cours" anchor pour chatflow Dify.
-  // Persisté localStorage pour Marie ne change pas à chaque ouverture chat.
-  let comptaModule = $state<string>(
-    (typeof localStorage !== 'undefined' && localStorage.getItem('maitre_comptable_module')) || 'autre'
-  );
-  function onComptaModuleChange(newModule: string) {
-    comptaModule = newModule;
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('maitre_comptable_module', newModule);
-    }
-    // Inject in pendingInputs pour next message vers chatflow Dify
-    pendingInputs = { ...pendingInputs, module_en_cours: newModule };
-  }
-  // Inject module en cours dès l'init pour chaque message
-  $effect(() => {
-    if (page.params.agent === 'maitre_comptable') {
-      pendingInputs = { ...pendingInputs, module_en_cours: comptaModule };
-    }
-  });
 
   // QCM onboarding gate (Sprint 5 Phase 5) — blocks chat on 1st visit per domain.
   let showOnboardingModal = $state(false);
@@ -612,10 +591,9 @@
       </div>
     {/if}
 
-    <!-- S57 — Maître Comptable : dropdown α "Module en cours" + RGPD disclaimer (Phase 1 Mode B) -->
+    <!-- S57 — Maître Comptable : RGPD disclaimer (Phase 1 Mode B Q&A omniscient, pas de dropdown module) -->
     {#if agent.slug === 'maitre_comptable'}
       <RGPDDisclaimer />
-      <ModuleDropdown bind:value={comptaModule} onChange={onComptaModuleChange} />
     {/if}
 
     <!-- Messages -->
