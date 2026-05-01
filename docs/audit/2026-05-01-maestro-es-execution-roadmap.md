@@ -214,12 +214,12 @@ G8.2 (rules_es spaCy migration) **DEFER P3** — strategic decision : si Tier 1+
 ## Session N+2 to N+3 (Tier 2+3+4 parallel — ~10-14j)
 
 **Stream A → D path** (PCIC C1-C2 → curriculum/hints/functions ES expansion) :
-- [ ] G6.A WebFetch PCIC Vol C Gramática
-- [ ] G6.B WebFetch PCIC Vol C Funciones
-- [ ] G6.C Audit PCIC Vol C vs curriculum_es
-- [ ] G6.D `curriculum_es.yaml` 98→150
+- [x] G6.A WebFetch PCIC Vol C Gramática (S56) — `extracted/cervantes-2006-plan-curricular-c1-c2/grammar-by-level.yaml` 15 macro-sections × 2 niveaux
+- [x] G6.B WebFetch PCIC Vol C Funciones (S56) — `funciones-by-level.yaml` macro-sections 1-4 (sections 5+6 truncated, fallback acquisition flagged)
+- [x] G6.C Audit PCIC Vol C vs curriculum_es (S56) — `webapp/backend/docs/audit/2026-05-01-curriculum-es-vs-pcic-c1c2.md`. Gap : 22 NEW C1 + 17 NEW C2 concepts identified for G6.D.
+- [ ] G6.D `curriculum_es.yaml` 98→150 (target +52 : 22 C1 + 17 C2 + 13 polish)
 - [ ] G6.E `concept_hints/es.yaml` 103→180
-- [ ] G7.1 `functions/es.yaml` 42→80
+- [ ] G7.1 `functions/es.yaml` 42→80 (PRE-REQ : need PCIC Vol B Funciones B1+B2 WebFetch — NOT YET extracted, only A1+A2 done S53)
 - [ ] G7.2 `functions/en.yaml` 10→50
 
 **Stream B+C** (DELE corpus, parallel) :
