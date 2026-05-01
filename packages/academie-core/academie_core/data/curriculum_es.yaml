@@ -11,65 +11,36 @@
 # weight = minutes estimées par concept (3 = léger, 5 = moyen, 8 = lourd)
 # group = thème fonctionnel pour les examens (regroupe concepts reliés)
 #
-# === GAPS IDENTIFIED Session 53 (vs PCIC + CEFR Companion 2020) ===
-# Action plan : see TODO.md "Phase C — P0 ES flagship audit" + see
-# `/root/sinse-vault/knowledge/books/cervantes-2006-plan-curricular-{a1-a2,b1-b2}.md`
-# for skim decisions + extraction plan.
+# === STATUS Session 56 — RESOLVED gaps ===
+# All gaps from Session 53 audit RESOLVED via Phase C4 + S56 G6.D :
+# ✅ ser/estar A1 — 6 stratifications (identidad / pertenencia / localizacion_temporal /
+#                    estar_localizacion_espacial / estar_modo / contraste). 'cantidad' addded S56.
+# ✅ subjuntivo B1 — 6 stratifications (volicion / emocion / duda / valoracion /
+#                    temporal_futuro / finalidad)
+# ✅ conectores B2 — 6 stratifications (causales / consecutivos / concesivos / finales /
+#                    temporales_avanzados / contraargumentativos)
+# ✅ verbos_cambio B2 — entry exists (ponerse_volverse_quedarse_hacerse)
+# ✅ pasiva_perifrastica B2 vs pasiva_refleja B1 — distinction present
+# ✅ C1-C2 expansion — 8→30 C1 + 5→22 C2 (S56 G6.D, +39 concepts PCIC Vol C)
 #
-# 1. Single dimension (grammar only) vs PCIC 13 inventarios per level
-#    (Gramática, Funciones, Pronunciación, Ortografía, Tácticas pragmáticas,
-#    Géneros discursivos, Nociones generales, Nociones específicas, Referentes
-#    culturales, Saberes y comportamientos socioculturales, Habilidades
-#    interculturales, Procedimientos de aprendizaje, Objetivos generales)
-# 2. ser/estar A1 generic (1 entry) — PCIC A1 stratifies into 7 subcategories
-#    (identidad / nacionalidad / origen / hora / fecha / posesión / cantidad)
-# 3. subjuntivo B1 = 2 entries (presente + temporal) — PCIC B1 has 12-15
-#    triggers stratified (volonté / émotion / duda / temporal / finalidad /
-#    condicional / concesivo / influencia). Judge cannot diagnose subjuntivo
-#    errors with 2 buckets.
-# 4. connectores_argumentativos B2 = 1 entry — PCIC B2 splits into 6 classes
-#    (causal / consecutivo / concesivo / final / temporal / contraargumentativo).
-#    Stratification critical for discourse-level scoring.
-# 5. verbos de cambio (ponerse / volverse / quedarse / hacerse / convertirse en)
-#    absent B1-B2 — PCIC B1-B2 dedicate dedicated subsection.
-# 6. Regional variation (voseo Río de la Plata / tuteo / vosotros peninsular)
-#    absent — PCIC default = panhispánico mais explicite. Decide flagship ES
-#    audience target before extraction.
-# 7. No FUNCTIONS dimension (PCIC Funciones inventario = pragmatic communicative
-#    goals — saludar, presentarse, expresar opinión, etc.) → Phase D.
-# 8. No PRAGMATIC STRATEGIES dimension (PCIC Tácticas = politeness, register,
-#    repair) → cross-ref Lyster cf-taxonomy.
-# 9. No CULTURAL inventario (PCIC Referentes culturales + Saberes
-#    socioculturales = 3 inventarios). Defer Phase D Phase 2.
-# 10. C1-C2 underspecified (8+5 concepts) — PCIC Vol C C1-C2 acquisition
-#     pending Sinse manual (free cvc.cervantes.es).
-#
-# Estimated post-Phase-C expansion : 52 concepts → ~120-150 concepts (still
-# Gramática-only ; +20-30 with Funciones, +30-50 with Nociones específicas).
+# === Concept count ===
+# A1:26 A2:12 B1:25 B2:22 C1:30 C2:22 = 137 total (S56 G6.D, +39 vs Phase C4 S53 95).
 #
 # === L1 transfer integration (FR L1 baseline) ===
-# Cross-reference : `data/l1_transfer/fr_to_es.yaml` (12 entries, S51 expansion).
-# Already consumed by `pedagogy/teacher_prompt.py:488` (per-session
-# load_l1_transfers(l1_code, target_code)). Family mapping :
-# `taxonomy/categories.py:50` ("l1_transfer": [PREP:CALQUE, SPELL:COGNATE]).
-# FR-ES proximity exploit : leverage cognates massively (educación, posibilidad,
-# información, situación) ; flag faux amis (largo ≠ large = long ; embarazada
-# ≠ embarrassed = pregnant ; sensible ≠ sensible = sensitive ; éxito ≠ exit =
-# success). Phase C will refine via PCIC contrastive notes if available.
-# Phase D extension : add en_to_es, etc. when user base diversifies.
+# Cross-reference : `data/l1_transfer/fr_to_es.yaml` (30 entries, S56 G8.4).
+# Consumed by `pedagogy/teacher_prompt.py:488` (per-session load_l1_transfers).
+# Family mapping : `taxonomy/categories.py:50`.
+# FR-ES proximity exploit : cognates (educación/situación/información) ;
+# flag false friends (largo/embarazada/sensible/éxito) ; subjuntivo families
+# (volonté/duda/concesivo/temporal) per S56 G8.4 expansion.
 #
-# === Phase C4 audit patch (Session 53 — 2026-04-30) ===
-# 50+ concept_keys added/split per `webapp/backend/docs/audit/2026-04-30-curriculum-es-vs-pcic.md`.
-# Sources : PCIC Vol A+B Gramática inventario (extracted YAMLs in extracted/cervantes-2006-*).
-# - Split ser_estar_basico A1 → 6 keys (4 SER + 2 ESTAR senses + meta contrast)
-# - Relabel pretérito_indefinido + pretérito_perfecto + imperativo_afirmativo_tu A2 → A1 per PCIC ordering
-# - Split subjuntivo_presente + subjuntivo_temporal B1 → 6 keys per trigger taxonomy
-# - Split por_para B1 → 2 keys (por causal/medio/durée vs para finalidad/destino/plazo)
-# - Split conectores_argumentativos B2 → 6 keys per discourse function
-# - Add verbos_cambio_b2 ⭐ critical gap
-# - Add pasiva_perifrástica_b2 vs pasiva_refleja_b1 distinction
-# - C1+C2 deferred (PCIC Vol C acquisition pending)
-# Concept count : 51 → ~95 (+86%).
+# === Future deferred (post-MVP) ===
+# - Regional variation (voseo Río Plata / tuteo / vosotros peninsular) — Maestro
+#   default panhispánico per ADR-013 ; explicit awareness already in regional_voseo_tuteo_vosotros_b2.
+# - PCIC inventarios non-Gramática : Funciones (S56 G7.1 partial 75 entries),
+#   Nociones específicas / Referentes culturales / Saberes socioculturales — defer Wave 1.5+.
+# - PCIC Vol C funciones sections 5-6 (Relacionarse + Estructurar discurso) — WebFetch truncated S56,
+#   fallback acquisition needed.
 
 domain: es
 A1:
@@ -87,6 +58,7 @@ A1:
   - ser_identificativo_a1
   - ser_pertenencia_clase_a1
   - ser_localizacion_temporal_a1
+  - ser_cantidad_a1  # S56 G6.D polish — PCIC A1 §SER cantidad/precio (somos cinco / son tres euros)
   - estar_localizacion_espacial_a1
   - estar_modo_bien_mal_a1
   - ser_estar_contraste_a1
@@ -114,6 +86,7 @@ A1:
     ser_identificativo_a1: 5
     ser_pertenencia_clase_a1: 5
     ser_localizacion_temporal_a1: 3
+    ser_cantidad_a1: 3
     estar_localizacion_espacial_a1: 5
     estar_modo_bien_mal_a1: 3
     ser_estar_contraste_a1: 5
@@ -145,6 +118,7 @@ A1:
     - ser_identificativo_a1
     - ser_pertenencia_clase_a1
     - ser_localizacion_temporal_a1
+    - ser_cantidad_a1
     - estar_localizacion_espacial_a1
     - estar_modo_bien_mal_a1
     - ser_estar_contraste_a1

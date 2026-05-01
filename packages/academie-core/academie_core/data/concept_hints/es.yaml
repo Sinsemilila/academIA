@@ -56,6 +56,7 @@ matiz_perfectivo_imperfectivo: "visión aspectual fine (estaba haciendo vs hací
 ser_identificativo_a1: "ser identificativo (Soy Elena, Es él) — identidad/nombre/identificación pronominal"
 ser_pertenencia_clase_a1: "ser pertenencia clase : nacionalidad/profesión/ideología/materia (Soy español, Soy estudiante)"
 ser_localizacion_temporal_a1: "ser localización temporal (Es lunes, Son las tres) — fechas/horas/eventos"
+ser_cantidad_a1: "ser + cantidad/precio (Somos cinco, Son tres euros, Es la una y media) — quantité absolue + prix + heure"
 estar_localizacion_espacial_a1: "estar localización espacial (Está aquí, Está en Madrid)"
 estar_modo_bien_mal_a1: "estar + adverbios modo (Está bien/mal) ; criterio distribucional"
 ser_estar_contraste_a1: "ser/estar contraste pédagogique (mémoriser : SER = identidad clase, ESTAR = estado/lugar)"
