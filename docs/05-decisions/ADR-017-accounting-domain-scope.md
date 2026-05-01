@@ -1,15 +1,15 @@
 ---
-title: ADR-017 — AccountingDomain scope (Studi RNCP41653 complementary tutor)
-status: proposed
-last_reviewed: 2026-05-01
+title: ADR-017 — AccountingDomain scope (Studi RNCP41653 complementary tutor, dual-mode)
+status: accepted
+last_reviewed: 2026-05-02
 owner: claude
 ---
 
-# ADR-017 — AccountingDomain : Tuteur compta complémentaire formation Studi RNCP41653
+# ADR-017 — AccountingDomain : Tuteur compta complémentaire Studi RNCP41653 (dual-mode)
 
 ## Status
 
-**Proposed** (S57, 2026-05-01). Pending Sinse acceptance + Phase 1 kickoff.
+**Accepted** (S57, 2026-05-02). Sinse validated scope + dual-mode architecture + knowledge base table consolidée. Phase 1 Mode B kickoff authorized.
 
 ## Context
 
@@ -94,20 +94,93 @@ Mapping interne CEFR-like pour réutiliser infra existante (DB schema, judge pro
 
 Pas de débat cross-source (contrairement langues : Companion CEFR vs corpus vs grammars).
 
-### D6 — Phase 1 MVP scope : **BC1 modules 1-5**
+### D6 — Phase 1 MVP scope : **DUAL-MODE Mode B FIRST**
 
-Pas full BC1+BC2+BC3 (~25-30j cumul). MVP étroit :
-- BC1 modules 1 (objectifs compta) + 2 (CR/bilan présentation) + 3 (écritures + balance) + 4 (TVA mécanisme) + 5 (factures doit/avoir)
-- ~20 concepts competency map
-- ~10 codes error taxonomy
-- 12-15 scenarios oracle
-- ChatInput texte pur (UI tableau journal différé Phase 2)
+Pivot S57 : architecture **double-mode** complémentaire (validé Sinse 2026-05-02) :
 
-Estimation : **5-8j** (vs 25-30j full).
+- **Mode A "Lessons / pratique guidée"** : sessions longues fil pédagogique, agent met en situation, scaffolds Lyster. Sélection module via dropdown. Niveaux N0-N3 internes par module.
+- **Mode B "Assistant / Q&A side-chat"** : compagnon side-chat pendant Marie sur Studi, sessions courtes focused. Anchorage explicit Marie via dropdown α "Module en cours" persistant.
+
+**Phase 1 = Mode B FIRST** (~3-4j) :
+- Chatflow Dify `comptable_fr_assistant` autonome (knowledge base RAG + system prompt + few-shots Lyster + multimodal vision)
+- Backend `AccountingDomain` stub (pas detect_errors/scoring Phase 1)
+- Frontend route `/chat/maitre_comptable_assistant` + dropdown α
+- Test live Marie 8-15 questions ad-hoc
+
+**Phase 2 = Mode A** (~5-8j post-validation Mode B) :
+- Module pivot BC1.4 TVA mécanisme (fondamental + 9 Cas Studi pattern)
+- ~20 concepts competency map + ~10 codes error taxonomy
+- Scenarios YAML pasticher Cas Studi (montants/contextes différents)
+- `rules_compta.py` MVP (partie double, calcul TVA, classification PCG)
+- UX combo A+B+E : texte libre ChatInput + markdown tabulaire généré + drill flashcards rote layer
+
+**Phase 3 = Polish** (~5-10j optional) :
+- IRT placement test (10-15 items)
+- Composant Svelte JournalEntry (UX C+D Praxar pattern)
+- FSRS scheduler rote layer
+- Browser extension Studi context auto-detection
+- Voice mode Mode B optional
 
 ### D7 — Lyster moves transferable + open `show_balance`
 
 Les 6 CF moves Lyster (recast, partial_recast, explicit_correction, prompt_plus_remediation, metalinguistic, clarification_request) se transfèrent à compta. Phase 1 utilise cette taxonomie identique. Phase 2 : empirically discover si compta a moves spécifiques (ex: `show_balance` = visualisation balance après écriture).
+
+### D8 — Knowledge base hybrid 1+4+5 (S57 acted)
+
+Pattern d'injection du savoir = **RAG + Tools + Few-shots** (cf research Anthropic / OpenAI 2024-2025 standard) :
+
+- **Knowledge base RAG Dify** : sources publiques standard (PCG ANC v2026 + BOFiP TVA + manuels Anna's DCG 9 + Sage docs Boniface + CNIL/ANSSI/DSN officiels) — couvre 95% matière compta. Liste exhaustive table consolidée S57 dans `docs/03-domain/comptabilite.md`.
+- **Tools fonctionnels backend** : `lookup_pcg_account(num)`, `verify_partie_double(écritures)`, `verify_calcul_tva(ht, taux)`, `lookup_studi_module(query)` — déterministe lookups (pas hallucination).
+- **Few-shots system prompt** : 5-10 Q&A Marie-style avec scaffolds Lyster transposés compta — guide style/ton/posture.
+- **Multimodal vision Phase 1** : Marie partage screenshots Studi quand bloque, agent voit via GPT-4o-mini ou Claude vision (Dify natif).
+
+### D9 — Anchorage Mode B : option α dropdown persistant
+
+UX Mode B = sélecteur "Module en cours" en haut du chat (BC1/BC2/BC3 + sous-modules), Marie choisit + change quand elle change de module Studi. Phase 2 pourra ajouter option β paste detection (embedder + classifier) si friction observée.
+
+### D10 — Nom agent : "Maître Comptable" + slug `maitre_comptable`
+
+Pas "expert-comptable" (titre réglementé Ordre des Experts-Comptables, loi 1945). Convention agents AcademIA = noms étrangers / neutres mais compta = premier domaine non-langue donc nom FR cohérent. Caveat "Maître" connotation juridique acceptée (Marie use-case).
+
+### D11 — Versioning data layer (compta évolue 1-2 ans)
+
+Frontmatter mandatory chaque YAML knowledge :
+```yaml
+source: PCG_ANC_2014-03_v2026
+valid_from: 2026-01-01
+valid_until: null  # null = en vigueur
+last_verified: 2026-05-02
+```
+
+System prompt anchoring temporel : "Tu réponds selon règles fiscales/comptables FR en vigueur au [DATE]. Si question concerne règle évolutive (e-invoicing 2026-2027, taux TVA, DSN annuelle), flag incertitude + recommande vérification BOFiP/ANC."
+
+Validation annuelle Sinse obligatoire (post loi finances janv).
+
+### D12 — RGPD Phase 1 disclaimer light
+
+Marie utilise cas synthétiques Studi-like = low risk RGPD. Disclaimer UI :
+> "Pour ta sécurité et celle des tiers, n'utilise QUE des cas fictifs/anonymisés. Ne saisis pas de vraies données d'entreprise (noms tiers, IBAN, numéros TVA, salaires, sécu)."
+
+Logging anonymisé Phase 1. ADR-018 séparé pour scope SaaS futur si direction prise.
+
+### D13 — Validation pipeline Phase 1 hybrid
+
+Cohérent L141 5-layer solo-dev :
+1. Sinse smoke 5-10 questions critiques (TVA calcul, écriture facture, partie double) avec PCG/BOFiP en main → catch fails évidents
+2. Marie utilise + flag bizarre vs cours Studi (elle a access aux corrections officielles Studi)
+3. Sinse re-check sur source officielle si gros doute
+4. Expert-comptable externe (réseau Sinse ?) si gros doute technique compta complexe
+
+### D14 — Mode A UX combo A+B+E Phase 2 (ChatInput natif)
+
+Validé Sinse :
+- **A. Texte libre ChatInput** : Marie tape "Débit 6061 250, Crédit 401 300", agent parse + valide
+- **B. Markdown tabulaire généré** : agent envoie journal vide à compléter en table markdown
+- **E. Drill flashcards rote layer** : "Quel compte pour achats marchandises ?" / "607" / "✅ suivante..."
+
+Phase 3 polish :
+- **C. Composant Svelte JournalEntry** : tableau interactif clickable avec form fields (mimique Sage Ligne 100)
+- **D. Cascading effects (Praxar pattern)** : après saisie, agent montre journal + balance + bilan impact en tableaux markdown
 
 ## Consequences
 

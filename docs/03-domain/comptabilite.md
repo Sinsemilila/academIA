@@ -1,7 +1,7 @@
 ---
-title: AccountingDomain — Tuteur compta complémentaire formation Studi RNCP41653
-status: draft
-last_reviewed: 2026-05-01
+title: AccountingDomain — Tuteur compta complémentaire Studi RNCP41653 (dual-mode)
+status: active
+last_reviewed: 2026-05-02
 owner: claude
 ---
 
@@ -207,6 +207,134 @@ BUREAU:CONFIDENTIALITE_RGPD_RISK
 - `AccountingDomain.detect_errors()` = rules-based first (déterministe), LLM backup
 - LLM utile surtout pour : génération exercices contextualisés, feedback Lyster narratif, diagnostic profond ("pourquoi tu as choisi ce compte ?"), récap concept
 - **UI/UX** : ChatInput texte pur insuffisant pour saisie compta. Tableau journal multi-lignes ? Plan de comptes navigable ? Mockup Sage ? **Open question UX critique.**
+
+## 9bis. Knowledge base table consolidée Phase 1 (S57 acted)
+
+Validé Sinse 2026-05-02 post 6 agents recherche (Anna's + web + officielles). Liste complète sources ingestables RAG Dify, par bloc + fraîcheur + URL/MD5.
+
+### CROSS — Sources structurelles
+
+| Source | Tier | Fraîcheur | URL / MD5 |
+|---|---|---|---|
+| Programme Studi PDF (acquired) | Critical | ✅ 2026 | `library/by-domain/marie/Studi_Fiche-*.pdf` |
+| Référentiel RNCP41653 | Critical | ✅ 2025 | `francecompetences.fr/recherche/rncp/41653/` |
+| Référentiel BTS CG Eduscol | High | ✅ Arrêté 8/7/24 | `enqdip.sup.adc.education.fr/bts/...` |
+
+### BC1 — Travaux comptables courants (18 sous-modules)
+
+**Officielles authoritatives** :
+- PCG v2026 PDF officiel ANC — `anc.gouv.fr/.../PCG--1er-janvier-2026.pdf`
+- PCG v2025 Recueil NF — `anc.gouv.fr/.../Recueil-NF-Janvier-2025.pdf`
+- BOFiP TVA landing — `bofip.impots.gouv.fr/`
+- Sage Knowledge Base FR (réforme ANC 2025) — `fr-kb.sage.com`
+
+**Manuels académiques** :
+- ⭐ DCG 9 Manuel 5e éd Dunod 2024 — Anna's MD5: `8dec5ef51637116847c62c0cc33d9de1`
+- DCG 9 Corrigés 2024 — Anna's MD5: `8bc304b283825a57f7c194c701edfc7b`
+- Manuel Sage 100 Comptabilité v16 — `e.boniface.free.fr/.../sommairc.pdf`
+- Manuel pédagogique Sage 100 v15 — `e.boniface.free.fr/.../pedacpta.pdf`
+
+**Réformes 2026 e-invoicing (BC1.7)** :
+- impots.gouv.fr Je découvre la facturation électronique — `impots.gouv.fr/professionnel/je-decouvre-la-facturation-electronique`
+- Liste 112 PA agréées DGFiP — `impots.gouv.fr/je-consulte-la-liste-des-plateformes-agreees`
+- economie.gouv.fr Tout savoir — `economie.gouv.fr/tout-savoir-sur-la-facturation-electronique-...`
+- fnfe-mpe.org Factur-X référentiel — `fnfe-mpe.org/ressources/`
+- Qonto cycle vie 36 statuts DGFiP — `qonto.com/fr/blog/.../cycle-de-vie-...-2026`
+
+**IA comptable (BC1.7+9)** :
+- ⭐ OEC Paris Livre Blanc IA et data — `oec-paris.fr/.../livre-blanc_IA-et-data.pdf` (Sept 2025)
+- CNOEC Parlons data & IA — `experts-comptables.fr/...PARLONS%20DATA%20%26%20IA...pdf`
+- CNOEC Comment utiliser ChatGPT (méthode ACTIF) — `experts-comptables.fr/...COMMENT%20UTILISER%20CHATGPT...pdf`
+- Académie Dijon 10 prompts ChatGPT EC — `economie-gestion.wp.ac-dijon.fr/.../Guide-Prompts-ChatGPT.pdf`
+- francenum.gouv.fr IA générative cabinets EC — `francenum.gouv.fr/.../ia-generative-pour-les`
+
+**Pédagogie open access** :
+- CRCF — `crcf-edu.fr/bts-cg-ressources/`
+- CERPEG Versailles — `j4.cerpeg.fr/`
+- BLC-Conseil tutoriels Sage — `blc-conseil.com/blog/sage-100-comptabilite-...`
+
+**Vulgarisation** :
+- Compta-Facile — `compta-facile.com/`
+- Compta-Online — `compta-online.com/`
+- Lefebvre Dalloz blog — `formation.lefebvre-dalloz.fr/actualite/...`
+- Compta pour les Nuls 50 notions 2025 — Anna's MD5: `25deb490537045e2054e67cca41b894a`
+- Compta pour les Nuls grand format 4e éd 2023 — Anna's MD5: `ebdcab53f126f109624fc64928dfc4da`
+- Boîte à outils compta 3e éd Dunod 2021 — Anna's MD5: `96fd0f8b60ebad3ecd356ea14fa436fc`
+
+**Lois fiscales** :
+- Loi Finances 2025 Légifrance — `legifrance.gouv.fr/jorf/id/JORFTEXT000051168007`
+- Loi Finances 2026 Légifrance — `legifrance.gouv.fr/jorf/id/JORFTEXT000053508155`
+
+### BC2 — Paie + déclarations fiscales (3 sous-modules)
+
+**Officielles authoritatives** :
+- ⭐ Cahier technique DSN 2026.1.2 (361p, GIP-MDS officiel) — `net-entreprises.fr/media/documentation/dsn-cahier-technique-2026.1.pdf`
+- Pack DSN net-entreprises (datatypes/nomenclatures/différentielle) — `net-entreprises.fr/declaration/norme-et-documentation-dsn/`
+- URSSAF Guide DSN cotisations v4.9 — `urssaf.fr/.../Guide-declaration-...-DSN.pdf`
+- URSSAF guides + barèmes 2026 — `urssaf.fr/accueil/outils-documentation/guides.html`
+- Doc Plan de Paie Sage `DocPPS.pdf` (82p janv 2026) — `documentation.sage.fr/bupme/DOCS/PAIE/DocumentsPDF/DocPPS.pdf`
+- Hub documentations Sage France — `sage.com/fr-fr/documentations-produits/`
+- BOFiP TVA déclaration — `bofip.impots.gouv.fr/` sections DECLA
+
+**Manuels Anna's** :
+- "Comprendre bulletin paie : 100 questions" 7e éd 2023 — Anna's MD5: `f0a66d406b4ee73de024e9c3cf18f221`
+- "Fiches gestion paie" 2024 — Anna's MD5: `8d000e23d3eef518ee1fb91f22cba4c1`
+- DCG 9 Manuel 5e éd 2024 (sections TVA déclaration) — Anna's MD5: `8dec5ef51637116847c62c0cc33d9de1`
+
+**À acheter Sinse (~80€ optionnel)** :
+- ⭐ Top'Actuel La paye 2025-2026 ou 2026-2027 (Hachette Lestrade, 64p 28 fiches) — ~15€
+- Mémento Paie 2026 Lefebvre Dalloz (édition num MAJ continue) — ~150€ (premium)
+- Guide Pratique Gestionnaire Paie 2025 (LV Paie&RH) — ~30€ ebook
+
+**Tutos vidéo** :
+- YouTube playlist Sage Paie & RH formation complète — `youtube.com/playlist?list=PL4tKcFH3V34IK55_gnqqiuSrsObK8Q99s`
+
+### BC3 — Accueil + travaux administratifs (4 sous-modules)
+
+**Sous-module 1 — Écrits professionnels** :
+- ⭐ Boîte à outils écrits professionnels (Le Broussois Dunod 2023) — achat ~25€
+- Lexique typographique Imprimerie nationale 3e éd réimpr 2022 — achat
+- Word ENI versions 2024 + Microsoft 365 — achat ~30€
+- support.microsoft.com/fr-fr/word — gratuit
+- Mieux rédiger ses écrits professionnels (Brahic Eyrolles 4e éd 2019) — backup
+
+**Sous-module 2 — Classement / archivage / RGPD / IA documentaire** :
+- ⭐ CNIL Guide sécurité données 2024 (25 fiches) — `cnil.fr` PDF gratuit
+- CNIL Guide durées de conservation (rev 2026-04) — `cnil.fr`
+- CNIL Guide RGPD TPE/PME (Bpifrance + CNIL) — `cnil.fr`
+- ANSSI Archivage électronique sécurisation — `ssi.gouv.fr`
+- AFNOR NF Z42-013:2020 — résumés via Archimag (norme payante non diffusable)
+
+**Sous-module 3 — Communication accueil** :
+- ⭐ Bien accueillir les personnes handicapées (DIA + Min Transition écologique mai 2025) — `developpement-durable.gouv.fr/...`
+- Agefiph Guide référent handicap entreprise 2024 — `agefiph.fr`
+- Approche Centrée Personne (Rogers) — ACP Institut — `acp-pca.fr/`
+- CCI Formation accueil physique/téléphonique — `cci.fr/formations`
+
+**Sous-module 4 — Excel reportings comptables** :
+- support.microsoft.com/fr-fr/excel — gratuit
+- ⭐ ENI Tableaux de bord avec Excel 365 (Rieu/Rigollet 2022, 356p) — achat ~30€
+- Skillsoft Excel 365 fonctions avancées 2024 — `skillsoft.com`
+- Morpheus Formation Excel Comptabilité — `morpheus-formation.fr`
+
+### Plan acquisition concret
+
+**Phase 1.A — Téléchargement gratuit immédiat (~1-2h Sinse)** : 14 sources officielles + open access (PCG v2026, CNIL, ANSSI, DIA, Agefiph, OEC IA, CNOEC, impots.gouv facturation élec, DSN cahier technique, URSSAF guides, Sage DocPPS + Boniface manuels, RNCP41653, BTS CG Eduscol).
+
+**Phase 1.B — Anna's Archive (~30 min Sinse)** : 5 livres MD5 (DCG 9 Manuel + Corrigés 2024, Compta Nuls 50 notions 2025, Fiches gestion paie 2024, Comprendre bulletin paie 2023). ✅ 4/5 déjà fetchés `library/by-domain/formation marie/`.
+
+**Phase 1.C — Achats ciblés (~125€ minimum optionnel)** : Le Broussois 2023 + Word ENI 2024 + ENI Tableaux bord 2022 + Top'Actuel paye + 1 livre compta générale 2024-2025 récent.
+
+**Phase 1.D — Web sources continues (RAG dynamique ou scrape périodique)** : Compta-Facile + Compta-Online + Lefebvre blog + BOFiP rolling + Microsoft support Word/Excel + CRCF/CERPEG.
+
+### GAPS résiduels confirmés (workarounds Phase 1)
+
+| GAP | Workaround |
+|---|---|
+| Sage Ligne 100 v11/v17 (Studi version) | Boniface v15/v16 + Sage KB officielle + BLC tutoriels + **Marie partage screenshots** quand bloque |
+| Sage Paie v10 UI exacte | DocPPS.pdf concepts + YouTube playlists + **Marie partage screenshots** |
+| Manuel BTS BC3 single-source 2023+ | Consolidation multi-sources (CNIL + DIA + Le Broussois + Microsoft + ENI) |
+| AFNOR Z42-013 | Résumés Archimag + page AFNOR officielle (norme payante) |
 
 ## 9. Authority anchor data sources
 

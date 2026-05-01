@@ -67,7 +67,7 @@ Comment le système est construit (état actuel + cible).
 
 Spécificités par domaine instancié.
 
-- [comptabilite.md](03-domain/comptabilite.md) — **AccountingDomain (FR) — Studi RNCP41653 tuteur complémentaire** [draft S57, ADR-017 proposed] ⭐ premier domaine non-linguistique
+- [comptabilite.md](03-domain/comptabilite.md) — **AccountingDomain (FR) — Studi RNCP41653 tuteur dual-mode** [active S57, ADR-017 accepted, table consolidée knowledge base 45 sources] ⭐ premier domaine non-linguistique
 - [languages/en.md](03-domain/languages/en.md) — Teacher EN reference architecture, MVP shipped [authoritative]
 - `languages/es.md` — Maestro ES, **MVP-acceptable shipped S56** (battery 23/31 = 74.2%, κ Opus 0.93/0.81/0.93). **Doc à créer** : SoT [reference architecture S55 + execution roadmap S55 dans `webapp/backend/docs/`]
 - `languages/it.md` — Wave 2 IT, AUTHORIZED S56, kickoff pending
@@ -109,7 +109,7 @@ Opérationnel : déploiement, backup, monitoring, credentials.
 - [ADR-014-structured-knowledge-extraction.md](05-decisions/ADR-014-structured-knowledge-extraction.md) — Layer 1.5 authority anchor extraction [accepted, S52]
 - [ADR-015-jp-productive-evaluation-strategy.md](05-decisions/ADR-015-jp-productive-evaluation-strategy.md) — JFS Standard productive eval strategy [accepted, S52]
 - [ADR-016-authority-anchor-strategy-cross-lang.md](05-decisions/ADR-016-authority-anchor-strategy-cross-lang.md) — 5-layer pipeline EN/ES/IT/DE/JP/RU [accepted, S52]
-- [ADR-017-accounting-domain-scope.md](05-decisions/ADR-017-accounting-domain-scope.md) — AccountingDomain Studi RNCP41653 tuteur complémentaire, rules-first 80%/LLM 20% [proposed, S57]
+- [ADR-017-accounting-domain-scope.md](05-decisions/ADR-017-accounting-domain-scope.md) — AccountingDomain Studi RNCP41653 tuteur dual-mode (Lessons + Assistant), rules-first 80%/LLM 20%, Mode B FIRST [accepted, S57]
 
 ## 99 — Runbooks
 
