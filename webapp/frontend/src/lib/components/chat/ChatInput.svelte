@@ -38,6 +38,9 @@
     oninput={autoResize}
     onkeydown={handleKeydown}
     placeholder="Ecris ta reponse..."
+    name="chat-message"
+    id="chat-message"
+    autocomplete="off"
     rows="1"
     class="flex-1 px-4 py-2.5 bg-elevated border border-border-subtle rounded-xl
            text-sm text-text-primary placeholder-text-muted resize-none
