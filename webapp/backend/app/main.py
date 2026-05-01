@@ -161,6 +161,9 @@ app.include_router(onboarding_router.router)
 from .routers import consolidation_router  # noqa: E402
 app.include_router(consolidation_router.router)
 app.include_router(internal_router.router)
+# S57 — Maître Comptable backend tools (internal network only, called by Dify chatflow).
+from .routers import compta_router  # noqa: E402
+app.include_router(compta_router.router)
 from .routers import agents_router  # noqa: E402
 app.include_router(agents_router.router)
 app.include_router(security_router.router)
