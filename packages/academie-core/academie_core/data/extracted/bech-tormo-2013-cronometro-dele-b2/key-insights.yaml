@@ -1,0 +1,158 @@
+# El Cronómetro Nivel B2 — Manual de preparación del DELE (Bech Tormo, Pérez Bernal, Salvador García 2013).
+#
+# Source : `library/processed/bech-tormo-2013-cronometro-dele-b2.pdf` (88.8MB, ~217p).
+# Publisher : Edinumen (Edición Nuevo DELE 2013, post-format change).
+# ADR-014 Layer 1.5 extraction (S56 G7.3b partial).
+#
+# This is a META-EXTRACTION : full item bank (~6 modelos × ~50 items = 300+ items)
+# deferred (~3-4j). Captures structure validation + pedagogical innovations + sample patterns.
+
+source:
+  authors: ["Alejandro Bech Tormo", "Rosa María Pérez Bernal", "Carlos Salvador García"]
+  title: "El Cronómetro — Manual de preparación del DELE Nivel B2"
+  publisher: "Edinumen"
+  year: 2013
+  isbn: "978-84-9848-548-6"
+  edition: "Edición Nuevo DELE 2013 (post-format change)"
+  pdf: "library/processed/bech-tormo-2013-cronometro-dele-b2.pdf"
+  fetch_date: 2026-05-01
+  notes: |
+    Comprehensive B2 prep manual : 6 modelos completos + ELEteca digital extension
+    (transcripciones audio, fotografías prueba oral, apéndice 3). Each modelo is
+    full DELE B2 simulation (4 pruebas, 70+40+80+15 min cumul = ~205 min).
+    Distinctive : pre-task auto-evaluation questions (Maestro-style metacognitive scaffolding).
+
+# ============================================================================
+# === Cross-validation : DELE B2 Prueba 1 structure (officielle) =============
+# ============================================================================
+# Confirmed identical to DELE B2 official modelo (S56 acquisition) AND consistent with
+# Preparación B2 (Alzugaray 2013, S56 G7.3c). Triple-source validation.
+prueba_1_structure_validated:
+  total_preguntas: 36
+  duracion_min: 70
+
+  tareas:
+    - tarea: 1
+      type: "multiple_choice_ABC_long_text"
+      n_preguntas: 6
+      input: "texto informativo complejo, 400-450 palabras, ámbito público/profesional"
+      sample_theme: "La calidad del agua doméstica (medio ambiente, salud pública)"
+      cognitive_skill: "Comprender ideas principales + información concreta"
+
+    - tarea: 2
+      type: "matching_personas_to_questions"
+      n_preguntas: 10
+      input: "4 textos personales 130-150 palabras (opiniones/comentarios/anécdotas mismo tema)"
+      sample_theme: "Primera experiencia laboral (4 personas : Alfredo, Anónimo, Paola, Juan)"
+      cognitive_skill: "Localizar información concreta + interpretar significados/sentimientos/actitudes"
+
+    - tarea: 3
+      type: "fill_paragraphs_into_text"
+      n_preguntas: 6
+      input: "texto 400-450 palabras (artículo opinión/noticia/guía viaje) + 8 párrafos 15-20 palabras"
+      cognitive_skill: "Reconstruir estructura del texto + identificar relaciones entre ideas"
+
+    - tarea: 4
+      type: "fill_blanks_grammar_lex_ABC"
+      n_preguntas: 14
+      input: "texto literario/histórico/biografía 400-450 palabras"
+      cognitive_skill: "Identificar estructuras gramaticales para completar texto"
+      register: "literario/histórico"
+
+# ============================================================================
+# === Innovation pédagogique unique : Pre-task auto-evaluation ==============
+# ============================================================================
+# Each prueba has a 12-question self-evaluation BEFORE the exam, asking the learner
+# to predict structure : "How many tareas? How long? Are texts specialized? Are
+# questions harder than text? Are texts literary? Same country origin?"
+#
+# This is a metacognitive scaffolding pattern ABSENT from Maestro ES current design.
+# High-impact pedagogical innovation for Tier 5 scenarios B2+ : Maestro could mirror
+# this by asking learner to PREDICT exercise structure before starting (Bachman-Palmer
+# AUA "task awareness" dimension).
+metacognitive_scaffolding_pattern:
+  description: "Pre-task self-evaluation questions (12 items per prueba)"
+  example_questions:
+    - "¿Cuántas tareas tiene esta prueba?"
+    - "¿Cuánto tiempo tengo para realizarlas?"
+    - "¿Todas las tareas son del mismo tipo? sí/no"
+    - "¿Todos los textos tienen un mismo tema? sí/no"
+    - "¿Los textos son especializados? sí/no"
+    - "¿Tengo que redactar las respuestas? sí/no"
+    - "¿Hay textos literarios? sí/no"
+    - "¿Las preguntas son más difíciles que el texto? sí/no"
+    - "¿Hay preguntas de gramática? sí/no"
+
+  applicability_maestro_es:
+    description: |
+      Maestro ES could inject pre-task awareness check at B2+ for reading comprehension :
+      Before showing a complex text, ask learner "What kind of text do you expect? How many
+      questions? Do you expect specialized vocabulary?" → builds task-awareness, reduces
+      cognitive load surprise.
+    target_scenario_design: "B2+ reading comprehension scenarios (Tier 5 G9.2 B2 edge cases)"
+    research_anchor: "Bachman & Palmer 1996 AUA — task characteristics awareness ; Vandergrift 2007 metacognitive listening"
+
+# ============================================================================
+# === Tabla de análisis de la prueba (post-task self-assessment) ============
+# ============================================================================
+# Each prueba ends with a self-analysis table : time spent per tarea + difficulty rating
+# + reasons for errors. Another metacognitive innovation to mirror in Maestro design.
+post_task_self_analysis_pattern:
+  description: "After each tarea : log time + difficulty + error patterns"
+  metrics_tracked:
+    - "tiempo real (min)"
+    - "tiempo recomendado (min)"
+    - "diferencia (+/- min)"
+    - "número correctas / total"
+    - "tipo errores (gramatical / léxico / atención / no compré pregunta)"
+  applicability_oracle: |
+    Oracle scenarios maestro_es could include a post-task reflection turn at B2+ :
+    Maestro asks "¿Qué te ha resultado difícil? ¿Por qué crees que has fallado?" →
+    elicits metacognitive output for κ Opus calibration on student self-awareness.
+
+# ============================================================================
+# === Calibration recommendations (cross-reference Preparación B2) ===========
+# ============================================================================
+calibration_targets:
+  scenarios_maestro_es_b2_metacognitive:
+    description: "Add 1-2 B2 scenarios that test Maestro's metacognitive scaffolding"
+    proposed_scenarios:
+      - id: "b2_metacog_pretask_001"
+        theme: "Reading comprehension B2 — pretask awareness"
+        learner_input: "(after Maestro shows a text on environmental policy) Voy a leerlo todo seguido sin pensar en las preguntas."
+        expected_maestro: "Antes de leer, ¿qué esperas encontrar? ¿Es un texto técnico? ¿Cuántas ideas principales? Esto te ayudará a leer mejor."
+        cf_move_acceptable: ["clarification_request", "elicitation", "metalinguistic_brief"]
+      - id: "b2_metacog_postask_001"
+        theme: "Post-task error reflection"
+        learner_input: "Me he equivocado en 3 preguntas pero no sé por qué."
+        expected_maestro: "¿Eran errores de gramática, vocabulario, o de comprensión global? Vamos a revisar la primera juntos para identificar el patrón."
+        cf_move_acceptable: ["elicitation", "metalinguistic", "clarification_request"]
+
+  rubrics_es_b2_dele_metacognitive:
+    description: "Add metacognitive_scaffolding indicator to DELE Criterios at B2+"
+    new_indicator: "Maestro elicits learner self-prediction of task structure (B2+) ou self-analysis of errors (post-task)"
+    pcic_grounding: "PCIC B2 Tácticas pragmáticas §11.3 'evaluar el propio aprendizaje'"
+
+# ============================================================================
+# === Cross-references =======================================================
+# ============================================================================
+related:
+  - "extracted/cervantes-dele-a1/rubric.yaml"
+  - "extracted/cervantes-dele-a2-c2/rubrics-structurel.yaml"
+  - "extracted/alzugaray-2013-preparacion-dele-b2/key-insights.yaml (S56 G7.3c — companion B2 prep)"
+  - "data/rubrics/es.yaml dele_criterios block"
+  - "USAGE-MAP entry : `acquired-pending` S53 Batch 2 L88"
+
+triple_source_validation:
+  prueba_1_structure_consistency:
+    sources_aligned:
+      - "DELE B2 official modelo (Cervantes, library/by-domain/cervantes-dele/dele_b2_modelo0.pdf, S56)"
+      - "Preparación B2 Soluciones (Alzugaray 2013, library/processed/alzugaray-...)"
+      - "El Cronómetro B2 (Bech Tormo 2013, this file)"
+    confidence_level: "HIGH"
+    actionable: "DELE B2 Prueba 1 structure = 4 tareas / 36 preguntas / 70 min — confirmé canonique."
+
+deferred_extraction:
+  description: "Full 6 modelos × ~50 items extraction"
+  effort_estimate: "~4j Claude work"
+  trigger: "When G10.1 (CF_MOVE fewshots ES expand) needs B2 reading task fewshots OR Tier 5.G9.2 needs additional B2 scenarios beyond 6 PCIC themes"

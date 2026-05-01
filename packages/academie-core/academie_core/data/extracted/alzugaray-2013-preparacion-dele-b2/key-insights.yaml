@@ -1,0 +1,214 @@
+# Preparación al DELE B2 (Alzugaray, Barrios, Bartolomé 2013) — Claves + Transcripciones.
+#
+# Source : `library/processed/alzugaray-2013-preparacion-dele-b2-soluciones.pdf` (15.5MB, ~30+ pages).
+# Publisher : Edelsa (preparación companion to Cronómetro B2 / DELE B2 official).
+# ADR-014 Layer 1.5 extraction (S56 G7.3c partial).
+#
+# This is a META-EXTRACTION : doesn't replicate full item bank (would be 7 examens × ~50 items
+# = 350+ items, ~3-4j extraction). Captures :
+# 1. B2 themes index (calibration scenarios B2 + mini_exam_es_b2 thematic distribution)
+# 2. Audio task patterns + word counts (calibration mini_exam audio items)
+# 3. Soluciones justificadas pattern (anchor for Maestro reading comprehension feedback)
+# 4. Audio sample transcripts (representative B2 register/vocabulary anchors)
+
+source:
+  authors: ["Pilar Alzugaray", "María José Barrios", "Paz Bartolomé"]
+  title: "Preparación al Diploma de Español Nivel B2 — Claves: Transcripciones y Soluciones comentadas"
+  publisher: "Edelsa"
+  year: 2013
+  isbn: "978-84-7711-356-0"
+  pdf: "library/processed/alzugaray-2013-preparacion-dele-b2-soluciones.pdf"
+  fetch_date: 2026-05-01
+  notes: |
+    Companion volume to "Preparación al DELE B2" (main book, separately published).
+    Contains : (a) full audio transcripts Prueba 2 + 3, (b) justified answer keys
+    Pruebas 1+2 with explanations of correct vs distractor logic.
+    7 examens cover canonical B2 thematic axes per PCIC "9. Nociones específicas".
+
+# ============================================================================
+# === B2 themes index (PCIC Nociones específicas) ============================
+# ============================================================================
+# These 7 thematic axes cover ~95% of B2 communicative scenarios per PCIC.
+# Use to calibrate Oracle scenarios maestro_es B2 + mini_exam_es_b2 thematic balance.
+b2_themes:
+  - axis: "Individuo, alimentación, salud, higiene"
+    pcic_ref: "9.2.6 Salud / 9.2.4 Alimentación / 9.2.7 Higiene"
+    sample_topics: ["dieta y nutrición", "enfermedades comunes", "ejercicio físico", "hábitos saludables"]
+    examen_ref: "Examen 1"
+
+  - axis: "Trabajo, vivienda, economía, industria"
+    pcic_ref: "9.2.5 Trabajo / 9.2.4 Vivienda / 9.2.5 Economía"
+    sample_topics: ["paro y empleo", "alquiler vs compra", "salario emocional", "iniciativa empresarial"]
+    examen_ref: "Examen 2"
+
+  - axis: "Identidad, relaciones interpersonales, sentimientos, religión"
+    pcic_ref: "9.1.1 Identidad / 9.1.5 Relaciones / 9.3 Religión"
+    sample_topics: ["amistad y soledad", "relaciones familiares", "diversidad religiosa", "duelo y arrepentimiento"]
+    examen_ref: "Examen 3"
+
+  - axis: "Internet, redes sociales, tecnología"
+    pcic_ref: "9.4 Tecnología / 9.5 Comunicación"
+    sample_topics: ["móviles y privacidad", "redes sociales", "ciberadicción", "videojuegos"]
+    examen_ref: "Examen 4"
+
+  - axis: "Política, temas sociales, religión, filosofía"
+    pcic_ref: "9.6 Política / 9.7 Sociedad / 9.8 Filosofía"
+    sample_topics: ["elecciones y abstención", "Camino de Santiago", "Cristóbal Colón debate", "felicidad y suicidio"]
+    examen_ref: "Examen 5+6"
+
+  - axis: "Viajes, transportes, geografía, medio ambiente"
+    pcic_ref: "9.9 Viajes / 9.10 Geografía / 9.11 Medio ambiente"
+    sample_topics: ["viajes organizados vs solo", "naturalismo y ecología", "transporte sostenible"]
+    examen_ref: "Examen 7"
+
+# ============================================================================
+# === Audio task patterns DELE B2 Prueba 2 ===================================
+# ============================================================================
+# Each Prueba 2 has 5 tareas with distinct audio formats. Use for mini_exam_es_b2 v2
+# audio item calibration (currently mini_exam stub has no audio variation).
+audio_task_patterns:
+  tarea_1_conversaciones_breves:
+    n_items: 6
+    audio_format: "6 conversaciones courts (2 personnes, ~30s each)"
+    word_count_per_conv: "~50-80 palabras"
+    task_type: "multiple_choice_ABC sur sentido implicite (subtext, intention)"
+    sample_topics: ["padres preocupados", "amigos reencuentro", "restaurante pedido", "telefónica preocupación"]
+
+  tarea_2_monologo_largo:
+    n_items: 6
+    audio_format: "monologue informativo/expositivo (1 voix, ~3-4 min)"
+    word_count: "300-500 palabras"
+    task_type: "fill_blanks selon transcripción + opciones ABC"
+    register: "formal/educativo (radio, conferencia, podcast)"
+
+  tarea_3_entrevista:
+    n_items: 6
+    audio_format: "entrevista (entrevistador + invité expert, ~4-5 min)"
+    word_count: "400-500 palabras"
+    task_type: "true/false/no_mentioned + opciones ABC"
+    register: "semi-formal (radio cultural, podcast educativo)"
+
+  tarea_4_personas_mensajes:
+    n_items: 6
+    audio_format: "6 personas distintas, 1-2 minute each, accents variados"
+    word_count_per_persona: "~50-100 palabras"
+    task_type: "matching personas → 9 opciones (A-I/J)"
+    register: "coloquial à neutro, accents (México, Río de la Plata, peninsular)"
+
+  tarea_5_monologo_largo_acento:
+    n_items: 6
+    audio_format: "monologue informativo accent latinoamericano OR especializado"
+    word_count: "400-500 palabras"
+    task_type: "fill_blanks_text + word_bank"
+    register: "formal academic (mexicano/argentino/cubano accent specifically)"
+
+# ============================================================================
+# === Sample audio transcripts (representative B2 register/vocab anchors) ====
+# ============================================================================
+# Each ~80-150 palabras excerpt. Use as anchor when designing maestro_es B2 scenarios :
+# learner inputs at this register expect Maestro responses at parity.
+sample_transcripts_by_theme:
+  individuo_salud:
+    sample_excerpt: |
+      Plácido: El tabaco es malo, pero no hay que pesimismo. Los pacientes que recurren al tabaco lo hacen
+      por las muchas funciones que les desempeña : compañía, distracción, gratificación. Se trata de
+      sustituir el tabaco por algo igualmente reconfortante pero saludable. Recidivas son frecuentes
+      pero hay que recordar que cada intento es un paso adelante.
+    register: "neutral-formal expositivo"
+    vocabulary_band: "B2 (gratificación, recidivas, reconfortante)"
+
+  trabajo_economia:
+    sample_excerpt: |
+      Cristina: En España, un 12% de la población pertenece a este grupo. Es verdad que el single sigue
+      saliendo como una necesidad, pero ahora muchos los precios y si antes uno iba a tres fiestas al mes,
+      a lo mejor ahora va a una. Compras leche, compras lo que sea y te sobra para todos los lados y
+      caducan yogures, natillas... Lo peor es que si quieres comprar barato tienes que comprar paquetes.
+    register: "coloquial-informativo (interview style)"
+    vocabulary_band: "B2 (caducan, paquetes, single anglicism)"
+
+  internet_tecnologia:
+    sample_excerpt: |
+      Iker: Hay trabajos y documentales que nos cuentan teorías increíbles, alucinantes pero,
+      misteriosamente, nadie ha reaccionado ante ellas hasta que ha aparecido Zeitgeist. En las redes,
+      el 89,7% cree en ellas, frente al 10,3% que no. Esos argumentos se han convertido en vídeos, que
+      han usado la red para llegar a todos.
+    register: "expositivo-tecnológico"
+    vocabulary_band: "B2-C1 (alucinantes, redes, expositivo)"
+
+# ============================================================================
+# === Soluciones justificadas pattern (ANCHOR for Maestro feedback) =========
+# ============================================================================
+# Each item correction in Preparación follows this template :
+# "Tarea X, p. N : <correct_answer>. <Reason citing text>. No es <distractor1> porque <reason>.
+#  No es <distractor2> porque <reason>."
+#
+# This pattern is HIGHLY relevant for Maestro's reading comprehension feedback at B2 :
+# when learner gets a comprehension question wrong, Maestro should articulate
+# (a) why the correct answer is grounded in text, (b) why each distractor is unsupported.
+#
+# Sample template for Maestro correction at B2 :
+correction_pattern_template:
+  description: "DELE-aligned reading comprehension feedback at B2 — explicit textual grounding"
+  template: |
+    "La opción correcta es {answer}. {Justification anchored in 1-2 specific phrases from text}.
+    No es {distractor_1} porque {reason — typically 'el texto no menciona X' or 'X es lo opuesto a lo que dice'}.
+    No es {distractor_2} porque {reason}."
+
+  example:
+    item: "Marta escribe a Carmen para…"
+    correct: "C) quedar para hablar un rato"
+    justification: |
+      "La opción correcta es C : 'Por eso me gustaría verte antes de irme. Llámame o escríbeme pronto'
+      indica que Marta busca verla. No es A porque no menciona la zapatería como destino del email.
+      No es B porque, aunque sale 'me voy de vacaciones', no es el motivo principal del correo."
+
+  use_case: |
+    When designing Maestro B2 scenarios where learner answers reading comprehension MCQ wrong,
+    Maestro's response should mirror this pattern (explicit text-anchor + distractor refutation).
+    Currently Maestro tends to either generic correction (B1 register) or recast (A1-A2 inappropriate
+    for B2 reading task). Pattern injection would improve register alignment.
+
+# ============================================================================
+# === Calibration recommendations =============================================
+# ============================================================================
+calibration_targets:
+  scenarios_maestro_es_b2:
+    description: "Distribute B2 oracle scenarios across the 6 PCIC themes for thematic balance"
+    target_distribution:
+      individuo_salud: "1 scenario"
+      trabajo_economia: "1 scenario"
+      identidad_relaciones: "1 scenario"
+      internet_tech: "1 scenario"
+      politica_filosofia: "1 scenario"
+      viajes_medio_ambiente: "1 scenario"
+    note: "Currently maestro_es has 3 B2 scenarios (b2_t2_false_friend, b2_t3_condicional, b2_t3_imperfecto_pret) — themes generic. Add 3-4 thematic-anchored to reach 6."
+
+  mini_exam_es_b2:
+    description: "Add B2 audio comprehension item types per DELE B2 Prueba 2 patterns"
+    add_item_types:
+      - "audio_short_conversation_intent (mirror Tarea 1)"
+      - "audio_monologue_fill_blanks (mirror Tarea 2)"
+      - "audio_interview_TF (mirror Tarea 3)"
+      - "audio_personas_matching (mirror Tarea 4)"
+    note: "Currently es_B2.yaml is fill/choice/transform stubs only. Adding 1 audio item per type would mirror DELE structure for placement test calibration."
+
+  rubrics_es_b2_dele_criterios:
+    description: "Maestro reading comprehension B2 should output corrections per Preparación pattern"
+    actionable: |
+      When B2 scenario tests reading comprehension MCQ, Maestro's correction template :
+      "La opción correcta es X porque [text anchor]. No es Y porque [refutation]."
+      → Add this as injectable few-shot in CF_MOVE_PROMPT for B2 reading tasks (Tier 5 G10.1).
+
+# ============================================================================
+# === Cross-references =======================================================
+# ============================================================================
+related:
+  - "extracted/cervantes-dele-a1/rubric.yaml (S56 G7.3a — DELE A1 structurel)"
+  - "extracted/cervantes-dele-a2-c2/rubrics-structurel.yaml (S56 G7.3e — DELE A2-C1 structures)"
+  - "data/rubrics/es.yaml dele_criterios block (S56 G7.3f — 4 dimensions × A1-C2)"
+  - "USAGE-MAP entry : `acquired-pending` S53 Batch 2 L88-90 (Cronómetro B2 + Preparación B2)"
+
+deferred_extraction:
+  description: "Full item bank extraction (350+ items × claves justifiées) deferred"
+  effort_estimate: "~3-4j Claude work"
+  trigger: "When Tier 5.G10.1 (CF_MOVE fewshots ES expand) needs B2 reading-task fewshots specifically"
