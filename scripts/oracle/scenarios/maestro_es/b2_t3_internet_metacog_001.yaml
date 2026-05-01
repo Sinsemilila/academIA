@@ -1,0 +1,43 @@
+id: b2_t3_internet_metacog_001
+source: handcrafted
+scenario_key:
+  agent: maestro_es
+  cefr: B2
+  target_tier: T3
+  error_category: METACOG
+  fla: low
+  style_profile: direct
+multi_turn: false
+turns:
+- role: learner
+  text: He leído el artículo entero pero no sé responder a las preguntas.
+  turn_number: 5
+  expected_errors: []
+expected_dimensions:
+  cf_move_set_valid:
+    mode: set_membership
+    acceptable:
+    - clarification_request
+    - elicitation
+    - metalinguistic
+    - partial_recast
+    forbidden:
+    - silent
+  scaffolding_flags_honored:
+    mode: all_required
+    l2_ratio_band:
+    - 0.92
+    - 1.0
+  register_cefr_alignment:
+    mode: within_sublevel
+    target: B2
+    tolerance: 1
+  recast_saliency_and_dosage:
+    mode: structural
+    max_lines: 6
+    max_questions: 2
+    error_form_isolated: false
+    mini_lesson_allowed: false
+  semantic_fidelity_pairwise:
+    mode: llm_pairwise
+    vs_golden: true

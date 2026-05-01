@@ -1,24 +1,24 @@
 {
   "scenario_id": "b2_t3_condicional_001",
-  "sha": "95088a822fea",
-  "recorded_at": "2026-05-01T13:21:15Z",
-  "response": "Casi. Recuerda que en la cláusula condicional, después de \"si\" usamos el subjuntivo. Deberías decir: \"Si tuviera más tiempo, *estudiaría* un idioma nuevo cada año.\" ¿Qué idioma te gustaría estudiar?",
-  "dify_conversation_id": "b2ba3fb7-bb4b-4f13-90cc-32a10df710c6",
-  "dify_message_id": "4376e7d3-9da2-4d19-8357-c50e2c0af20b",
+  "sha": "2919bc6bc6e7",
+  "recorded_at": "2026-05-01T15:22:27Z",
+  "response": "Casi. En tu frase, el uso de \"iba a\" no es correcto en este contexto. Deberías usar el condicional. La forma correcta sería: \"Si tuviera más tiempo, estudiaría un idioma nuevo cada año.\" \n\n¿Te gustaría intentar reformularlo?",
+  "dify_conversation_id": "e42c2bbd-2bd2-48c2-8e77-5d8c1d7e7314",
+  "dify_message_id": "22a85216-c94e-4f20-b4f6-9dd66dc97112",
   "usage": {
     "prompt_tokens": 4345,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 54,
+    "completion_tokens": 58,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 4399,
+    "total_tokens": 4403,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.145,
-    "time_to_first_token": 1.529,
+    "latency": 1.682,
+    "time_to_first_token": 2.04,
     "time_to_generate": 0.0
   }
 }

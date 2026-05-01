@@ -240,10 +240,10 @@ G8.2 (rules_es spaCy migration) **DEFER P3** — strategic decision : si Tier 1+
 ## Session N+4 (Tier 5 — Oracle scenarios + quality gates ~5-6j)
 
 - [x] G9.1 (S56) — Add 4 NEW C1 scenarios (cuyo_relativo / lo_neutro_sustantivador / perifrasis_aspectuales / subjuntivo_subord_compuesta) using S56 G6.D nouveaux concepts. Total 24→28 scenarios (within target 28-30). Lint 28/28 pass. A1 demote skipped (sandbox protection on rm + low value gain).
-- [ ] G9.2 ES B2 edge cases
-- [ ] G9.3 ES multi-turn scenarios
-- [ ] G10.1 CF_MOVE fewshots ES 5→10+
-- [ ] G11.1 Tolerance matrix ES validation
+- [x] G9.2 (S56) — Add 3 NEW B2 edge cases (internet+metacog / viajes+subjuntivo concesivo / trabajo register mismatch). Total 28→31 scenarios.
+- [~] G9.3 ES multi-turn scenarios — skipped, already 4 multi-turn within target (28-30 scenarios atteint).
+- [x] G10.1 CF_MOVE fewshots ES 5→**10+** (S56) — added EX13 cuyo / EX14 subjuntivo concesivo / EX15 gustar A1 / EX16 register mismatch / EX17 lo neutro. Total 17 fewshots (7 EN + 10 ES). Tests green.
+- [~] G11.1 Tolerance matrix ES validation — covered by Tier 6 RM.4 (compute_ac2 CLI on full battery).
 - [ ] (P2) G12.1 build_scenarios refactor
 - [ ] (P2) G13.1 test_judges_cf_move_es
 

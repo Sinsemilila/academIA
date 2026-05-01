@@ -1,10 +1,10 @@
 {
   "scenario_id": "b2_t3_imperfecto_pret_001",
-  "sha": "95088a822fea",
-  "recorded_at": "2026-05-01T13:21:19Z",
-  "response": "¡Buen intento! Sin embargo, hay un pequeño error en la parte final. Deberías usar el pretérito en lugar del imperfecto para \"mudábamos\". La frase correcta sería: \"Cuando era niño, jugaba mucho con mis primos hasta que nos mudamos a otra ciudad.\" \n\n¿Te gustaría contarme más sobre esos momentos con tus primos?",
-  "dify_conversation_id": "5d8762b6-988a-4d02-91fc-037d19d03797",
-  "dify_message_id": "86e1122c-3001-4035-945c-6483a26f7d4b",
+  "sha": "2919bc6bc6e7",
+  "recorded_at": "2026-05-01T15:22:30Z",
+  "response": "Casi perfecto, pero hay un pequeño error en la parte final. Deberías usar el pretérito en lugar del imperfecto para \"mudábamos\". La frase correcta sería: \"Cuando era niño, jugaba mucho con mis primos hasta que nos *mudamos* a otra ciudad.\" \n\n¿Te gustaría contarme más sobre esos juegos con tus primos?",
+  "dify_conversation_id": "9221fa02-963f-4d2f-8549-161175dd00bc",
+  "dify_message_id": "0a228da4-3604-400b-8372-0beb0b5719b2",
   "usage": {
     "prompt_tokens": 4350,
     "prompt_unit_price": "0",
@@ -17,8 +17,8 @@
     "total_tokens": 4425,
     "total_price": "0",
     "currency": "USD",
-    "latency": 2.485,
-    "time_to_first_token": 2.863,
+    "latency": 2.231,
+    "time_to_first_token": 2.592,
     "time_to_generate": 0.0
   }
 }

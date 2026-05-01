@@ -1,0 +1,24 @@
+{
+  "scenario_id": "b2_t3_viajes_subjuntivo_concesivo_001",
+  "sha": "2919bc6bc6e7",
+  "recorded_at": "2026-05-01T15:22:37Z",
+  "response": "¡Qué bien que tengas planes de viajar a la Patagonia! Tu frase está muy bien estructurada, pero hay un pequeño detalle que podrías ajustar. Cuando usas \"aunque\", sería más adecuado utilizar el subjuntivo para expresar una concesión. Así que podrías decir: \"Aunque haga mucho frío en Patagonia, voy a viajar allí en julio porque es algo que siempre he querido hacer.\" \n\n¿Tienes algún lugar específico en mente que quieras visitar en la Patagonia?",
+  "dify_conversation_id": "6f4aacfd-0274-4b10-8447-5d7389eebf0d",
+  "dify_message_id": "d34e61d6-e6f6-4f3d-aad2-2311e10582a1",
+  "usage": {
+    "prompt_tokens": 4351,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 95,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 4446,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 3.669,
+    "time_to_first_token": 4.047,
+    "time_to_generate": 0.0
+  }
+}

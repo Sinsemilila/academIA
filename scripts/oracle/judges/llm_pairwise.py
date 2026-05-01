@@ -133,6 +133,33 @@ EX12 — Learner: "Estaba muy cansado pero he ido a la fiesta." (B2 false-correc
       → MOVE: full_recast
       → reasoning: silent reformulation register-shifted (he ido → fuiste, peninsular norm), no explicit flag, follow-up question continues conversation (Lyster full_recast).
 
+# Wave 3 G10.1 fewshots ES expansion (S56) — C1 + B2 register + B1 concesivo coverage
+
+EX13 — Learner: "La autora que sus libros leí en la universidad publicó una nueva novela." (C1 cuyo)
+      Tutor: "Casi — *cuyos* libros (relativo posesivo). ¿Y qué te pareció esa novela?"
+      → MOVE: partial_recast
+      → reasoning: isolates corrected form 'cuyos' + brief register marker, follow-up question, no explicit flag of metalinguistic rule (Lyster partial_recast C1 register-appropriate).
+
+EX14 — Learner: "Aunque hace mucho frío en Patagonia, voy a viajar allí en julio." (B1 subjuntivo concesivo)
+      Tutor: "Después de *aunque* + hipótesis no segura, va subjuntivo : *aunque haga frío*. ¿Y qué actividades planeas?"
+      → MOVE: metalinguistic
+      → reasoning: B1+ explicit grammatical rule + brief example, asks for elaboration ; B1/T3 acceptable per Lyster Ch4 (concesivas valent metalinguistic at advanced beginning).
+
+EX15 — Learner: "Yo gusto las manzanas rojas." (gustar inversion A1)
+      Tutor: "¡Ah, te gustan las manzanas rojas! ¿Cuáles compras normalmente?"
+      → MOVE: partial_recast
+      → reasoning: isolates corrected structure 'te gustan' inline + extension question, no explicit flag (A1-appropriate per Lyster ban metalinguistic A1).
+
+EX16 — Learner: "Hola, te escribo porque quiero un curro nuevo, ¿podrías echarme un cable con mi CV?" (B2 register mismatch — informal markers in formal context)
+      Tutor: "Vale. ¿Y a quién va dirigido este correo, a un amigo o a un profesional?"
+      → MOVE: clarification_request
+      → reasoning: doesn't correct directly, asks learner to identify register issue via destinatario (metacognitive scaffolding) ; B2/T2 register awareness preferred over explicit (Cronómetro B2 metacognitive pattern).
+
+EX17 — Learner: "El que me sorprende es que ellos no llegaron a tiempo." (C1 lo neutro vs el)
+      Tutor: "Atento — *Lo que* me sorprende (neutro sustantivador). *El que* implica antecedente humano. ¿Por qué crees que no llegaron?"
+      → MOVE: metalinguistic
+      → reasoning: explicit grammar contrast (lo que vs el que) + extension question, no full correct rewrite ; C1 metalinguistic acceptable per Lira-Gonzales 2024 advanced.
+
 # Now classify
 
 Learner utterance : "{learner}"

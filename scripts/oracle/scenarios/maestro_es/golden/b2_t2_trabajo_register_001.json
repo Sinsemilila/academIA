@@ -1,0 +1,24 @@
+{
+  "scenario_id": "b2_t2_trabajo_register_001",
+  "sha": "2919bc6bc6e7",
+  "recorded_at": "2026-05-01T15:22:24Z",
+  "response": "¡Claro! Para un CV, es mejor usar un lenguaje más formal. En lugar de 'curro', podrías decir 'trabajo' o 'empleo'. Y en vez de 'echarme un cable', podrías decir 'ayudarme'. ¿Qué información quieres incluir en tu CV?",
+  "dify_conversation_id": "cfdb2b24-6a2b-4588-9b6d-842ce2da2f70",
+  "dify_message_id": "62fc6202-0ae9-4679-a0bf-a239a1d13d3d",
+  "usage": {
+    "prompt_tokens": 4356,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 271,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 4627,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 6.059,
+    "time_to_first_token": 6.485,
+    "time_to_generate": 0.0
+  }
+}

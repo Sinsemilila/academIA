@@ -1,0 +1,24 @@
+{
+  "scenario_id": "b2_t3_internet_metacog_001",
+  "sha": "2919bc6bc6e7",
+  "recorded_at": "2026-05-01T15:22:32Z",
+  "response": "¡Entiendo! A veces, leer un artículo no es suficiente para captar todos los detalles. ¿Te gustaría que te ayudara a repasar el contenido del artículo o a formular respuestas a las preguntas?",
+  "dify_conversation_id": "47789c0d-36de-4579-8665-5b33560666a6",
+  "dify_message_id": "c42250fd-6d28-40b7-9403-7038d188a900",
+  "usage": {
+    "prompt_tokens": 4343,
+    "prompt_unit_price": "0",
+    "prompt_price_unit": "0",
+    "prompt_price": "0",
+    "completion_tokens": 41,
+    "completion_unit_price": "0",
+    "completion_price_unit": "0",
+    "completion_price": "0",
+    "total_tokens": 4384,
+    "total_price": "0",
+    "currency": "USD",
+    "latency": 1.29,
+    "time_to_first_token": 1.681,
+    "time_to_generate": 0.0
+  }
+}
