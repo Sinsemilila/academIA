@@ -32,7 +32,7 @@
 */
 @theme {
   /* Agent accents — same in both themes (perception-pinned hue+chroma) */
-  --color-teacher:     oklch(0.623 0.188 259.815);  /* ex #3b82f6 blue */
+  --color-teacher:     oklch(0.55 0.188 259.815);   /* S57 a11y : 0.623→0.55 (#3b82f6→#2563eb), white-text contrast 3.67:1→~4.6:1 (WCAG AA). Other agent accents pending Sinse design review for cohérence. */
   --color-maestro:     oklch(0.637 0.208 25.331);   /* ex #ef4444 red */
   --color-sensei:      oklch(0.627 0.232 303.900);  /* ex #a855f7 purple */
   --color-lehrer:      oklch(0.769 0.165 70.080);   /* ex #f59e0b amber */

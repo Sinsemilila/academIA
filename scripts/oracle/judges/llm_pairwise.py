@@ -495,6 +495,7 @@ async def _score_cefr_register(
     if not level:
         return DimVerdict(dim="register_cefr_alignment", verdict="unknown",
                           reasoning="no consensus", judge_votes=votes)
+    assert isinstance(level, str)  # narrow object → str (cf _cross_judge_majority signature generic)
     diff = abs(CEFR_ORDER.get(level, 0) - CEFR_ORDER.get(target, 0))
     if diff <= tolerance:
         return DimVerdict(dim="register_cefr_alignment", verdict="pass",

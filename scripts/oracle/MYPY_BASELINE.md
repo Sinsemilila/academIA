@@ -26,32 +26,24 @@ python3 -m venv .venv-tools
 PYTHONPATH=/opt/academie/scripts .venv-tools/bin/python -m pytest tests -q
 ```
 
-## Baseline (S56)
+## Baseline (S57)
 
-- **ruff** : ✅ 0 errors (was 24 pre-S56, fixed via auto-fix + 6 manual)
-- **mypy** : ⚠️ 7 errors remaining (was 23 pre-S56, types-PyYAML killed 13)
+- **ruff** : ✅ 0 errors (was 24 pre-S56)
+- **mypy** : ✅ 0 errors (was 23 pre-S56, was 7 mid-S57 post types-PyYAML)
 - **pytest** : ✅ 49/49 green
 
-## Remaining mypy errors (à fix incremental)
+## History
 
-Concentrés dans 2 fichiers, non-blockers oracle harness :
-
-```
-harness.py:72   arg-type      tuple shape mismatch on result append
-harness.py:145  unused-ignore  # type: ignore obsolete
-harness.py:157  arg-type      mode str → Literal['lint','smoke','full']
-harness.py:174  assignment    str|None → str
-harness.py:186  attr-defined  ScenarioResult.response_text (Pydantic _Lax extra)
-harness.py:191  unused-ignore  # type: ignore obsolete
-judges/llm_pairwise.py:498  call-overload  dict.get(object, int) variance
-```
+- **S56** : ruff 24→0, mypy 23→7 (types-PyYAML stubs killed 13)
+- **S57** : mypy 7→0 — schema `ScenarioResult.response_text` field declared explicitement, harness `mode: str` → `Literal[...]`, response var declared `str | None = None` early, `assert isinstance(level, str)` narrow `_cross_judge_majority` generic return, removed 2 obsolete `# type: ignore`
 
 ## Policy
 
-**Incremental strict** : 0 nouveaux errors tolérés sur new code. Baseline 7 doit décroître session par session — never grow.
+**Incremental strict ENFORCED** : 0 nouveaux errors tolérés sur new code. Baseline 0 doit rester à 0.
 
-Touch-points naturels pour fix :
-- `harness.py` errors : Pydantic `ScenarioResult` schema cleanup (S57+) — add `response_text` field explicitement OU use `_Lax = True` pattern.
-- `llm_pairwise.py:498` : tighten dict typing (~10 min)
+Pré-commit hook ruff/mypy oracle/ TBD. Run manuel post-changement :
 
-Pré-commit hook ruff/mypy oracle/ TBD (S57+). Pour le moment : run manuel post-changement.
+```bash
+cd /opt/academie/scripts/oracle
+.venv-tools/bin/ruff check . && .venv-tools/bin/mypy .
+```

@@ -12,11 +12,12 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import logging
+import os
 import sys
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
+from typing import Literal
 
 import yaml
 
@@ -43,9 +44,9 @@ def _persist_run_to_db(agent: str, mode: str, results: list) -> None:
     """
     import hashlib
     import subprocess
-    from datetime import datetime, timezone
+    from datetime import datetime
 
-    started_at = datetime.now(timezone.utc).isoformat()
+    started_at = datetime.now(UTC).isoformat()
     run_hash = hashlib.sha1(f"{agent}|{mode}|{started_at}".encode()).hexdigest()[:16]
 
     # Git SHA at run time (best-effort)
@@ -58,7 +59,7 @@ def _persist_run_to_db(agent: str, mode: str, results: list) -> None:
         sha = ""
 
     # Build multi-row INSERT
-    rows = []
+    rows: list[tuple] = []
     for r in results:
         scenario_id = r.scenario_id
         # Lint rows (structural check verdicts)
@@ -142,7 +143,7 @@ def fetch_current_response(scenario: ScenarioSchema, agent: str) -> str | None:
     llm_onboarding. Without this, noise floor measurement picks up
     onboarding-flow bot replies while goldens are session-flow replies —
     call-path mismatch that produces artifactual noise on every dim."""
-    from oracle.judges.dify_client import call_agent  # type: ignore
+    from oracle.judges.dify_client import call_agent
     first_learner = next((t for t in scenario.turns if t.role == "learner"), None)
     if not first_learner:
         return None
@@ -150,11 +151,12 @@ def fetch_current_response(scenario: ScenarioSchema, agent: str) -> str | None:
 
 
 def score_scenario(
-    scenario: ScenarioSchema, agent: str, mode: str, cfg: dict,
+    scenario: ScenarioSchema, agent: str, mode: Literal["lint", "smoke", "full"], cfg: dict,
     panel_models: list[str] | None = None,
 ) -> ScenarioResult:
     """Single-scenario scoring. Lint always runs ; LLM dims only in smoke/full."""
     result = ScenarioResult(scenario_id=scenario.id, mode=mode)
+    response: str | None = None
 
     # For lint mode on a scenario that has a golden recorded, use golden
     # as the "response under test" (it validates that the recorded golden
@@ -188,7 +190,7 @@ def score_scenario(
     result.lint = run_lint(scenario, response)
 
     # Stub — Phase B1 fills with real dim scoring
-    from oracle.judges import deterministic, llm_pairwise  # type: ignore
+    from oracle.judges import deterministic, llm_pairwise
     golden = load_golden(scenario, agent) or ""
     result.dims = (
         deterministic.score_all(scenario, response)

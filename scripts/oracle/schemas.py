@@ -92,3 +92,4 @@ class ScenarioResult(_Lax):
     lint: list[LintResult] = Field(default_factory=list)
     dims: list[DimVerdict] = Field(default_factory=list)
     overall: Literal["pass", "fail", "skip"] = "pass"
+    response_text: str | None = None  # Phase 2 Sprint Oracle EN cohérence — super-judge review payload
