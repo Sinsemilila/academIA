@@ -3,10 +3,16 @@
   // Banner one-time visible 1ère ouverture chat compta. Marie peut dismiss.
   // localStorage 'maitre_comptable_rgpd_acked' empêche réaffichage.
 
-  let dismissed = $state(
-    typeof localStorage !== 'undefined' &&
-    localStorage.getItem('maitre_comptable_rgpd_acked') === '1'
-  );
+  import { onMount } from 'svelte';
+
+  let dismissed = $state(false);
+
+  onMount(() => {
+    if (typeof localStorage !== 'undefined' &&
+        localStorage.getItem('maitre_comptable_rgpd_acked') === '1') {
+      dismissed = true;
+    }
+  });
 
   function ack() {
     if (typeof localStorage !== 'undefined') {
@@ -32,8 +38,9 @@
         </p>
       </div>
       <button
+        type="button"
         onclick={ack}
-        class="text-xs text-warning-text hover:text-text-primary px-2 py-1 rounded transition-colors shrink-0"
+        class="text-xs text-warning-text hover:text-text-primary px-2 py-1 rounded border border-warning-border transition-colors shrink-0 cursor-pointer"
         aria-label="Fermer le disclaimer"
       >
         Compris ✕

@@ -145,10 +145,14 @@
   }
 
   async function loadChatState() {
+    const isComptaAgent = agent?.slug === 'maitre_comptable';
     try {
-      const profile = await api.getProfile(agent?.domain ?? 'en');
-      if (profile?.mode_apprentissage) {
-        currentMode = profile.mode_apprentissage;
+      // S57 — skip getProfile pour Maître Comptable (compta_fr non valide ISO 2-letter, returns 422).
+      if (!isComptaAgent) {
+        const profile = await api.getProfile(agent?.domain ?? 'en');
+        if (profile?.mode_apprentissage) {
+          currentMode = profile.mode_apprentissage;
+        }
       }
       const convos = await api.getConversations(agent!.slug);
       if (convos?.data?.length > 0) {
@@ -168,9 +172,12 @@
   onMount(async () => {
     if (!agent?.available) { loadingHistory = false; return; }
 
-    // QCM gate: if flag ON and no learner_profile yet → open modal, skip chat init.
+    // S57 — Maître Comptable (premier non-langue) : skip QCM gate + consolidation
+    // (CEFR-language-specific). Mode B Phase 1 = chat direct sans placement test.
+    const isComptaAgent = agent.slug === 'maitre_comptable';
+
     let gateSkipChat = false;
-    if (QCM_ONBOARDING_ENABLED) {
+    if (QCM_ONBOARDING_ENABLED && !isComptaAgent) {
       try {
         const lp = await api.getLearnerProfile(agent.domain);
         if (!lp) {
@@ -186,7 +193,9 @@
 
     if (!gateSkipChat) {
       await loadChatState();
-      await checkConsolidationState();
+      if (!isComptaAgent) {
+        await checkConsolidationState();
+      }
     }
   });
 
@@ -541,7 +550,8 @@
       </div>
 
       <div class="flex items-center gap-1.5 sm:gap-2">
-        <!-- Quiz indicator -->
+        {#if agent.slug !== 'maitre_comptable'}
+        <!-- Quiz indicator (langue-specific) -->
         {#if quizActive}
           <span class="text-[10px] sm:text-xs font-mono bg-warning/20 text-warning-text px-1.5 sm:px-2 py-0.5 rounded">
             {quizQuestionNum}/{quizTotalQuestions}
@@ -553,7 +563,7 @@
           >✕</button>
         {/if}
 
-        <!-- Mode toggle pill -->
+        <!-- Mode toggle pill (langue-specific) -->
         <button
           onclick={() => openModeModal()}
           class="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs px-1.5 sm:px-2.5 py-1 rounded-full border transition-colors
@@ -571,7 +581,7 @@
           {/if}
         </button>
 
-        <!-- Quiz button -->
+        <!-- Quiz button (langue-specific) -->
         <button
           onclick={() => { showQuizConfirm = true; }}
           disabled={quizActive || streaming || quizLoading}
@@ -583,6 +593,7 @@
           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <span class="hidden sm:inline">Quiz</span>
         </button>
+        {/if}
 
         <!-- Message count (hidden on mobile) -->
         {#if messages.length > 0 && !quizActive}
