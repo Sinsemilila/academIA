@@ -1,0 +1,769 @@
+# Funciones inventario C1 + C2 — Plan Curricular del Instituto Cervantes (PCIC).
+#
+# ADR-014 Layer 1.5 extraction (Session 56 Tier 2 G6.B, 2026-05-01).
+# Source : `cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/05_funciones_inventario_c1-c2.htm`
+# (HTML version free online, fetched via WebFetch).
+#
+# Use case : Tier 3 Stream E G7.1 will merge these into `data/functions/es.yaml` 42→~80 entries
+# (PCIC Funciones B1-C2 expansion).
+#
+# PCIC has 6 macro-sections of funciones (cf vol A) :
+#   1. Dar y pedir información
+#   2. Expresar opiniones, actitudes y conocimientos
+#   3. Expresar gustos, deseos y sentimientos
+#   4. Influir en el interlocutor
+#   5. Relacionarse socialmente
+#   6. Estructurar el discurso
+#
+# C1+C2 cumulative additions to B2 baseline (PCIC rule).
+
+source:
+  book: "Plan Curricular del Instituto Cervantes — Niveles de referencia para el español"
+  volume: "C — C1+C2"
+  publisher: "Instituto Cervantes / Edelsa / Biblioteca Nueva"
+  year: 2006
+  inventario: "5. Funciones"
+  url: "https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/05_funciones_inventario_c1-c2.htm"
+  fetch_date: 2026-05-01
+  notes: |
+    WebFetch extraction covers macro-sections 1-4 fully + 5-6 partial (truncated by HTML).
+    Sections 5+6 will require manual scrape OR Sinse fallback acquisition (cf gate Tier 2).
+
+# ============================================================================
+# === C1 (Dominio operativo eficaz) ==========================================
+# ============================================================================
+C1:
+  level_label: "Dominio operativo eficaz"
+
+  "1.Dar_y_pedir_informacion":
+    "1.1.Identificar":
+      - "Este/Ese/Aquel valor despectivo"
+      - "El que suscribe / El abajo firmante (epistolar)"
+      - "Este... y no..."
+      - "Lo que... es... (estructuras enfáticas)"
+      - "Relativas con cuyo"
+      - "Relativas explicativas"
+    "1.2.Pedir_informacion":
+      - "¿Qué es lo que...?"
+      - "¿Cuál de los que...?"
+      - "¿Tienes idea de si/dónde/cómo...?"
+      - "¿Me dice...?"
+      - "Preguntas tiempo, finalidad, razón"
+    "1.3.Dar_informacion":
+      - "Complementos adverbiales lugar, tiempo, manera"
+      - "Subordinadas (temporales, locativas, modales)"
+      - "Finalidad (Con ánimo/idea de...)"
+      - "Causales (A causa de/gracias a/por culpa de)"
+    "1.3.1.Corregir_informacion_previa":
+      - "Yo (no) diría que..."
+      - "¡¿Cómo que + enunciado previo?!"
+      - "¿Que + enunciado previo? + nuevo enunciado"
+      - "Una cosa es que... y otra es que..."
+      - "Que no... (intensificado)"
+      - "Respuesta enunciados negativos"
+    "1.3.2.Senalar_improcedencia":
+      - "Pero ¿qué (tonterías) dices?"
+      - "No es asunto tuyo"
+      - "¿Cómo que + enunciado previo?"
+    "1.4.Pedir_confirmacion":
+      - "..., ¿me equivoco?"
+      - "..., ¿(no) es eso?"
+      - "..., ¿a que sí/no?"
+      - "..., ¿verdad que sí/no?"
+      - "¿Verdad que (no)...?"
+      - "No he entendido bien si..."
+      - "¿Te refieres a (que)...?"
+      - "¿Es que (no)...?"
+      - "Pero... ¿tú no... + presente/imperfecto/pluscuamperfecto?"
+      - "Encubiertas (He sabido que..., Tengo entendido que...)"
+    "1.4.1.Cuestionar_informacion":
+      - "¿Me aseguras/prometes/juras que...?"
+      - "¿Insinúas que...?"
+      - "¿No estarás diciendo/insinuando/afirmando que...?"
+      - "¿Tengo que creerme...?"
+    "1.5.Confirmar_informacion":
+      - "Que sí/no, que..."
+      - "Así es / Efectivamente"
+      - "¡Y tanto (que...)!"
+      - "De hecho"
+
+  "2.Expresar_opiniones":
+    "2.1.Pedir_opinion":
+      - "¿Qué piensas/opinas de lo que...?"
+      - "¿Qué te parece lo que...?"
+      - "A tu entender/parecer/juicio + interrogativa"
+      - "¿Dirías...?"
+    "2.2.Dar_opinion":
+      - "A mi entender/parecer"
+      - "A mi juicio"
+      - "En mi modesta/humilde opinión"
+      - "(A mí) me da la sensación/impresión de que..."
+    "2.3.Pedir_valoracion":
+      - "¿Te opones a / Apruebas...?"
+      - "¿(Me) das / Cuento con / Tengo tu aprobación...?"
+    "2.4.Valorar":
+      - "Es / Me parece de buen/mal/pésimo gusto"
+      - "Es / Me parece + adjetivo/SN + lo que..."
+      - "Resulta + adjetivo/SN"
+    "2.5.Aprobar_desaprobar":
+      - "Haces bien/mal..."
+      - "Apruebo..."
+      - "No tengo nada que objetar"
+      - "Cuentas con / Tienes / Doy mi aprobación/consentimiento"
+      - "Me opongo a / Condeno"
+      - "Me parece lamentable"
+      - "¡Así se hace! / ¡Así me gusta!"
+    "2.7.Acuerdo_pregunta":
+      - "¿Ves bien/con buenos ojos/correcto/adecuado...?"
+      - "¿Me equivoco? / ¿Estoy en lo cierto?"
+    "2.8.Invitar_acuerdo":
+      - "Declaración + ¿Verdad que tengo razón?"
+      - "¿Verdad que (no es ninguna tontería que) + declaración?"
+    "2.9.Expresar_acuerdo":
+      - "(Sí/no), yo también/tampoco diría que..."
+      - "(Yo) diría lo mismo"
+      - "(Yo) comparto tu idea/postura"
+      - "Estoy contigo / coincido (totalmente) contigo"
+      - "(Yo) estoy de acuerdo con/en lo que..."
+      - "Acuerdo rotundo (¡Así es!, ¡Exacto!, ¡Efectivamente!)"
+      - "Acuerdo parcial (Algo de razón tienes, Estoy de acuerdo... salvo en)"
+    "2.10.Expresar_desacuerdo":
+      - "(Yo) no diría lo mismo"
+      - "(Pues) yo no/sí diría que..."
+      - "Yo no comparto tu idea/postura"
+      - "(Yo) no lo veo así"
+      - "No me convence..."
+      - "No se puede decir que..."
+      - "Desacuerdo rotundo (¡Para nada!, ¡Pero qué dices!)"
+    "2.11.Mostrar_escepticismo":
+      - "(Yo) tengo mis dudas (al respecto)"
+      - "No sé qué decirte"
+      - "No me convence del todo"
+    "2.12.Contraargumentar":
+      - "No te falta razón, pero/sin embargo/ahora bien/por el contrario"
+      - "No hay duda de que..., a no ser que..."
+      - "Yo no digo que (no)..., pero/sin embargo/ahora bien..."
+      - "En eso me has convencido, pero..."
+    "2.13.Expresar_certeza":
+      - "Sé con (absoluta/completa/total) certeza/seguridad"
+      - "Tengo la seguridad / Tengo claro"
+      - "No (me) cabe (la menor) duda (+ de...)"
+      - "Es indudable/innegable que..."
+      - "Es un hecho que... / Indudablemente / Ciertamente"
+      - "Sin lugar a dudas..."
+      - "Lo que es evidente/está claro es que..."
+    "2.14.Falta_certeza":
+      - "No tengo (tan) claro que..."
+      - "Cuestiono / Pongo en duda que..."
+      - "Sospecho que..."
+      - "Juraría que..."
+      - "(Me) da la impresión/sensación de"
+      - "Intuyo / Preveo / Presiento que..."
+    "2.15.Invitar_hipotesis":
+      - "Si..., ¿(qué/quién/dónde...) + crees que + condicional simple?"
+      - "¿Y si...?"
+      - "En el caso de..., ¿(qué/quién/dónde...) + condicional simple/compuesto?"
+    "2.16.Expresar_posibilidad":
+      - "Pudiera ser que..."
+      - "Para mí que..."
+      - "Cabe la posibilidad de que..."
+    "2.17.Obligacion_necesidad":
+      - "Es mi obligación..."
+      - "Estoy obligado a..."
+      - "Tengo (la) obligación/necesidad de..."
+      - "...(me) obliga a..."
+      - "Hay/Tienes + SN + que + infinitivo"
+      - "Basta con (que)..."
+    "2.18.Falta_obligacion":
+      - "No es mi obligación..."
+      - "No estoy obligado a..."
+      - "Nada/nadie (me) obliga a..."
+    "2.19.Pedir_conocimiento":
+      - "¿Sabes lo que...?"
+      - "¿Te has enterado de lo de...?"
+      - "¿Tienes conocimiento de/sobre...?"
+      - "¿Estás enterado de...? / ¿Tienes noticia(s) de/sobre...?"
+      - "¿Tienes idea de...? / ¿Alguien sabe algo de/sobre...?"
+    "2.20.Expresar_conocimiento":
+      - "Sé lo que... / Tengo conocimiento de..."
+      - "Estoy enterado de... / Tengo noticia(s) de..."
+    "2.21.Expresar_desconocimiento":
+      - "No tengo ni la más mínima/remota idea (+ de...)"
+      - "No tengo noticia"
+      - "Lo ignoro/desconozco"
+    "2.23.Habilidad":
+      - "No hay quien me gane"
+      - "Soy (in)competente"
+      - "Soy (muy) patoso para"
+      - "Estoy hecho/Soy un as/hacha/fiera/fenómeno"
+      - "Estoy hecho/Soy un manitas"
+    "2.24.Pedir_recuerdo":
+      - "¿Recuerdas/Te acuerdas de + infinitivo compuesto?"
+      - "¿Te recuerda a/que/lo que...?"
+      - "¿Te trae recuerdos de...?"
+    "2.25.Expresar_recuerdo":
+      - "Que yo recuerde... / Si mal no recuerdo..."
+      - "No/Casi/Por poco se me olvida..."
+      - "Me recuerda a/que/lo que..."
+      - "Me trae recuerdos de..."
+      - "No consigo olvidar..."
+    "2.26.Expresar_olvido":
+      - "Se me ha olvidado..."
+      - "No consigo recordar..."
+      - "No me dice nada"
+      - "Me he quedado en blanco"
+      - "Lo tengo en la punta de la lengua"
+
+  "3.Gustos_deseos_sentimientos":
+    "3.1.Pedir_gustos":
+      - "¿Te agrada...?"
+      - "¿Te llama la atención...?"
+    "3.2.Expresar_gustos":
+      - "Me agrada... / Adoro..."
+      - "Cuanto más/menos..., más/menos me gusta"
+      - "Me llama la atención..."
+    "3.3.Expresar_aversion":
+      - "Me espanta... / Aborrezco..."
+      - "Me desagrada / Me repugna..."
+      - "Es repugnante/aborrecible/abominable"
+      - "Me da náuseas..."
+    "3.4.Pedir_preferencias":
+      - "¿Optas/Te decides por...?"
+      - "¿Por qué (+ SN)/cuál te quedas?"
+    "3.5.Expresar_preferencia":
+      - "Si tengo que elegir / Si me dan a elegir..."
+      - "Me quedo con / Me decido / Opto por..."
+      - "No cambio... por nada (del mundo)"
+    "3.6.Indiferencia":
+      - "¡Qué más da! / ¡(Y) qué importa (eso)!"
+      - "¡Qué importancia tiene (eso)!"
+      - "Me importa un pimiento"
+    "3.8.Expresar_deseos":
+      - "Me muero de ganas de/por..."
+      - "¡Qué ganas (tengo) de...!"
+      - "Lo ideal sería... / Mi sueño/deseo sería..."
+      - "¡Si + imperfecto subjuntivo →! (suspendido)"
+      - "Que + subjuntivo / Quién + imperfecto subjuntivo"
+    "3.10.Planes_intenciones":
+      - "Tengo en proyecto..."
+      - "(Me) he hecho el (firme) propósito de"
+      - "Estoy por..."
+    "3.12.Alegria_satisfaccion":
+      - "Estoy de buenas / Estoy eufórico"
+      - "Estoy como loco (de contento)"
+      - "Estoy encantado de la vida"
+      - "Me alegra... / Me llena de alegría/felicidad/satisfacción/orgullo..."
+      - "Me pongo a dar saltos de alegría"
+      - "Tengo el gusto/el placer/la satisfacción de..."
+    "3.13.Tristeza_afliccion":
+      - "Sufro... / Me afecta..."
+      - "(Se) me rompe/parte/encoge el corazón..."
+      - "Me entristece... / Me llena de tristeza..."
+      - "Siento pena/tristeza/pesar..."
+      - "Estoy destrozado/deshecho..."
+      - "Lo veo todo negro"
+    "3.14.Placer_diversion":
+      - "(Me) lo paso de maravilla..."
+      - "Me muero/Me parto de risa"
+      - "¡Cuánto/Cómo me reí!"
+    "3.15.Aburrimiento":
+      - "Me muero de aburrimiento"
+    "3.16.Hartazgo":
+      - "Estoy hasta la coronilla/las narices/aquí (de)..."
+      - "Hasta aquí hemos llegado"
+      - "Por esto/ahí no paso"
+    "3.17.Enfado_indignacion":
+      - "Me irrita... / Siento rabia/impotencia/indignación..."
+      - "Me llena de rabia/impotencia/indignación..."
+      - "Es indignante..."
+      - "Me pongo/Me pone enfermo / de un humor de perros..."
+      - "¡Maldita sea!"
+    "3.18.Miedo_ansiedad":
+      - "Temo... / Me horroriza..."
+      - "Me inquieto/inquieta... / Me agobio/agobia..."
+      - "Estoy aterrorizado / Tengo el corazón en un puño"
+      - "Se me pone la carne de gallina / Se me ponen los pelos de punta"
+      - "Me da un miedo... / ¡(Casi) me muero de miedo!"
+    "3.19.Nerviosismo":
+      - "Me pongo/pone de los nervios..."
+      - "Me saca de quicio..."
+      - "Me va a dar algo/un ataque"
+      - "Pierdo los nervios..."
+      - "Estoy al borde de un ataque de nervios"
+      - "Estoy como un flan"
+    "3.20.Empatia":
+      - "Me imagino lo que estás pasando"
+      - "No me extraña (en absoluto) que te sientas así"
+      - "A mí me pasó algo muy parecido"
+      - "Me pongo en tu lugar"
+      - "Te compadezco"
+    "3.21.Alivio":
+      - "¡Al fin! / ¡Por fin! / ¡Ya era hora!"
+      - "Me quedo muy aliviado/mucho más tranquilo"
+    "3.22.Esperanza":
+      - "No me espero gran cosa"
+      - "Confío en..."
+      - "Cruzo los dedos (para...)"
+      - "Toco madera"
+      - "La esperanza es lo último que se pierde"
+    "3.23.Decepcion":
+      - "¡Menuda/Vaya desilusión/decepción!"
+      - "Esto no es lo que (me) esperaba/imaginaba"
+      - "¡Vaya, hombre! (↓)"
+    "3.24.Resignacion":
+      - "Me resigno a..."
+      - "No hay/queda otro/más remedio..."
+      - "¡Que sea lo que Dios quiera!"
+      - "¡Que sea lo que tenga que ser!"
+    "3.25.Arrepentimiento":
+      - "Me arrepiento (de)..."
+      - "(No) debí... / (No) debería/debía + infinitivo compuesto"
+      - "(No) tendría/tenía que + infinitivo compuesto"
+      - "Si tuviera una segunda oportunidad..."
+      - "Si pudiera dar marcha atrás... / Si volviera a nacer..."
+    "3.26.Vergüenza":
+      - "Siento vergüenza (de)..."
+      - "Me ruborizo/Me sonrojo..."
+      - "Me pongo colorado..."
+      - "¡Me da una vergüenza...! / ¡(Casi) me muero de vergüenza!"
+      - "¡Qué vergüenza pasé!"
+    "3.27.Sorpresa":
+      - "Me sorprendo/Me asombro con/de..."
+      - "Alucino con/de... / Me alucina..."
+      - "Me quedo atónito/alucinado/de piedra/con la boca abierta..."
+      - "Parece mentira... / ¡Nunca lo hubiera imaginado!"
+      - "¡Es alucinante...! / ¡Qué me dices! / ¡Lo que hay que oír!"
+    "3.28.Admiracion_orgullo":
+      - "Me llena de admiración/orgullo..."
+      - "Estoy admirado/maravillado/deslumbrado..."
+      - "Me fascina / Me enorgullece..."
+    "3.29.Afecto":
+      - "Siento simpatía/afecto/cariño/amor por/hacia..."
+      - "(Te) tengo simpatía/afecto/cariño..."
+      - "Te amo"
+    "3.30.Sensaciones_fisicas":
+      - "Me da (una) sed/(un) hambre/frío/calor/sueño"
+      - "Estoy sediento/congelado/tiritando (de frío)/dormido..."
+      - "Tengo un agujero en el estómago / Tengo la garganta seca"
+      - "Me caigo de sueño / Se me cierran los ojos"
+      - "¡Me muero de sed/hambre/frío/calor/sueño/cansancio/dolor!"
+      - "Estoy hecho polvo/muerto..."
+      - "¡No puedo con mi alma! / ¡No puedo más!"
+
+  "4.Influir_interlocutor":
+    "4.1.Dar_orden":
+      - "Directa : Te ordeno que... (inmediatamente/ahora mismo)"
+      - "Directa : Tú + 2ª persona presente indicativo"
+      - "Atenuada : Imperativo + atenuador"
+      - "Atenuada : ¿Quieres/Vas a/Puedes + infinitivo?"
+      - "Atenuada : ¿Quieres/Puedes hacer(me) el favor de...?"
+      - "Atenuada : ¿Serías tan amable de... / ¿Tendrías la amabilidad/bondad de...?"
+      - "Atenuada : ¿Sería mucho pedir que...? / Necesitaría que..."
+      - "Atenuada : Conviene/Convendría... / Hazme un favor + imperativo"
+      - "Atenuada : Te pido por favor que..."
+      - "Atenuada : Me lo das/dejas/prestas/mandas/traes/envías... + atenuador"
+      - "¡Andando!"
+    "4.2.Pedir_favor":
+      - "Atenuada : ¿Puedes hacerme el favor de...?"
+      - "Atenuada : ¿Me harías el favor de...?"
+      - "Atenuada : (Te) agradecería (+ intensificador) que..."
+      - "Atenuada : Me harías un gran favor si"
+      - "Atenuada : ¿Podrás hacerme un favor?"
+    "4.3.Pedir_objetos":
+      - "Atenuada : ¿Podrías hacerme/Me harías el favor de dejarme/prestarme/traerme...?"
+      - "Atenuada : ¿Tendrías la amabilidad/bondad de...?"
+      - "Atenuada : Necesitaría que..."
+    "4.4.Pedir_ayuda":
+      - "Atenuada : ¿Podrías hacerme/Me harías el favor de ayudarme a/con...?"
+      - "Atenuada : ¿Serías tan amable de ayudarme/de echarme una mano?"
+    "4.5.Rogar":
+      - "Te ruego con todas mis fuerzas/de todo corazón que..."
+      - "Imperativo + te lo pido por favor / te lo estoy pidiendo por favor"
+    "4.6.Repetir_orden":
+      - "¿Cómo tengo/tendré que decir(te) que...?"
+      - "¿Cuántas veces tengo/tendré que repetir(te) que...?"
+      - "Por última vez + orden / Orden + te digo"
+    "4.7.Responder_orden_petic":
+      - "Acceder sin reservas : (Por mi parte) no hay inconveniente / (Eso) está hecho / Faltaría más / ¡Sin problema(s)!"
+      - "Acceder con reservas : O. condicional con subjuntivo"
+      - "Eludir : O. subordinada temporal / Veré lo que puedo hacer"
+      - "Negarse cortésmente : Me temo que es imposible / Sintiéndolo mucho..."
+      - "Negarse tajante : O. concesiva / Por nada del mundo / Ni hablar / Ni loco / Ni pensarlo / Ni lo sueñes"
+    "4.8.Pedir_permiso":
+      - "¿Molesto si...?"
+      - "¿Es/Será/Sería mucha molestia que/si...?"
+      - "¿Hay/Tienes (algún) problema/inconveniente con/en...?"
+      - "Solicito (tu) permiso/autorización para"
+
+# ============================================================================
+# === C2 (Maestría) — additions cumulatives à C1 =============================
+# ============================================================================
+C2:
+  level_label: "Maestría"
+
+  "1.Dar_y_pedir_informacion":
+    "1.1.Identificar":
+      - "El fulano / El tipo ese (coloquial despectivo)"
+      - "SN + en/con/por... + cuyo..."
+    "1.2.Pedir_informacion":
+      - "Alternativas proposicionales (¿... o, por el contrario...?)"
+      - "Curiosidad (¿Y eso?)"
+      - "Explicaciones con urgencia"
+      - "Prudencia (¿Me permites...? / ¿Aceptas...?)"
+      - "Coloquial recriminatoria"
+    "1.3.Dar_informacion":
+      - "Subordinadas adverbiales con subjuntivo"
+      - "Causales enfáticas"
+      - "Causales coloquiales (Declaración + que...)"
+    "1.3.1.Corregir_informacion":
+      - "Como mucho / A lo sumo... pero lo que se dice..."
+      - "Repetición + pero..."
+      - "Sí, claro + enunciado hiperbólico"
+      - "¡¿Qué/Cómo va a...?! intensificación"
+      - "Admito/Puedo admitir que... pero de ahí a..."
+      - "Sin ánimo de contradecirle, permítame decir que..."
+    "1.3.2.Senalar_improcedencia":
+      - "¿Y a ti qué te importa? / ¿Y a ti qué te parece?"
+      - "¿Para qué/Dónde/Cómo... va a ser?"
+    "1.4.Pedir_confirmacion":
+      - "¿Estoy en lo cierto si digo/pienso/afirmo que...?"
+      - "¿A que (sí/no)...? / ¿A que es verdad/mentira que...?"
+      - "¿Niegas/Desmientes (lo) que...?"
+      - "¿Te atreves a negar/desmentir...?"
+      - "¿Se puede negar/afirmar que...?"
+      - "Te hacía..."
+      - "Encubiertas (Corren rumores de que..., ¿Me equivoco al pensar que...?)"
+    "1.4.1.Cuestionar_informacion":
+      - "No pretenderás que me crea que... ¿verdad/no?"
+      - "¿No creerás/pensarás que...?"
+      - "¿Debo entender que...?"
+      - "¿No me mientes/engañas cuando dices/al decir que...?"
+    "1.5.Confirmar_informacion":
+      - "No es que..., es que + intensificada"
+      - "Es más..."
+      - "No te quepa (la menor) duda de que..."
+
+  "2.Expresar_opiniones":
+    "2.1.Pedir_opinion":
+      - "¿Cuál es tu postura respecto a...?"
+      - "¿Estimas/Entiendes...?"
+      - "¿Eres de la opinión de...?"
+    "2.2.Dar_opinion":
+      - "(Yo) soy de la opinión..."
+      - "(Yo) estimo/entiendo que..."
+    "2.3.Pedir_valoracion":
+      - "¿Cuento con/Das tu beneplácito/visto bueno...?"
+    "2.4.Valorar":
+      - "Me parece de perlas/de cine/de miedo/de pena que..."
+      - "Estimo + adjetivo/SN"
+      - "¡Cómo + V + de bien/mal/fantástico...!"
+    "2.5.Aprobar_desaprobar":
+      - "Cuentas con/Doy mi beneplácito/visto bueno"
+      - "Me parece pésimo que..."
+      - "No estoy dispuesto a tolerar/consentir"
+    "2.7.Acuerdo_pregunta":
+      - "¿Hasta qué punto/En qué medida discrepas con/compartes...?"
+    "2.8.Invitar_acuerdo":
+      - "Declaración + ¿A que sí/no?"
+      - "¿A que (no es ninguna tontería que) + declaración?"
+      - "Declaración + ¿Verdad que/A que no me falta razón?"
+      - "¿Acaso no...?"
+      - "Tú me dirás si no + declaración"
+    "2.9.Expresar_acuerdo":
+      - "(Yo) defiendo la misma idea/postura"
+      - "(Yo) soy de la misma opinión"
+      - "(Yo) también/tampoco estimo/entiendo/soy de la opinión de"
+      - "(Yo) también lo entiendo así"
+      - "(Yo) no puedo por menos que estar de acuerdo"
+      - "Me sumo/adhiero a tu opinión"
+      - "Suscribo tus palabras/tu opinión"
+      - "Acuerdo rotundo (¡Eso es!, ¡Sí, señor!, ¡Y que lo digas!)"
+    "2.10.Expresar_desacuerdo":
+      - "(Yo) no defiendo esa postura"
+      - "(Yo) no soy de la misma opinión"
+      - "(Pues) yo no/sí soy de la opinión de"
+      - "(Yo) no lo entiendo así"
+      - "(Yo) no puedo menos que discrepar/disentir/estar en desacuerdo"
+      - "Discrepo/disiento"
+      - "No suscribo tu opinión"
+      - "Desacuerdo rotundo (¡Qué va a...!, Eso lo dirás tú)"
+    "2.11.Mostrar_escepticismo":
+      - "No sé qué quieres que te diga"
+      - "No me acaba de convencer / No acabo de verlo"
+      - "(Eso) está por ver"
+      - "Yo no me atrevería a afirmarlo (tan rotundamente)"
+    "2.12.Contraargumentar":
+      - "No (te) digo que no, pero/sin embargo/ahora bien"
+      - "No (te) niego que..., pero/sin embargo/ahora bien"
+      - "No te discuto que..., pero..."
+      - "Yo no diría tanto, lo que yo creo es que..."
+      - "Repetición del aspecto cuestionado (+ contraargumento)"
+    "2.13.Expresar_certeza":
+      - "Me apuesto/me juego lo que quieras (+ a que...)"
+      - "Pongo la(s) mano(s) en el fuego"
+      - "O. + te lo digo yo"
+      - "¡Declaración + como que me llamo + nombre!"
+      - "Me consta que... / Tengo constancia de que..."
+      - "Sé de sobra/a ciencia cierta"
+      - "Sé de buena tinta/de buena fuente"
+      - "Salta a la vista que..."
+      - "Es de cajón que..."
+      - "Cae por su propio peso que..."
+    "2.14.Falta_certeza":
+      - "Pongo en tela de juicio que..."
+      - "No las tengo todas conmigo"
+      - "Albergo mis/ciertas dudas sobre/acerca de"
+      - "(No) me atrevo a decir/afirmar"
+      - "Tengo la corazonada de que..."
+      - "Me da (en la nariz) que..."
+    "2.15.Invitar_hipotesis":
+      - "¿O. interrog. [V en plusc. subj.], si... [V en plusc. subj.]?"
+      - "De + inf./inf. comp., ¿O. interrog. [V en condic. o plusc. subj.]?"
+    "2.16.Expresar_posibilidad":
+      - "Lo mismo... / Eso es que..."
+      - "SN + apunta a... / SN + induce/lleva a pensar..."
+      - "SN + conduce/lleva a la hipótesis..."
+    "2.17.Obligacion_necesidad":
+      - "Es preciso/menester..."
+      - "Estoy sujeto a..."
+      - "No hay/(me) queda más remedio que..."
+      - "No me queda más/otra que..."
+    "2.18.Falta_obligacion":
+      - "No es preciso/menester... / No estoy sujeto a..."
+      - "Ni falta que (te) hace..."
+    "2.19.Pedir_conocimiento":
+      - "¿Has tenido noticia de...?"
+      - "¿Tienes constancia de...?"
+      - "¿Estás al tanto de...?"
+      - "¿Te ha llegado algo de...?"
+      - "¿Qué ha sido de...?"
+    "2.20.Expresar_conocimiento":
+      - "He sabido que..."
+      - "Tengo una vaga idea/noción de..."
+      - "Estoy al corriente/al tanto"
+      - "Hasta donde yo sé / Por lo que yo sé"
+      - "Sé de sobra"
+      - "(Me) conozco... como la palma de mi mano / con pelos y señales"
+      - "(Me) sé/conozco... de pe a pa / al dedillo"
+      - "Estoy muy puesto en..."
+    "2.21.Expresar_desconocimiento":
+      - "No estoy al corriente/al tanto (+ de...)"
+      - "(Vete tú) a saber..."
+      - "¡Quién sabe...!"
+      - "Sabe Dios si..."
+    "2.22.Pedir_habilidad":
+      - "¿Estás capacitado/entrenado para...?"
+    "2.23.Habilidad":
+      - "Estoy capacitado/entrenado (como) para..."
+      - "Es lo mío"
+    "2.24.Pedir_recuerdo":
+      - "¿Tienes presente...?"
+      - "¿Te viene a la memoria...?"
+      - "¿Caes (en la cuenta)...?"
+    "2.25.Expresar_recuerdo":
+      - "Me viene a la memoria..."
+      - "Si la memoria no me falla... / Si hago memoria..."
+      - "Hasta donde yo recuerdo..."
+      - "No se me va / No puedo quitarme de la cabeza..."
+      - "Tengo presente/en mente..."
+      - "Guardo vivo el recuerdo/viva la memoria de..."
+      - "Me hace recordar..."
+      - "Ahora/Ya caigo (en la cuenta)"
+    "2.26.Expresar_olvido":
+      - "No me viene a la memoria / No caigo"
+      - "Se me ha ido el santo al cielo"
+
+  "3.Gustos_deseos_sentimientos":
+    "3.2.Expresar_gustos":
+      - "Me cautiva/Me embelesa/Me enamora..."
+      - "Despierta/Suscita interés..."
+      - "No me dice nada/gran cosa"
+    "3.3.Expresar_aversion":
+      - "Me produce aversión/rechazo"
+      - "Me repatea/Me repele"
+      - "Me da grima/dentera"
+      - "No puedo verlo ni en pintura"
+    "3.4.Pedir_preferencias":
+      - "¿Te decantas por...?"
+      - "¿Por qué (+ SN)/cuál te decantas?"
+    "3.5.Expresar_preferencia":
+      - "Me inclino/Me decanto por"
+      - "Puestos a elegir"
+      - "Tengo/Siento debilidad/predilección por"
+      - "(No hay) nada como"
+      - "Ni punto de comparación / No hay color"
+    "3.6.Indiferencia":
+      - "Me es/deja indiferente / Me tiene sin cuidado"
+      - "(Por mí,) como si"
+      - "Y a mí, ¿qué (más me da)?"
+      - "Tanto me da / Ni me va ni me viene"
+      - "Ni me gusta ni me disgusta"
+      - "Me importa un comino/bledo/rábano"
+    "3.8.Expresar_deseos":
+      - "No veo el momento de"
+      - "Lo que daría por / ¡Lo que hubiera dado por poder estar ahí!"
+      - "¡Qué más quisiera yo que...!"
+      - "Me muero (de ganas) por"
+      - "Daría la vida/mi brazo derecho por"
+      - "¡Por nada del mundo...!"
+    "3.10.Planes_intenciones":
+      - "Aspiro a..."
+      - "Estoy a esto de..."
+    "3.12.Alegria_satisfaccion":
+      - "¡Menuda/Vaya alegría (que me has dado)!"
+      - "Me colma de dicha/satisfacción"
+      - "Celebro/Me complace/Me satisface"
+      - "Me congratulo de que... / Me congratula que..."
+      - "Estoy/Me siento pletórico/exultante/radiante"
+      - "Estoy como unas pascuas/unas castañuelas/un niño con zapatos nuevos"
+      - "No quepo en mí de gozo/dicha/júbilo"
+    "3.13.Tristeza":
+      - "Me hiere / Me destroza"
+      - "Muy a mi pesar / Con todo el dolor de mi corazón"
+      - "Estoy consternado/desconsolado/afectado/desolado/hecho polvo..."
+      - "Estoy hundido (en la miseria) / (con la moral) por los suelos..."
+      - "No levanto cabeza / Se me viene el mundo encima"
+    "3.14.Placer":
+      - "(Me) lo paso de miedo/de muerte/bárbaro"
+      - "¡Qué gozada! / ¡Qué gusto!"
+    "3.15.Aburrimiento":
+      - "¡Qué/Menudo/Vaya tostón/fastidio/rollo...!"
+      - "¡Qué/Menuda/Vaya pesadez/lata!"
+    "3.16.Hartazgo":
+      - "¡Esto (ya) es el colmo!"
+      - "Esto (ya) es la gota que colma el vaso"
+      - "Me tienes harto/negro/frito"
+    "3.17.Enfado":
+      - "Me revienta / Me llevan los demonios"
+      - "Me sale humo por las orejas"
+      - "Estoy que muerdo/trino"
+      - "(Estoy que) me subo por las paredes"
+      - "Me hierve la sangre / Monto en cólera"
+      - "Me pongo rojo de ira/rabia / Me pongo como una furia/fiera"
+      - "Me cojo/pillo un berrinche/una rabieta"
+      - "¡Se van a enterar! / ¡Me van a oír!"
+    "3.18.Miedo":
+      - "Me angustio/angustia... / Me intimida..."
+      - "Me espanta... / Me da pavor... / Me echo a temblar..."
+      - "Me tiene preocupado/angustiado/aterrorizado/en vilo..."
+      - "Estoy angustiado / (con el alma) en vilo"
+      - "Se me hiela la sangre..."
+      - "¡Vaya/Menudo susto!"
+    "3.19.Nerviosismo":
+      - "Estoy de los nervios / Pierdo los estribos"
+      - "Me saca de mis casillas..."
+      - "Me exaspero/enervo... / Me exaspera/enerva..."
+    "3.20.Empatia":
+      - "Me pongo en tu piel"
+      - "¡Cómo lo has tenido que pasar!"
+      - "¡Vaya/Menuda suerte! / ¡Vaya/Menuda faena!"
+      - "¡Vaya, hombre! / ¡Vaya por Dios!"
+    "3.21.Alivio":
+      - "Cuánto/Lo que me tranquiliza"
+      - "Me he quitado algo/un peso de encima"
+      - "Me he quedado como nuevo"
+    "3.22.Esperanza":
+      - "No me hago (+ cuantif.) ilusiones"
+      - "(Me) creo falsas esperanzas/ilusiones"
+      - "No cuento (mucho) con"
+    "3.23.Decepcion":
+      - "Toda la vida... para que luego..."
+      - "¡Qué chasco/palo (me llevé)!"
+    "3.24.Resignacion":
+      - "Es lo que hay"
+      - "Hay que aguantarse/fastidiarse..."
+      - "¡No hay/queda otra!"
+    "3.25.Arrepentimiento":
+      - "Quién me mandaría (a mí)..."
+      - "Me remuerde la conciencia / No me perdono"
+      - "Sabiendo lo que ahora sé / De haberlo sabido"
+    "3.26.Vergüenza":
+      - "Estoy abochornado / Se me cae la cara de vergüenza"
+      - "No sé dónde meterme"
+      - "Me da corte/apuro / Me pongo de todos los colores"
+      - "Se me suben los colores / Me quiero morir"
+      - "¡Qué corte! / ¡Tierra, trágame! / ¡Qué bochorno!"
+    "3.27.Sorpresa":
+      - "Hay que ver / No dejo/deja de sorprenderme"
+      - "(Eso) me coge/me pilla de sorpresa/por sorpresa/de improviso/de nuevas"
+      - "Me dejas helado/boquiabierto/pasmado/de una pieza"
+      - "Pretendes / No doy crédito"
+      - "¡Anda ya! / ¡Yo alucino!"
+    "3.28.Admiracion":
+      - "Me sobrecoge"
+      - "Me admiro / Me maravillo"
+      - "Me admira / Me maravilla"
+    "3.29.Afecto":
+      - "Profeso simpatía/afecto/cariño/amor por/hacia"
+      - "Siento/Tengo estima/aprecio/por/hacia"
+    "3.30.Sensaciones_fisicas":
+      - "Me entra (una) sed/(un) hambre/frío/calor/sueño/dolor"
+      - "Estoy famélico/tieso de frío"
+      - "Estoy sudando como un pollo"
+      - "Ando cansado/agotado/hecho polvo"
+      - "Estoy exhausto/reventado"
+      - "Estoy que me muero / me arrastro"
+      - "Estoy para el arrastre"
+      - "¡No puedo dar un paso más! / Veo las estrellas"
+      - "Pensé que me moría"
+
+  "4.Influir_interlocutor":
+    "4.1.Dar_orden":
+      - "Directa : Con omisión del verbo"
+      - "Atenuada : Imperativo + atenuativo apelativo afectivo"
+      - "Atenuada : Ya estás + gerundio"
+      - "Atenuada : ¿Voy a tener que + infinitivo + yo...?"
+      - "Atenuada : O. disyuntiva reduplicada"
+      - "Atenuada : Urge..."
+      - "Atenuada : (Tú) coges + O. (coloquial)"
+    "4.2.Pedir_favor":
+      - "Atenuada : Te estaría (+ intensif.) agradecido si"
+      - "Atenuada : Ni te imaginas/No te puedes imaginar el favor que me harías si"
+      - "Atenuada : No te haces a la idea del favor que me harías si"
+      - "Atenuada : No me queda más remedio que pedirte un favor"
+    "4.3.Pedir_objetos":
+      - "Atenuada : (Te) estaría (+ intensif.) agradecido si"
+      - "Atenuada : Si me pudieras mandar/traer/enviar"
+    "4.4.Pedir_ayuda":
+      - "Directa : Échame un cable"
+      - "Atenuada : ¿Tendrías la amabilidad/bondad de ayudarme/de echarme una mano?"
+      - "Atenuada : (Te) estaría (+ intensif.) agradecido si..."
+      - "Atenuada : ¿Me echas un cable?"
+    "4.5.Rogar":
+      - "Te ruego encarecidamente que..."
+      - "Te suplico que..."
+      - "Imperativo + te lo suplico/te lo ruego"
+      - "No sé cómo pedirte que..."
+      - "Imperativo + y te daré todo lo que quieras / y haré todo lo que me pidas"
+      - "Te lo pido de rodillas"
+      - "(Ten) piedad / Por caridad"
+    "4.6.Repetir_orden":
+      - "Pero, ¿es que no me estás oyendo? + orden"
+      - "Por enésima vez + orden"
+    "4.7.Responder_orden_petic":
+      - "Acceder sin reservas : A tu (entera) disposición / Como/Lo que tú ordenes/digas/dispongas"
+      - "Acceder : Haré (todo) lo que esté en mi mano / Haré lo imposible"
+      - "Acceder : No hay más que hablar / Tus deseos son órdenes (para mí)"
+      - "Acceder : A tus órdenes / A mandar"
+      - "Reservas : Que no sirva de precedente / Por(que)..., que si no... / Si no queda otro remedio..."
+      - "Eludir : Se hará lo que se pueda / De momento es completamente imposible, pero..."
+      - "Negarse cortésmente : Lamento tener que darle una negativa, pero..."
+      - "Negarse cortésmente : No me queda otro remedio que negarme"
+      - "Negarse cortésmente : No es mi intención desautorizarlo, pero..."
+      - "Negarse tajante : No estoy dispuesto (a...) / No paso por... / De eso nada"
+      - "Negarse tajante : Vas listo / Sí, hombre... ¿y qué más?"
+      - "Negarse tajante : Lo tienes/llevas claro/crudo / No cuentes conmigo"
+      - "Negarse tajante : ¡Y un cuerno! / ¡Porque tú lo digas! / Espera sentado"
+      - "Negarse tajante : Ni se te pase por la imaginación / Por encima de mi cadáver"
+      - "Negarse tajante : No soy tu criado / No estoy a tu servicio"
+    "4.8.Pedir_permiso":
+      - "No sé si será un abuso/No quisiera abusar, pero..."
+      - "¿Algún problema/inconveniente con/en...?"
+      - "¿Pasa algo si/por...?"
+      - "Solicito (su) licencia/venia para"
+
+# Sections 5 (Relacionarse socialmente) + 6 (Estructurar el discurso) C1-C2 :
+# **PENDING** — WebFetch truncated. Sinse fallback acquisition OR manual scrape needed
+# (cf gate Tier 2 L268-269 execution-roadmap).
+# Stubs left for Tier 3 G7.1 to flag during merge into functions/es.yaml.
+sections_5_6_status: "pending — WebFetch truncated, fallback acquisition needed"

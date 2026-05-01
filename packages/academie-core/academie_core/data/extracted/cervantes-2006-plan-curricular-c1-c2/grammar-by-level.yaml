@@ -1,0 +1,744 @@
+# Gramática inventario C1 + C2 — Plan Curricular del Instituto Cervantes (PCIC).
+#
+# ADR-014 Layer 1.5 extraction (Session 56 Tier 2 G6.A, 2026-05-01).
+# Source : `cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/02_gramatica_inventario_c1-c2.htm`
+# (HTML version free online, fetched via WebFetch — preferred over scanned PDF).
+#
+# Use case : audit `data/curriculum_es.yaml` (98 concepts) against PCIC C1-C2 authoritative
+# inventario. Each PCIC item should map to ≥1 concept_key. Gaps = expansion items for
+# Tier 3 G6.D curriculum_es.yaml 98 → ~150 concepts.
+
+source:
+  book: "Plan Curricular del Instituto Cervantes — Niveles de referencia para el español"
+  volume: "C — C1+C2"
+  publisher: "Instituto Cervantes / Edelsa / Biblioteca Nueva"
+  year: 2006
+  edition: "1.ª (reprint Línea 2015)"
+  isbn: "978-84-7711-052-7"
+  inventario: "2. Gramática"
+  url: "https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/02_gramatica_inventario_c1-c2.htm"
+  fetch_date: 2026-05-01
+  notes: |
+    PCIC = adaptation ES of CEFR (NOT translation Threshold). Derived from Spanish-specific
+    characteristics. Hierarchy : 15 macro-sections × 6 niveaux (A1-C2). Vol A covers A1+A2
+    (extracted S53), Vol B covers B1+B2 (extracted S53), Vol C covers C1+C2 (THIS file, S56).
+    PCIC rule : "Los inventarios... especifican solo el material nuevo con respecto a los
+    niveles anteriores" — C2 entries are CUMULATIVE additions to C1, which are CUMULATIVE
+    additions to B2.
+
+# ============================================================================
+# === C1 (Dominio operativo eficaz) — 15 macro-sections =====================
+# ============================================================================
+C1:
+  level_label: "Dominio operativo eficaz"
+  band: "Proficient user C1"
+  macro_sections:
+
+    # --- 1. El sustantivo ---
+    "1.El_sustantivo":
+      "1.1.Clases_de_sustantivos":
+        "1.1.1.Nombres_propios":
+          - "Antropónimos : apellidos plurales (los Escipiones, los Borbones)"
+      "1.2.El_genero_de_los_sustantivos":
+        - "Cambio género → cambio significado : individuo/colectivo (el leño/la leña)"
+        - "Cambio género → grande/pequeño (el huerto/la huerta)"
+        - "Cambio género → significado totalmente distinto (el frente/la frente)"
+        - "Género ambiguo (el mar/la mar)"
+        - "[Hispanoamérica] Tendencia distinguir género, formar femenino/masculino (estudianta, pianisto)"
+      "1.3.El_numero_de_los_sustantivos":
+        - "Desplazamiento acentual en esdrújulos (régimen/regímenes)"
+        - "Pluralización extranjerismos hispanizados (carnet/carnés)"
+        - "Plural apellidos (los Escipiones)"
+        - "Plural significativo : duales léxicos (las tenazas)"
+        - "Plural cambio significado (el celo/los celos)"
+
+    # --- 2. El adjetivo ---
+    "2.El_adjetivo":
+      "2.1.Clases_de_adjetivos":
+        - "Calificativos color : compuestos sintagmáticos, concordancia número (verde botella, azul marino)"
+        - "Relacionales doble uso (empresa familiar relacional vs. cara familiar calificativo)"
+        - "Posesivo relativo cuyo : variación género/número, concordancia con poseído (la chica cuyos padres)"
+      "2.4.Posicion_del_adjetivo":
+        - "Anteposición : valor cuantificador (raro, escaso)"
+        - "Anteposición : exclamativos con qué (¡Qué bonito paisaje!)"
+        - "Adjetivo aislado : complementos predicativos (Orgullosa, respondió)"
+      "2.5.Grados_del_adjetivo":
+        - "Superlativo absoluto irregular (-ble : amabilísimo)"
+        - "Comparativo culto raro (ulterior)"
+        - "Superlativo absoluto irregular (óptimo, pésimo, mínimo)"
+      "2.6.Metabasis_del_adjetivo":
+        - "Adverbialización (conduce rápido = rápidamente)"
+        - "[Hispanoamérica] Tendencia adverbialización (Viste lindo, Anda ligero)"
+
+    # --- 3. El artículo ---
+    "3.El_articulo":
+      "3.1.El_articulo_definido":
+        - "Valor enfático : con relativa (La cara que puso)"
+        - "Valor enfático : con neutro lo (Lo mal que cantó)"
+        - "Valor sustantivador : neutro lo + adverbio/complemento (lo antes que puedas)"
+        - "Valor sustantivador : con infinitivo opcional (el ser de otro país)"
+        - "Valor sustantivador : con flexionada hecho/relativa (El que sea listo lo conseguirá)"
+        - "Distribucional : restricciones con cuantificadores (pocos amigos que tiene)"
+        - "Distribucional : compatibilidad con hay (En esta clase hay el lío de siempre)"
+      "3.2.El_articulo_indefinido":
+        - "Valor enfático : sentido consecutivo (Tiene una cara que es de impresión)"
+        - "Distribucional : compatibilidad nombre propio (Un Buñuel sólo puede aparecer una vez)"
+        - "Distribucional : un N de SN enfáticos (un encanto de persona)"
+        - "Distribucional : incompatibilidad sujeto indefinido inespecífico con predicado de estado"
+        - "Distribucional : dislocación izquierda (Una cámara, mejor que sea digital)"
+      "3.3.Ausencia_de_determinacion_nombres_escuetos":
+        - "Predicativos con nombrar/declarar (La nombraron embajadora)"
+        - "Incompatibilidad con predicados delimitados (*se comió bistec)"
+        - "Tras en : medio/modo (ir en tren ; jugar en campo contrario)"
+        - "Tras con/a (cortar el pelo a navaja)"
+        - "Aposiciones adscriptivas (Valencia, tierra de naranjos)"
+
+    # --- 4. Los demostrativos ---
+    "4.Los_demostrativos":
+      - "Anafórico discursivo : criterio de proximidad (Estas eran majestuosas y aquellos apacibles)"
+      - "Eso + subordinada (Eso que dices es una tontería)"
+      - "Valor de condescendencia en suspendidas (este chico)"
+      - "Referente humano : valor despectivo (Esta es una lista)"
+      - "Posnominal : exclamativos con qué (¡Qué hombre este!)"
+
+    # --- 5. Los posesivos ---
+    "5.Los_posesivos":
+      - "Valor cuantificacional (Esto tiene su dificultad)"
+      - "Precedido neutro lo : referente desconocido/múltiple (Esto es lo tuyo)"
+      - "Precedido neutro lo : esfuerzo/sufrimiento (Pasé lo mío)"
+      - "Expresiones fijas de contacto (hija mía, cariño mío)"
+
+    # --- 6. Los cuantificadores ---
+    "6.Los_cuantificadores":
+      "6.1.Cuantificadores_propios":
+        - "Numerales partitivos (la enésima parte, la mitad de la mitad)"
+        - "Universales : Todo con valor generalizador inespecífico"
+        - "Universales : precedido de para variedad (Sabe de todo)"
+        - "Relativo cuanto : variación género/número, concordancia con antecedente"
+        - "Cada uno : concordancia género no número ; valor impersonal"
+        - "Cualquiera : invariable, nunca antes del nombre ; con indefinido uno/a sin nombre"
+        - "No universales : elementos valor negativo (jamás, en mi vida)"
+        - "Gradativos : comparativos con de lo que/que lo que (Sabe más de lo que esperaba)"
+        - "Gradativos : proporcionales bien (un té bien caliente)"
+      "6.2.Cuantificadores_focales":
+        - "Incluyentes : Ni siquiera"
+        - "Excluyentes : Al menos"
+      "6.3.Estructuras_cuantificadas":
+        - "Partitivo con totalidad/resto (El resto de los asistentes)"
+        - "Concordancia ad sensum con artículo indefinido (Un grupo de políticos votaron)"
+
+    # --- 7. El pronombre ---
+    "7.El_pronombre":
+      "7.1.El_pronombre_personal":
+        "7.1.1.Pronombre_sujeto":
+          - "Forma : neutro 3ª persona ello"
+          - "Presencia/ausencia : resolver ambigüedad subjuntivo/condicional"
+          - "Presencia : construcciones absolutas infinitivo/gerundio (Al llegar él)"
+          - "Reduplicación valor enfático (Luis limpia el coche él mismo/solo)"
+          - "Valor : referente no humano (se enciende ella sola)"
+          - "Valor : personificación (La paz lo es todo)"
+        "7.1.2.Pronombres_atonos_OD":
+          - "Forma : le para cosa (leísmo de cosa)"
+          - "Alternancia con cambio significado (parte/totalidad : coge/cógelos)"
+          - "Alternancia sin cambio significado en estructuras dos verbos"
+          - "Restricciones con OD no pronominalizado (corrección anticipatoria/foco)"
+          - "Posición : alternancia con algunos en haber impersonal"
+          - "Posición : con verbos percepción (Lo he visto hacer/He visto hacerlo)"
+          - "Expresiones fijas con átonos (arreglárselas, fastidiarla)"
+        "7.1.3.Pronombres_atonos_OI":
+          - "Impersonales con ser/resultar + Adj"
+          - "[Caribe/México/Colombia/Panamá] Plural OI presentación se lo"
+          - "Laísmo/loísmo extendidos"
+          - "Ausencia cuando OI impreciso"
+          - "Valor neutro le ; tematizador locativo (Se le echó encima ; Le va detrás)"
+        "7.1.4.Valores_de_se":
+          - "Restricciones impersonal/pasiva refleja (paciente humano + a)"
+          - "[Hispanoamérica] Tendencia reflexivo coordinado"
+          - "Medio-impersonal con verbos psicológicos"
+          - "Construcciones verbo pronominal"
+          - "Dativo de interés"
+          - "Voz media (Se me abre la boca)"
+        "7.1.6.Pronombres_tonicos":
+          - "Forma : amalgamadas 3ª con con (consigo)"
+          - "[zonas voseo] consigo"
+          - "Pronombre sí (Lo pensó para sí)"
+          - "Tendencia reflexivo a sustituir"
+          - "Refuerzo con mismo/a/os/as"
+      "7.2.Los_relativos":
+        - "Que : especificativas, antecedente indefinido/demostrativo, complemento de nombre"
+        - "El/la/los/las/lo que : Lo que invariable con/sin preposición"
+        - "El/la/los que : en comparativas, especificativas restrictivas sin antecedente expreso"
+        - "El/la/los que : en predicativas con haber, antecedente indefinido/demostrativo"
+        - "Quien/quienes : equivalencia el/la/los/las que (+ humano), registro culto"
+        - "Quien : explicativas, libres"
+        - "El cual : variación género/número, con/sin preposición, restricciones explicativas"
+        - "El cual : yuxtapuestas, antecedente oracional, antecedente expreso obligatorio"
+      "7.3.Los_interrogativos":
+        - "Locuciones adverbiales [ref. 8.9]"
+        - "Orden constituyentes : separabilidad estructuras partitivas"
+        - "Orden constituyentes : restricciones interrogativas coordinadas"
+      "7.4.Los_exclamativos":
+        - "Cuánto/cuántos : con adjetivo flexionado evaluativo"
+        - "Dónde : con/sin preposición"
+        - "Orden : exclamativo seguido SV con/sin clíticos"
+
+    # --- 8. El adverbio y las locuciones adverbiales ---
+    "8.El_adverbio":
+      "8.1.Adverbios_en_-mente":
+        - "Restricciones : adjetivos no formables (calidad-específica : duramente sólo acciones severas)"
+      "8.2.Adverbios_nucleares":
+        - "Circunstanciales facultativos : lugar (acá, allá ; preferencia Hispanoamérica)"
+        - "Manera : acción (angustiosamente) ; apreciación subjetiva (repulsivamente)"
+        - "Manera : resultativos, agentivos, posición, simultaneidad"
+        - "Circunstanciales obligatorios : posición inicial como foco"
+        - "Adverbio marco (Aquí, ¿vas a trabajar?)"
+      "8.3.Adverbios_externos_dictum":
+        - "Nocionales/punto de vista : posición parentética inicial (técnicamente, geográficamente)"
+        - "Evaluativos : necesidad/obligación (irremediablemente)"
+        - "Evaluativos : conocimiento/percepción (visiblemente, notoriamente)"
+        - "Evaluativos : epistémicos (correctamente, erróneamente)"
+      "8.4.Adverbios_del_modus":
+        - "Modalidad : reforzadores valor verdad (selección indicativo, no intensificable)"
+        - "Modalidad : restrictores valor verdad (supuestamente, aparentemente)"
+        - "Enunciación metalingüística : reformuladores equivalencia (literalmente, textualmente)"
+        - "Enunciación : orientados a emisor/receptor (francamente, sinceramente)"
+      "8.5.Adverbios_conjuntivos":
+        - "Coordinación con sentido consecutivo (consecuentemente, por consiguiente)"
+        - "Restrictivo adversativo coordinante (solo que, únicamente que)"
+        - "Concesivo en posición inicial (contrariamente a lo que piensas)"
+        - "También/tampoco en comparaciones equiparación"
+        - "Transición continua : modificadores aserción, introducción nuevo tema (ahora, ahora bien)"
+      "8.6.Focalizadores":
+        - "Excluyentes (sencillamente, simplemente)"
+      "8.7.Intensificadores":
+        - "Harto : con adverbios/adjetivos, registro culto"
+      "8.8.Adverbios_relativos_interrogativos":
+        - "Relativo cuanto : con indicativo/subjuntivo"
+      "8.9.Locuciones_adverbiales":
+        - "Por qué : doble interpretación (simple unitario causa ; compuesto no unitario)"
+
+    # --- 9. El verbo ---
+    "9.El_verbo":
+      "9.1.Tiempos_indicativo":
+        "9.1.1.Presente":
+          - "Histórico (Colón llega a América en 1492)"
+        "9.1.2.Preterito_imperfecto":
+          - "Descriptivo : acción interrumpida (excusa : ¡Y yo qué sabía!)"
+          - "Valor sorpresa (Anda, estabas aquí)"
+          - "Valor censura (¿Tú no tenías que hacer los deberes?)"
+          - "Estilo indirecto implícito + marcador presente/futuro (María se casaba mañana)"
+          - "Imperfecto de distanciamiento"
+        "9.1.4.Futuro_imperfecto":
+          - "Objeción/rechazo (Será muy listo pero..., A ti te dará igual)"
+          - "Mandato (Harás lo que te diga)"
+        "9.1.5.Condicional_simple":
+          - "Objeción/rechazo en pasado (Sería muy listo pero..., A ti te daría igual)"
+        "9.1.8.Pretérito_pluscuamperfecto":
+          - "Conato en pasado (Había estado a punto de equivocarse)"
+        "9.1.9.Futuro_perfecto":
+          - "Objeción/contraste pasado (Habrá estudiado mucho pero)"
+          - "Sustituto espero/no creo/confío + no en pasado (¿No me habré olvidado de algo?)"
+        "9.1.10.Condicional_compuesto":
+          - "Objeción/contraste pasado anterioridad (Habría estudiado mucho pero)"
+      "9.2.Tiempos_subjuntivo":
+        "9.2.1.Presente":
+          - "Independiente : desiderativas matiz desdeñoso ; que + presente sin imperativo previo"
+          - "Subordinación compuesta presente/futuro : doble interpretación percepción negada"
+          - "Selección modo verbos comunicación negados ; efectos negación causales"
+          - "Adverbiales finales con locuciones (a fin de que, con el fin de que)"
+        "9.2.2.Pretérito_imperfecto":
+          - "Independientes : desiderativas desdeñosas todas coordinaciones temporales"
+          - "Exclamativas con quién deseo irrealizable"
+          - "Subordinación compuesta : pasado coordenadas"
+        "9.2.3.Pretérito_perfecto":
+          - "Sustituye futuro perfecto indicativo probabilidad con verbos creencia negada"
+        "9.2.4.Pretérito_pluscuamperfecto":
+          - "Pasado coordenadas [ref. 9.2.2]"
+      "9.3.El_imperativo":
+        - "Forma : repetición/refuerzo (Vete ya, he dicho)"
+        - "Valor irónico lexicalizado (¡Mira qué bien!, ¡Vaya, vaya!)"
+        - "Valor condicional (Abre la caja y verás)"
+        - "Ponderativos lexicalizados : calidad (Mira que eres) ; molestia (¡Dale!) ; petición (Anda... ve)"
+      "9.4.Formas_no_personales":
+        "9.4.1.Infinitivo":
+          - "Verbal independiente modalizado (¡Descansar tres meses!)"
+          - "Interrogativo (¿Decirle yo lo que pienso?)"
+          - "Sustantivas como complemento nombre/adjetivo"
+          - "Relativas con restricciones"
+          - "Valor nominal (los deberes conyugales, el cantar de los pájaros)"
+        "9.4.2.Gerundio":
+          - "Verbal independiente modalizado (¡Siempre protestando por todo!)"
+          - "Predicativo en SN"
+          - "Adjuntos internos modal (Me pidieron perdón cantando)"
+          - "Adjuntos externos temporal (Llegando yo) ; condicional (Estudiando más)"
+        "9.4.3.Participio":
+          - "Pasivas resultado (Este pueblo está maldito)"
+          - "Independiente modalizado (¡Encerrada en estas cuatro paredes!)"
+          - "Construcciones absolutas sin conectores (Terminada la investigación)"
+
+    # --- 10. El sintagma nominal ---
+    "10.El_sintagma_nominal":
+      "10.1.El_nucleo":
+        - "SN núcleo elíptico : interpretación catafórica atributivas"
+        - "Dislocación izquierda (Ordenador, tengo uno viejo)"
+        - "Nominalizaciones (El cantar de los pájaros alegra)"
+      "10.2.Complementos_modificadores":
+        - "Modificadores adjuntos restrictivos : doble interpretación objetiva/subjetiva (el asesino de Juan)"
+        - "Modificadores oracionales : completivas/sustantivas con infinitivo preposicional o flexionada"
+        - "Selección modo (El temor a perderte/de que te vayas)"
+        - "Combinación adjetivos relacionales argumental/no argumental"
+        - "Ambigüedad participio/adjetivo"
+      "10.3.Concordancia_interna_SN":
+        - "Sustantivos coordinados con concordancia adjetivo (actitud y formas inaceptables)"
+        - "Unitariedad con bloques semánticos (lengua y literatura francesa)"
+      "10.4.Concordancia_SN_verbo":
+        - "Discordancias deliberadas : plural mayestático (Nosotros condenamos)"
+        - "Uso 1ª plural (¿Cómo estamos hoy?)"
+        - "Plural modestia (En este artículo defendemos)"
+
+    # --- 11. El sintagma adjetival ---
+    "11.El_sintagma_adjetival":
+      "11.2.Complementos_modificadores":
+        - "Complementos oracionales con preposición : interrogativas indirectas (interesado en cómo es tu trabajo)"
+        - "Construcciones atípicas : superlativo neutro concordancia con de (una película de lo más divertido/divertida)"
+        - "[Hispanoamérica] lo más + Adj/Adv"
+        - "Expresiones cuantificadoras (la mar de, la tira de)"
+
+    # --- 12. El sintagma verbal ---
+    "12.El_sintagma_verbal":
+      "12.1.El_nucleo":
+        - "Predicativos : intransitivos comportamiento transitivo, complementos tautológicos (Corrió una maratón)"
+        - "Auxiliares : pasiva resultado (restricciones agente, incompatibilidad transitivo)"
+        - "Auxiliares : perifrástica aspectual infinitivo (llegar a, acabar por)"
+        - "Auxiliares : aspectual incoativa (echar a, echarse a)"
+        - "Auxiliares : aspectual gerundio (ir, venir, andar, terminar + gerundio)"
+        - "Auxiliares : modal (venir a) aproximativo"
+        - "Auxiliares : aspectual participio (tener, llevar, dejar + participio)"
+        - "Copulativas : Ser sin adjetivo (criterio distribucional)"
+        - "Ser + Adj : atributivo cualitativo vs. episódico con estar"
+        - "Estar sin adjetivo : para (a punto de) ; por (no realizado / a favor / intención)"
+        - "Estar que expresiones ; usos coloquiales (Está interesante)"
+        - "Pseudo-copulativos (mantenerse, mostrarse)"
+      "12.2.Complementos":
+        "12.2.2.Objeto_directo":
+          - "OD no expreso : confusión transitivo/intransitivo (normativo : *Su padre la pegó)"
+          - "Cláusulas mínimas/reducidas : OD aumentado predicativo (Eligieron a Luis presidente)"
+          - "Leísmo de cosa (*El libro que me dejaste le leí)"
+        "12.2.3.Objeto_indirecto":
+          - "Restricciones reduplicación (Dieron la niña a una familia)"
+          - "Dativo interés : forma pronominal requiere OD delimitado (Me comí un pollo/*Me comí pollo)"
+          - "Laísmo extendido (*La dije que viniera)"
+          - "Loísmo (*Lo dije que viniera)"
+        "12.2.5.Complemento_preposicional":
+          - "Alternancia libre OD/régimen con de (Cuida a Ana/de Ana)"
+          - "Verbos pronominales con preposición (acordarse de/recordar)"
+        "12.2.6.Complemento_predicativo":
+          - "Subordinadas predicativas : infinitivo (La vi bajar)"
+          - "Gerundio (La vi bajando, ambiguo)"
+          - "Participio (El corredor llegó aclamado)"
+
+    # --- 13. La oración simple ---
+    "13.La_oracion_simple":
+      "13.1.Concordancia":
+        - "Ad sensum partitivos para acción individual (La mayoría creen ; La mitad votaron)"
+        - "Ad sensum cuantificador singular + de (Un montón de botellas se rompieron)"
+        - "Restricciones con colectivos (*La gente piensan)"
+      "13.2.Constituyentes":
+        - "Variaciones orden SVO : reordenación (Llega mañana Pedro)"
+        - "Inversión obligatoria parentéticas citadas (María, dijo Luis, no sabe nada)"
+      "13.3.Tipos_oraciones_simples":
+        - "Según actitud hablante : [Antillas/Panamá/Venezuela] interrogativa estructura sujeto preverbal más frecuente con tú"
+        - "Interrogativas precedidas tópico (A María, ¿la has visto?)"
+
+    # --- 14. Coordinación ---
+    "14.Coordinacion":
+      "14.1.Copulativas":
+        - "Asíndeton y polisíndeton (Llamé, insistí, volví a llamar/Llamé e insistí y volví a llamar)"
+        - "Concordancia (Viene/vienen a mi casa Pedro y Ana y Juan)"
+      "14.3.Adversativas":
+        - "Con mas (Acepté, mas no estaba seguro)"
+      "14.4.Distributivas":
+        - "Con ahora ahora (Ahora está triste, ahora está contenta)"
+
+    # --- 15. Subordinación ---
+    "15.Subordinacion":
+      "15.1.Sustantivas":
+        "15.1.1.De_infinitivo":
+          - "Como OD : verbos entendimiento/dicción alternancia infinitivo/flexionada (Creí morirme/Creí que me moría)"
+          - "Como OD : verbos petición dos argumentos (Pidió salir/Pidió que saliera)"
+          - "Como complemento nombre : con deverbales + de ; no deverbales + de"
+          - "Como complemento adjetivo/participio con régimen preposicional"
+        "15.1.2.Flexionadas":
+          - "Como sujeto : régimen preposicional (Que dijeras eso acabó)"
+          - "Como sujeto : con OD nombre incorporado (que te desentiendas)"
+          - "Como sujeto : con verbos implicativos/evidenciales"
+      "15.2.Adjetivas_relativas":
+        - "Tipos : especificativas/restrictivas con incompatibilidad posesivo"
+        - "Pronombres relativos [ref. 7.2] : el cual/los cuales ; lo que/lo cual"
+        - "Posesivo cuyo : con antecedente expreso"
+        - "Cuanto"
+        - "Antecedente : indefinidos/demostrativos pronombres ; libres ; oracionales"
+        - "Concordancia persona : yo/tú vs. 3ª en explicativas con el/la que"
+        - "Libre como atributo"
+        - "Yuxtapuestas (con el cual) ; superpuestas ; en comparativas ; discontinuas ; coordinación"
+      "15.3.Adverbiales":
+        "15.3.1.Temporales":
+          - "Anterioridad : antes de + infinitivo (interpretaciones contrafactuales)"
+          - "Anterioridad : antes de/que + verbo (no factual/contrafactual)"
+          - "Posterioridad : después de/que + verbo (referencia disjunta, no factual)"
+          - "Posterioridad : tras + infinitivo"
+          - "Simultaneidad : al + infinitivo (restricciones interpretación)"
+          - "Simultaneidad : cuando (restricción eventiva, momento previo al habla)"
+          - "Cuando vs. mientras"
+          - "Mientras (ambigüedad temporal/condicional)"
+          - "A medida que, conforme, según (progresión indicativo/subjuntivo)"
+          - "Delimitación : negación con desde que no, hasta que no"
+          - "Intensificadores (sólo cuando)"
+        "15.3.2.De_lugar":
+          - "Dirección con donde + verbo movimiento + para"
+          - "Estasis con donde + verbo no movimiento, sin antecedente expreso"
+          - "Donde/en donde alternancia"
+        "15.3.3.De_modo":
+          - "Como si + subjuntivo : similitud acción con hipotética, matiz condicional"
+        "15.3.4.Causales":
+          - "Tipos enunciación : antepuesta matiz enfático ; con énfasis (solo)"
+          - "Nexos : a causa de que (proclítico/postclítico)"
+          - "Nexos : gracias a que (positivo) ; por culpa de que (negativo)"
+        "15.3.5.Finales":
+          - "Tipos integradas : complemento adjetivo ; valor consecutivo con para"
+          - "Tipos periféricas : separadas comas, cambios entonativos"
+          - "Valor objetivo vs. concesivo"
+          - "Para + infinitivo (parentético) ; para que (parentético separado)"
+          - "Con + SN (con ánimo de, con miras a)"
+          - "Locuciones (con el fin de que, con la finalidad de que, con idea de que, con el propósito de que)"
+        "15.3.6.Condicionales":
+          - "Prótasis indicativo : presente sustituye imperfecto/pluscuamperfecto subjuntivo"
+          - "Hipotéticas irreales ; suspendidas matiz desiderativo"
+          - "Negativas : menos si (indicativo) ; a menos que, excepto que (subjuntivo)"
+          - "Remota : en caso de + infinitivo/sustantivo ; en el caso de que + subjuntivo"
+          - "Gerundio ; imperativo"
+          - "Como (condición indeseada, suspensión posibilidad remota)"
+        "15.3.7.Consecutivas":
+          - "Coordinadas con luego"
+          - "Yuxtapuestas con pues, así pues, de ahí que"
+          - "Adverbios consecuentemente, consiguientemente"
+
+# ============================================================================
+# === C2 (Maestría) — 15 macro-sections (additions cumulatives à C1) =========
+# ============================================================================
+C2:
+  level_label: "Maestría"
+  band: "Proficient user C2"
+  macro_sections:
+
+    # --- 1. El sustantivo ---
+    "1.El_sustantivo":
+      "1.1.Clases_de_sustantivos":
+        - "Antropónimos con artículos/determinantes (la Merche, el Banderas)"
+        - "Topónimos con artículo (el Madrid de los Austrias)"
+        - "Apodos/seudónimos (el Mochuelo)"
+        - "Formas tratamiento (Su Majestad)"
+      "1.3.El_numero_de_los_sustantivos":
+        - "Cultismos latín/griego : plural regular (déficit/déficits) ; anómalo (hipérbaton/hipérbatos)"
+        - "Notas musicales monosílabas (dos, res, mis)"
+
+    # --- 2. El adjetivo ---
+    "2.El_adjetivo":
+      "2.1.Clases_de_adjetivos":
+        - "Calificativos color : compuestos (rojiblanco, blanquinegro)"
+        - "Relacionales : gentilicios raros (pucelana, tinerfeño)"
+      "2.2.El_genero_del_adjetivo":
+        - "[Hispanoamérica] Tendencia distinguir género, formar masculinos en -o (bromisto, cuentisto)"
+      "2.3.El_numero_del_adjetivo":
+        - "Morfema 0 : invariables número (rubiales, isósceles)"
+        - "Vocales tónicas finales : plural -es (carmesí/carmesíes)"
+      "2.4.Posicion_del_adjetivo":
+        - "Anteposición : valor literario/estilístico (la oscura noche)"
+        - "Buen/mal ponderativo (no me queda ni un mal trozo)"
+        - "Irónico (valiente, bonito, menudo) ; combinaciones fijas (pleno apogeo)"
+        - "Adjetivo aislado : topicalizado/focalizado (impecables, sonrientes llegaron)"
+      "2.5.Grados_del_adjetivo":
+        - "Superlativo : alternancia regular/culto (diestrísimo/destrísimo)"
+        - "Forma culta (antiquísimo, libérrimo)"
+        - "Otros mecanismos : prefijos (requete-) ; sufijos (-érrimo)"
+
+    # --- 3. El artículo ---
+    "3.El_articulo":
+      "3.1.El_articulo_definido":
+        - "Valor enfático : grado máximo (la película)"
+        - "Valor enfático : con de cuantitativo (¡La de disparates que dijo!)"
+        - "Sustantivador : construcciones SN atributivas (el inepto de tu hermano)"
+        - "Distribucional : nombres propios/apellidos/apodos con artículo"
+        - "Distribucional : topónimos con artículo"
+        - "Distribucional : co-aparición con demostrativo posnominal (los chicos estos)"
+      "3.2.El_articulo_indefinido":
+        - "Valor enfático : con/sin refuerzo (Es un médico/todo un médico)"
+        - "Con de + N (¡Tengo una de libros viejos!)"
+        - "Sustantivador : antes infinitivo con modificadores (un despertar sin sosiego)"
+        - "Metábasis completa (un ir y venir)"
+        - "Otras categorías (un porqué)"
+        - "Distribucional : combinación todo singular enfático (todo un hombre)"
+      "3.3.Ausencia_de_determinacion":
+        - "Combinatoria sintáctica : sujeto preverbal tónico (Oro es lo que necesito)"
+        - "Titulares prensa (Alcalde desobedece una sentencia)"
+        - "Con participio (Ministro implicado en fraude)"
+        - "Refranes (Casa con dos puertas mala es de guardar)"
+        - "Tras en : situación (prisión, cubierta)"
+        - "Tras en : partes/servicios (en conserjería, recepción)"
+
+    # --- 4. Los demostrativos ---
+    "4.Los_demostrativos":
+      - "Anafórico : criterio proximidad (Este Juan del que me hablas)"
+      - "Referente humano : sorpresa/humorística (¡Mira este qué listo!)"
+      - "Informal (este... no se piensa callar)"
+      - "Posnominal : exclamativos con vaya + relativa (¡Vaya oficina esta que te has montado!)"
+      - "Despectivo (el niño este)"
+
+    # --- 5. Los posesivos ---
+    "5.Los_posesivos":
+      - "Forma : intensificadores (muy mío, más mío que tuyo)"
+      - "Enfático : elementos prototípicos posesión (Un armario, con sus perchas, sus cajones)"
+      - "En exclamativas (¡Qué cara la suya!)"
+      - "Matiz humorístico/irónico con demostrativo (Este novio tuyo baila muy bien)"
+      - "Fórmula irónica formal (Está usted muy equivocado, señor mío)"
+      - "Expresiones posesivas (salirse con la suya, tú a lo tuyo, es muy suyo)"
+
+    # --- 6. Los cuantificadores ---
+    "6.Los_cuantificadores":
+      "6.1.Cuantificadores_propios":
+        - "Numerales : ordinales decenas (cuadragésimo) ; distributivo sendos/as"
+        - "Gradativos : comparativos elididos (Es más tonto)"
+        - "Proporcionales todo, nada modificando nombres/adjetivos (Llegué toda mojada)"
+        - "Enfáticos : muy + N (muy hombre)"
+        - "Demasiado + N ; mucho/a + N contable/no contable"
+        - "Cada (valor cuantificador perdido : Dice cada cosa)"
+        - "Todo con nombre/indefinido (Es todo corazón, todo un señor)"
+      "6.2.Cuantificadores_focales":
+        - "Incluyentes : Hasta (Hasta los ajos me gustan crudos)"
+        - "Excluyentes : Apenas (Apenas come)"
+        - "Apenas con negación postverbal (No come apenas)"
+      "6.3.Estructuras_cuantificadas":
+        - "Algún que otro, todo lo más"
+
+    # --- 7. El pronombre ---
+    "7.El_pronombre":
+      "7.1.El_pronombre_personal":
+        "7.1.1.Pronombre_sujeto":
+          - "Presencia/ausencia : valor enfático (participación persona, con imperativo, con adjetivos 3ª entre comas, con cuantificadores, en reduplicación)"
+          - "Valor : ello anafórico, registro formal"
+        "7.1.3.Pronombres_atonos_OI":
+          - "Le por les en reduplicación (uso popular)"
+          - "Dativo ético"
+          - "Expresiones fijas (¡No te fastidia!, ¡Me las pagarás!)"
+        "7.1.4.Valores_de_se":
+          - "Se en impersonales/pasivas con cláusulas reducidas"
+          - "Se impersonal con pasivas perifrásticas (restricciones)"
+          - "Alternancia con/sin pronombre en media/pasiva (con complemento manera)"
+          - "Dativo posesivo : matices enfáticos/restricciones"
+      "7.2.Los_relativos":
+        - "Que : alternancia preposiciones con, de con el/la que"
+        - "En predicativas (predicaciones secundarias)"
+        - "Con verbos percepción ; en relativas enfáticas"
+        - "Distinción relativa vs. enfática consecutiva"
+        - "Quien : incompatibilidad con todo"
+      "7.3.Los_interrogativos":
+        - "Qué : posición no inicial en interrogativas múltiples"
+        - "Adverbios [ref. 8.8]"
+        - "Orden : posibilidad anteponer elementos con por qué simple"
+        - "Interpretación distancia con subordinadas infinitivo"
+      "7.4.Los_exclamativos":
+        - "Qué seguido conjunción que con valor ponderativo"
+        - "Cómo : con verbo + de bien/de mal"
+        - "Con copulativo + atributo preposicional"
+        - "Cuánto/cuántos : con adjetivo singular evaluativo"
+        - "Dónde : seguido negación con valor ponderativo/enfático"
+        - "Cuán : con adjetivo/adverbio (literario) ; con sustantivos precedidos adjetivo"
+        - "Orden : interpretación distancia exclamativo"
+
+    # --- 8. El adverbio ---
+    "8.El_adverbio":
+      "8.1.Adverbios_en_-mente":
+        - "Restricciones : adjetivos pronominales excepto coloquial/escrito"
+        - "Libertad literaria formación (madrileñamente, verdemente)"
+      "8.2.Adverbios_nucleares":
+        - "Facultativos cantidad (MUCHO sabes tú)"
+        - "Manera acción (arduamente) ; subjetivo (imperceptiblemente)"
+        - "Alcance negación con circunstanciales facultativos"
+        - "Adverbios como predicados (Fuera la guerra)"
+      "8.3.Adverbios_externos":
+        - "Nocionales con gerundio hablar (políticamente hablando)"
+        - "Alcance negación adverbios externos"
+      "8.4.Adverbios_modus":
+        - "Modalidad : reforzadores actitud (Acaso) ; coloquial/dialectal (fácil, fácilmente, por ahí)"
+        - "Reforzadores valor verdad (En verdad) ; correctivo (ciertamente)"
+        - "Enunciación metalingüística : reformuladores rectificatorios/aclaratorios"
+        - "Equivalencia (sic) ; incidentales (incidentalmente, de paso)"
+      "8.5.Adverbios_conjuntivos":
+        - "Exclusivos (puramente)"
+      "8.6.Focalizadores":
+        - "Particularizadores (Máxime)"
+        - "Excluyentes (Meramente)"
+      "8.8.Adverbios_relativos_interrogativos":
+        - "Interrogativo cómo seguido que : valor sorpresa/reproche, perdido sentido modal"
+
+    # --- 9. El verbo ---
+    "9.El_verbo":
+      "9.1.Tiempos_indicativo":
+        "9.1.1.Presente":
+          - "Volitivo con valor actual (¡No te lo consiento!)"
+          - "Volitivo valor futuro (incluyendo amenaza)"
+          - "Presente analítico en pies de fotos"
+        "9.1.2.Preterito_imperfecto":
+          - "Descriptivo : imperfecto censura (¡Lo que faltaba!)"
+          - "Imperfecto por condicional registro coloquial (Si tuviera tiempo, me iba)"
+          - "Estilo indirecto implícito : narrativo/periodístico (Esta mañana estallaba un artefacto)"
+          - "Distanciamiento (Todo el día buscándolo y mira dónde estaba)"
+        "9.1.3.Preterito_indefinido":
+          - "Valor presente (¡Ya llegaron! antes aterrizaje)"
+        "9.1.4.Futuro_imperfecto":
+          - "Sorpresa/extrañeza/desaprobación con exclamativos/interrogativos"
+          - "Afirmación enfática (¡Si lo sabré yo!)"
+          - "Énfasis responsabilidad 2ª/3ª persona (¡Tú verás!)"
+        "9.1.5.Condicional_simple":
+          - "Aviso/temor en pasado (¿No pensarías que fui yo?)"
+          - "Condicional periodístico (citas encubiertas) ; mitigador responsabilidad (los paros serían inminentes)"
+          - "Permutación con imperfecto subjuntivo en -ra y modal imperfecto (deberías/debieras/debías)"
+        "9.1.6.Preterito_perfecto":
+          - "Forma : alternancia participio débil/fuerte (abstraído/abstracto, concluido/concluso)"
+        "9.1.7.Preterito_anterior":
+          - "Forma : conjugación haber este tiempo"
+          - "Anterioridad inmediata con marcadores (no bien, en cuanto)"
+          - "Neutralización con indefinido/pluscuamperfecto"
+          - "Registro literario ; [Hispanoamérica] desuso"
+        "9.1.8.Preterito_pluscuamperfecto":
+          - "Cortesía (¿Me había llamado el señor?)"
+          - "Neutralizaciones con ya aspecto adverbial"
+        "9.1.9.Futuro_perfecto":
+          - "Sorpresa/extrañeza con interrogativos (¿No habrás tenido el valor?)"
+          - "Aviso/temor (¿No habrás pensado que he sido yo?)"
+          - "Afirmación enfática (¡No se lo habré advertido yo veces!)"
+        "9.1.10.Condicional_compuesto":
+          - "Aviso/temor pasado anterioridad (¿No habrías pensado que fui yo?)"
+          - "Periodístico anterioridad ; mitigador responsabilidad (los atentados se habrían producido)"
+          - "Relación con otros tiempos (consecutio temporum)"
+      "9.2.Tiempos_subjuntivo":
+        "9.2.1.Presente":
+          - "Subordinación introducida dondequiera (literario)"
+          - "Causal con porque (cuestión motivación)"
+          - "Con negación y afirmación presupuesta"
+          - "Concesivas (así, porque, por más que, a riesgo de que)"
+          - "Verbos cambian significado con selección modo (entender, decidir, acordar, temerse)"
+        "9.2.2.Preterito_imperfecto":
+          - "Independientes presente/futuro coordinadas con qué más quisiera (no realización)"
+          - "Imperfecto subjuntivo por condicional con deber (Debieras disculparte)"
+        "9.2.3.Preterito_perfecto":
+          - "Casos de sustitución por imperfecto"
+        "9.2.4.Preterito_pluscuamperfecto":
+          - "Forma : participios irregulares"
+        "9.2.5.Futuro":
+          - "Forma : paradigma regular/irregular, tres conjugaciones ; [Hispanoamérica] desuso"
+          - "Jerga administrativa/legal (A quien correspondiere)"
+          - "Expresiones lexicalizadas (Sea como fuere, Donde fueres haz lo que vieres)"
+      "9.3.El_imperativo":
+        - "Valor condicional : matices amenaza/promesa"
+        - "Valor concesivo (coloquial : Grita todo lo que quieras)"
+        - "Ponderativos lexicalizados : acción (Anda que no sabes)"
+        - "Fáticos (Fíjate/date cuenta) ; afirmación enfática (¡Toma!)"
+        - "Malicia satisfecha (¡Toma! por engreído) ; asombro (¡Toma, qué tortazo!)"
+        - "Incredulidad (¡Anda ya!, ¡Venga ya!)"
+        - "Reprobación (Anda que, ¡Pero oye/oiga!, ¡Mira que olvidarte las llaves!)"
+      "9.4.Formas_no_personales":
+        "9.4.1.Infinitivo":
+          - "Forma : control sujeto OI ejerciendo control (Me es difícil recomendarle un libro)"
+          - "Verbal independiente compuesto (¡Haberte presentado tú antes!)"
+          - "Nominal con artículo factivo (el esperar angustiosamente)"
+          - "Infinitivo por 2ª plural imperativo coloquial (Perdonarme, por favor)"
+        "9.4.2.Gerundio":
+          - "Forma : compuesto (pasado coordenadas) ; admisión diminutivo"
+          - "[Hispanoamérica] Tendencia diminutivo (callandito, corriendito)"
+          - "Verbal independiente en interrogativas orientadas/retóricas ; epigráficos"
+          - "Adjuntos externos : causal (No teniendo qué comer) ; concesivo (Lloviendo y todo)"
+          - "Absolutos sujeto propio ; valor concesivo"
+          - "Gerundios lexicalizados (tan corriendo)"
+        "9.4.3.Participio":
+          - "Construcciones absolutas con conectores temporales (Hasta concluidas las tres horas)"
+          - "Tendencia coloquial elidir -d- en sufijo -do (hemos comprao)"
+
+    # --- 10. El sintagma nominal ---
+    "10.El_sintagma_nominal":
+      "10.2.Complementos_modificadores":
+        - "Expresión valor atributivo (un espanto de peinado, un encanto de hombre)"
+      "10.3.Concordancia_interna_SN":
+        - "Adjetivo antes 2 sustantivos singulares : concordancia singular (su entusiasta determinación y trabajo)"
+        - "Adjetivo/sustantivo(s) singular/plural matices (talento y esfuerzo asombrosos)"
+      "10.4.Concordancia_SN_verbo":
+        - "Ad sensum : colectivos para aplicación individual (La mayoría creen)"
+        - "Cuantificador singular + de (Un montón de botellas se rompieron)"
+        - "Restricciones colectivos"
+        - "Discordancias deliberadas (El culpable somos todos)"
+        - "Concordancia tratamientos (Su Excelencia está cansado)"
+
+    # --- 11. El sintagma adjetival ---
+    "11.El_sintagma_adjetival":
+      "11.2.Complementos_modificadores":
+        - "Con mucho/algo/poco/nada de : restricciones haber, tener ; concordancia"
+        - "Atípicas : concordancia adjetivo con sustantivo (corta de entendimiento)"
+        - "Superlativo con relativa tendencias"
+        - "Complementos nominales [+ animado] (la graciosa de mi tía)"
+
+    # --- 12. El sintagma verbal ---
+    "12.El_sintagma_verbal":
+      "12.1.El_nucleo":
+        - "Auxiliares : modal infinitivo (haber de obligativo ; acertar a, tardar en)"
+        - "Casos ambigüedad (Viene pensando)"
+        - "Distinción perífrasis/locución"
+        - "Copulativas : Ser sin adjetivo (existencia filosófica ; enfática perifrasis : Lo que tú eres es un egoísta)"
+        - "Ser + Adj : expresiones (Es listo como el hambre)"
+        - "Estar sin adjetivo : para valorativo (Está para comérselo)"
+        - "Estar + Adj : recategorización (Hoy estás muy trabajador)"
+      "12.2.Complementos":
+        "12.2.2.Objeto_directo":
+          - "Reduplicación valor enfático (ausencia clítico) : OD foco/tópico contrastivo"
+        "12.2.3.Objeto_indirecto":
+          - "Otros usos dativo (Le va detrás ; Este niño no me come ; Estos exámenes me los corrijo)"
+        "12.2.5.Complemento_preposicional":
+          - "Confusión con OD (Contestó a nuestras preguntas/Las contestó ; Se refirió a/*Se las refirió)"
+        "12.2.6.Complemento_predicativo":
+          - "Valor estilístico (El río desciende raudo)"
+          - "Subordinadas relativas (sólo verbos percepción : La vi que bajaba)"
+
+    # --- 13. La oración simple ---
+    "13.La_oracion_simple":
+      "13.1.Concordancia":
+        - "Discordancias deliberadas (El culpable somos todos)"
+        - "Plural modestia ; plural mayestático"
+        - "Concordancia tratamientos (Su Excelencia está cansado)"
+      "13.2.Constituyentes":
+        - "Colocación opcional elemento cuantificado en superlativos con relativa"
+        - "Dislocación frases enfáticas con bonito, vaya, menudo"
+      "13.3.Tipos_oraciones_simples":
+        - "Según actitud hablante : interrogativas directas parciales con sentido figurado negativo"
+        - "Interrogativas retóricas"
+
+    # --- 14. Coordinación ---
+    "14.Coordinacion": {}  # Cumulative C2 — no additional entries beyond C1
+
+    # --- 15. Subordinación ---
+    "15.Subordinacion":
+      "15.1.Sustantivas":
+        "15.1.2.Flexionadas":
+          - "Como OD : verbos alternancia indicativo/subjuntivo cambio significado (entiende que/que reacciones)"
+          - "Verbos opinión/comunicación alternantes con matices intencionales (no te dije que tenía novia/que tuviera novia)"
+          - "Efectos negación selección modo"
+      "15.2.Adjetivas_relativas":
+        - "Tipos especificativas/restrictivas con antecedente expreso (con que/el que)"
+        - "Predicativas con secundarias predicaciones introducidas con"
+        - "Relativas no específicas : pronombres/adverbios con -quiera (culto)"
+        - "Por doquier(a)"
+        - "Antecedente : relativa como complemento predicativo"
+        - "Concordancia persona : partitivos plural concordancia, desviaciones coloquiales"
+        - "Yuxtapuestas en cláusulas absolutas (sustitución con esto)"
+        - "Con antecedente reasumptivo"
+        - "Relativas enfáticas (exclamativas/no exclamativas)"
+        - "Disjointed (En la de líos que nos ha metido)"
+        - "Relación con consecutivas (Tiene una cara que no te imaginas)"
