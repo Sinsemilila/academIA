@@ -1,24 +1,24 @@
 {
   "scenario_id": "b1_t3_subjuntivo_pres_001",
-  "sha": "057e704de2db",
-  "recorded_at": "2026-04-28T22:50:04Z",
-  "response": "Casi — después de *espero que*, ¿qué modo del verbo venir deberías usar?",
-  "dify_conversation_id": "71cc035d-ad16-4c04-8608-169291421ba2",
-  "dify_message_id": "0a673201-d19c-4ecb-8d5a-39036b27a90e",
+  "sha": "d038dd9b683a",
+  "recorded_at": "2026-05-01T09:58:51Z",
+  "response": "Casi — después de *espero que*, ¿qué modo del verbo venir?",
+  "dify_conversation_id": "d67ebe92-898e-48ee-bdb0-4b73fb72a5b3",
+  "dify_message_id": "21232893-a2d0-40ad-8596-56a904c4f06d",
   "usage": {
     "prompt_tokens": 3721,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 20,
+    "completion_tokens": 17,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3741,
+    "total_tokens": 3738,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.011,
-    "time_to_first_token": 1.373,
+    "latency": 0.845,
+    "time_to_first_token": 1.223,
     "time_to_generate": 0.0
   }
 }

@@ -1,10 +1,10 @@
 {
   "scenario_id": "a2_t3_por_para_001",
-  "sha": "057e704de2db",
-  "recorded_at": "2026-04-28T22:49:49Z",
-  "response": "¡Genial que lleves tres años estudiando español! ¿Qué tipo de trabajo haces que requiere el uso del español?",
-  "dify_conversation_id": "7ca90253-d9cd-4911-afe7-56aae2fe07b9",
-  "dify_message_id": "8fd4689f-5a4f-44bd-ae3c-466117dfcc9e",
+  "sha": "d038dd9b683a",
+  "recorded_at": "2026-05-01T09:58:34Z",
+  "response": "¡Genial que lleves tres años estudiando español! ¿Qué tipo de trabajo haces que requiere que hables español?",
+  "dify_conversation_id": "2d455d34-8c58-4479-a205-5a0c5ed2c2bc",
+  "dify_message_id": "79ae2520-1c43-462d-9f49-0b06121dec51",
   "usage": {
     "prompt_tokens": 3685,
     "prompt_unit_price": "0",
@@ -17,8 +17,8 @@
     "total_tokens": 3710,
     "total_price": "0",
     "currency": "USD",
-    "latency": 0.96,
-    "time_to_first_token": 1.381,
+    "latency": 0.835,
+    "time_to_first_token": 1.236,
     "time_to_generate": 0.0
   }
 }

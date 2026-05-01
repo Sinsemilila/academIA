@@ -1,24 +1,24 @@
 {
   "scenario_id": "b2_t3_imperfecto_pret_001",
-  "sha": "057e704de2db",
-  "recorded_at": "2026-04-28T22:50:17Z",
-  "response": "Casi perfecto, pero hay un pequeño error en la estructura. Deberías usar el pretérito en lugar del imperfecto para \"mudábamos\". La frase correcta sería: \"Cuando era niño, jugaba mucho con mis primos hasta que nos mudamos a otra ciudad.\" \n\n¿Te gustaría intentar reformularla?",
-  "dify_conversation_id": "fa5dfec7-a958-4f88-bcef-5612a050918b",
-  "dify_message_id": "a14a0aad-fc0a-46b8-b681-154115bd63c3",
+  "sha": "d038dd9b683a",
+  "recorded_at": "2026-05-01T09:59:05Z",
+  "response": "Casi perfecto, pero hay un pequeño error en la estructura. Deberías usar el pretérito en lugar del imperfecto para \"mudábamos\". La frase correcta sería: \"Cuando era niño, jugaba mucho con mis primos hasta que nos mudamos a otra ciudad.\" \n\nRecuerda que \"mudamos\" es el pretérito perfecto, ya que se refiere a una acción completa en el pasado. ¿Te gustaría intentar reformularla?",
+  "dify_conversation_id": "9254e29f-fe3c-4269-b8ab-2ac70b0f83f0",
+  "dify_message_id": "e02170bf-a910-4d0f-b68c-6cfd8636044c",
   "usage": {
     "prompt_tokens": 3136,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 66,
+    "completion_tokens": 92,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3202,
+    "total_tokens": 3228,
     "total_price": "0",
     "currency": "USD",
-    "latency": 2.275,
-    "time_to_first_token": 2.695,
+    "latency": 2.045,
+    "time_to_first_token": 2.479,
     "time_to_generate": 0.0
   }
 }

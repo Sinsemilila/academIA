@@ -1,24 +1,24 @@
 {
   "scenario_id": "multi_b2_imperfecto_no_uptake_001",
-  "sha": "057e704de2db",
-  "recorded_at": "2026-04-28T22:50:35Z",
-  "response": "Casi — deberías decir \"cuando era niño\" en lugar de \"cuando estaba niño\". La forma \"era\" se usa para describir estados o características en el pasado. Así que sería: \"Cuando era niño, jugué mucho\". ¿Puedes intentar reformularlo?",
-  "dify_conversation_id": "8a7f6fe2-99e3-42be-b29c-0f4a6f79502e",
-  "dify_message_id": "3ca0aae3-4ddc-49eb-8c62-2ff6b435732e",
+  "sha": "d038dd9b683a",
+  "recorded_at": "2026-05-01T09:59:19Z",
+  "response": "Casi correcto, pero hay un pequeño error en el tiempo verbal. Deberías usar el imperfecto para \"estar\" en este contexto. La frase correcta sería: \"Cuando era niño, jugué mucho.\" \n\nEl imperfecto se utiliza para describir situaciones o acciones habituales en el pasado. ¿Te gustaría intentar reformularla?",
+  "dify_conversation_id": "9bd1284d-fd82-4937-94d0-e6bdc1b69375",
+  "dify_message_id": "31d735bf-e8c8-436f-8845-d3acd820eab7",
   "usage": {
     "prompt_tokens": 3123,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 56,
+    "completion_tokens": 68,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3179,
+    "total_tokens": 3191,
     "total_price": "0",
     "currency": "USD",
-    "latency": 2.493,
-    "time_to_first_token": 2.943,
+    "latency": 1.284,
+    "time_to_first_token": 1.652,
     "time_to_generate": 0.0
   }
 }

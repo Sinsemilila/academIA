@@ -1,24 +1,24 @@
 {
   "scenario_id": "b2_t3_condicional_001",
-  "sha": "057e704de2db",
-  "recorded_at": "2026-04-28T22:50:14Z",
-  "response": "Casi perfecto, pero deberías decir: 'Si tuviera más tiempo, habría estudiado un idioma nuevo cada año.' Esto refleja mejor la idea de una acción que no ocurrió por falta de tiempo. ¿Cómo lo dirías con más precisión?",
-  "dify_conversation_id": "be745543-898d-4b57-acbd-0ac74b1348e6",
-  "dify_message_id": "d25f620c-9456-4ffb-b9f5-f08c53d80202",
+  "sha": "d038dd9b683a",
+  "recorded_at": "2026-05-01T09:59:02Z",
+  "response": "Casi perfecto. Deberías decir: 'Si tuviera más tiempo, habría estudiado un idioma nuevo cada año.' Esto indica que es una acción que no ocurrió. ¿Puedes intentar reformularlo?",
+  "dify_conversation_id": "40afca44-3f50-430e-82b0-5f208d803ef1",
+  "dify_message_id": "564e816e-0f64-4096-a2e3-d7fc1076ba69",
   "usage": {
     "prompt_tokens": 3131,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 271,
+    "completion_tokens": 239,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3402,
+    "total_tokens": 3370,
     "total_price": "0",
     "currency": "USD",
-    "latency": 5.207,
-    "time_to_first_token": 5.563,
+    "latency": 4.193,
+    "time_to_first_token": 4.806,
     "time_to_generate": 0.0
   }
 }

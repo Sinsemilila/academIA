@@ -1,10 +1,10 @@
 {
   "scenario_id": "a1_t2_ser_estar_state_001",
-  "sha": "057e704de2db",
-  "recorded_at": "2026-04-28T22:49:38Z",
-  "response": "Oh, *estás* cansado hoy porque trabajaste mucho. ¿Qué trabajaste?",
-  "dify_conversation_id": "12f2c5cd-70d7-4563-b45c-73b54cc03aa3",
-  "dify_message_id": "041d12e0-fa34-4b5d-93d5-a9af1a8ce671",
+  "sha": "d038dd9b683a",
+  "recorded_at": "2026-05-01T09:58:25Z",
+  "response": "Ah, *estás* cansado hoy porque trabajaste mucho. ¿Qué trabajaste?",
+  "dify_conversation_id": "94bcadd4-ff0e-4187-bcd6-dee478c21803",
+  "dify_message_id": "4fd99324-3a2c-446a-a86d-19d6f4b9bfe5",
   "usage": {
     "prompt_tokens": 3649,
     "prompt_unit_price": "0",
@@ -17,8 +17,8 @@
     "total_tokens": 3668,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.223,
-    "time_to_first_token": 1.619,
+    "latency": 1.405,
+    "time_to_first_token": 1.795,
     "time_to_generate": 0.0
   }
 }

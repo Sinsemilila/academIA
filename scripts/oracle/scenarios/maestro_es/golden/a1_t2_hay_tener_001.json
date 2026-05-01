@@ -1,24 +1,24 @@
 {
   "scenario_id": "a1_t2_hay_tener_001",
-  "sha": "057e704de2db",
-  "recorded_at": "2026-04-28T22:49:34Z",
-  "response": "¡Qué bien! En tu ciudad *hay* muchos parques y museos. ¿Cuál es tu parque favorito?",
-  "dify_conversation_id": "201af238-c4f7-45a8-9e20-20f951fc9b32",
-  "dify_message_id": "9d0b8960-9207-4ed2-a2e9-5984f005587e",
+  "sha": "d038dd9b683a",
+  "recorded_at": "2026-05-01T09:58:20Z",
+  "response": "¡Qué bien que tu ciudad tenga muchos parques y museos! Pero recuerda, en español decimos \"en mi ciudad hay muchos parques y museos\". ¿Cuál es tu parque favorito?",
+  "dify_conversation_id": "059821e1-c587-488b-96a5-7d195b4b2f98",
+  "dify_message_id": "e119d426-c7b8-42a4-972e-649b4766819b",
   "usage": {
     "prompt_tokens": 3632,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 23,
+    "completion_tokens": 38,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3655,
+    "total_tokens": 3670,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.082,
-    "time_to_first_token": 1.477,
+    "latency": 1.062,
+    "time_to_first_token": 1.428,
     "time_to_generate": 0.0
   }
 }

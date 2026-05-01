@@ -1,24 +1,24 @@
 {
   "scenario_id": "b2_t2_false_friend_001",
-  "sha": "057e704de2db",
-  "recorded_at": "2026-04-28T22:50:08Z",
-  "response": "¡Qué interesante! Sin embargo, hay un pequeño error en tu frase. La palabra \"embarazada\" significa \"pregnant\" en inglés, así que no es la adecuada para expresar que te sientes abrumada o incómoda por el proyecto. En este caso, podrías usar \"avergonzada\" o \"incomodada\". \n\nPodrías decir: \"Actualmente estoy **incomodada** con este proyecto y tengo muchos compromisos.\" ¿Te gustaría intentar reformularlo?",
-  "dify_conversation_id": "2f4717aa-6b10-4fc9-8267-92085993e8c0",
-  "dify_message_id": "78a47f6d-35b4-4051-866b-53e81029de58",
+  "sha": "d038dd9b683a",
+  "recorded_at": "2026-05-01T09:58:57Z",
+  "response": "Entiendo que estás muy *avergonzada* por este proyecto y tienes muchos compromisos. ¿Cómo te sientes al respecto?",
+  "dify_conversation_id": "f445f226-ef7a-411a-a0a0-76f3cd7a149f",
+  "dify_message_id": "fb5a04b1-51be-4c46-84d4-b7864902ae32",
   "usage": {
     "prompt_tokens": 3144,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 102,
+    "completion_tokens": 224,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3246,
+    "total_tokens": 3368,
     "total_price": "0",
     "currency": "USD",
-    "latency": 3.043,
-    "time_to_first_token": 3.411,
+    "latency": 4.171,
+    "time_to_first_token": 4.553,
     "time_to_generate": 0.0
   }
 }

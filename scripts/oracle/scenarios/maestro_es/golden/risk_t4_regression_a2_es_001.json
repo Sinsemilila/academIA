@@ -1,24 +1,24 @@
 {
   "scenario_id": "risk_t4_regression_a2_es_001",
-  "sha": "057e704de2db",
-  "recorded_at": "2026-04-28T22:50:55Z",
-  "response": "¡Qué bien que estés en casa y feliz! Recuerda que para estados emocionales usamos 'estar'. Entonces, sería 'estoy en mi casa'. ¿Qué te hace sentir feliz hoy?",
-  "dify_conversation_id": "fceed9e8-921e-4951-86dd-906385e0cbc7",
-  "dify_message_id": "388da2cf-98cd-4679-b7a0-434cfbf4956a",
+  "sha": "d038dd9b683a",
+  "recorded_at": "2026-05-01T09:59:39Z",
+  "response": "¡Qué bien que estás en casa y feliz! Recuerda que se dice 'estoy en mi casa' porque es un estado temporal. ¿Qué te hace sentir feliz hoy?",
+  "dify_conversation_id": "9b1371e6-36c0-43b7-ad9a-57a97610e033",
+  "dify_message_id": "281e588d-d8d4-4b48-a0bd-f8e31c901225",
   "usage": {
     "prompt_tokens": 3699,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 256,
+    "completion_tokens": 255,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3955,
+    "total_tokens": 3954,
     "total_price": "0",
     "currency": "USD",
-    "latency": 4.942,
-    "time_to_first_token": 5.31,
+    "latency": 4.987,
+    "time_to_first_token": 5.388,
     "time_to_generate": 0.0
   }
 }

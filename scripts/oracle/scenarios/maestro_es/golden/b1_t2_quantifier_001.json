@@ -1,24 +1,24 @@
 {
   "scenario_id": "b1_t2_quantifier_001",
-  "sha": "057e704de2db",
-  "recorded_at": "2026-04-28T22:49:55Z",
-  "response": "La fiesta fue *muy* divertida, pero yo *estuve* muy cansada después. ¿Por qué usas 'mucho' y no 'muy' aquí?",
-  "dify_conversation_id": "e046bfce-9df8-43d4-94ff-288b497284f6",
-  "dify_message_id": "9302915c-2ca5-41d6-8a68-dc8b0aac5cc1",
+  "sha": "d038dd9b683a",
+  "recorded_at": "2026-05-01T09:58:43Z",
+  "response": "Casi — en lugar de *mucho divertida*, deberías decir *muy divertida*. Y recuerda que si hablas de ti, debes decir *estaba muy cansado* si eres hombre o *cansada* si eres mujer. ¿Cómo te sentiste después de la fiesta?",
+  "dify_conversation_id": "4955b77c-44f8-4d20-81db-27af01be8629",
+  "dify_message_id": "2eedd78a-aaf7-44ee-96df-e9a2bd74d43a",
   "usage": {
     "prompt_tokens": 3721,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 254,
+    "completion_tokens": 273,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3975,
+    "total_tokens": 3994,
     "total_price": "0",
     "currency": "USD",
-    "latency": 4.929,
-    "time_to_first_token": 5.309,
+    "latency": 8.027,
+    "time_to_first_token": 8.391,
     "time_to_generate": 0.0
   }
 }

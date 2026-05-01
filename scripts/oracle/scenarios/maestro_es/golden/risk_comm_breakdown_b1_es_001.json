@@ -1,24 +1,24 @@
 {
   "scenario_id": "risk_comm_breakdown_b1_es_001",
-  "sha": "057e704de2db",
-  "recorded_at": "2026-04-28T22:50:41Z",
-  "response": "Hmm, parece que hay un pequeño error en tu frase. ¿Podrías intentar reformularla? Piensa en cómo expresar lo que querías decir sobre lo que hacía la persona y la razón relacionada con el tiempo. ¡Inténtalo!",
-  "dify_conversation_id": "9305b3e2-2262-4a6f-a85b-753b36b075dd",
-  "dify_message_id": "9d5179bc-4176-4477-b3fe-093843786d93",
+  "sha": "d038dd9b683a",
+  "recorded_at": "2026-05-01T09:59:26Z",
+  "response": "Hmm, parece que hay un pequeño error en tu frase. ¿Podrías intentar reformularla? Piensa en cómo expresar la acción de una persona en relación con el tiempo. ¿Qué querías decir exactamente?",
+  "dify_conversation_id": "7ec661e0-334f-4c68-8cb2-21c91e693f8c",
+  "dify_message_id": "72b3dc98-19b2-4470-bbd5-e4a2c7424f22",
   "usage": {
     "prompt_tokens": 3721,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 50,
+    "completion_tokens": 44,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3771,
+    "total_tokens": 3765,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.708,
-    "time_to_first_token": 2.089,
+    "latency": 4.128,
+    "time_to_first_token": 4.51,
     "time_to_generate": 0.0
   }
 }

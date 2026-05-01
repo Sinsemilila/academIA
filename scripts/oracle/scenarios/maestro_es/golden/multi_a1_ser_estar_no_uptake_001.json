@@ -1,10 +1,10 @@
 {
   "scenario_id": "multi_a1_ser_estar_no_uptake_001",
-  "sha": "057e704de2db",
-  "recorded_at": "2026-04-28T22:50:26Z",
+  "sha": "d038dd9b683a",
+  "recorded_at": "2026-05-01T09:59:13Z",
   "response": "Ah, *estás* cansado hoy — ¿has dormido bien? Podemos hacer algo tranquilo.",
-  "dify_conversation_id": "0478b6b8-4604-4bd2-9983-64a6ffd7a5f5",
-  "dify_message_id": "f1cbed1e-0284-43d2-825c-d0ab5b652182",
+  "dify_conversation_id": "2be8f567-21a9-4668-90fa-43bb34f436f9",
+  "dify_message_id": "82bbc9b5-5056-4aa4-ab7f-356131d0b9ee",
   "usage": {
     "prompt_tokens": 3645,
     "prompt_unit_price": "0",
@@ -17,8 +17,8 @@
     "total_tokens": 3666,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.07,
-    "time_to_first_token": 1.427,
+    "latency": 1.008,
+    "time_to_first_token": 1.382,
     "time_to_generate": 0.0
   }
 }

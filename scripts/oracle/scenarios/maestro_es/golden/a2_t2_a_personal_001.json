@@ -1,24 +1,24 @@
 {
   "scenario_id": "a2_t2_a_personal_001",
-  "sha": "057e704de2db",
-  "recorded_at": "2026-04-28T22:49:44Z",
-  "response": "¡Genial que veas a tu amigo! Pero, ¿qué hiciste con él la semana pasada en la escuela? *¿Qué hiciste con tu amigo?*",
-  "dify_conversation_id": "c9041a5a-6cbf-4794-a51d-bd8df315f1fe",
-  "dify_message_id": "1f8dc683-28f8-42b3-814d-97ea06300735",
+  "sha": "d038dd9b683a",
+  "recorded_at": "2026-05-01T09:58:29Z",
+  "response": "¡Bien! Pero, ¿qué hiciste ayer con tu amigo? Intenta usar el pretérito indefinido.",
+  "dify_conversation_id": "f73e16bd-4b29-42f8-b8cb-f0b7594b58f2",
+  "dify_message_id": "06c45b56-d96b-4ba1-87d5-a1b4887e9edc",
   "usage": {
     "prompt_tokens": 3756,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 242,
+    "completion_tokens": 218,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3998,
+    "total_tokens": 3974,
     "total_price": "0",
     "currency": "USD",
-    "latency": 5.142,
-    "time_to_first_token": 5.541,
+    "latency": 3.233,
+    "time_to_first_token": 3.598,
     "time_to_generate": 0.0
   }
 }

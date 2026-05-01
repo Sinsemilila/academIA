@@ -1,24 +1,24 @@
 {
   "scenario_id": "c1_t3_subjuntivo_imp_001",
-  "sha": "057e704de2db",
-  "recorded_at": "2026-04-28T22:50:24Z",
-  "response": "La frase debería ser: 'Me alegré mucho de que vinieras a la cena ayer por la noche'. Recuerda que el uso del subjuntivo es adecuado aquí. ¡Sigue así!",
-  "dify_conversation_id": "a2ce71a9-67a0-47c0-919e-8bb3bc6df288",
-  "dify_message_id": "7598e7b3-4e7c-4872-8668-b182b3f4e6be",
+  "sha": "d038dd9b683a",
+  "recorded_at": "2026-05-01T09:59:11Z",
+  "response": "La frase está casi correcta, pero deberías decir: 'Me alegré mucho de que vinieras a la cena ayer por la noche'. El uso del subjuntivo 'vinieras' es más apropiado aquí. ¡Sigue así!",
+  "dify_conversation_id": "c1904766-1486-4165-88cf-0675c7b5f03b",
+  "dify_message_id": "782f5204-a865-46f0-947d-a6cded25bd21",
   "usage": {
     "prompt_tokens": 3170,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
-    "completion_tokens": 243,
+    "completion_tokens": 275,
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3413,
+    "total_tokens": 3445,
     "total_price": "0",
     "currency": "USD",
-    "latency": 5.75,
-    "time_to_first_token": 6.119,
+    "latency": 4.511,
+    "time_to_first_token": 4.867,
     "time_to_generate": 0.0
   }
 }
