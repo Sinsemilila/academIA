@@ -65,7 +65,7 @@ async def classify_one(client, learner, tutor):
 
 async def main():
     n_votes = 3
-    print(f"\n=== A/B test cf_move prompt v2 on cerebras-judge-fast ===")
+    print("\n=== A/B test cf_move prompt v2 on cerebras-judge-fast ===")
     print(f"n_votes per scenario : {n_votes}")
     print(f"scenarios : {len(SCENARIOS)}")
     print()

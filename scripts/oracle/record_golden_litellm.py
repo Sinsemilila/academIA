@@ -20,7 +20,7 @@ import json
 import os
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import httpx
@@ -149,7 +149,7 @@ def main() -> int:
             g = GoldenFile(
                 scenario_id=sc.id,
                 sha=sha,
-                recorded_at=datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
+                recorded_at=datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
                 response=response,
             )
             (golden_dir / f"{sc.id}.json").write_text(

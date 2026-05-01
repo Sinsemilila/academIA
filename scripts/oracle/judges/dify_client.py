@@ -114,8 +114,9 @@ def build_full_dify_inputs(scenario, agent: str) -> dict:
     import os as _os_biped
     if _os_biped.environ.get("BIPED_CF_CLASSIFIER_ENABLED", "false").lower() in ("1", "true", "yes"):
         try:
-            from academie_core.pedagogy.cf_classifier import classify_cf as _classify_cf
             import asyncio as _aio
+
+            from academie_core.pedagogy.cf_classifier import classify_cf as _classify_cf
             cf_recommendation = _aio.run(_classify_cf(
                 learner_text=learner_text,
                 errors_detected=v2_errors,

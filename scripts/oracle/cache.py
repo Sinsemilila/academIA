@@ -120,7 +120,6 @@ def purge_all() -> int:
 # CLI entry point for cache management
 def main() -> int:
     import argparse
-    import sys
 
     ap = argparse.ArgumentParser(description="Oracle verdict cache management")
     sub = ap.add_subparsers(dest="cmd", required=True)

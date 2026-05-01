@@ -15,7 +15,6 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from collections import Counter
 from pathlib import Path
 
 
@@ -131,10 +130,10 @@ def format_run(run_path: Path, agent: str) -> str:
             if spec:
                 md.append(f"- **Spec** : `{spec}`")
             md.append(f"- **Panel verdict** : `{verdict}` — {reasoning}")
-            md.append(f"- **Per-judge votes** :")
+            md.append("- **Per-judge votes** :")
             md.append(_format_per_judge_votes(votes))
             md.append("")
-            md.append(f"- [ ] **My verdict (super-judge)** : `pass` / `fail` / `unknown`")
+            md.append("- [ ] **My verdict (super-judge)** : `pass` / `fail` / `unknown`")
             md.append("- **Notes** : ___")
             md.append("")
 

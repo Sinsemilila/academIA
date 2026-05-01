@@ -91,14 +91,14 @@ def main() -> int:
     if headroom < 0:
         print()
         print(f"  ❌ BLOCK : planned run would exceed cumulated RPD by {-headroom}.")
-        print(f"     Options : reduce --n-votes, wait till 00:00 UTC reset,")
-        print(f"     or upgrade to Tier 1 (pay-as-you-go, ~$0.15 per full run).")
+        print("     Options : reduce --n-votes, wait till 00:00 UTC reset,")
+        print("     or upgrade to Tier 1 (pay-as-you-go, ~$0.15 per full run).")
         return 1
     elif headroom < CUMULATED_RPD * 0.1:
-        print(f"  ⚠️  TIGHT : <10% of total RPD left after this run.")
+        print("  ⚠️  TIGHT : <10% of total RPD left after this run.")
         return 0
     else:
-        print(f"  ✓ CLEAR : safe to launch.")
+        print("  ✓ CLEAR : safe to launch.")
         return 0
 
 

@@ -41,7 +41,7 @@ try:
     scores = json.loads(content)
 except json.JSONDecodeError as e:
     print(f"Parse failed: {e}")
-    print(f"Raw content (first 500 chars):")
+    print("Raw content (first 500 chars):")
     print(content[:500])
     raise
 
