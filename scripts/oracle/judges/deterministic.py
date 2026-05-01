@@ -70,9 +70,10 @@ MICRO_LESSON_MARKER = "=== MICRO-LEÇON CIBLÉE"
 
 
 def _scenario_lang(scenario: ScenarioSchema) -> str:
-    """Extract target lang code from scenario.key.agent (e.g. maestro_es → 'es')."""
+    """Extract target lang code from scenario.scenario_key.agent
+    (e.g. maestro_es → 'es', teacher_en → 'en')."""
     try:
-        return scenario.key.agent.split("_")[-1].lower()
+        return scenario.scenario_key.agent.split("_")[-1].lower()
     except Exception:
         return "en"
 
