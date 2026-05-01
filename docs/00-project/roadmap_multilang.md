@@ -1,3 +1,10 @@
+---
+status: superseded
+superseded_by: ADR-013-language-scope-by-tier (2026-04-29) + ADR-016-authority-anchor-cross-lang (2026-04-29)
+last_reviewed: 2026-05-01
+note: 'Doc research/planning multilang Phase 0 (S26-S33). Conservé pour cross-reference ADRs. Roadmap canonique actuelle = TODO.md macro section + ADR-013/016.'
+---
+
 # Roadmap Multi-Langue — AcademIA
 
 _Produit par agent d'exploration — 2026-04-18_

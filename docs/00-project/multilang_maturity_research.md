@@ -1,7 +1,8 @@
 ---
 title: Recherche maturité multi-langue — IT/DE/JP/RU vers niveau EN/ES
 date: 2026-04-18
-status: active
+status: superseded
+superseded_by: ADR-013-language-scope-by-tier (2026-04-29) + ADR-016-authority-anchor-cross-lang (2026-04-29)
 last_reviewed: 2026-04-19
 author: Claude (Opus 4.7) — Session 28, 6 agents parallèles + Session 29 pivot stratégie native
 supersedes: (complément) multilang_research_plan.md + multilang_execution_roadmap.md

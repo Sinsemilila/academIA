@@ -1,6 +1,7 @@
 ---
 title: Sprint 4 — Ré-analyse pre-implémentation (ADR-004)
-status: authoritative
+status: superseded
+superseded_by: ADR-013 + ADR-016 (Sprint 4 closed S29)
 last_reviewed: 2026-04-16
 owner: claude
 decision_date: 2026-04-16

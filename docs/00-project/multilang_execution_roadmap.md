@@ -1,7 +1,8 @@
 ---
 title: Roadmap d'exécution multi-langue — séquencement chronologique
 date: 2026-04-18
-status: active
+status: superseded
+superseded_by: ADR-013-language-scope-by-tier (2026-04-29) + ADR-016-authority-anchor-cross-lang (2026-04-29)
 last_reviewed: 2026-04-19
 author: Claude (Opus 4.7) — Session 27 + Session 28 (maturité) + Session 29 (pivot native JLPT/TORFL)
 ---
