@@ -1,0 +1,553 @@
+# Funciones inventario B1 + B2 — Plan Curricular del Instituto Cervantes (PCIC).
+#
+# ADR-014 Layer 1.5 extraction (Session 56 Tier 2 G7.1 pre-req, 2026-05-01).
+# Source : `cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/05_funciones_inventario_b1-b2.htm`
+# (HTML version free online, fetched via WebFetch).
+#
+# Use case : Tier 3 Stream E G7.1 will merge these into `data/functions/es.yaml` 42→~80 entries.
+# B1+B2 was MISSING (S53 D1 only extracted A1+A2, gate flagged in S56 G6.C audit doc).
+#
+# WebFetch coverage : macro-sections 1-3 fully ; sections 4-6 truncated, fallback acquisition needed.
+
+source:
+  book: "Plan Curricular del Instituto Cervantes — Niveles de referencia para el español"
+  volume: "B — B1+B2"
+  publisher: "Instituto Cervantes / Edelsa / Biblioteca Nueva"
+  year: 2006
+  inventario: "5. Funciones"
+  url: "https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/05_funciones_inventario_b1-b2.htm"
+  fetch_date: 2026-05-01
+  notes: |
+    PCIC Funciones has 6 macro-sections : (1) Dar y pedir información, (2) Expresar
+    opiniones/actitudes/conocimiento, (3) Expresar gustos/deseos/sentimientos,
+    (4) Influir en el interlocutor, (5) Relacionarse socialmente, (6) Estructurar discurso.
+    Sections 1-3 fully covered by WebFetch ; 4-6 truncated → fallback acquisition flagged
+    (cf gate Tier 2 L268-269 execution-roadmap). Sections 4-6 partial extraction in
+    cervantes-2006-plan-curricular-c1-c2/funciones-by-level.yaml (C1+C2 levels) gives
+    structural template for the missing B1+B2 section 4.
+
+# ============================================================================
+# === B1 (Umbral) ============================================================
+# ============================================================================
+B1:
+  level_label: "Umbral"
+
+  "1.Dar_y_pedir_informacion":
+    "1.1.Identificar":
+      - "Relativas con artículo definido + sustantivo"
+      - "El + sustantivo + O. relativa"
+      - "Es + un + sustantivo + O. relativa"
+    "1.2.Pedir_informacion":
+      - "¿Sabes si / dónde / cómo...?"
+      - "Preguntas persona, cosa, lugar, tiempo, manera, evento"
+    "1.3.Dar_informacion":
+      - "Adverbiales lugar, tiempo, manera, cantidad"
+      - "Subordinadas finalidad, razón"
+    "1.4.Pedir_confirmacion":
+      - "¿Puedes / Podrías decirme si...?"
+      - "Quería saber si..."
+    "1.5.Confirmar_informacion":
+      - "Claro (que sí / no)"
+      - "Por supuesto que..."
+
+  "2.Expresar_opiniones":
+    "2.1.Pedir_opinion":
+      - "¿(Tú) qué piensas de + SN?"
+      - "¿Te parece que...?"
+      - "En tu opinión..."
+    "2.2.Dar_opinion":
+      - "En mi opinión..."
+      - "Me parece que..."
+      - "Pienso que..."
+      - "No creo que + subjuntivo"
+    "2.3.Pedir_valoracion":
+      - "¿Qué tal?"
+      - "¿Qué te parece + SN / infinitivo?"
+      - "¿Te parece bien / mal...?"
+    "2.4.Valorar":
+      - "SN / inf. + ha sido / fue + adjetivo"
+      - "Está bien / mal..."
+      - "¡Qué bien / mal...!"
+    "2.5.Aprobar_desaprobar":
+      - "Me parece (muy) mal / bien"
+      - "Está (muy) mal / bien"
+      - "¡Qué mal / bien...!"
+    "2.6.Posicionarse":
+      - "(No) estoy a favor / en contra de..."
+      - "(No) estoy de acuerdo con..."
+    "2.7.Acuerdo_pregunta":
+      - "¿Piensas igual / lo mismo que + SN?"
+      - "¿Tú qué crees...?"
+    "2.8.Invitar_acuerdo":
+      - "Declaración + ¿no te parece?"
+    "2.9.Expresar_acuerdo":
+      - "Sí / no, claro"
+      - "Tienes razón"
+      - "Yo pienso lo mismo"
+      - "Estoy de acuerdo"
+    "2.10.Expresar_desacuerdo":
+      - "Yo no pienso lo mismo"
+      - "No, no es verdad que + subjuntivo"
+      - "No estoy de acuerdo"
+    "2.11.Mostrar_escepticismo":
+      - "Bueno, depende"
+      - "¿Tú crees?"
+      - "(Yo) dudo que..."
+    "2.12.Contraargumentar":
+      - "Tienes razón, pero..."
+      - "Sí, es cierto, pero..."
+      - "Sí, pero también es verdad..."
+    "2.13.Expresar_certeza":
+      - "Estoy (totalmente) seguro de que..."
+      - "Seguro que..."
+      - "Está claro / Es evidente"
+    "2.14.Falta_certeza":
+      - "No estoy (muy) seguro de que + subjuntivo"
+      - "No está claro / No es evidente"
+      - "Dudo que + subjuntivo"
+    "2.15.Invitar_hipotesis":
+      - "¿O. interrogativa [V en futuro imperfecto]?"
+    "2.16.Expresar_posibilidad":
+      - "Quizá(s) / Tal vez..."
+      - "Puede (ser) que..."
+      - "Es posible / probable que..."
+      - "A lo mejor"
+    "2.17.Obligacion_necesidad":
+      - "Es obligatorio / necesario..."
+      - "Debes + infinitivo"
+      - "No puedes + infinitivo"
+    "2.18.Falta_obligacion":
+      - "No es obligatorio / necesario..."
+    "2.19.Pedir_conocimiento":
+      - "¿Sabes / Conoces algo de + SN?"
+      - "¿Sabes que / si / dónde...?"
+      - "¿Has oído...?"
+    "2.20.Expresar_conocimiento":
+      - "(Ya) lo sé / sabía"
+      - "Sé + algo de + SN"
+      - "Sé perfectamente..."
+      - "He oído / leído / visto que..."
+    "2.21.Expresar_desconocimiento":
+      - "No (lo) sé / sabía"
+      - "No he oído / leído / visto"
+      - "No tengo ni idea"
+    "2.22.Pedir_habilidad":
+      - "¿Eres bueno en / para...?"
+      - "¿Eres capaz de + infinitivo?"
+      - "¿Qué tal se te da...?"
+    "2.23.Habilidad":
+      - "Sé + algo / poco..."
+      - "Soy bueno / malo en / para..."
+      - "Lo hago bien / mal"
+    "2.24.Pedir_recuerdo":
+      - "¿Recuerdas / Te acuerdas de + SN / si...?"
+      - "¿Te has olvidado de...?"
+    "2.25.Expresar_recuerdo":
+      - "Recuerdo / Me acuerdo de + SN / que..."
+      - "No me he olvidado de..."
+    "2.26.Expresar_olvido":
+      - "No recuerdo / No me acuerdo de + SN"
+      - "Me he olvidado de..."
+
+  "3.Gustos_deseos_sentimientos":
+    "3.1.Pedir_gustos":
+      - "¿Qué te parece este / ese...?"
+      - "¿Te gusta que + subjuntivo?"
+      - "¿Está bueno / rico...?"
+    "3.2.Expresar_gustos":
+      - "Me gusta / Me encanta que + subjuntivo"
+      - "Me interesa que + subjuntivo"
+      - "No me importa + SN"
+    "3.3.Expresar_aversion":
+      - "Odio + que + subjuntivo"
+      - "No soporto + SN / inf. / que + subjuntivo"
+      - "Me molesta..."
+      - "¡Qué horror!"
+    "3.4.Pedir_preferencias":
+      - "¿Qué es lo que más / menos te gusta...?"
+      - "¿Prep. + qué / cuál / quién prefieres...?"
+      - "¿Qué / Cuál / A quién eliges...?"
+    "3.5.Expresar_preferencia":
+      - "Prefiero + SN / inf. + a..."
+      - "Prefiero que + subjuntivo"
+      - "Me gusta / interesa más que + subjuntivo"
+    "3.6.Indiferencia":
+      - "No me importa + SN / inf. / que + subjuntivo"
+      - "Me da igual"
+    "3.7.Pedir_deseos":
+      - "¿Quieres / Te apetece que + subjuntivo?"
+      - "¿Tienes ganas de / Te apetece...?"
+      - "¿Cuál es tu sueño?"
+    "3.8.Expresar_deseos":
+      - "Quiero que + subjuntivo"
+      - "Tengo ganas de / Me apetece..."
+      - "Espero que + subjuntivo"
+      - "Sueño con..."
+      - "Ojalá (que) + subjuntivo"
+    "3.9.Pedir_planes":
+      - "¿Piensas + infinitivo?"
+      - "¿Tu intención es + infinitivo?"
+      - "¿Tienes (la) intención / idea de + infinitivo?"
+    "3.10.Planes_intenciones":
+      - "Pienso + infinitivo"
+      - "Estoy pensando en + infinitivo"
+      - "Mi intención es + infinitivo"
+      - "Marcadores frustración"
+    "3.11.Pedir_estado_animo":
+      - "¿Qué te pasa?"
+      - "¿Te pasa algo?"
+      - "¿Todo bien?"
+      - "¿(No) estás enfadado...?"
+    "3.12.Alegria_satisfaccion":
+      - "¡Estupendo! / ¡Fantástico!"
+      - "Estoy contento"
+      - "Estoy de (muy) buen humor"
+      - "Me alegro de que + subjuntivo"
+      - "Es estupendo que + subjuntivo"
+    "3.13.Tristeza":
+      - "Estoy triste / deprimido"
+      - "Siento + inf. / que + subjuntivo"
+      - "Me duele..."
+      - "Me da pena / lástima..."
+      - "Es una pena / lástima que + subjuntivo"
+    "3.14.Placer":
+      - "Me río + cuantificador"
+      - "Me divierto (+ cuantif.)"
+      - "(Me) lo paso estupendamente / bien / fatal"
+      - "Es divertido que + subjuntivo"
+    "3.15.Aburrimiento":
+      - "¡Qué rollo!"
+      - "Me aburro"
+      - "Me aburre + SN / inf. / que + subjuntivo"
+      - "Estoy aburrido de..."
+    "3.16.Hartazgo":
+      - "Estoy harto / aburrido de + SN / inf. / de que + subjuntivo"
+      - "¡No puedo más!"
+      - "¡Basta ya!"
+    "3.17.Enfado":
+      - "Estoy (+ cuantif.) enfadado (con)..."
+      - "Estoy de (muy) mal humor"
+      - "Me enfado..."
+      - "Me molesta / No soporto + que + subjuntivo"
+    "3.18.Miedo":
+      - "Estoy preocupado / asustado"
+      - "Tengo (+ cuantif.) miedo a / de"
+      - "Me da miedo + SN / inf. / que + subjuntivo"
+      - "Me preocupa + SN / que + subjuntivo"
+    "3.19.Nerviosismo":
+      - "Estoy (+ cuantif.) nervioso / estresado / histérico"
+      - "Me pongo nervioso / histérico"
+    "3.20.Empatia":
+      - "Ya, ya / Claro, claro"
+      - "Lo entiendo (perfectamente)"
+      - "Siento + inf. / que + subjuntivo"
+      - "Entiendo que + subjuntivo"
+    "3.21.Alivio":
+      - "¡Ya está!"
+      - "Me siento (mucho) mejor"
+    "3.22.Esperanza":
+      - "Espero + que sí / no / inf. / que + subjuntivo"
+      - "¡Ojalá! / Ojalá que + subjuntivo"
+    "3.23.Decepcion":
+      - "Estoy decepcionado / desilusionado"
+      - "¡Qué decepción / desilusión!"
+      - "Me desilusiona / decepciona..."
+    "3.24.Resignacion":
+      - "¡Así es la vida!"
+    "3.25.Arrepentimiento":
+      - "¡Qué pena!"
+    "3.26.Vergüenza":
+      - "Me da vergüenza + SN / inf. / que + subjuntivo"
+      - "¡Qué vergüenza!"
+    "3.27.Sorpresa":
+      - "Me sorprende / Me extraña + SN / inf. / que + subjuntivo"
+      - "Es increíble / raro / extraño..."
+      - "¡Qué sorpresa / raro / extraño!"
+      - "¿De verdad? / ¿En serio?"
+    "3.28.Admiracion":
+      - "¡Qué guapo / grande...!"
+      - "¡Qué maravilla!"
+      - "¡Es increíble / impresionante...!"
+      - "Estoy impresionado con..."
+    "3.29.Afecto":
+      - "Me caes bien / mal / fatal..."
+      - "Te quiero..."
+      - "Estoy enamorado (de)..."
+      - "Me enamoro (de)..."
+      - "Cariño"
+    "3.30.Sensaciones_fisicas":
+      - "Tengo + cuantif. + sed / hambre / frío / calor / sueño"
+      - "Siento + sed / hambre..."
+      - "¡Qué sed / hambre...!"
+      - "Estoy (+ cuantif.) cansado"
+      - "Me duele + cuantif. + SN"
+
+# ============================================================================
+# === B2 (Avanzado) — additions cumulatives à B1 =============================
+# ============================================================================
+B2:
+  level_label: "Avanzado"
+
+  "1.Dar_y_pedir_informacion":
+    "1.1.Identificar":
+      - "El / Este + de + SN"
+      - "Lo / Eso de..."
+      - "Se trata de..."
+    "1.2.Pedir_informacion":
+      - "Me gustaría saber si..."
+      - "¿Puedes darme más detalles sobre...?"
+      - "Preguntas material y causa"
+    "1.3.Dar_informacion":
+      - "donde..."
+      - "Debido a (que)..."
+      - "Por si..."
+      - "Estructuras corrección con verbos modales"
+    "1.4.Pedir_confirmacion":
+      - "¿Es verdad / cierto que...?"
+      - "¿Puedes / Podrías confirmar(me)...?"
+      - "Encubiertas con hearsay"
+    "1.5.Confirmar_informacion":
+      - "Pues claro que..."
+      - "Estructuras enfáticas"
+
+  "2.Expresar_opiniones":
+    "2.1.Pedir_opinion":
+      - "¿(Tú) qué piensas de que + subjuntivo?"
+      - "¿Qué te parece lo de...?"
+      - "¿Consideras...?"
+    "2.2.Dar_opinion":
+      - "A mi modo de ver..."
+      - "Considero que..."
+      - "Opino que..."
+      - "Veo que..."
+    "2.3.Pedir_valoracion":
+      - "¿Cómo ha ido...?"
+      - "¿Cómo lo ves?"
+      - "Estructuras subjuntivo extendidas"
+    "2.4.Valorar":
+      - "(Me) ha ido bien / mal..."
+      - "Lo veo / Lo encuentro + adjetivo"
+      - "Me parece / Veo / Encuentro..."
+    "2.5.Aprobar_desaprobar":
+      - "Me parece horrible / fatal / genial"
+      - "No deberías / tendrías que + infinitivo"
+    "2.6.Posicionarse":
+      - "¿Estás de acuerdo en / con...?"
+      - "¿Lo ves como + SN?"
+    "2.7.Acuerdo_pregunta":
+      - "Estructuras explicit agreement check"
+    "2.8.Invitar_acuerdo":
+      - "¿No te parece que + declaración?"
+    "2.9.Expresar_acuerdo":
+      - "Pues sí"
+      - "Acuerdo enfático : ¡Por supuesto! / Desde luego"
+      - "Acuerdo parcial"
+    "2.10.Expresar_desacuerdo":
+      - "Pues no"
+      - "Creo que te equivocas"
+      - "Desacuerdo enfático : ¡En absoluto! / Estás equivocado"
+    "2.11.Mostrar_escepticismo":
+      - "Ya"
+      - "Si tú lo dices..."
+      - "Bueno, según se mire"
+      - "(Yo) no lo veo (tan) claro"
+    "2.12.Contraargumentar":
+      - "Bueno / ya, pero..."
+      - "Puede que sí / no, pero..."
+      - "No dudo (de) que..., pero..."
+    "2.13.Expresar_certeza":
+      - "No hay duda de..."
+      - "Sin duda (alguna)..."
+      - "Es obvio que..."
+    "2.14.Falta_certeza":
+      - "Es dudoso..."
+      - "Tengo la sensación / impresión..."
+      - "Tengo (mis) dudas sobre..."
+    "2.15.Invitar_hipotesis":
+      - "¿O. interrogativa [V en condicional simple], si...?"
+      - "Estructuras futuro perfecto"
+    "2.16.Expresar_posibilidad":
+      - "Podría ser que..."
+      - "Es improbable / poco probable que..."
+      - "Hay probabilidades de que..."
+      - "Debe de + infinitivo"
+    "2.17.Obligacion_necesidad":
+      - "Es imprescindible / indispensable..."
+      - "Hace falta que..."
+    "2.18.Falta_obligacion":
+      - "No es imprescindible / indispensable..."
+      - "No hace falta que..."
+      - "No tienes / hay por qué..."
+    "2.19.Pedir_conocimiento":
+      - "¿Tienes nociones / conocimientos de / sobre...?"
+      - "¿Te has enterado de que...?"
+      - "¿Estás informado de...?"
+    "2.20.Expresar_conocimiento":
+      - "Tengo nociones / conocimientos de..."
+      - "Me he enterado de..."
+      - "Estoy informado de..."
+    "2.21.Expresar_desconocimiento":
+      - "Nadie me ha / había dicho..."
+      - "Ni idea"
+      - "No tengo / tenía ni idea de..."
+      - "Me pregunto..."
+    "2.22.Pedir_habilidad":
+      - "¿Tienes facilidad para...?"
+      - "¿Se te da(n) bien / mal...?"
+    "2.23.Habilidad":
+      - "Soy (in)capaz de + infinitivo"
+      - "Tengo facilidad para..."
+      - "Se me da(n) bien / mal..."
+    "2.24.Pedir_recuerdo":
+      - "¿Recuerdas / Te acuerdas de que...?"
+      - "¿Te has acordado de...?"
+      - "¿Te suena...?"
+    "2.25.Expresar_recuerdo":
+      - "Estructuras infinitivo y interrogativas"
+      - "Me suena..."
+    "2.26.Expresar_olvido":
+      - "No recuerdo que..."
+      - "He olvidado..."
+      - "Complementos subjuntivo y oracionales interrogativos"
+
+  "3.Gustos_deseos_sentimientos":
+    "3.1.Pedir_gustos":
+      - "¿Está interesado en...?"
+      - "¿Está a tu gusto?"
+    "3.2.Expresar_gustos":
+      - "(No) me entusiasma / me fascina / me apasiona..."
+      - "Está a mi gusto"
+      - "Estoy interesado en..."
+    "3.3.Expresar_aversion":
+      - "Detesto / Odio que + subjuntivo"
+      - "Me disgusta / Me horroriza que + subjuntivo"
+      - "Me da asco..."
+      - "¡Qué asco!"
+    "3.4.Pedir_preferencias":
+      - "Estructuras condicionales preferencia complejas con subjuntivo"
+    "3.5.Expresar_preferencia":
+      - "Prefiero que + subjuntivo + a que..."
+      - "El / La / Los / Las que más / menos..."
+    "3.6.Indiferencia":
+      - "No me importa que + subjuntivo"
+      - "(Me) da igual / lo mismo..."
+    "3.7.Pedir_deseos":
+      - "Interrogativas complejas con condicional"
+      - "¿Deseas / Desearías...?"
+    "3.8.Expresar_deseos":
+      - "Querría / Quisiera que + subjuntivo"
+      - "Me gustaría / Me apetecería / Me encantaría que + subjuntivo"
+      - "Me hace ilusión..."
+      - "Tengo unas ganas enormes de..."
+    "3.9.Pedir_planes":
+      - "¿Cuál es tu propósito?"
+      - "¿Qué tienes pensado / planeado / previsto?"
+      - "¿Qué estás pensando / planeando?"
+    "3.10.Planes_intenciones":
+      - "Mi propósito es..."
+      - "Voy a hacer lo posible por..."
+      - "Estoy planeando..."
+      - "Tengo planeado / previsto..."
+      - "Tengo en mente..."
+    "3.11.Pedir_estado_animo":
+      - "¿Qué te ocurre / sucede?"
+      - "¿Cómo te encuentras / sientes?"
+    "3.12.Alegria":
+      - "Soy / Estoy (muy) feliz"
+      - "Estoy animado / ilusionado..."
+      - "Me siento muy feliz / contento"
+      - "Me hace ilusión..."
+    "3.13.Tristeza":
+      - "Siento / Lamento que + subjuntivo"
+      - "Me siento triste / apenado"
+      - "Me pone triste / Me deprime..."
+      - "Lo paso mal / fatal..."
+    "3.14.Placer":
+      - "Me divierte / Me entretiene..."
+      - "Disfruto de / con..."
+      - "Estoy / Me encuentro a gusto..."
+      - "¡Qué risa!"
+    "3.15.Aburrimiento":
+      - "Me aburro de..."
+      - "¡Esto es un rollo / un aburrimiento / aburridísimo!"
+      - "¡Qué aburrimiento...!"
+    "3.16.Hartazgo":
+      - "Me harto / Me aburro..."
+      - "Me canso de..."
+      - "Me cansa..."
+      - "Rechazo enfático : ¡Ya está bien...!"
+    "3.17.Enfado":
+      - "Estoy indignado (con)..."
+      - "Me enfada..."
+      - "Me da rabia..."
+      - "Me indigna"
+      - "Me fastidia..."
+      - "No aguanto..."
+    "3.18.Miedo":
+      - "Me preocupo..."
+      - "Tengo miedo a / de que + subjuntivo"
+      - "Me da miedo / pánico / terror que + subjuntivo"
+      - "Siento miedo / terror / angustia"
+      - "Me asusta..."
+      - "Estoy agobiado / inquieto..."
+    "3.19.Nerviosismo":
+      - "Me pone nervioso / histérico..."
+      - "Me desespero / Me desespera..."
+      - "Pierdo la paciencia..."
+    "3.20.Empatia":
+      - "Siento que + subjuntivo"
+      - "Te entiendo (perfectamente)"
+      - "Sé cómo te sientes"
+      - "A mí me pasa lo mismo"
+    "3.21.Alivio":
+      - "¡Qué alivio! / ¡Menos mal!"
+      - "¡Gracias a Dios!"
+      - "Me siento (más) aliviado"
+    "3.22.Esperanza":
+      - "Eso espero"
+      - "Espero que + subjuntivo"
+      - "Ojalá que + subjuntivo (con formas pasadas)"
+    "3.24.Resignacion":
+      - "Estoy resignado..."
+      - "Está todo perdido"
+      - "No hay nada que hacer"
+      - "Otra vez será"
+      - "¡En fin! / ¡Qué le vamos a hacer!"
+    "3.25.Arrepentimiento":
+      - "Siento / Lamento que + subjuntivo"
+      - "Es una pena / lástima que + subjuntivo"
+      - "¡Qué pena / lástima que...!"
+    "3.26.Vergüenza":
+      - "Tengo (+ cuantif.) vergüenza (de)..."
+      - "Estoy avergonzado (de)..."
+      - "Me avergüenza..."
+      - "Paso vergüenza"
+      - "Me pongo rojo..."
+    "3.27.Sorpresa":
+      - "Me sorprende / Me extraña / Me asombra que + subjuntivo"
+      - "Es sorprendente / asombroso / alucinante..."
+      - "No me lo esperaba"
+      - "¡Qué casualidad!"
+      - "¡No puede ser!"
+    "3.28.Admiracion":
+      - "¡Qué belleza...!"
+      - "¡Qué + SN + tan + adjetivo!"
+      - "Admiro..."
+      - "Estoy fascinado / impresionado..."
+      - "Estoy orgulloso (de...)"
+    "3.29.Afecto":
+      - "Te adoro"
+      - "Me vuelves loco"
+      - "Me gustas / Me atraes"
+      - "Me importas"
+      - "Te deseo"
+      - "Te echo de menos"
+      - "Términos cariño"
+    "3.30.Sensaciones_fisicas":
+      - "Tengo una sed / un hambre... horrible"
+      - "Paso sed / hambre / frío / calor / sueño"
+      - "Estoy hambriento / helado..."
+
+# Sections 4 (Influir interlocutor) + 5 (Relacionarse socialmente) + 6 (Estructurar discurso) :
+# **PENDING** — WebFetch truncated. Sinse fallback acquisition OR manual scrape needed.
+sections_4_5_6_status: "pending — WebFetch truncated, fallback acquisition needed"
