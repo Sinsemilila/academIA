@@ -398,8 +398,11 @@ B2:
     register_b2_es:
     - regional_voseo_tuteo_vosotros_b2
 C1:
-  description: Dominio operativo eficaz — registre, modismos, inversion, précision stylistique.
+  description: Dominio operativo eficaz — PCIC C1 grammar (cuyo, lo neutro, perífrasis, subordinación) + lexique avancé + registre.
+  # Expanded S56 G6.D : 8 → 30 concepts (+22 NEW per audit gap PCIC Vol C).
+  # Audit doc : webapp/backend/docs/audit/2026-05-01-curriculum-es-vs-pcic-c1c2.md
   concept_keys:
+  # === Pre-S56 (8 lexico-pragmatic) ===
   - colocaciones_avanzadas
   - registros_formal_informal
   - modismos
@@ -408,7 +411,31 @@ C1:
   - marcadores_discursivos_c1
   - lexico_preciso
   - construcciones_focales
+  # === NEW S56 (22 grammatical core, PCIC C1) ===
+  - posesivo_relativo_cuyo_c1
+  - adjetivo_anteposicion_valor_c1
+  - superlativo_absoluto_irregular_c1
+  - articulo_neutro_lo_sustantivador_c1
+  - articulo_indefinido_enfatico_c1
+  - demostrativos_anaforicos_c1
+  - posesivos_cuantificacional_c1
+  - cuanto_relativo_c1
+  - pronombre_relativo_el_cual_c1
+  - leismo_loismo_normativo_c1
+  - adverbios_evaluativos_c1
+  - adverbios_conjuntivos_c1
+  - imperfecto_valores_pragmaticos_c1
+  - condicional_simple_rechazo_c1
+  - futuro_perfecto_objecion_c1
+  - subjuntivo_subordinacion_compuesta_c1
+  - imperativo_pragmatico_c1
+  - infinitivo_modalizado_c1
+  - participio_absoluto_c1
+  - nominalizaciones_c1
+  - perifrasis_aspectuales_c1
+  - subordinacion_finales_locuciones_c1
   concept_weights:
+    # Pre-S56
     colocaciones_avanzadas: 8
     registros_formal_informal: 5
     modismos: 8
@@ -417,6 +444,29 @@ C1:
     marcadores_discursivos_c1: 3
     lexico_preciso: 5
     construcciones_focales: 5
+    # NEW S56
+    posesivo_relativo_cuyo_c1: 5
+    adjetivo_anteposicion_valor_c1: 5
+    superlativo_absoluto_irregular_c1: 3
+    articulo_neutro_lo_sustantivador_c1: 5
+    articulo_indefinido_enfatico_c1: 3
+    demostrativos_anaforicos_c1: 3
+    posesivos_cuantificacional_c1: 3
+    cuanto_relativo_c1: 5
+    pronombre_relativo_el_cual_c1: 5
+    leismo_loismo_normativo_c1: 5
+    adverbios_evaluativos_c1: 3
+    adverbios_conjuntivos_c1: 5
+    imperfecto_valores_pragmaticos_c1: 5
+    condicional_simple_rechazo_c1: 3
+    futuro_perfecto_objecion_c1: 3
+    subjuntivo_subordinacion_compuesta_c1: 8
+    imperativo_pragmatico_c1: 3
+    infinitivo_modalizado_c1: 5
+    participio_absoluto_c1: 5
+    nominalizaciones_c1: 3
+    perifrasis_aspectuales_c1: 8
+    subordinacion_finales_locuciones_c1: 5
   concept_groups:
     lexicon_advanced:
     - colocaciones_avanzadas
@@ -425,30 +475,118 @@ C1:
     register:
     - registros_formal_informal
     - marcadores_discursivos_c1
+    - adverbios_evaluativos_c1
+    - adverbios_conjuntivos_c1
     syntax_stylistic:
     - inversion_enfatica
     - subjuntivo_estilo
     - construcciones_focales
+    - articulo_neutro_lo_sustantivador_c1
+    - articulo_indefinido_enfatico_c1
+    - nominalizaciones_c1
+    nominal_adjective_advanced:
+    - posesivo_relativo_cuyo_c1
+    - adjetivo_anteposicion_valor_c1
+    - superlativo_absoluto_irregular_c1
+    - demostrativos_anaforicos_c1
+    - posesivos_cuantificacional_c1
+    pronouns_advanced:
+    - cuanto_relativo_c1
+    - pronombre_relativo_el_cual_c1
+    - leismo_loismo_normativo_c1
+    verb_temporal_pragmatic:
+    - imperfecto_valores_pragmaticos_c1
+    - condicional_simple_rechazo_c1
+    - futuro_perfecto_objecion_c1
+    - imperativo_pragmatico_c1
+    verb_complex:
+    - subjuntivo_subordinacion_compuesta_c1
+    - infinitivo_modalizado_c1
+    - participio_absoluto_c1
+    - perifrasis_aspectuales_c1
+    subordination_advanced:
+    - subordinacion_finales_locuciones_c1
 C2:
-  description: Maestría — native-like, pragmatique, créativité linguistique.
+  description: Maestría — native-like, pragmatique, registre formel/littéraire, PCIC C2 grammar (cultismos, anteposición literaria, futuro subj).
+  # Expanded S56 G6.D : 5 → 22 concepts (+17 NEW per audit gap PCIC Vol C).
+  # Audit doc : webapp/backend/docs/audit/2026-05-01-curriculum-es-vs-pcic-c1c2.md
   concept_keys:
+  # === Pre-S56 (5) ===
   - estructuras_hendidas
   - discurso_referido_complejo
   - ironia_pragmatica
   - matiz_perfectivo_imperfectivo
   - literatura_referencial
+  # === NEW S56 (17 PCIC C2) ===
+  - cultismos_pluralizacion_c2
+  - adjetivo_anteposicion_literaria_c2
+  - superlativo_culto_c2
+  - articulo_sustantivador_atributivo_c2
+  - demostrativos_pragmaticos_c2
+  - posesivos_pragmaticos_c2
+  - cuantificadores_focales_c2
+  - numerales_distributivos_c2
+  - dativo_etico_c2
+  - expresiones_fijas_atonos_c2
+  - adverbios_modus_pragmaticos_c2
+  - focalizadores_particularizadores_c2
+  - tiempos_indicativo_pragmaticos_c2
+  - subjuntivo_futuro_literario_c2
+  - imperativo_concesivo_c2
+  - haber_de_obligativo_c2
+  - relativas_quiera_c2
   concept_weights:
+    # Pre-S56
     estructuras_hendidas: 5
     discurso_referido_complejo: 5
     ironia_pragmatica: 5
     matiz_perfectivo_imperfectivo: 5
     literatura_referencial: 3
+    # NEW S56
+    cultismos_pluralizacion_c2: 3
+    adjetivo_anteposicion_literaria_c2: 5
+    superlativo_culto_c2: 3
+    articulo_sustantivador_atributivo_c2: 5
+    demostrativos_pragmaticos_c2: 3
+    posesivos_pragmaticos_c2: 3
+    cuantificadores_focales_c2: 5
+    numerales_distributivos_c2: 3
+    dativo_etico_c2: 5
+    expresiones_fijas_atonos_c2: 5
+    adverbios_modus_pragmaticos_c2: 5
+    focalizadores_particularizadores_c2: 3
+    tiempos_indicativo_pragmaticos_c2: 8
+    subjuntivo_futuro_literario_c2: 3
+    imperativo_concesivo_c2: 5
+    haber_de_obligativo_c2: 5
+    relativas_quiera_c2: 5
   concept_groups:
     advanced_syntax:
     - estructuras_hendidas
     - matiz_perfectivo_imperfectivo
+    - articulo_sustantivador_atributivo_c2
+    - relativas_quiera_c2
     pragmatics:
     - ironia_pragmatica
     - discurso_referido_complejo
+    - dativo_etico_c2
+    - expresiones_fijas_atonos_c2
+    - imperativo_concesivo_c2
     cultural:
     - literatura_referencial
+    nominal_adjective_literary:
+    - cultismos_pluralizacion_c2
+    - adjetivo_anteposicion_literaria_c2
+    - superlativo_culto_c2
+    - demostrativos_pragmaticos_c2
+    - posesivos_pragmaticos_c2
+    quantifiers_focal:
+    - cuantificadores_focales_c2
+    - numerales_distributivos_c2
+    - focalizadores_particularizadores_c2
+    adverbs_modus:
+    - adverbios_modus_pragmaticos_c2
+    verb_pragmatic_literary:
+    - tiempos_indicativo_pragmaticos_c2
+    - subjuntivo_futuro_literario_c2
+    - haber_de_obligativo_c2

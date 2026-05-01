@@ -217,8 +217,8 @@ G8.2 (rules_es spaCy migration) **DEFER P3** — strategic decision : si Tier 1+
 - [x] G6.A WebFetch PCIC Vol C Gramática (S56) — `extracted/cervantes-2006-plan-curricular-c1-c2/grammar-by-level.yaml` 15 macro-sections × 2 niveaux
 - [x] G6.B WebFetch PCIC Vol C Funciones (S56) — `funciones-by-level.yaml` macro-sections 1-4 (sections 5+6 truncated, fallback acquisition flagged)
 - [x] G6.C Audit PCIC Vol C vs curriculum_es (S56) — `webapp/backend/docs/audit/2026-05-01-curriculum-es-vs-pcic-c1c2.md`. Gap : 22 NEW C1 + 17 NEW C2 concepts identified for G6.D.
-- [ ] G6.D `curriculum_es.yaml` 98→150 (target +52 : 22 C1 + 17 C2 + 13 polish)
-- [ ] G6.E `concept_hints/es.yaml` 103→180
+- [x] G6.D `curriculum_es.yaml` 98→**137** (S56, +39 NEW C1+C2 PCIC Vol C). 13 polish A2-B2 deferred (separate stratification sprint). Tests es_content_pack + yaml_parity green.
+- [x] G6.E `concept_hints/es.yaml` 103→**142** (S56, +39 entries 1:1 with curriculum_es C1+C2 expansion). FR-oriented hints with PCIC examples. Tests green.
 - [ ] G7.1 `functions/es.yaml` 42→80 (PRE-REQ : need PCIC Vol B Funciones B1+B2 WebFetch — NOT YET extracted, only A1+A2 done S53)
 - [ ] G7.2 `functions/en.yaml` 10→50
 
