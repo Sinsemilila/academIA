@@ -750,6 +750,312 @@ def _detect_subjunctive_missing(text: str) -> list[RuleDetection]:
     return results
 
 
+# ════════════════════════════════════════════════════════════════════════════
+# === Wave 3 G8.1 (S56 Tier 4) — 12 new error codes per audit gap ============
+# ════════════════════════════════════════════════════════════════════════════
+# Codes : V:TENSE, V:FORM, V:SVA, V:ASPECT, V:AUX, V:MODAL, V:COND, V:INFL,
+#         V:PHRASAL, V:PASS, V:EXIST, V:CHOICE.
+# Approach : regex-light, high-precision, low-recall. Flag salient patterns only.
+# spaCy migration deferred (P3 strategic — see ADR if implemented).
+
+# V:TENSE — present indicative used with explicit past time marker (high-precision).
+_PAST_MARKERS_VTENSE = (
+    "ayer", "anoche", "anteayer", "anteanoche", "el lunes pasado", "el martes pasado",
+    "la semana pasada", "el mes pasado", "el año pasado", "hace dos años",
+)
+_PRESENT_VERBS_AR_ER_IR = (
+    # Common 1st/3rd sing present ind that often gets used wrongly with past markers
+    "hablo", "habla", "como", "come", "vivo", "vive", "estudio", "estudia",
+    "trabajo", "trabaja", "voy", "va", "tengo", "tiene", "hago", "hace",
+)
+
+
+def _detect_v_tense_marker_mismatch(text: str) -> list[RuleDetection]:
+    """V:TENSE — present + explicit past marker (Ayer hablo con María → Ayer hablé)."""
+    results: list[RuleDetection] = []
+    markers_alt = "|".join(re.escape(m) for m in _PAST_MARKERS_VTENSE)
+    verbs_alt = "|".join(_PRESENT_VERBS_AR_ER_IR)
+    pattern = re.compile(
+        rf"\b({markers_alt})\b[^.!?]{{1,40}}?\b({verbs_alt})\b",
+        re.IGNORECASE,
+    )
+    for m in pattern.finditer(text):
+        marker, verb = m.group(1), m.group(2).lower()
+        results.append(RuleDetection(
+            "V:TENSE",
+            f"{marker} ... {verb}",
+            f"{marker} + pretérito (forma pasada del verbo)",
+            f"Marcador temporal pasado '{marker}' requiere pretérito, no presente '{verb}'.",
+        ))
+    return results
+
+
+# V:FORM — common irregular present form errors (heuristic surface patterns).
+_FORM_ERRORS = {
+    # incorrect_form : (correct_form, reason)
+    "tieno": ("tengo", "1ª pers. de 'tener' es 'tengo' (irregular)"),
+    "ponio": ("pongo", "1ª pers. de 'poner' es 'pongo' (irregular)"),
+    "dico": ("digo", "1ª pers. de 'decir' es 'digo' (irregular)"),
+    "saco": ("salgo", "1ª pers. de 'salir' es 'salgo' (con -g-)"),
+    "valio": ("valgo", "1ª pers. de 'valer' es 'valgo'"),
+    "haco": ("hago", "1ª pers. de 'hacer' es 'hago'"),
+    "pono": ("pongo", "1ª pers. de 'poner' es 'pongo'"),
+    "viengo": ("vengo", "1ª pers. de 'venir' es 'vengo'"),
+    "tieno": ("tengo", "1ª pers. de 'tener' es 'tengo'"),
+}
+
+
+def _detect_v_form_irregular(text: str) -> list[RuleDetection]:
+    """V:FORM — regularized form of irregular verbs (tieno → tengo, dico → digo)."""
+    results: list[RuleDetection] = []
+    for wrong, (right, reason) in _FORM_ERRORS.items():
+        pattern = re.compile(rf"\b{re.escape(wrong)}\b", re.IGNORECASE)
+        if pattern.search(text):
+            results.append(RuleDetection("V:FORM", wrong, right, reason))
+    return results
+
+
+# V:SVA — subject-verb agreement (yo + 3ª pers form ; nosotros + 3ª pers).
+_SVA_PATTERNS = (
+    # (regex, wrong_label, correction_template, reason)
+    (r"\byo\s+(habla|come|vive|trabaja|estudia|tiene|es|está|va|hace|dice)\b",
+     "yo + 3ª pers", "yo + 1ª pers (-o)",
+     "Concordancia sujeto-verbo : 'yo' requiere 1ª persona singular (-o)."),
+    (r"\bnosotros\s+(habla|come|vive|trabaja|tiene|es|está)\b",
+     "nosotros + 3ª pers", "nosotros + 1ª pers plural (-amos/-emos/-imos)",
+     "Concordancia sujeto-verbo : 'nosotros' requiere 1ª persona plural (-amos/-emos/-imos)."),
+    (r"\bellos\s+(hablo|como|vivo|trabajo|tengo|soy|estoy|voy|hago)\b",
+     "ellos + 1ª pers sing", "ellos + 3ª pers plural (-an/-en)",
+     "Concordancia sujeto-verbo : 'ellos' requiere 3ª persona plural (-an/-en)."),
+)
+
+
+def _detect_v_sva(text: str) -> list[RuleDetection]:
+    """V:SVA — subject pronoun mismatched with verb person/number."""
+    results: list[RuleDetection] = []
+    for pat, wrong, correction, reason in _SVA_PATTERNS:
+        for m in re.finditer(pat, text, re.IGNORECASE):
+            results.append(RuleDetection("V:SVA", m.group(0), correction, reason))
+    return results
+
+
+# V:ASPECT — pretérito vs imperfecto with conflicting markers.
+# Pattern : "siempre/normalmente/todos los días" + pretérito (should be imperfecto for habit).
+_ASPECT_HABIT_MARKERS = ("siempre", "normalmente", "frecuentemente", "todos los días",
+                         "cada día", "cada semana", "a menudo")
+_PRETERITE_FORMS = (
+    "hablé", "habló", "comí", "comió", "viví", "vivió", "estudié", "estudió",
+    "trabajé", "trabajó", "fui", "fue", "tuve", "tuvo", "hice", "hizo",
+)
+
+
+def _detect_v_aspect_habit_marker(text: str) -> list[RuleDetection]:
+    """V:ASPECT — habit marker + preterite (should be imperfect)."""
+    results: list[RuleDetection] = []
+    markers_alt = "|".join(re.escape(m) for m in _ASPECT_HABIT_MARKERS)
+    verbs_alt = "|".join(_PRETERITE_FORMS)
+    pattern = re.compile(
+        rf"\b({markers_alt})\b[^.!?]{{1,30}}?\b({verbs_alt})\b",
+        re.IGNORECASE,
+    )
+    for m in pattern.finditer(text):
+        results.append(RuleDetection(
+            "V:ASPECT",
+            f"{m.group(1)} ... {m.group(2)}",
+            f"{m.group(1)} + imperfecto (acción habitual)",
+            f"Marcador habitual '{m.group(1)}' requiere imperfecto (no pretérito).",
+        ))
+    return results
+
+
+# V:AUX — auxiliary errors in compound tenses (estoy + participle, ser + perfectivo).
+_AUX_PATTERNS = (
+    # estar + participle for perfect (calque FR : *estoy comido instead of he comido)
+    (r"\b(estoy|está|estás|estamos|están)\s+(comido|hablado|vivido|estudiado|trabajado|sido|estado)\b",
+     "estar + participio (perfectivo)", "haber + participio",
+     "Para el perfecto usa 'haber + participio' (he comido), no 'estar' (estoy comido es estado resultante)."),
+    # ser + gerundio (calque EN/FR : *soy comiendo instead of estoy comiendo)
+    (r"\b(soy|eres|es|somos|son)\s+(\w+ndo)\b",
+     "ser + gerundio", "estar + gerundio",
+     "Para acción en curso usa 'estar + gerundio' (estoy comiendo), no 'ser'."),
+)
+
+
+def _detect_v_aux(text: str) -> list[RuleDetection]:
+    """V:AUX — auxiliary verb errors (estar/ser/haber confusion in compounds)."""
+    results: list[RuleDetection] = []
+    for pat, wrong, correction, reason in _AUX_PATTERNS:
+        for m in re.finditer(pat, text, re.IGNORECASE):
+            results.append(RuleDetection("V:AUX", m.group(0), correction, reason))
+    return results
+
+
+# V:MODAL — modal verb followed by conjugated form instead of infinitive.
+_MODALS_ES = ("puedo", "puede", "puedes", "podemos", "pueden",
+              "debo", "debe", "debes", "debemos", "deben",
+              "quiero", "quiere", "quieres", "queremos", "quieren")
+_CONJUGATED_FORMS = ("voy", "vas", "va", "vamos", "van",
+                     "tengo", "tienes", "tiene", "tenemos", "tienen",
+                     "hago", "haces", "hace", "hacemos", "hacen",
+                     "como", "comes", "come", "comemos", "comen",
+                     "estudio", "estudia", "estudias")
+
+
+def _detect_v_modal_conjugated(text: str) -> list[RuleDetection]:
+    """V:MODAL — modal + conjugated form (puedo voy → puedo ir)."""
+    results: list[RuleDetection] = []
+    modals_alt = "|".join(_MODALS_ES)
+    conj_alt = "|".join(_CONJUGATED_FORMS)
+    pattern = re.compile(
+        rf"\b({modals_alt})\s+({conj_alt})\b",
+        re.IGNORECASE,
+    )
+    for m in pattern.finditer(text):
+        results.append(RuleDetection(
+            "V:MODAL",
+            m.group(0),
+            f"{m.group(1)} + infinitivo",
+            f"Verbo modal '{m.group(1)}' requiere infinitivo (no forma conjugada '{m.group(2)}').",
+        ))
+    return results
+
+
+# V:COND — wrong conditional formation (e.g., "yo iría a tener" calque FR).
+_COND_PATTERNS = (
+    # "yo iría a + inf" calque FR ("j'irais avoir") → conditional simple direct
+    (r"\b(iría|irías|iría|iríamos|irían)\s+a\s+(\w+ar|\w+er|\w+ir)\b",
+     "ir + a + infinitivo en condicional (calque FR)", "condicional simple del verbo principal",
+     "El condicional 'iría a + inf' es calque FR. En español usa el condicional simple del verbo principal (haría, comería, iría)."),
+    # "habría + infinitivo" wrong (should be "habría + participio")
+    (r"\b(habría|habrías|habríamos|habrían)\s+(\w+ar|\w+er|\w+ir)\b",
+     "habría + infinitivo", "habría + participio",
+     "El condicional compuesto requiere participio (habría comido), no infinitivo."),
+)
+
+
+def _detect_v_cond(text: str) -> list[RuleDetection]:
+    """V:COND — conditional formation errors."""
+    results: list[RuleDetection] = []
+    for pat, wrong, correction, reason in _COND_PATTERNS:
+        for m in re.finditer(pat, text, re.IGNORECASE):
+            results.append(RuleDetection("V:COND", m.group(0), correction, reason))
+    return results
+
+
+# V:INFL — incorrect verbal inflection (gerundio sur -ar with -iendo, malformed participles).
+_INFL_PATTERNS = (
+    # -ar verb with -iendo instead of -ando (hablar → *hablieendo, should be hablando)
+    (r"\b(habl|cant|trabaj|estudi|amol|am|cocin|baill|jug|jugu|llam)iendo\b",
+     "verbo -ar con -iendo", "verbo -ar con -ando",
+     "Verbos en -ar usan -ando para gerundio (hablando, cantando), no -iendo."),
+    # "ido" as participle for irregular verbs that need different form
+    (r"\b(escribido|hacido|abrido|dicido)\b",
+     "participio regularizado de irregular", "participio irregular correcto",
+     "Verbo irregular : escribir→escrito, hacer→hecho, abrir→abierto, decir→dicho."),
+)
+
+
+def _detect_v_infl(text: str) -> list[RuleDetection]:
+    """V:INFL — incorrect verbal inflection (gerundio, participio)."""
+    results: list[RuleDetection] = []
+    for pat, wrong, correction, reason in _INFL_PATTERNS:
+        for m in re.finditer(pat, text, re.IGNORECASE):
+            results.append(RuleDetection("V:INFL", m.group(0), correction, reason))
+    return results
+
+
+# V:PHRASAL — perífrasis verbal errors (estar + infinitivo, ir a + participio).
+_PHRASAL_PATTERNS = (
+    # estar + infinitivo (should be estar + gerundio for progressive)
+    (r"\b(estoy|estás|está|estamos|están)\s+(\w+ar|\w+er|\w+ir)\b(?!\s+a\b)",
+     "estar + infinitivo", "estar + gerundio",
+     "Perífrasis 'estar + gerundio' (estoy comiendo) — no 'estar + infinitivo' (estoy comer)."),
+    # ir a + participio (should be ir a + infinitivo)
+    (r"\b(voy|vas|va|vamos|van)\s+a\s+(\w+ado|\w+ido)\b",
+     "ir a + participio", "ir a + infinitivo",
+     "Futuro próximo : 'ir a + infinitivo' (voy a comer), no participio (voy a comido)."),
+)
+
+
+def _detect_v_phrasal(text: str) -> list[RuleDetection]:
+    """V:PHRASAL — perífrasis verbal formation errors."""
+    results: list[RuleDetection] = []
+    for pat, wrong, correction, reason in _PHRASAL_PATTERNS:
+        for m in re.finditer(pat, text, re.IGNORECASE):
+            results.append(RuleDetection("V:PHRASAL", m.group(0), correction, reason))
+    return results
+
+
+# V:PASS — passive voice errors (overuse pasiva perifrástica vs pasiva refleja preference).
+def _detect_v_pass(text: str) -> list[RuleDetection]:
+    """V:PASS — overuse pasiva perifrástica with inanimate subject (calque EN/FR).
+
+    Spanish prefers pasiva refleja with inanimate subjects ('Se vende coche' vs
+    'El coche es vendido'). High-precision flag : 'es/son + participle + por' construction.
+    """
+    results: list[RuleDetection] = []
+    # Pattern : noun (inanimate hint) + ser + participle (3+ chars)
+    # Heuristic — flag "El X es V-ado" without animate marker
+    pattern = re.compile(
+        r"\b(El|La|Los|Las)\s+\w+\s+(es|son|fue|fueron)\s+(\w+ado|\w+ada|\w+ados|\w+adas|\w+ido|\w+ida|\w+idos|\w+idas)\b",
+        re.IGNORECASE,
+    )
+    for m in pattern.finditer(text):
+        # Skip if obvious literary/journalistic register marker absent
+        snippet = m.group(0)
+        results.append(RuleDetection(
+            "V:PASS",
+            snippet,
+            f"Pasiva refleja : 'Se {m.group(3)}...' o forma activa",
+            f"En español la pasiva perifrástica con sujeto inanimado tiende a evitarse — preferir pasiva refleja (Se vende casa) o forma activa.",
+        ))
+    return results
+
+
+# V:EXIST — existence verb errors (estar/ser used for existence instead of haber).
+_EXIST_PATTERNS = (
+    # "es/está + indefinite quantity + sustantivo" (calque EN "there is/are")
+    (r"\b(está|están|es|son)\s+(mucho|mucha|muchos|muchas|un|una|unos|unas|dos|tres|cuatro|cinco)\s+\w+",
+     "ser/estar + cuantidad indefinida (existencia)", "haber (hay/había)",
+     "Para existencia indefinida usa 'haber' (hay mucha gente, hay 3 problemas), no 'ser/estar'."),
+)
+
+
+def _detect_v_exist(text: str) -> list[RuleDetection]:
+    """V:EXIST — ser/estar used for existence (should be haber/hay)."""
+    results: list[RuleDetection] = []
+    for pat, wrong, correction, reason in _EXIST_PATTERNS:
+        for m in re.finditer(pat, text, re.IGNORECASE):
+            results.append(RuleDetection("V:EXIST", m.group(0), correction, reason))
+    return results
+
+
+# V:CHOICE — near-synonym verb confusion (saber/conocer, llevar/traer, ir/venir).
+_CHOICE_PATTERNS = (
+    # saber + persona (should be conocer + persona)
+    (r"\b(sé|sabes|sabe|sabemos|saben|sabía|supe)\s+(?:a\s+)?(\w+(?:cha|ela|jo|ja|os|as))\b",
+     "saber + persona", "conocer + persona",
+     "Para personas usa 'conocer' (conozco a María), 'saber' es para hechos/habilidades (sé que vienes)."),
+    # conocer + hecho/clause (should be saber)
+    (r"\b(conozco|conoces|conoce|conocemos|conocen)\s+(que|si|cómo|cuándo|dónde|por qué)\b",
+     "conocer + clause/wh", "saber + clause/wh",
+     "Para hechos/cláusulas usa 'saber' (sé que viene, sé cómo hacerlo), no 'conocer'."),
+    # llevar/traer confusion (depende de la perspective)
+    (r"\bllevame\s+a\s+(?:tu|mi|nuestra)\s+casa\b",
+     "llevame (perspectiva ambigua)", "tráeme / acompáñame",
+     "'Llevar' implica destino lejano del hablante ; para invitación usa 'traer/acompañar' según contexto."),
+)
+
+
+def _detect_v_choice(text: str) -> list[RuleDetection]:
+    """V:CHOICE — near-synonym verb confusion."""
+    results: list[RuleDetection] = []
+    for pat, wrong, correction, reason in _CHOICE_PATTERNS:
+        for m in re.finditer(pat, text, re.IGNORECASE):
+            results.append(RuleDetection("V:CHOICE", m.group(0), correction, reason))
+    return results
+
+
 def detect_errors_es(text: str) -> list[RuleDetection]:
     """Main entry — aggregates all ES rule-based detectors.
 
@@ -782,4 +1088,17 @@ def detect_errors_es(text: str) -> list[RuleDetection]:
     results.extend(_detect_gender_disagreement(text))
     # Wave 2 P2 (Session 51 — subjunctive triggers)
     results.extend(_detect_subjunctive_missing(text))
+    # Wave 3 G8.1 (S56 Tier 4 — 12 new codes)
+    results.extend(_detect_v_tense_marker_mismatch(text))
+    results.extend(_detect_v_form_irregular(text))
+    results.extend(_detect_v_sva(text))
+    results.extend(_detect_v_aspect_habit_marker(text))
+    results.extend(_detect_v_aux(text))
+    results.extend(_detect_v_modal_conjugated(text))
+    results.extend(_detect_v_cond(text))
+    results.extend(_detect_v_infl(text))
+    results.extend(_detect_v_phrasal(text))
+    results.extend(_detect_v_pass(text))
+    results.extend(_detect_v_exist(text))
+    results.extend(_detect_v_choice(text))
     return results

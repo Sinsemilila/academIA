@@ -231,7 +231,7 @@ G8.2 (rules_es spaCy migration) **DEFER P3** — strategic decision : si Tier 1+
 - [ ] G7.3f Patch `rubrics/es.yaml` DELE Criterios (Adecuación / Coherencia / Corrección / Alcance — extracted in G7.3a rubric.yaml, ready to merge)
 
 **Tier 4** (rules + L1, parallel) :
-- [ ] G8.1 `rules_es.py` +12 codes
+- [x] G8.1 `rules_es.py` +12 codes (S56) — V:TENSE, V:FORM, V:SVA, V:ASPECT, V:AUX, V:MODAL, V:COND, V:INFL, V:PHRASAL, V:PASS, V:EXIST, V:CHOICE. Regex-light high-precision low-recall. Tests 14/14 patterns. ERROR_CODE_TO_FAMILY pre-registered S51 — auto-integrates with tolerance_matrix pipeline.
 - [ ] G8.3 FP whitelists ES
 - [ ] G8.4 `l1_transfer/fr_to_es.yaml` 25+
 
