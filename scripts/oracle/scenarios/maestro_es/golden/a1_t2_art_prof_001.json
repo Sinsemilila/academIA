@@ -1,12 +1,12 @@
 {
   "scenario_id": "a1_t2_art_prof_001",
-  "sha": "d038dd9b683a",
-  "recorded_at": "2026-05-01T09:58:15Z",
-  "response": "¡Genial! Vas a hablar con el Dr. García. ¿A qué hora es la cita?",
-  "dify_conversation_id": "c1655306-bd6a-4327-bf18-d66283d6c481",
-  "dify_message_id": "f5d6412b-f37f-47a6-b65c-801c89816040",
+  "sha": "bd8f7c4e1f67",
+  "recorded_at": "2026-05-01T12:34:49Z",
+  "response": "¡Genial! Vas a hablar con el Dr. García. ¿De qué tema van a hablar?",
+  "dify_conversation_id": "086fa0db-fe8d-4fc8-9bbc-6b4145846c99",
+  "dify_message_id": "968ebfe4-f8b0-4a0d-bc06-858676ed46fb",
   "usage": {
-    "prompt_tokens": 3632,
+    "prompt_tokens": 4419,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
@@ -14,11 +14,11 @@
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3653,
+    "total_tokens": 4440,
     "total_price": "0",
     "currency": "USD",
-    "latency": 1.137,
-    "time_to_first_token": 1.52,
+    "latency": 0.881,
+    "time_to_first_token": 1.529,
     "time_to_generate": 0.0
   }
 }

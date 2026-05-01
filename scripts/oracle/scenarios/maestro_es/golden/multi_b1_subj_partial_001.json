@@ -1,12 +1,12 @@
 {
   "scenario_id": "multi_b1_subj_partial_001",
-  "sha": "d038dd9b683a",
-  "recorded_at": "2026-05-01T09:59:16Z",
-  "response": "Casi — después de *quiero que*, ¿qué modo del verbo venir?",
-  "dify_conversation_id": "bbb2542a-277f-4d1a-a9dd-240a513d4979",
-  "dify_message_id": "0a277df7-57d3-4d35-a5b9-e21bd57ce1fe",
+  "sha": "bd8f7c4e1f67",
+  "recorded_at": "2026-05-01T12:35:49Z",
+  "response": "Casi — después de \"quiero que\", ¿qué modo del verbo venir?",
+  "dify_conversation_id": "1d156dbd-f314-456a-9396-3e1214e8de24",
+  "dify_message_id": "3cd8c036-e9fe-4016-9b63-c79de1a81887",
   "usage": {
-    "prompt_tokens": 3716,
+    "prompt_tokens": 4503,
     "prompt_unit_price": "0",
     "prompt_price_unit": "0",
     "prompt_price": "0",
@@ -14,11 +14,11 @@
     "completion_unit_price": "0",
     "completion_price_unit": "0",
     "completion_price": "0",
-    "total_tokens": 3733,
+    "total_tokens": 4520,
     "total_price": "0",
     "currency": "USD",
-    "latency": 0.947,
-    "time_to_first_token": 1.309,
+    "latency": 1.888,
+    "time_to_first_token": 2.265,
     "time_to_generate": 0.0
   }
 }

@@ -203,7 +203,7 @@ G8.2 (rules_es spaCy migration) **DEFER P3** — strategic decision : si Tier 1+
 
 ## Session N+1 (Tier 1 — quick wins ~2-3j)
 - [x] G5.1 Maestro Dify prompt fix — Lyster CEFR caveat inline + ❌/✅ examples + anti-priority-leak (S56, scripts/sprint-maestro-es/02_*.py v2). Smoke 5/6 ≥5/6 ✅, 0 explicit_correction A1-A2 ✅. 1 fail `a2_t2_a_personal_001` semantic_fidelity = golden obsolete (recast vs old elicitation).
-- [ ] G5.1.C Re-record 24 goldens post-patch
+- [x] G5.1.C Re-record 24 goldens post-patch (S56). Smoke 6/6 ✅ confirmed.
 - [ ] G5.2 Teacher EN apply same
 - [ ] G5.3 Runbook Dify patch
 - [ ] Smoke validation + battery quick
