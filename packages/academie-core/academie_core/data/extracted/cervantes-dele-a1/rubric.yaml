@@ -1,0 +1,249 @@
+# DELE A1 — rubric structurel officiel (Instituto Cervantes 2019, modelo 00).
+#
+# ADR-014 Layer 1.5 extraction (Session 56 Tier 2 G7.3a partial, 2026-05-01).
+# Source : `instituto-cervantes-2019-dele-modelo-a1.pdf` (4.5MB, 30+ pages, en library/processed/).
+#
+# Use case :
+# 1. Calibrate `mini_exam/es_A1.yaml` task buckets to mirror real DELE A1 distribution
+# 2. Augment `rubrics/es.yaml` with DELE Criterios calificación (Adecuación / Coherencia /
+#    Corrección / Alcance) — the 4 dimensions used by official Cervantes graders
+# 3. Provide ground-truth task TYPES for Tier 5.G9.1 scenario rebalance
+#
+# This file captures STRUCTURE + INSTRUCTIONS + EXAMPLE ITEMS only. Full item bank
+# extraction (25 lecture + 25 auditiva + 2 escritura + 4 oral = ~56 items) deferred
+# to future session — requires multi-page OCR + image-aware processing for matching tareas.
+
+source:
+  exam: "DELE A1 (Diploma de Español como Lengua Extranjera, nivel A1 Acceso)"
+  publisher: "Instituto Cervantes"
+  year: 2019
+  edition: "Modelo de examen 00 (a partir de la convocatoria de abril de 2020)"
+  pdf: "library/processed/instituto-cervantes-2019-dele-modelo-a1.pdf"
+  fetch_date: 2026-05-01
+  notes: |
+    Free PDF download from Instituto Cervantes. The official "modelo" exam — actual past
+    exam released as preparation material. Audio MP3 separate (not extracted yet).
+
+# ============================================================================
+# === Estructura general del examen DELE A1 =================================
+# ============================================================================
+exam_structure:
+  total_pruebas: 4
+  total_preguntas: 50  # 25 lectura + 25 auditiva (escritas + orales jugées qualitativement)
+  duracion_total_min: ~95  # 45 lectura + 25 auditiva + 25 escritas
+  approval_threshold: 30/50  # 60% — DELE official cut-off
+
+  pruebas:
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # === PRUEBA 1 — Comprensión de lectura ====================
+    - prueba_num: 1
+      name: "Comprensión de lectura"
+      duracion_min: 45
+      total_preguntas: 25
+      total_tareas: 4
+      tareas:
+
+        - tarea_num: 1
+          type: "multiple_choice_ABC_after_text"
+          input_text_type: "correo electrónico personal (~150 palabras)"
+          n_preguntas: 5
+          range: "1-5"
+          example_topic: "Email de Inés a Pedro sobre exámenes y vacaciones"
+          example_question: "En este correo, Inés le cuenta a Pedro… A) cuándo termina los exámenes / B) por qué quiere trabajar en verano / C) dónde va a ir de vacaciones en julio."
+
+        - tarea_num: 2
+          type: "matching_text_to_visual_signs"
+          input_text_type: "10 mensajes/anuncios courts (signos, anuncios, letreros)"
+          n_options: 10  # A-J including 1 example
+          n_preguntas: 6
+          range: "6-11"
+          example_topic: "Anuncios y letreros (PROHIBIDO ENTRAR CON ANIMALES, OFERTAS DE LA SEMANA, FESTIVAL DE CINE, etc.)"
+          example_match: "Frase 'No puedes pasar con el perro' → letra A (PROHIBIDO ENTRAR CON ANIMALES)"
+
+        - tarea_num: 3
+          type: "matching_houses_to_demands"
+          input_text_type: "10 anuncios viviendas (alquiler/venta) + 6 demandes"
+          n_options: 10  # A-J
+          n_preguntas: 6
+          range: "12-17"
+          example_topic: "Pisos/casas Alicante, Barcelona, Madrid, Sevilla, etc. matched to family demands"
+
+        - tarea_num: 4
+          type: "multiple_choice_ABC_after_cultural_info"
+          input_text_type: "agenda cultural (~5 spectacles : cine, teatro, arte, concierto, actividades)"
+          n_preguntas: 8
+          range: "18-25"
+          example_topic: "Agenda cultural de Madrid"
+          example_question: "Los fines de semana la entrada de cine… A) es más barata / B) es más cara / C) cuesta igual."
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # === PRUEBA 2 — Comprensión auditiva ======================
+    - prueba_num: 2
+      name: "Comprensión auditiva"
+      duracion_min: 25
+      total_preguntas: 25
+      total_tareas: 4
+      tareas:
+
+        - tarea_num: 1
+          type: "audio_conversation_image_ABC"
+          input_audio: "5 conversations courtes (2 personnes), répétées 2 fois"
+          n_preguntas: 5
+          range: "1-5"
+          example_topic: "¿A qué lugar va el hombre hoy? / ¿Qué hace la chica esta tarde? / ¿Dónde va el hombre de vacaciones? / ¿Qué busca el hombre? / ¿Qué come la mujer hoy?"
+
+        - tarea_num: 2
+          type: "audio_message_image_matching"
+          input_audio: "5 mensajes courts, répétés 2 fois"
+          n_options: 9  # A-I including example
+          n_preguntas: 5
+          range: "6-10"
+          example_topic: "Match audio message ('Silencio, por favor. El examen tiene 10 preguntas.') → imagen F"
+
+        - tarea_num: 3
+          type: "audio_monologue_attribute_matching"
+          input_audio: "monólogo (Lucía habla de 8 compañeros de clase), répété 2 fois"
+          n_options: 12  # A-L
+          n_preguntas: 8
+          range: "11-18"
+          example_topic: "Match nom (Emiko, Paola, Sussane, Andreas, Scott, Ozge, Amin, Ana) → atributo (es sociable, estudia mucho, habla mucho, es estadounidense, es el más joven, quiere estudiar piano, quiere ser escritor, es de Francia, etc.)"
+
+        - tarea_num: 4
+          type: "audio_dialogue_fill_blanks_from_word_bank"
+          input_audio: "diálogo (Paco describe su ciudad), répété 2 fois"
+          n_options: 9  # A-I word bank
+          n_preguntas: 7
+          range: "19-25"
+          example_topic: "Fill 7 blanks 'La ciudad tiene muchos ___' / 'Muchas personas van a la ciudad de Paco para ver ___' from word bank (grande, museo, monumentos, turistas, coche, autobús, caro, palacio, barato)"
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # === PRUEBA 3 — Expresión e interacción escritas =========
+    - prueba_num: 3
+      name: "Expresión e interacción escritas"
+      duracion_min: 25
+      total_tareas: 2
+      grading: "Calificación cualitativa (Cervantes graders) — 4 Criterios DELE"
+      tareas:
+        - tarea_num: 1
+          type: "complete_form"
+          input: "Formulario simple (datos personales, intereses)"
+          word_count_estimate: ~30
+        - tarea_num: 2
+          type: "write_personal_message"
+          input: "Escribir un correo electrónico, postal o nota informal (50-70 palabras)"
+          themes: ["presentarse", "describir rutina", "invitar/agradecer", "información sobre actividades"]
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # === PRUEBA 4 — Expresión e interacción orales ===========
+    - prueba_num: 4
+      name: "Expresión e interacción orales"
+      duracion_min: 15
+      duracion_preparacion: 10
+      total_tareas: 4  # 3 monologues + 1 dialogue avec examinador
+      grading: "Calificación cualitativa (examinador en directo) — 4 Criterios DELE"
+      tareas:
+        - tarea_num: 1
+          type: "monologue_personal_presentation"
+          duracion_seg: 60
+          theme: "Presentación personal"
+        - tarea_num: 2
+          type: "monologue_familiar_topic"
+          duracion_seg: 60
+          theme: "Describir foto, lugar, persona, actividad cotidiana"
+        - tarea_num: 3
+          type: "monologue_personal_experience"
+          duracion_seg: 60
+          theme: "Hablar de gustos, planes, rutina, recuerdos básicos"
+        - tarea_num: 4
+          type: "dialogue_examiner"
+          duracion_seg: 180
+          theme: "Conversación informal sobre temas cotidianos (familia, trabajo, ocio)"
+
+# ============================================================================
+# === Criterios oficiales de calificación DELE (4 dimensions) ===============
+# ============================================================================
+# These 4 criterios are the DELE-official rubrics for both expresión escrita + oral.
+# Augment `rubrics/es.yaml` with these for grading parity with Cervantes.
+criterios_dele:
+
+  - id: adecuacion
+    name: "Adecuación al género discursivo y a la situación"
+    description: |
+      ¿El candidato/a respeta el género del texto pedido (correo, formulario, anuncio,
+      conversación) ? ¿Se ajusta al registro (formal/informal) y al destinatario ?
+    indicators:
+      - "Selección apropiada del género discursivo solicitado"
+      - "Registro coherente con el tipo de interlocutor (tú vs usted)"
+      - "Cumple la longitud requerida (50-70 palabras A1)"
+      - "Usa fórmulas de saludo/despedida correctas según género"
+
+  - id: coherencia
+    name: "Coherencia y cohesión textual"
+    description: |
+      ¿El texto/intervención está organizado lógicamente ? ¿Las ideas se conectan
+      mediante marcadores básicos (y, pero, porque, después, antes) ?
+    indicators:
+      - "Organización secuencial básica (introducción → desarrollo → cierre)"
+      - "Uso de conectores frecuentes A1 (y, pero, también, porque, después)"
+      - "Repetición léxica controlada (no excesiva)"
+      - "Pronombres simples para evitar repetición"
+
+  - id: correccion
+    name: "Corrección lingüística (gramática + ortografía)"
+    description: |
+      ¿La gramática + ortografía permiten la comprensión ? Errores no impiden el sentido.
+      A1 : tolerancia alta para errores morfológicos (concordancia, conjugación) si la
+      comunicación funciona.
+    indicators:
+      - "Concordancia género/número en SN simples"
+      - "Conjugación presente indicativo regular + ser/estar"
+      - "Ortografía palabras frecuentes (errores tolerados si comprensible)"
+      - "Acentuación básica (no obligatoria A1)"
+      - "Puntuación mínima (mayúsculas inicio, punto final)"
+
+  - id: alcance
+    name: "Alcance lingüístico (riqueza léxica + estructural)"
+    description: |
+      ¿El candidato/a usa el repertorio A1 esperado (PCIC inventario A1) ?
+      ¿Hay variedad léxica suficiente para el tipo de texto ?
+    indicators:
+      - "Repertorio léxico A1 (familia, casa, comida, trabajo, ocio básicos)"
+      - "Estructuras A1 : presente, pretérito perfecto, ser/estar, hay/tener, ir a + inf"
+      - "Adjetivos calificativos A1 (alto/bajo, grande/pequeño, bueno/malo)"
+      - "Suficiente para 50-70 palabras sin repetición excesiva"
+
+# ============================================================================
+# === Calibration recommendations for `mini_exam/es_A1.yaml` ================
+# ============================================================================
+# Current `es_A1.yaml` has 8 items, all type=fill/choice/transform — does NOT mirror
+# DELE A1 task distribution. Recommended Tier 5 enrichment :
+#
+# Recommended item type distribution (mini_exam_es_A1 v2 — proportional to DELE A1) :
+#   - reading_short_text_mcq  : 3 items (mirror DELE A1 Tarea 1)
+#   - matching_signs_letters  : 2 items (mirror DELE A1 Tarea 2)
+#   - matching_house_to_need  : 2 items (mirror DELE A1 Tarea 3)
+#   - reading_cultural_mcq    : 2 items (mirror DELE A1 Tarea 4)
+#   - audio_conversation_mcq  : 2 items (mirror Prueba 2 Tarea 1) — needs TTS audio
+#   - writing_short_message   : 1 item (mirror Prueba 3 Tarea 2) — judge calibrated on 4 criterios DELE
+# Total : 12 items mini_exam (up from 8).
+#
+# Backfill TODO (defer to G7.3a-c full extraction sprint, ~2-3j) :
+#   - extracted/cervantes-dele-a1/items-prueba-1-lectura.yaml (25 real items)
+#   - extracted/cervantes-dele-a1/items-prueba-2-auditiva.yaml (25 real items)
+#   - extracted/cervantes-dele-a1/items-prueba-3-escritura.yaml (2 prompts + sample answers)
+#   - extracted/cervantes-dele-a1/items-prueba-4-oral.yaml (4 prompts + sample answers)
+
+calibration_targets:
+  mini_exam_es_a1_v2:
+    target_total_items: 12
+    distribution:
+      reading_short_text_mcq: 3
+      matching_signs_letters: 2
+      matching_house_to_need: 2
+      reading_cultural_mcq: 2
+      audio_conversation_mcq: 2
+      writing_short_message: 1
+  rubrics_es_yaml:
+    add_dimensions: ["adecuacion", "coherencia", "correccion", "alcance"]
+    note: "Augment existing dims (rcefr, rsc, voc, etc.) with the 4 DELE criterios for parity grading at A1-C2."

@@ -223,10 +223,12 @@ G8.2 (rules_es spaCy migration) **DEFER P3** — strategic decision : si Tier 1+
 - [ ] G7.2 `functions/en.yaml` 10→50
 
 **Stream B+C** (DELE corpus, parallel) :
-- [ ] G7.3a-c DELE acquired extraction
-- [ ] G7.3d Sinse acquisition DELE A2-C2
-- [ ] G7.3e Claude extract DELE A2-C2 mini_exam
-- [ ] G7.3f Patch `rubrics/es.yaml` DELE Criterios
+- [~] G7.3a DELE A1 modelo extraction (S56 partial) — `extracted/cervantes-dele-a1/rubric.yaml` (structure + 4 Criterios + calibration recommendations). Full item bank extraction (25 lectura + 25 auditiva + 2 escritura + 4 oral = 56 items) deferred to dedicated sprint (~2-3j Claude work).
+- [ ] G7.3b Cronómetro B2 (Edinumen 217p) extraction → `extracted/bech-tormo-2013-cronometro-dele-b2/`
+- [ ] G7.3c Preparación B2 Soluciones extraction (companion 26p) → rubric calibration B2
+- [~] G7.3d Sinse acquisition DELE A2-C2 (S56 — Sinse downloaded **hojas de respuestas** instead of **modelos de examen** — re-DL needed for full content. Hojas useful for structural calibration only)
+- [ ] G7.3e Claude extract DELE A2-C2 mini_exam (blocked on G7.3d full re-DL)
+- [ ] G7.3f Patch `rubrics/es.yaml` DELE Criterios (Adecuación / Coherencia / Corrección / Alcance — extracted in G7.3a rubric.yaml, ready to merge)
 
 **Tier 4** (rules + L1, parallel) :
 - [ ] G8.1 `rules_es.py` +12 codes
