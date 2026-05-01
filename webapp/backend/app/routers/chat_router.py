@@ -1017,10 +1017,15 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
             import json as _json
             from academie_core.data.loader import (
                 load_concept_hints as _load_hints,
+                load_concept_hints_for_level as _load_hints_lvl,
                 build_cefr_diagnostics_block as _build_cefr,
                 get_persona_label as _persona,
             )
-            dify_inputs["concept_hints_json"] = _json.dumps(_load_hints(lang.lang_target))
+            # Filter cumulative ≤learner level — keeps Dify Start-node payload
+            # bounded (S54 incident: full dump 19.5K EN / 12.7K ES exceeded
+            # max_length=10K). Falls back to full hints when niveau empty.
+            _hints_filtered = _load_hints_lvl(lang.lang_target, niveau or None) or _load_hints(lang.lang_target)
+            dify_inputs["concept_hints_json"] = _json.dumps(_hints_filtered, ensure_ascii=False)
             dify_inputs["cefr_diagnostics_block"] = _build_cefr(lang.lang_target)
             dify_inputs["lang_target_name"] = _persona(lang.lang_target, "target_name", "Anglais")
             dify_inputs["lang_target_prof"] = _persona(lang.lang_target, "target_prof", "d'anglais")

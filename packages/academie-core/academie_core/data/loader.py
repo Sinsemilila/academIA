@@ -111,6 +111,54 @@ def load_concept_hints(lang: str) -> dict[str, str]:
     return data or {}
 
 
+_CEFR_ORDER = ("A1", "A2", "B1", "B2", "C1", "C2")
+
+
+@lru_cache(maxsize=64)
+def _curriculum_concept_keys_cumulative(lang: str, level: str) -> tuple[str, ...]:
+    """Cumulative concept_keys ≤level from curriculum_<lang>.yaml.
+
+    Tuple return for lru_cache hashability. Empty tuple if curriculum missing
+    or level unknown.
+    """
+    if level not in _CEFR_ORDER:
+        return ()
+    path = _DATA_DIR / f"curriculum_{lang}.yaml"
+    if not path.exists():
+        return ()
+    with open(path) as f:
+        data = yaml.safe_load(f) or {}
+    out: list[str] = []
+    for lvl in _CEFR_ORDER:
+        block = data.get(lvl) or {}
+        keys = block.get("concept_keys") or []
+        out.extend(keys)
+        if lvl == level:
+            break
+    return tuple(out)
+
+
+def load_concept_hints_for_level(lang: str, level: str | None) -> dict[str, str]:
+    """Concept hints filtered cumulative ≤level. Hardens Dify input size.
+
+    Backstory : S53 expanded en/es hints to 131/103 entries, JSON dumps grew
+    past Dify Start-node max_length=10000 → ValueError mid-workflow → backend
+    SSE ReadTimeout → user sees "Erreur de connexion" (Session 54 incident
+    2026-05-01). Filtering by learner level keeps payload bounded AND
+    contextually relevant (A1 learner ignores C1 grammar concepts anyway).
+
+    Falls back to FULL hints when level invalid/missing or curriculum absent
+    — preserves legacy behaviour for unknown lang or pre-onboarding paths.
+    """
+    hints = load_concept_hints(lang)
+    if not hints or not level:
+        return hints
+    keys = _curriculum_concept_keys_cumulative(lang, level)
+    if not keys:
+        return hints
+    return {k: hints[k] for k in keys if k in hints}
+
+
 @lru_cache(maxsize=16)
 def load_micro_lessons(lang: str) -> dict[str, dict[str, str]]:
     """Load 3-strikes micro-lesson templates per error_family per CEFR band.
