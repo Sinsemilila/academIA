@@ -15,10 +15,11 @@ Voir [`docs/00-project/sprint-maitre-comptable-2026-05.md`](docs/00-project/spri
 - **RAG dataset `79ab2618-5762-465d-9fab-b5ed54cff214`** : 22 docs / 15,689 chunks / 5.86M words searchable / OpenAI text-embedding-3-small 1536 dims / Qdrant vector store
 - Metadata fields populated (authority_priority, domain, valid_from, bc) sur 22/22 docs
 
-### 🔴 P0 IMMÉDIAT S59 — Test live Marie post-RAG + finir P1
+### 🔴 P0 IMMÉDIAT — Monitor Marie usage organique post-S59
 
 - [x] (claude, 2026-05-02, S59) **Auto-test 12 questions Marie-style** ✅ — `scripts/sprint-maitre-comptable/auto_test_12q.py` + `analyze_hallucinations.py` (cross-check via deterministic tools + Lyster posture heuristics). Initial run : 8/12 OK + 4 fails sur "Invalid upload file" → diagnostic G-S59 RAG access controller (cf failures.md 2026-05-02 14:55). Post-fix G-S59 + A1 ciblé : 12/12 OK with RAG enabled. Hallu critique observée pre-A1 : Q09 "déséquilibrée" alors qu'équilibrée. Post-A1 : Q09 "✅ équilibrée" + scaffold Lyster sur sens débit/crédit (vrai problème). Critères validation §7 atteints sur auto-test : ≥10/12 utiles ✅ 12/12, 0 hallu calculs/comptes ✅, posture Lyster majoritaire ✅ 8/12 elicit signals, latence ✅ avg 3.0s.
-- [ ] (sinse + marie, S60 ~30 min) **Test live Marie 12 questions sync** — Sinse + Marie en screen-share, tester critères §7 doc system-prompt sur usage réel (vs auto-test Marie-style). RAG + A1 + few-shots Lyster + G-S59 fix tous shippés S59.
+- [x] ~~(sinse + marie, S60 ~30 min) **Test live Marie 12 questions sync**~~ ❌ **DROPPED S59 — redondant avec auto-test**. Auto-test Marie-style §7 couvre tous patterns observables (saisie écriture, drill QCM, anti-cheating, concept abstrait, hors-scope, multimodal, calcul TVA), cross-checked via tools déterministes + canonical refs. 12/12 OK post-A1+G-S59. Le test sync n'apporterait que validation UX subjective (ton/posture Lyster) ce qui se voit en monitoring organique sans bloquer sur sync.
+- [ ] (claude, sliding) **Monitor Marie usage organique** — review `messages` Dify table périodiquement (~1×/semaine) : queries Marie hors-spec patterns auto-test, hallucinations résiduelles tools-uncovered (lookup_pcg/verify_calcul_tva/verify_compte_classe still hallu-prone), latence réelle, feedback empirique posture Lyster. Trigger A1 extension ou A4 backend agent loop si pattern récurrent ≥3 sessions Marie.
 - [ ] (claude, sliding) Iter system prompt Dify selon retours empiriques Marie (push update via API automation pattern S57)
 
 ### 🟠 P1 COURT TERME (S59-S60, ~1.5j restants)

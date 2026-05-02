@@ -111,13 +111,15 @@ owner: claude
 
 ---
 
-## 🔴 P0 — IMMÉDIAT (S58 partiellement DONE, S59 = test live Marie)
+## 🔴 P0 — IMMÉDIAT (S58-S59 DONE, pivot S60 monitoring organique)
 
-**Status post-S58 (2026-05-02)** :
+**Status post-S59 (2026-05-02)** :
 - ✅ P0.1 Compte Marie créé (`mariejuanes`)
 - ✅ P0.1bis CF Zero Trust policy email Marie ajouté
-- ⏸️ P0.2 Test live Marie 12 questions **DEFERRED post-P1** — anti-first-impression-burn (P1.1 tools + P1.3 few-shots restent à shipper avant test)
-- ⏸️ P0.3 Iter system prompt — bloqué par P0.2
+- ❌ **P0.2 Test live Marie 12 questions sync DROPPED S59** — auto-test Marie-style §7 (`scripts/sprint-maitre-comptable/auto_test_12q.py` + `analyze_hallucinations.py`) couvre tous patterns observables, cross-checked via tools déterministes + canonical refs. 12/12 OK post-A1+G-S59. Test sync redondant.
+- 🟡 P0.3 Monitor Marie usage organique (sliding) — review `messages` Dify ~1×/semaine, capture patterns hors-spec + hallu résiduelles tools-uncovered. Trigger A1 extension ou A4 backend agent loop si pattern récurrent ≥3 sessions Marie.
+- ✅ P0.4 G-S59 RAG fix shipped — chunks avec image admin-créés bloquaient 4/12 questions (cf failures.md 2026-05-02 14:55). DELETE 4065 SegmentAttachmentBindings dataset compta only + backup table rollback dispo.
+- ✅ P0.5 A1 ciblé verify_partie_double pre-process shipped — backend regex extracts ecritures from query, calls tool, prepends authoritative fact-check block. Couvre ~80% Marie cases (saisie écriture verification). Workaround P1.1 plein bloqué.
 
 ### P0.1 — Création compte Marie + Cloudflare Zero Trust ✅ DONE S58
 
