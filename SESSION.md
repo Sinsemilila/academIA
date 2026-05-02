@@ -5,6 +5,76 @@ Sessions empilées (plus récente en haut). Rotation : seules les **3 dernières
 ---
 ---
 
+## Session 58 — 2026-05-02 (~9h — Onboarding Marie + RAG knowledge base 22 PDFs livré end-to-end + profile-building Sinse meta)
+
+### Done
+
+**Bloc 0 — Profile-building meta (matin)** :
+- Memory `user_profile_sinse.md` créé (`/root/.claude/projects/-root/memory/`) — profil personnel + workflow + 9 ajustements collaboration (push-back frontal symétrique, demander si doute vs auto-pilote, jargon direct + check niveau, creuser erreurs vs excuser-avancer, adversarial autorisé sur erreurs Sinse aussi)
+- Plan audit infrastructure `vault/meta/plan-audit-infrastructure-2026-05.md` archivé (3 phases déférées post-Marie : ~/.claude/ + vault/ + cross-references)
+- `/pickup` skill cleanup — drop fossile `memory-mirror-last` check obsolete S55 (commit `efeb706` sinse-claude-config)
+
+**Bloc 1 — Onboarding Marie ✅** :
+- Compte Marie créé via `POST /api/auth/users` — username `mariejuanes`, password identique (faible mais cercle privé + CF Zero Trust devant)
+- Cloudflare Zero Trust policy `academie.petit-pont.com` — email `marie83383@gmail.com` ajouté manual dashboard CF Teams (gotcha S47 confirmé : pas d'API automation)
+- Marie connectée avec succès sur le site
+
+**Bloc 2 — RAG knowledge base 22 PDFs livré end-to-end** ⭐ :
+- LiteLLM `config.yaml` enrichi : route `gemini-embed` (gemini/gemini-embedding-001 free, fallback) + route `openai-embed-small` (openai/text-embedding-3-small paid 1536 dims) — Gemini RPD quota exhausted mid-session, switched OpenAI
+- Qdrant container `qdrant-server` démarré (jamais up auparavant) — `/mnt/cosmos-data/qdrant-data` persistent volume, restart unless-stopped, academie-net-bridge
+- Dify env update : `QDRANT_URL=http://qdrant-server:6333` ajouté dans dify-api + dify-worker (recreate containers, ~30 sec downtime AcademIA)
+- Dify dataset `maitre-comptable-knowledge-2026-05` créé (id `79ab2618-5762-465d-9fab-b5ed54cff214`) — embedding `openai-embed-small`, retrieval semantic 1536 dims
+- Dify provider `openai_api_compatible` enrichi : registered `openai-embed-small` model côté Dify (cohérent pattern S57 gpt-4o-mini)
+- 22 docs uploaded + indexed = **15,689 chunks Qdrant** (5.86M words searchable). Pré-process : DCG 9 Manuel 22.9MB → 3 splits via ghostscript (limit Dify 15MB), Compta Nuls EPUB → .txt via calibre ebook-convert (`QTWEBENGINE_DISABLE_SANDBOX=1`)
+- 4 metadata fields créés (`authority_priority`, `domain`, `valid_from`, `bc`) + 22/22 docs assigned values via bulk metadata API
+- Knowledge Retrieval node wired dans chatflow `4ce8ffe2` (`start → knowledge_compta → llm_maitre → answer`) — `retrieval_mode: multiple`, top_k:5, no rerank/threshold
+- Test live retrieval validé via workflow trace : score 0.78 sur "bulletin de paie" → "Comprendre le bulletin de paie" matched, LLM `#context#` populated
+- 1 doc dropped : PCG Recueil NF 2.8M words (redondant avec PCG ANC v2026 1.6M, économie ~70 min embedding)
+
+### Decisions
+
+- **D-S58.1 Gemini → OpenAI embedding switch** : Gemini gemini-embedding-001 free tier RPD quota exhausted (~1500 req/jour) après mid-day. OpenAI text-embedding-3-small switch (1536 dims, $0.02/1M tokens, ingestion ~$0.04 one-shot, runtime ~$0.018/an Marie). Solde Sinse $4.37 confirmé suffisant.
+- **D-S58.2 Drop PCG Recueil NF Janvier 2025** : 2.8M words redondants avec PCG ANC v2026-01-01 (authority anchor #1 ADR-017). Économie ~70 min embedding cumul.
+- **D-S58.3 Mariejuanes password = username** : faible cybersecurity-wise mais acceptable pour cercle privé Marie derrière CF Access OTP email. Sinse explicit choix conscient.
+- **D-S58.4 Test live Marie 12 questions DEFERRED post-P1** : éviter brûler "first impression Marie" sur MVP minimal alors que P1 améliorations à portée. RAG livré S58, P1.1 tools wire + P1.3 few-shots restent.
+- **D-S58.5 Qdrant vector store** : démarrage du container vector DB jamais up auparavant. Choix Qdrant > pgvector (perf 10x latence, future-proof scaling), trade-off acceptable pour future RAG datasets cross-projet.
+
+### Gotchas
+
+- **G-S58.1** Gemini gemini-embedding-001 free tier RPD ~1500 req/jour, hit en ~3-4h ingestion massive. Le RPD reset UTC 00:00. Throttle rpm:80/par:2 LiteLLM insuffisant si docs gros (TPM bouffé).
+- **G-S58.2** Dify env config legacy `QDRANT_HOST` + `QDRANT_PORT` PAS lu par version actuelle. Need `QDRANT_URL=http://qdrant-server:6333` ajouté env dify-api + dify-worker (recreate containers).
+- **G-S58.3** Dify VECTOR_STORE=qdrant default mais qdrant-server container jamais démarré historiquement (AcademIA n'utilisait pas RAG). Premier projet RAG cosmos.
+- **G-S58.4** Dify `/datasets/{id}/retry` endpoint = HTTP 204 No Content (helper urllib parsing JSON empty body crash sur `json.loads('')` — fix helper avec try/except).
+- **G-S58.5** Dify upload limit = 15 MB par défaut. PDFs > 15MB need split (DCG 9 Manuel 22.9 MB split en 3 parts via ghostscript page ranges).
+- **G-S58.6** Dify EPUB unsupported. Need convert via calibre `ebook-convert` (env `QTWEBENGINE_DISABLE_SANDBOX=1 QT_QPA_PLATFORM=offscreen` mandatory pour root + headless cosmos).
+- **G-S58.7** Dify Knowledge Retrieval node `multiple_retrieval_config.reranking_mode: "weighted_score"` force keyword search (BM25) qui retourne 0 chunks si keyword index absent. Use `reranking_mode: ""` ou skip rerank pour pure semantic.
+- **G-S58.8** Dify `chat-messages` API response surface PAS `metadata.retriever_resources` (display bug) MAIS le LLM reçoit bien `#context#` populated (vérifié via workflow trace node-executions). Ne pas s'inquiéter de "Retrieved 0" dans la response — vérifier workflow trace pour la vraie info retrieval.
+- **G-S58.9** OpenAI text-embedding-3-small NOT dans free tier complimentary daily tokens program (LLM only). Solde API balance directement débité ($0.02/1M tokens).
+- **G-S58.10** urllib `HTTPCookieProcessor` ne forward pas cookies `Secure=True` sur HTTP non-TLS. Need explicit `Cookie:` header pour Dify console session.
+
+### Commits
+
+**Sinse-claude-config (1)** : `efeb706` `[fix] /pickup skill — drop obsolete memory-mirror-last check`
+
+**AcademIA** : pending /handoff bundle (TODO + SESSION + CHANGELOG + sprint roadmap update)
+
+**Vault/sinse-tools** : pending (auto-write par /handoff Section 4)
+
+### Next session pickup
+
+**P0 immédiat S59** :
+1. Test live Marie 12 questions Maître Comptable (~30 min Sinse + Marie + Claude assist) — critères §7 `webapp/backend/docs/maitre-comptable-system-prompt.md`. RAG ON.
+2. Iter system prompt Dify selon retours empiriques Marie (sliding 1-2j)
+3. P1.1 Wire 5 tools backend dans Dify Custom Tools (~1j) — endpoints `/internal/compta/tools/*` ready, reste UI Dify config
+4. P1.3 Inject 8 few-shots Lyster compta dans system prompt (~0.5j) — déjà draftés `webapp/backend/docs/maitre-comptable-system-prompt.md` §2
+
+**P2 ensuite (S60+)** : Mode A Lessons MVP + rules_compta.py + Tier 6 RE-MEASURE compta.
+
+**Cumul session 58** : ~9h continu, ~5 commits academia + 1 sinse-claude-config + 22 docs RAG + Marie onboarded.
+
+---
+---
+
 ## Session 57 — 2026-05-01/02 (~11h continu cross-jour — Maître Comptable Mode B livré end-to-end + dette tech a11y/oracle/dependabot + roadmap S58-P5)
 
 ### Done

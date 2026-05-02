@@ -13,6 +13,35 @@ owner: claude
 
 ---
 
+## ✅ DONE — S58 (2026-05-02, ~9h)
+
+**Bloc 1 — Onboarding Marie** :
+- Compte Marie créé (`mariejuanes`/`mariejuanes`, weak mais derrière CF Access OTP)
+- Cloudflare Zero Trust policy `academie.petit-pont.com` — email `marie83383@gmail.com` ajouté manual dashboard
+- Marie connectée avec succès
+
+**Bloc 2 — RAG knowledge base livré end-to-end** ⭐ :
+- 22 PDFs ingested → **15,689 chunks Qdrant / 5.86M words searchable**
+- OpenAI text-embedding-3-small 1536 dims (Gemini RPD quota exhausted, switched mid-session)
+- Qdrant vector DB démarré (premier projet RAG cosmos)
+- Knowledge Retrieval node wired dans chatflow `4ce8ffe2`
+- 4 metadata fields populés (authority_priority/domain/valid_from/bc) sur 22/22 docs
+- Test retrieval validé score 0.78 workflow trace
+- Coût : ~$0.04 ingestion + ~$0.018/an runtime
+
+**Bloc 3 — Profile-building meta** (out of scope sprint mais cumulé S58) :
+- `user_profile_sinse.md` créé memory canonical (9 ajustements collaboration)
+- Plan audit infrastructure archivé `vault/meta/plan-audit-infrastructure-2026-05.md`
+- /pickup skill cleanup fossile
+
+**Décisions clés S58** :
+- D-S58.1 Switch Gemini → OpenAI embedding (RPD quota)
+- D-S58.2 Drop PCG Recueil NF 2.8M words (redondant PCG ANC v2026)
+- D-S58.4 Test live Marie 12 questions DEFERRED post-P1 (anti-first-impression-burn sur MVP minimal)
+- D-S58.5 Qdrant > pgvector (perf 10x latence, future-proof scaling)
+
+---
+
 ## ✅ DONE — S57 (2026-05-01 → 2026-05-02)
 
 **~30 commits cross-files cumul** sur la session.
@@ -82,7 +111,15 @@ owner: claude
 
 ---
 
-## 🔴 P0 — IMMÉDIAT (S58, prochaine session)
+## 🔴 P0 — IMMÉDIAT (S58 partiellement DONE, S59 = test live Marie)
+
+**Status post-S58 (2026-05-02)** :
+- ✅ P0.1 Compte Marie créé (`mariejuanes`)
+- ✅ P0.1bis CF Zero Trust policy email Marie ajouté
+- ⏸️ P0.2 Test live Marie 12 questions **DEFERRED post-P1** — anti-first-impression-burn (P1.1 tools + P1.3 few-shots restent à shipper avant test)
+- ⏸️ P0.3 Iter system prompt — bloqué par P0.2
+
+### P0.1 — Création compte Marie + Cloudflare Zero Trust ✅ DONE S58
 
 ### P0.1 — Création compte Marie + accès Cloudflare Zero Trust (~30 min)
 
@@ -163,20 +200,29 @@ Iter `webapp/backend/docs/maitre-comptable-system-prompt.md` + push update Dify 
 - Validation écriture débit=crédit déterministe (verify_partie_double)
 - Coût LLM réduit (déterministe = 0 token, vs LLM appelé pour calculs)
 
-### P1.2 — Knowledge base RAG (~2-3j + Sinse achat 1 livre)
+### P1.2 — Knowledge base RAG ✅ **LIVRÉ S58 (2026-05-02)**
 
-**Pré-requis** : configurer text-embedding model dans LiteLLM (text-embedding-3-small ~$0.02/1M tokens, OpenAI).
+**Status** : Pipeline RAG end-to-end fonctionnel. Marie peut poser des questions pointues, retrieval activé.
 
-**Étapes** :
-1. Sinse update LiteLLM `config.yaml` → ajout text-embedding-3-small route
-2. Restart litellm-proxy + test via Dify console (ajout default text-embedding model)
-3. Create Dify dataset `maitre-comptable-knowledge-2026-05` (via API automation)
-4. Ingest 22 PDFs cosmos `/mnt/cosmos-data/library/by-domain/formation marie/`
-5. Wait indexing (~5-10 min)
-6. Wire Knowledge Retrieval node dans chatflow
-7. Test : "C'est quoi le compte 6064 selon le PCG ?" → agent retrieve chunk PCG + cite
+**Réalisations S58** :
+- LiteLLM `config.yaml` enrichi : route `gemini-embed` (gemini/gemini-embedding-001 free fallback) + route `openai-embed-small` (openai/text-embedding-3-small 1536 dims)
+- **Switch Gemini → OpenAI mid-session** : Gemini RPD quota exhausted (~1500 req/jour), pivot OpenAI text-embedding-3-small ($0.02/1M tokens, ingestion ~$0.04 one-shot)
+- **Qdrant container `qdrant-server` démarré** (jamais up auparavant cosmos) — persistent volume `/mnt/cosmos-data/qdrant-data`, restart unless-stopped, academie-net-bridge, mémoire 1GB cap
+- **Dify env fix** : `QDRANT_URL=http://qdrant-server:6333` ajouté dans dify-api + dify-worker (recreate containers, ~30 sec downtime)
+- Dify provider register `openai-embed-small` (cohérent pattern S57 gpt-4o-mini openai_api_compatible)
+- Dify dataset `maitre-comptable-knowledge-2026-05` créé (id `79ab2618-5762-465d-9fab-b5ed54cff214`)
+- 22 docs uploaded + indexed = **15,689 chunks Qdrant** / **5.86M words searchable**
+- Pré-process : DCG 9 Manuel 22.9 MB split en 3 parts (ghostscript page ranges 1-201/202-402/403-603) — Dify upload limit 15 MB ; Compta Nuls EPUB → .txt via calibre `ebook-convert` (env `QTWEBENGINE_DISABLE_SANDBOX=1`) — Dify EPUB unsupported
+- 1 doc dropped : PCG Recueil NF 2.8M words (redondant avec PCG ANC v2026 1.6M, économie ~70 min embedding)
+- 4 metadata fields créés (`authority_priority` 1-4, `domain` TVA/paie/RGPD/etc., `valid_from` YYYY-MM-DD, `bc` BC1/BC2/BC3/CROSS) + 22/22 docs assigned via bulk metadata API
+- Knowledge Retrieval node wired dans chatflow `4ce8ffe2` (architecture `start → knowledge_compta → llm_maitre → answer`) — `retrieval_mode: multiple`, top_k:5, no rerank, no score_threshold
+- Test live retrieval validé : workflow trace montre score 0.78 sur "bulletin de paie" → "Comprendre le bulletin de paie" matched, LLM `#context#` populated correctement
 
-**Optionnel achat Sinse (~125€)** :
+**Coût total ingestion** : ~$0.04 OpenAI one-shot. Runtime Marie ~$0.018/an estimé.
+
+**Gotchas critiques documentés** : G-S58.1 à G-S58.10 (cf SESSION.md S58)
+
+**Optionnel achat Sinse (différé)** :
 - Boîte à outils écrits professionnels Le Broussois Dunod 2023 (~25€)
 - Word ENI 2024 (~30€)
 - ENI Tableaux de bord Excel 2022 (~30€)
