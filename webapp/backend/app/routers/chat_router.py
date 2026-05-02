@@ -15,6 +15,7 @@ from ..openai_reconcile import reconcile_openai_usage
 from academie_core.pedagogy.teacher_prompt import PromptContext
 from academie_core.domain.accounting import AccountingDomain
 from academie_core.domain.language import LanguageDomain
+from ..tools.compta_preprocess import maybe_enrich_query
 import yaml
 import tiktoken
 from pathlib import Path
@@ -1069,9 +1070,19 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
     if target_tier != _current_dify_model:
         await _switch_dify_model(target_tier, reason)
 
+    # S59 A1 ciblé — pre-process compta query for verify_partie_double
+    # fact-check (workaround Dify agent node + plugin daemon URL bug, cf
+    # vault/projects/academia-ia/failures.md 2026-05-02). Only compta agent.
+    # Detects "Débit X N€ Crédit Y N€" patterns, prepends authoritative
+    # verdict block to LLM context. No-op for non-compta agents and for
+    # compta queries without ecriture pattern.
+    query_for_dify = req.message
+    if domain.startswith("compta"):
+        query_for_dify = maybe_enrich_query(req.message)
+
     payload = {
         "inputs": dify_inputs,
-        "query": req.message,
+        "query": query_for_dify,
         "user": dify_user,
         "response_mode": "streaming",
         "conversation_id": req.conversation_id or "",

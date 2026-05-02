@@ -17,7 +17,8 @@ Voir [`docs/00-project/sprint-maitre-comptable-2026-05.md`](docs/00-project/spri
 
 ### 🔴 P0 IMMÉDIAT S59 — Test live Marie post-RAG + finir P1
 
-- [ ] (sinse + marie + claude, S59 ~30 min) **Test live Marie 12 questions** — critères validation cf `webapp/backend/docs/maitre-comptable-system-prompt.md` §7 (≥10/12 utiles, 0 hallucination, posture Lyster majoritaire, latence <5s). RAG ACTIVÉ donc questions pointues sur PCG/BOFiP/DSN/CNIL devraient être enrichies.
+- [x] (claude, 2026-05-02, S59) **Auto-test 12 questions Marie-style** ✅ — `scripts/sprint-maitre-comptable/auto_test_12q.py` + `analyze_hallucinations.py` (cross-check via deterministic tools + Lyster posture heuristics). Initial run : 8/12 OK + 4 fails sur "Invalid upload file" → diagnostic G-S59 RAG access controller (cf failures.md 2026-05-02 14:55). Post-fix G-S59 + A1 ciblé : 12/12 OK with RAG enabled. Hallu critique observée pre-A1 : Q09 "déséquilibrée" alors qu'équilibrée. Post-A1 : Q09 "✅ équilibrée" + scaffold Lyster sur sens débit/crédit (vrai problème). Critères validation §7 atteints sur auto-test : ≥10/12 utiles ✅ 12/12, 0 hallu calculs/comptes ✅, posture Lyster majoritaire ✅ 8/12 elicit signals, latence ✅ avg 3.0s.
+- [ ] (sinse + marie, S60 ~30 min) **Test live Marie 12 questions sync** — Sinse + Marie en screen-share, tester critères §7 doc system-prompt sur usage réel (vs auto-test Marie-style). RAG + A1 + few-shots Lyster + G-S59 fix tous shippés S59.
 - [ ] (claude, sliding) Iter system prompt Dify selon retours empiriques Marie (push update via API automation pattern S57)
 
 ### 🟠 P1 COURT TERME (S59-S60, ~1.5j restants)
