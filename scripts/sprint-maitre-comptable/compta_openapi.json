@@ -1,0 +1,311 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AcademIA Compta Tools",
+    "version": "1.0.0",
+    "description": "Outils déterministes pour Maître Comptable (no auth, internal network)."
+  },
+  "servers": [
+    {
+      "url": "http://academie-api:8000"
+    }
+  ],
+  "paths": {
+    "/internal/compta/tools/lookup_pcg": {
+      "post": {
+        "operationId": "lookup_pcg",
+        "summary": "Vérifier numéro de compte PCG",
+        "description": "Vérifie qu'un numéro de compte PCG existe (Plan Comptable Général ANC v2026) et retourne son libellé + classe + suggestions si non trouvé. À APPELER OBLIGATOIREMENT avant d'affirmer 'le compte X est Y' à Marie. Évite les hallucinations sur les numéros de compte (~200 comptes principaux indexés).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LookupPCGRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/compta/tools/verify_partie_double": {
+      "post": {
+        "operationId": "verify_partie_double",
+        "summary": "Vérifier équilibre débit=crédit d'une écriture",
+        "description": "Vérifie sum(débits) == sum(crédits) sur une écriture comptable proposée par Marie. Tolérance flottant 0.01€. À APPELER SYSTÉMATIQUEMENT quand Marie propose une écriture (plusieurs lignes débit/crédit). Retourne valid: bool + somme_debits + somme_credits.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyPartieDoubleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/compta/tools/verify_calcul_tva": {
+      "post": {
+        "operationId": "verify_calcul_tva",
+        "summary": "Vérifier calcul TVA (HT, taux, TVA, TTC)",
+        "description": "Vérifie un calcul TVA selon les taux FR (0% / 2.1% / 5.5% livres-alimentaire / 10% restauration-transport / 20% standard). À APPELER OBLIGATOIREMENT avant de valider un montant TVA ou TTC. Retourne expected_tva, expected_ttc, valid: bool.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyCalculTVARequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/compta/tools/verify_compte_classe": {
+      "post": {
+        "operationId": "verify_compte_classe",
+        "summary": "Vérifier classe PCG d'un compte",
+        "description": "Vérifie qu'un compte PCG appartient bien à une classe attendue (1=capitaux, 2=immo, 3=stocks, 4=tiers, 5=financiers, 6=charges, 7=produits). Utile pour détecter erreurs de classe (ex: Marie utilise 6xx alors qu'elle veut 7xx).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyCompteClasseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/compta/tools/lookup_studi_module": {
+      "post": {
+        "operationId": "lookup_studi_module",
+        "summary": "Identifier module Studi probable d'une question",
+        "description": "Heuristique mapping concept compta → module Studi BC1.X / BC2.X / BC3.X (RNCP41653). Utile pour rappeler à Marie le module Studi correspondant à sa question (ex: TVA → BC1.4, paie → BC2.2).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LookupStudiModuleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "EcritureLineModel": {
+        "properties": {
+          "compte": {
+            "type": "string",
+            "maxLength": 20,
+            "title": "Compte"
+          },
+          "libelle": {
+            "type": "string",
+            "maxLength": 200,
+            "title": "Libelle",
+            "default": ""
+          },
+          "debit": {
+            "type": "number",
+            "title": "Debit",
+            "default": 0.0
+          },
+          "credit": {
+            "type": "number",
+            "title": "Credit",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "compte"
+        ],
+        "title": "EcritureLineModel"
+      },
+      "LookupPCGRequest": {
+        "properties": {
+          "num": {
+            "type": "string",
+            "maxLength": 20,
+            "title": "Num",
+            "description": "Numéro de compte PCG (ex: '401', '4456')"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "num"
+        ],
+        "title": "LookupPCGRequest"
+      },
+      "LookupStudiModuleRequest": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 500,
+            "title": "Query"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "title": "LookupStudiModuleRequest"
+      },
+      "VerifyCalculTVARequest": {
+        "properties": {
+          "montant_ht": {
+            "type": "number",
+            "maximum": 10000000.0,
+            "minimum": 0.0,
+            "title": "Montant Ht"
+          },
+          "taux": {
+            "type": "number",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Taux"
+          },
+          "actual_tva": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actual Tva"
+          },
+          "actual_ttc": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actual Ttc"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "montant_ht",
+          "taux"
+        ],
+        "title": "VerifyCalculTVARequest"
+      },
+      "VerifyCompteClasseRequest": {
+        "properties": {
+          "num": {
+            "type": "string",
+            "maxLength": 20,
+            "title": "Num"
+          },
+          "expected_classe": {
+            "type": "string",
+            "maxLength": 2,
+            "title": "Expected Classe"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "num",
+          "expected_classe"
+        ],
+        "title": "VerifyCompteClasseRequest"
+      },
+      "VerifyPartieDoubleRequest": {
+        "properties": {
+          "ecritures": {
+            "items": {
+              "$ref": "#/components/schemas/EcritureLineModel"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Ecritures"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "ecritures"
+        ],
+        "title": "VerifyPartieDoubleRequest"
+      }
+    }
+  }
+}
