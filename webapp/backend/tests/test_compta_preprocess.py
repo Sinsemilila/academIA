@@ -90,3 +90,75 @@ def test_fact_check_three_lines_balanced():
     assert block is not None
     assert "✅ Équilibrée" in block
     assert "120 €" in block
+
+
+# ── S59 P1.1 — extended regex patterns ─────────────────────────────
+
+
+def test_extract_ecritures_markdown_bullet():
+    """Markdown list bullets : '- Débit 401 : 100€'."""
+    q = "- Débit 401 : 100€\n- Crédit 607 : 100€"
+    out = extract_ecritures(q)
+    assert len(out) == 2
+
+
+def test_extract_ecritures_colon_separator():
+    """Colon between compte and montant : 'Débit 401: 100'."""
+    q = "Débit 401: 100, Crédit 607: 100"
+    out = extract_ecritures(q)
+    assert len(out) == 2
+
+
+def test_extract_ecritures_de_pour_separator():
+    """Verbose separators 'de'/'pour' : 'Débit 401 de 100€'."""
+    q = "Débit 401 de 100€, Crédit 607 pour 100€"
+    out = extract_ecritures(q)
+    assert len(out) == 2
+
+
+def test_extract_ecritures_inversed_compte_first():
+    """Conversational French: compte before sens. '401 débit 100'."""
+    q = "401 débit 100, 607 crédit 100"
+    out = extract_ecritures(q)
+    assert len(out) == 2
+
+
+def test_extract_ecritures_au_sens():
+    """'401 au débit 100€'."""
+    q = "401 au débit 100€, 607 au crédit 100€"
+    out = extract_ecritures(q)
+    assert len(out) == 2
+
+
+def test_extract_ecritures_doit_verb():
+    """'401 doit 100' — verbe doit (débit-side)."""
+    q = "401 doit 100, 607 crédit 100"
+    out = extract_ecritures(q)
+    assert len(out) == 2
+    debit_lines = [e for e in out if "debit" in e]
+    assert len(debit_lines) == 1
+    assert debit_lines[0]["compte"] == "401"
+
+
+def test_extract_ecritures_inversed_verbal():
+    """Conjugated verbs : 'débite', 'crédite'."""
+    q = "401 débite 100€, 607 crédite 100€"
+    out = extract_ecritures(q)
+    assert len(out) == 2
+
+
+def test_extract_ecritures_ambiguous_a_avoir_skipped():
+    """'401 a 100' (avoir) intentionally NOT matched (ambiguous)."""
+    q = "401 a 100, 607 crédit 100"
+    out = extract_ecritures(q)
+    # Only the explicit 'crédit' line caught — 1 line < 2 → empty
+    assert len(out) == 0
+
+
+def test_extract_ecritures_no_double_extraction():
+    """Same span captured by both patterns must yield 1 line, not 2."""
+    # Pattern 1 matches "Débit 401 100€"
+    # Pattern 2 doesn't apply (no sens after compte in this exact span)
+    q = "Débit 401 100€, Crédit 607 100€"
+    out = extract_ecritures(q)
+    assert len(out) == 2  # exactly 2 lines, no duplicates

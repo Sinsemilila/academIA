@@ -17,15 +17,38 @@ from typing import Any
 
 from app.tools.compta_tools import verify_partie_double
 
-# Detect lines like "Débit 401 100€", "Crédit 607 100€", "D 401 100", "C 607 100€"
+# Pattern 1 — sens before compte ("Débit 401 100€", "Crédit 607 : 100€",
+# "D 401 100", "- Débit 401 : 100€" markdown bullet, etc.)
 # - sens : Débit/Crédit/D/C (case-insensitive)
 # - compte : 3-5 digits PCG number
-# - montant : decimal (with optional comma/period as separator)
-# - euro symbol : optional
+# - montant : decimal with comma/period
+# - flexible separators between compte and montant (space, colon, "de", "pour")
 _ECRITURE_LINE_RE = re.compile(
-    r"\b(D[ée]bit|Cr[ée]dit|D|C)\s*[: ]?\s*(\d{3,5})\s+(\d+(?:[.,]\d+)?)\s*€?",
+    r"\b(D[ée]bit|Cr[ée]dit|D|C)\s*[: ]?\s*"
+    r"(\d{3,5})\s*"
+    r"(?:[: ]|de\s+|pour\s+)+\s*"
+    r"(\d+(?:[.,]\d+)?)\s*€?",
     re.IGNORECASE,
 )
+
+# Pattern 2 (S59 P1.1) — compte before sens ("401 débit 100", "401 au crédit 100€",
+# "607 doit 50", "401 en débit de 100"). Matches conversational French.
+# Excludes ambiguous "a" (avoir) and bare montant — needs explicit débit/crédit/doit verb.
+_ECRITURE_INVERSED_RE = re.compile(
+    r"\b(\d{3,5})\s+(?:au\s+|en\s+)?"
+    r"(d[ée]bit(?:e|é|er)?|cr[ée]dit(?:e|é|er)?|doit)"
+    r"(?:\s+(?:de|pour|:))?\s+"
+    r"(\d+(?:[.,]\d+)?)\s*€?",
+    re.IGNORECASE,
+)
+
+
+def _classify_sens(verb: str) -> str:
+    """Map verb token to canonical 'debit' or 'credit'."""
+    v = verb.lower()
+    if v.startswith("d"):  # débit, débite, débité, débiter, doit
+        return "debit"
+    return "credit"
 
 
 def extract_ecritures(query: str) -> list[dict[str, Any]]:
@@ -36,21 +59,44 @@ def extract_ecritures(query: str) -> list[dict[str, Any]]:
     no pattern detected (requires ≥2 lines; one-line ecriture cannot be
     tested for équilibre).
     """
-    lines = []
+    lines: list[dict[str, Any]] = []
+    seen_spans: list[tuple[int, int]] = []  # avoid double-extraction overlap
+
+    def _push(span: tuple[int, int], compte: str, sens: str, montant: float) -> None:
+        # Skip if span overlaps an already-extracted line (same query region
+        # captured by both regexes)
+        for s, e in seen_spans:
+            if span[0] < e and span[1] > s:
+                return
+        seen_spans.append(span)
+        line: dict[str, Any] = {"compte": compte, "libelle": ""}
+        line[sens] = montant
+        lines.append(line)
+
+    # Pattern 1 — sens before compte
     for m in _ECRITURE_LINE_RE.finditer(query):
-        sens_raw = m.group(1).lower()
-        sens = "debit" if sens_raw.startswith("d") else "credit"
+        sens = _classify_sens(m.group(1))
         compte = m.group(2)
-        montant_raw = m.group(3).replace(",", ".")
         try:
-            montant = float(montant_raw)
+            montant = float(m.group(3).replace(",", "."))
         except ValueError:
             continue
         if montant <= 0:
             continue
-        line: dict[str, Any] = {"compte": compte, "libelle": ""}
-        line[sens] = montant
-        lines.append(line)
+        _push(m.span(), compte, sens, montant)
+
+    # Pattern 2 — compte before sens (conversational French)
+    for m in _ECRITURE_INVERSED_RE.finditer(query):
+        compte = m.group(1)
+        sens = _classify_sens(m.group(2))
+        try:
+            montant = float(m.group(3).replace(",", "."))
+        except ValueError:
+            continue
+        if montant <= 0:
+            continue
+        _push(m.span(), compte, sens, montant)
+
     return lines if len(lines) >= 2 else []
 
 
