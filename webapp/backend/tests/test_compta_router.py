@@ -76,6 +76,55 @@ def test_endpoint_partie_double_unbalanced():
     assert r.json()["valid"] is False
 
 
+def test_endpoint_partie_double_format_wobble_rejected_422():
+    """S59 — LLM payload format mismatch ({montant, type} instead of canonical
+    {debit | credit}) must be rejected by Pydantic with 422 (extra='forbid' +
+    model_validator). Previously silently passed via extra='ignore' →
+    valid:true sum:0 false-positive."""
+    r = client.post(
+        "/internal/compta/tools/verify_partie_double",
+        json={
+            "ecritures": [
+                {"compte": "401", "montant": 100, "type": "débit"},
+                {"compte": "607", "montant": 100, "type": "crédit"},
+            ]
+        },
+    )
+    assert r.status_code == 422
+    body = r.json()
+    # FastAPI 422 wraps Pydantic errors in {"detail": [...]}
+    detail_str = str(body)
+    assert "extra" in detail_str.lower() or "forbid" in detail_str.lower() or "montant" in detail_str.lower()
+
+
+def test_endpoint_partie_double_both_zero_rejected_422():
+    """Each line must have debit > 0 OR credit > 0, not both at 0."""
+    r = client.post(
+        "/internal/compta/tools/verify_partie_double",
+        json={
+            "ecritures": [
+                {"compte": "401", "debit": 0, "credit": 0},
+                {"compte": "607", "debit": 100, "credit": 0},
+            ]
+        },
+    )
+    assert r.status_code == 422
+
+
+def test_endpoint_partie_double_both_positive_rejected_422():
+    """Each line must have debit XOR credit, not both > 0."""
+    r = client.post(
+        "/internal/compta/tools/verify_partie_double",
+        json={
+            "ecritures": [
+                {"compte": "401", "debit": 50, "credit": 50},
+                {"compte": "607", "debit": 100, "credit": 0},
+            ]
+        },
+    )
+    assert r.status_code == 422
+
+
 # ── verify_calcul_tva ──────────────────────────────────
 
 

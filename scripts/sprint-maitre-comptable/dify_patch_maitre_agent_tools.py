@@ -90,7 +90,7 @@ def build_agent_node(system_prompt: str, tool_selectors: list[dict], position: d
                     "type": "variable",
                     "value": ["knowledge_compta", "result"],
                 },
-                "maximum_iterations": {"type": "constant", "value": 5},
+                "maximum_iterations": {"type": "constant", "value": 10},  # S59 — bump 5→10 to cover gpt-4o-mini retry-on-422 quirks
             },
             "memory": {
                 "role_prefix": {"user": "", "assistant": ""},

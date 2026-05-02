@@ -130,6 +130,27 @@ def test_partie_double_tolerance_arrondi():
     assert r["valid"] is True
 
 
+def test_partie_double_silent_zero_format_mismatch_returns_invalid():
+    """S59 — LLM sends {compte, montant, type} instead of canonical
+    {compte, debit | credit}, both default 0 → must NOT silently return
+    valid:true sum:0. Tool must explicit-error to guide LLM retry."""
+    # Simulate dict with non-canonical keys (after extra='ignore' would have
+    # stripped them, leaving debit=0+credit=0).
+    ecritures_format_wobble = [
+        {"compte": "401", "debit": 0.0, "credit": 0.0, "libelle": ""},
+        {"compte": "607", "debit": 0.0, "credit": 0.0, "libelle": ""},
+    ]
+    r = verify_partie_double(ecritures_format_wobble)
+    assert r["valid"] is False
+    assert r["sum_debits"] == 0.0
+    assert r["sum_credits"] == 0.0
+    assert "Format payload incorrect" in r["detail"]
+    assert "canonical" in r["detail"].lower()
+    # Detail must show the canonical example to guide LLM retry
+    assert "debit" in r["detail"]
+    assert "credit" in r["detail"]
+
+
 # ── verify_calcul_tva ──────────────────────────────────────────
 
 

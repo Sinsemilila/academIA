@@ -19,7 +19,7 @@ from __future__ import annotations
 import logging
 
 from fastapi import APIRouter
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from ..tools.compta_tools import (
     lookup_pcg_account,
@@ -42,11 +42,33 @@ class LookupPCGRequest(BaseModel):
 
 
 class EcritureLineModel(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    compte: str = Field(..., max_length=20)
-    libelle: str = Field("", max_length=200)
-    debit: float = 0.0
-    credit: float = 0.0
+    """Une ligne d'écriture comptable — format canonical strict.
+
+    S59 — `extra="forbid"` to reject LLM payload wobble like
+    {compte, montant, type} or {compte, amount, sens} that previously
+    silently passed (defaulting debit/credit to 0 → false-positive
+    'équilibrée 0=0'). Forced rejection → 422 → LLM retries with canonical.
+    """
+    model_config = ConfigDict(extra="forbid")
+    compte: str = Field(..., max_length=20, description="Numéro de compte PCG, ex '401'")
+    libelle: str = Field("", max_length=200, description="Libellé optionnel de la ligne")
+    debit: float = Field(0.0, ge=0, description="Montant débit en € (positif). 0 si la ligne est au crédit.")
+    credit: float = Field(0.0, ge=0, description="Montant crédit en € (positif). 0 si la ligne est au débit.")
+
+    @model_validator(mode="after")
+    def _at_least_one_movement(self):
+        if self.debit == 0.0 and self.credit == 0.0:
+            raise ValueError(
+                "Each ecriture line requires positive 'debit' OR 'credit' (in €). "
+                "Got both at 0 — likely format mismatch (e.g. you sent "
+                "'montant'+'type' instead of canonical 'debit'/'credit')."
+            )
+        if self.debit > 0 and self.credit > 0:
+            raise ValueError(
+                "Each ecriture line must have EITHER 'debit' > 0 OR 'credit' > 0, "
+                "not both. Split into two lines if needed."
+            )
+        return self
 
 
 class VerifyPartieDoubleRequest(BaseModel):

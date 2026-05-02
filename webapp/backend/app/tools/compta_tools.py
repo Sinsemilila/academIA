@@ -151,6 +151,28 @@ def verify_partie_double(ecritures: list[EcritureLine]) -> PartieDoubleResult:
     diff = sum_debits - sum_credits
     n_lines = len(ecritures)
 
+    # S59 — detect format-mismatch silent zero (LLM sent {compte, montant, type}
+    # instead of {compte, debit | credit}, both default to 0 → false-positive
+    # "équilibrée 0=0"). Return explicit error so LLM corrects payload at next
+    # function-calling turn.
+    if n_lines >= 1 and sum_debits == 0 and sum_credits == 0:
+        return {
+            "valid": False,
+            "sum_debits": 0.0,
+            "sum_credits": 0.0,
+            "diff": 0.0,
+            "n_lines": n_lines,
+            "detail": (
+                "❌ Format payload incorrect : aucun montant détecté sur les "
+                f"{n_lines} ligne(s) reçues. Format CANONICAL attendu : "
+                "[{compte: '401', debit: 100.0}, {compte: '607', credit: 100.0}]. "
+                "Les seules clés acceptées pour le montant sont 'debit' et "
+                "'credit' (number en €). Si tu as envoyé 'montant'+'type' ou "
+                "'amount'+'sens', c'est ce qui cause l'erreur. Réessaye avec le "
+                "format canonical exact."
+            ),
+        }
+
     # Tolérance 0.01€ pour les arrondis flottants
     valid = abs(diff) < 0.01
 
