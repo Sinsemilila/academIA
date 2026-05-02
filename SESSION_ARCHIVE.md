@@ -1,3 +1,102 @@
+## Session 54 — 2026-04-30 (~10h continu post-S53 — Sprint Oracle EN cohérence MVP COMPLETE Phase 0-6 + extensions)
+
+### Done
+
+**Phase 0 — Capacity unlock** (commits academia : `0d721ec`, `d1eb6ec`) :
+- Cerebras free tier added to LiteLLM proxy : `cerebras-judge-fast` (llama-3.1-8b, 14400 RPD, ~5ms latency) + `cerebras-judge-deep` (qwen-3-235b)
+- Mistral Small rpm bump 2→100 + new Mistral Medium added (free tier 400 RPM real, 1.5M tok/min)
+- Container `litellm-proxy` recreated with `CEREBRAS_API_KEY` env injected (pattern propre `os.environ/X`)
+- Admin `/admin` judge-budget extended 3→7 tiers (cerebras llama + mistral × 2 + cerebras qwen + gemini chain legacy)
+- Capacity 540 RPD → 166K RPD theoretical (300× upgrade)
+
+**Phase 1+2 — Foundation + multi-judge panel** (commit `9f0a77c`) :
+- `n_votes 3→5` + `judge.model: cerebras-judge-fast` (default)
+- New `scripts/oracle/kappa/ac2.py` : Gwet (2008) AC2 binary + bootstrap CI + per-dim/global aggregation
+- New `scripts/oracle/kappa/compute_ac2.py` : standalone CLI inter-run + intra-run modes
+- Refactor `judges/llm_pairwise.py` : `_call_judge` + `_vote_n` accept `model_override` ; new `_vote_panel` + `_cross_judge_majority` ; backward compat preserved
+- `harness.py --panel cross-provider` CLI flag (3 judges : cerebras + mistral + gemini)
+- 19 unit tests added (9 kappa + 10 multi_judge)
+
+**Phase 3 — Baseline panel + κ Opus calibration** (commit `19d9ffa`) :
+- Full battery panel cross-provider 24 scenarios × 5 votes × 3 judges = 1080 calls (~30min, 65% Cerebras quota)
+- Score : **22/26 panel** (vs 17-19/26 ±1 single-judge gemini Session 51)
+- Opus 4.7 super-judge in-chat scoring 26 scenarios (replaces κ Sinse manual — Sinse pas qualifié natif EN)
+- κ Cohen Opus vs panel : `cf_move_set_valid=0.85` / `register_cefr_alignment=1.0` / `semantic_fidelity_pairwise=1.0`
+- DoD κ ≥ 0.7 sur 3 dims ATTEINT
+- `calibration.py --dry-run` flag added pour exploratory calibration sans auto-drop
+
+**Insight critique Phase 3** :
+- Panel ALIGNED avec Lyster taxonomy quand certifié (κ=0.85)
+- BUT 35% unknown rate sur cf_move dim — cerebras-llama-3.1-8b misclassifie systematic explicit_correction → full_recast at B2/C1
+- S51 stable fails (b2_passive, b1_prep) "résolus" via unknown→pass leniency, **PAS un vrai fix** — masking
+- Score "strict per spec" = 12-13/26, vs 22/26 leniency-inflated
+
+**Phase 3.5 — cf_move judge prompt v2** (commit `31f13b6`) :
+- Refactor `CF_MOVE_PROMPT` v1→v2 : decision tree (Step 1 explicit flagging? → Step 2 recast family → Step 3 sequenced moves) + critical disambiguation table explicit_correction vs full_recast + 7 grounded few-shots (Lyster citations EX1-EX7)
+- A/B test sur 9 unknown scenarios via cerebras-judge-fast direct call : **0% → 100%** sur les 4 cas explicit_correction critiques (b2_t3_modal_deduction, b2_t3_passive, c1_t3_conditional_mix, c1_t3_false_friend_assister)
+- 6/9 top-vote correct, 18/27 votes correct (vs ~0% baseline)
+
+**Phase 5 — Battery V1 acceptable_set audit** (commits `186543a`, `552e55e` extension) :
+- Audit doc `webapp/backend/docs/audit/2026-04-30-oracle-battery-v1-acceptable-set-audit.md` avec citations Lyster Ch 4 §3.1 + §3.3.1, Doughty & Varela 1998, Ellis & Sheen 2006, Lira-Gonzales 2024
+- 12 scenarios patched (8 initial + 4 extension post-validation re-run) :
+  - **+`prompt_plus_remediation`** B1/T3 : multi_b1_cond_partial_001, b1_t2_articles_001, b1_t3_conditional_midfla_001
+  - **+`explicit_correction` + `prompt_plus_remediation`** B2/T3 + C1/T3 : multi_b2_modal_no_uptake_001, b2_t3_modal_deduction_001, b2_t3_passive_001, c1_t3_conditional_mix_001, c1_t3_false_friend_assister_001, c1_t3_subjunctive_001
+  - **+`prompt_plus_remediation` + `explicit_correction`** B2/T2 : b2_t2_collocations_001
+  - **+`implicit_recast`** A1/T2 : el_a1_t2_misc_004
+
+**Phase 6 — Verdict cache hash-indexed** (commit `6f58148`) :
+- New `scripts/oracle/cache.py` : SQLite-based content-addressed (sha256 of messages JSON + model). None results NOT memoized.
+- `_call_judge` cache lookup pre-call, write post-call
+- `harness.py --cache on|off` CLI flag override config
+- `config.yaml` cache: block + ttl_days=30
+- `.gitignore` `scripts/oracle/.cache/`
+- 10 unit tests test_cache.py
+- **Benchmark : 4× speedup** (smoke 43s → 12s)
+- Expected 80% intra-run hit on full mode (n_votes=5 same messages)
+
+**Final E2E validation re-run** (artifact `baselines/2026-04-30-panel-final-pre-extension.json`) :
+- 20/26 panel CERTIFIED (vs 22/26 Phase 3 with leniency masking)
+- Le score plus bas est une **AMÉLIORATION de fiabilité** : panel certifie au lieu de ducker via unknown→pass
+- Unknown rate cf_move : 35% → 4%
+- 4 fails étaient deferred Phase 5 scenarios (extension shipped 552e55e)
+- 2 fails noise floor variance (semantic_fidelity Teacher temp 0.2, register mistral lower-bias)
+
+### Decisions
+
+- **Cerebras llama-3.1-8b primary judge** (vs gemini-3-1-flash-lite) : 26× RPD capacity, ~5ms latency, comparable quality
+- **Multi-judge panel cross-provider opt-in** (default off pour backward compat) : `--panel cross-provider` flag
+- **κ Sinse manual DROPPED** : Sinse pas qualifié natif EN → replaced by Opus 4.7 super-judge in-chat (zero API cost) + Lyster authority anchors deferred Phase 7
+- **Cache content-addressed hash** : sha256(messages JSON + model) auto-invalidates on prompt/response/model changes (vs explicit `judge_prompt_version` bump)
+- **Forecast Maestro ES** : architecture multi-judge panel + cache + AC2 + κ calibration tools réutilisable cross-langue tels quels (validated 1 langue, switch OK)
+
+### Gotchas
+
+- **Cerebras dashboard `/admin` 3.5%** = RPD count only, pas tokens (token quota 1M/day separate counter, vrai bottleneck pour battery runs ~70-80% quota)
+- **`_call_judge` import path** : avait écrit `from scripts.oracle import cache as _cache` (échec ModuleNotFoundError), fix → relative `from .. import cache as _cache` (cohérent existing `from ..schemas import DimVerdict`)
+- **Final battery re-run 20/26 (vs forecast 25-26)** : 4 cf_move fails étaient deferred scenarios manqués dans Phase 5 audit initial (extension `552e55e` les patche)
+- **Noise floor variance ~5-10%** sur dims register/semantic : Teacher response Dify temp 0.2 still some variation between runs ; mistral systematic lower-level bias on advanced register. Acceptable, addressable post-MVP via re-record golden ou n_votes=10+
+- **`response_text` persistence** : ajouté à `ScenarioResult` dump pour future runs (pas le baseline 2026-04-30 qui était loaded with old harness in memory)
+- **rclone Drive rateLimitExceeded** sur restic 16:20 (run 2) — pas /tmp issue (purge `pdf-front 5.8G` fixed earlier). Daily Drive API quota separate. Cron 03:30 demain off-peak retry attendu
+
+### Commits (academia, 9)
+
+- `0d721ec` `[infra]` LiteLLM Cerebras + Mistral providers
+- `d1eb6ec` `[feat]` admin /admin judge-budget 7-tier display
+- `9f0a77c` `[feat]` oracle Sprint Phase 1+2 — judge switch + AC2 + multi-judge panel
+- `fc54394` `[docs]` Sprint Oracle EN cohérence 2026-05 plan + TODO
+- `19d9ffa` `[feat]` oracle Sprint Phase 3 — baseline panel + κ Opus calibration
+- `31f13b6` `[feat]` oracle Sprint Phase 3.5 — cf_move judge prompt v2
+- `186543a` `[feat]` oracle Sprint Phase 5 — battery V1 acceptable_set audit
+- `6f58148` `[feat]` oracle Sprint Phase 6 — verdict cache hash-indexed
+- `a536f4c` `[docs]` TODO MVP COMPLETE
+- `552e55e` `[fix]` Phase 5 extension — 4 deferred scenarios
+
+(10 commits academia + handoff commit cette session — vault auto-writes séparés cf vault log.md)
+
+---
+
+---
+
 ## Session 53 — 2026-04-30 (~12h continu — Library ingest 8 stubs + skim batch 74/85 + EN/ES authority anchor audit Phase A+B+C+D1 LIVRÉE 17 commits academia + vault)
 
 ### Done

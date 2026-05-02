@@ -1,5 +1,56 @@
 # TODO — AcademIA
-Last updated: 2026-04-30 — Claude (Session 53 — Library ingest 13 stubs + Phase A+B+C+D1 LIVRÉE — EN/ES authority anchor audit + Functions dimension scaffold)
+Last updated: 2026-05-02 — Claude (Session 57 — Maître Comptable Mode B Phase 1 livré end-to-end + dette tech a11y/oracle/dependabot + roadmap S58-P5)
+
+## 🔝 EN COURS — RESUME AU PROCHAIN /pickup (S58)
+
+### 🎯 Maître Comptable Mode B Phase 1 — LIVRÉ S57 ✅
+
+Voir [`docs/00-project/sprint-maitre-comptable-2026-05.md`](docs/00-project/sprint-maitre-comptable-2026-05.md) pour roadmap complète DONE S57 + P0-P5 future.
+
+**État production** :
+- `/chat/maitre_comptable` accessible Marie (https://academie.petit-pont.com/chat/maitre_comptable)
+- Dify chatflow `4ce8ffe2-0cdf-4fa8-aab4-478e5dd8ac1c` créé via API automation (gpt-4o-mini + vision multimodal)
+- Backend `AccountingDomain` wired + 5 tools `/internal/compta/tools/*` + 57 tests green
+- Frontend agent registered + flag SVG + RGPDDisclaimer one-time
+- Knowledge base 22 PDFs fetched (~36 MB sources_officielles + 5 Anna's)
+
+### 🔴 P0 IMMÉDIAT S58 — Onboarding Marie + test live
+
+- [ ] (sinse, 2026-05-02+) Création compte Marie via `POST /api/auth/users` (admin endpoint) — username + password temp + display_name
+- [ ] (sinse, dashboard) Cloudflare Zero Trust → ajouter email Marie à policy `academie.petit-pont.com` (bypass VPN, OTP email)
+- [ ] (sinse + marie + claude, S58 ~30 min) Test live Marie 12 questions — critères validation cf `webapp/backend/docs/maitre-comptable-system-prompt.md` §7 (≥10/12 utiles, 0 hallucination, posture Lyster majoritaire, latence <5s)
+- [ ] (claude, sliding) Iter system prompt Dify selon retours empiriques Marie (push update via API automation)
+
+### 🟠 P1 COURT TERME (S58-S60, ~3-5j)
+
+- [ ] **P1.1 Wire 5 tools backend dans Dify Custom Tools** (~1j) — endpoints `/internal/compta/tools/*` already ready (D3.b shipped `bbaeeb0`), reste UI Dify config tool nodes pointant vers `http://academie-api:8000/internal/compta/tools/{lookup_pcg|verify_partie_double|verify_calcul_tva|verify_compte_classe|lookup_studi_module}`
+- [ ] **P1.2 Knowledge base RAG** (~2-3j) :
+  - [ ] Sinse update LiteLLM `config.yaml` ajout text-embedding-3-small route
+  - [ ] Restart litellm-proxy + test
+  - [ ] Create Dify dataset `maitre-comptable-knowledge-2026-05` (via API automation)
+  - [ ] Ingest 22 PDFs cosmos `/mnt/cosmos-data/library/by-domain/formation marie/`
+  - [ ] Wire Knowledge Retrieval node dans chatflow
+- [ ] **P1.3 Inject 8 few-shots Lyster compta dans system prompt** (~0.5j) — déjà draftés dans `webapp/backend/docs/maitre-comptable-system-prompt.md` §2
+
+### 🟡 P2 MOYEN TERME (S60-S62, ~5-8j) — Mode A Lessons
+
+- [ ] **P2.1 Mode A "Lessons / pratique guidée" Phase 1 MVP** (~5-8j) — module pivot BC1.4 TVA mécanisme, chatflow séparé `comptable_fr_lessons`, scenarios pasticher Cas Studi pattern, UX combo A+B+E
+- [ ] **P2.2 `rules_compta.py` MVP** (~2-3j) — étoffer AccountingDomain Phase 2 detect_errors real impl
+- [ ] **P2.3 Tier 6 RE-MEASURE compta** (~1-2j) — battery 12-15 scenarios + multi-judge panel + κ Opus calibration
+
+### 🟢 P3 LONG TERME (S62-S65, ~10-15j) — Polish Mode A
+
+Voir sprint roadmap pour détails P3 (UI custom JournalEntry + CascadingEffects + FSRS rote layer + IRT placement).
+
+### 🔵 P4 POLISH PREMIUM (S65+ optional) — voice + browser ext + anti-cheating avancé
+
+### 🟣 P5 SCALING (S70+) — Multi-apprenants + microentreprise launch + RGPD scope SaaS ADR-018
+
+---
+
+## 🗂️ AUTRES TODOs cross-projet (legacy ou autres sprints)
+
+
 
 ## ✅ OBSIDIAN MIGRATION CLOSED (2026-04-28)
 
