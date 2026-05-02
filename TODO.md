@@ -24,7 +24,7 @@ Voir [`docs/00-project/sprint-maitre-comptable-2026-05.md`](docs/00-project/spri
 
 - [ ] **P1.1 Wire 5 tools backend dans Dify Custom Tools** (~1j) — endpoints `/internal/compta/tools/*` already ready (D3.b shipped `bbaeeb0` S57), reste config UI Dify tool nodes pointant vers `http://academie-api:8000/internal/compta/tools/{lookup_pcg|verify_partie_double|verify_calcul_tva|verify_compte_classe|lookup_studi_module}`. Pattern API automation S58 réutilisable.
 - [x] ~~**P1.2 Knowledge base RAG** (~2-3j)~~ ✅ **LIVRÉ S58** (cf SESSION.md S58 Bloc 2). 22 docs ingested (sauf PCG Recueil dropped per D-S58.2), 15689 chunks Qdrant, knowledge node wired chatflow, retrieval testé score 0.78.
-- [ ] **P1.3 Inject 8 few-shots Lyster compta dans system prompt** (~0.5j) — déjà draftés dans `webapp/backend/docs/maitre-comptable-system-prompt.md` §2. Push update via Dify API automation pattern S57.
+- [x] (claude, 2026-05-02, S59) **P1.3 Inject 8 few-shots Lyster compta dans system prompt** ✅ — system prompt Dify chatflow `4ce8ffe2` augmenté 1600→5656 chars via `scripts/sprint-maitre-comptable/dify_patch_maitre_fewshots.py` (pattern API automation S57/S58 réutilisé). 8 few-shots EX1-EX8 injectés (clarification_request, metalinguistic, partial_recast, drill, multimodal, anti-cheating, incertitude assumée). Smoke 2/2 : EX4 concept emprunt reproduit fidèlement (few-shots in-context confirmé), EX2 inversion débit/crédit posture Lyster OK mais diagnostic numérique faux sans tools (argument fort P1.1). Draft hash cb2a5936→dca9d0fdfc65, published OK.
 
 ### 🟡 P2 MOYEN TERME (S60-S62, ~5-8j) — Mode A Lessons
 
