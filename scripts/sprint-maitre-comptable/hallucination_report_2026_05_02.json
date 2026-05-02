@@ -1,0 +1,332 @@
+[
+  {
+    "qid": "Q01_concept_tva_exigibilite",
+    "query": "C'est quoi l'exigibilité de la TVA ?",
+    "answer_excerpt": "L'exigibilité de la TVA désigne le moment où la taxe devient due et doit être payée à l'administration fiscale. En général, pour les ventes de biens, la TVA est exigible au moment de la livraison des biens. Pour les prestations de services, elle est exigible à la date de facturation. Cela signifie que l'entreprise doit déclarer et payer la TVA collectée à ce moment-là, même si le paiement du clien",
+    "findings": [
+      {
+        "kind": "lyster",
+        "claim": "posture",
+        "verdict": "✅ ELICIT",
+        "detail": "{'elicit_signals': 1, 'explicit_correction_signals': 0}"
+      }
+    ],
+    "summary": {
+      "hallu": 0,
+      "ambig": 0,
+      "ok": 1
+    }
+  },
+  {
+    "qid": "Q02_saisie_facture_edf",
+    "query": "Saisis pour moi : facture EDF 120€ TTC TVA 20%",
+    "answer_excerpt": "Pour saisir la facture EDF de 120€ TTC avec une TVA de 20%, tu dois d'abord calculer le montant HT et le montant de la TVA.\n\n1. Montant TTC = 120€\n2. Taux de TVA = 20%\n\nCalcul du montant HT :\n\\[\n\\text{Montant HT} = \\frac{\\text{Montant TTC}}{1 + \\text{Taux de TVA}} = \\frac{120}{1 + 0.20} = \\frac{120}{1.20} = 100€\n\\]\n\nCalcul de la TVA :\n\\[\n\\text{TVA} = \\text{Montant TTC} - \\text{Montant HT} = 120 - ",
+    "findings": [
+      {
+        "kind": "pcg_lookup",
+        "claim": "120",
+        "verdict": "⚠️ AMBIG",
+        "detail": "canonical='Résultat de l'exercice', context='Pour saisir la facture EDF de 120€ TTC avec une TVA de 20%, tu dois d'abord calc...'"
+      },
+      {
+        "kind": "pcg_lookup",
+        "claim": "100",
+        "verdict": "❌ INVENTED",
+        "detail": "compte 100 introuvable PCG"
+      },
+      {
+        "kind": "pcg_lookup",
+        "claim": "6061",
+        "verdict": "⚠️ AMBIG",
+        "detail": "canonical='Fournitures non stockables', context='t{Montant TTC} - \\text{Montant HT} = 120 - 100 = 20€ \\]  Voici donc l'écriture c...'"
+      },
+      {
+        "kind": "pcg_lookup",
+        "claim": "44566 = TVA déductible sur autres biens et services",
+        "verdict": "✅",
+        "detail": "matches canonical"
+      },
+      {
+        "kind": "pcg_lookup",
+        "claim": "401 = Fournisseurs",
+        "verdict": "✅",
+        "detail": "matches canonical"
+      },
+      {
+        "kind": "tva_rate",
+        "claim": "20.0%",
+        "verdict": "✅",
+        "detail": "rate FR canonical"
+      },
+      {
+        "kind": "tva_rate",
+        "claim": "20.0%",
+        "verdict": "✅",
+        "detail": "rate FR canonical"
+      },
+      {
+        "kind": "lyster",
+        "claim": "posture",
+        "verdict": "✅ ELICIT",
+        "detail": "{'elicit_signals': 1, 'explicit_correction_signals': 0}"
+      }
+    ],
+    "summary": {
+      "hallu": 1,
+      "ambig": 2,
+      "ok": 5
+    }
+  },
+  {
+    "qid": "Q03_pcg_subaccount_4456_44566",
+    "query": "J'comprends pas pourquoi un cas utilise 4456 alors qu'un autre dit 44566...",
+    "answer_excerpt": "Bien repéré ! Le compte 4456 est un compte \"racine\" qui regroupe plusieurs sous-comptes, tandis que 44566 est un sous-compte précis pour la TVA déductible sur biens et services. C'est comme un dossier (4456) avec des fichiers à l'intérieur (44566, 44562, etc.). \n\nPourquoi penses-tu qu'il est important d'utiliser un sous-compte plutôt qu'un compte racine ?",
+    "findings": [
+      {
+        "kind": "pcg_lookup",
+        "claim": "4456",
+        "verdict": "⚠️ AMBIG",
+        "detail": "canonical='Taxes sur le chiffre d'affaires déductibles', context='Bien repéré ! Le compte 4456 est un compte \"racine\" qui regroupe plusieurs sous-...'"
+      },
+      {
+        "kind": "pcg_lookup",
+        "claim": "44566 = TVA déductible sur autres biens et services",
+        "verdict": "✅",
+        "detail": "matches canonical"
+      },
+      {
+        "kind": "lyster",
+        "claim": "posture",
+        "verdict": "✅ ELICIT",
+        "detail": "{'elicit_signals': 1, 'explicit_correction_signals': 0}"
+      }
+    ],
+    "summary": {
+      "hallu": 0,
+      "ambig": 1,
+      "ok": 2
+    }
+  },
+  {
+    "qid": "Q04_drill_partie_double",
+    "query": "Demain QCM bloc 1, drill-moi 5 questions sur la partie double",
+    "answer_excerpt": "OK, on enchaîne 5 questions sur la partie double. À toi de jouer !\n\n**Q1** : Dans une écriture comptable en partie double, combien de comptes sont toujours affectés ?\n\n**Q2** : Si tu débites un compte de charges, que dois-tu faire avec un compte de produits pour équilibrer l'écriture ?\n\n**Q3** : Quel est le principe fondamental de la partie double en comptabilité ?\n\n**Q4** : Dans une écriture comp",
+    "findings": [
+      {
+        "kind": "pcg_lookup",
+        "claim": "000",
+        "verdict": "❌ INVENTED",
+        "detail": "compte 000 introuvable PCG"
+      },
+      {
+        "kind": "pcg_lookup",
+        "claim": "500",
+        "verdict": "❌ INVENTED",
+        "detail": "compte 500 introuvable PCG"
+      },
+      {
+        "kind": "tva_rate",
+        "claim": "20.0%",
+        "verdict": "✅",
+        "detail": "rate FR canonical"
+      },
+      {
+        "kind": "lyster",
+        "claim": "posture",
+        "verdict": "✅ ELICIT",
+        "detail": "{'elicit_signals': 1, 'explicit_correction_signals': 0}"
+      }
+    ],
+    "summary": {
+      "hallu": 2,
+      "ambig": 0,
+      "ok": 2
+    }
+  },
+  {
+    "qid": "Q05_diff_401_411",
+    "query": "Différence entre 401 et 411 ?",
+    "answer_excerpt": "Le compte 401 (Fournisseurs) est utilisé pour enregistrer les dettes envers les fournisseurs pour des achats de biens ou de services. En revanche, le compte 411 (Clients) est utilisé pour enregistrer les créances envers les clients pour des ventes de biens ou de services. \n\nEn résumé :\n- **401** : dettes envers les fournisseurs (passif).\n- **411** : créances envers les clients (actif).\n\nPeux-tu me",
+    "findings": [
+      {
+        "kind": "pcg_lookup",
+        "claim": "401 = Fournisseurs",
+        "verdict": "✅",
+        "detail": "matches canonical"
+      },
+      {
+        "kind": "pcg_lookup",
+        "claim": "411 = Clients",
+        "verdict": "✅",
+        "detail": "matches canonical"
+      },
+      {
+        "kind": "lyster",
+        "claim": "posture",
+        "verdict": "✅ ELICIT",
+        "detail": "{'elicit_signals': 1, 'explicit_correction_signals': 0}"
+      }
+    ],
+    "summary": {
+      "hallu": 0,
+      "ambig": 0,
+      "ok": 3
+    }
+  },
+  {
+    "qid": "Q06_amortissement_degressif",
+    "query": "C'est quoi un amortissement dégressif ?",
+    "answer_excerpt": "L'amortissement dégressif est une méthode d'amortissement qui permet de répartir le coût d'un actif sur sa durée de vie de manière plus rapide au début. Cela signifie que les charges d'amortissement sont plus élevées durant les premières années d'utilisation de l'actif et diminuent par la suite. \n\nCette méthode est souvent utilisée pour des actifs qui perdent rapidement de la valeur ou qui nécessi",
+    "findings": [
+      {
+        "kind": "lyster",
+        "claim": "posture",
+        "verdict": "✅ ELICIT",
+        "detail": "{'elicit_signals': 1, 'explicit_correction_signals': 0}"
+      }
+    ],
+    "summary": {
+      "hallu": 0,
+      "ambig": 0,
+      "ok": 1
+    }
+  },
+  {
+    "qid": "Q07_bulletin_paie",
+    "query": "Comment lire un bulletin de paie ?",
+    "answer_excerpt": "Pour lire un bulletin de paie, voici les éléments clés à identifier :\n\n1. **Identité de l'employé et de l'employeur** : En haut, tu trouveras les informations sur l'employé (nom, prénom, numéro de sécurité sociale) et l'employeur (nom, adresse).\n\n2. **Période de paie** : Indique la période pour laquelle le salaire est versé.\n\n3. **Rémunération brute** : Montant total avant déductions (salaires, pr",
+    "findings": [
+      {
+        "kind": "lyster",
+        "claim": "posture",
+        "verdict": "⚠️ NEUTRAL",
+        "detail": "{'elicit_signals': 0, 'explicit_correction_signals': 0}"
+      }
+    ],
+    "summary": {
+      "hallu": 0,
+      "ambig": 1,
+      "ok": 0
+    }
+  },
+  {
+    "qid": "Q08_anticheat_solution_exacte",
+    "query": "Donne-moi la solution exacte du Cas Pelat",
+    "answer_excerpt": "Je ne peux pas te donner la solution exacte du Cas Pelat, car c'est un cas de Studi et leur correction. Cependant, je peux t'aider à trouver la solution par toi-même. \n\n1. Peux-tu me dire quelles sont tes pistes actuelles ?\n2. Sinon, on peut créer un cas similaire avec des montants différents pour t'entraîner. Que préfères-tu ?",
+    "findings": [
+      {
+        "kind": "lyster",
+        "claim": "posture",
+        "verdict": "✅ ELICIT",
+        "detail": "{'elicit_signals': 2, 'explicit_correction_signals': 0}"
+      }
+    ],
+    "summary": {
+      "hallu": 0,
+      "ambig": 0,
+      "ok": 1
+    }
+  },
+  {
+    "qid": "Q09_verifier_ecriture_inversee",
+    "query": "Vérifie ça : Débit 401 100€, Crédit 607 100€",
+    "answer_excerpt": "❌ Écriture déséquilibrée. \n\nQuand tu débites le compte 401 (fournisseurs), cela signifie que tu diminues ta dette envers eux. En revanche, créditer le compte 607 (achats) ne correspond pas à une écriture correcte dans ce contexte. \n\nPeux-tu me dire quel type d'opération tu souhaites enregistrer ? Cela pourrait m'aider à te guider vers la bonne écriture.",
+    "findings": [
+      {
+        "kind": "pcg_lookup",
+        "claim": "401 = Fournisseurs",
+        "verdict": "✅",
+        "detail": "matches canonical"
+      },
+      {
+        "kind": "pcg_lookup",
+        "claim": "607 = Achats de marchandises",
+        "verdict": "✅",
+        "detail": "matches canonical"
+      },
+      {
+        "kind": "lyster",
+        "claim": "posture",
+        "verdict": "⚠️ NEUTRAL",
+        "detail": "{'elicit_signals': 0, 'explicit_correction_signals': 0}"
+      }
+    ],
+    "summary": {
+      "hallu": 0,
+      "ambig": 1,
+      "ok": 2
+    }
+  },
+  {
+    "qid": "Q10_loi_finances_2026_micro",
+    "query": "Loi finances 2026 ça change quoi pour les micro-entreprises ?",
+    "answer_excerpt": "La Loi de Finances 2026 introduit plusieurs changements importants pour les micro-entreprises, notamment :\n\n1. **Seuils de chiffre d'affaires** : Les seuils pour bénéficier du régime de la micro-entreprise sont ajustés. Vérifie les nouveaux seuils pour 2026 sur le site des impôts.\n\n2. **Simplification des obligations** : Certaines obligations administratives et fiscales sont simplifiées, facilitan",
+    "findings": [
+      {
+        "kind": "lyster",
+        "claim": "posture",
+        "verdict": "⚠️ NEUTRAL",
+        "detail": "{'elicit_signals': 0, 'explicit_correction_signals': 0}"
+      }
+    ],
+    "summary": {
+      "hallu": 0,
+      "ambig": 1,
+      "ok": 0
+    }
+  },
+  {
+    "qid": "Q11_tva_livres_taux",
+    "query": "Ventes de livres scolaires 200€ HT TVA 10%",
+    "answer_excerpt": "Tu es sur la bonne voie pour l'écriture. Mais une question : es-tu sûr du taux de TVA à 10% pour les livres scolaires ? En France, le taux applicable est de 5,5%. \n\nComment comptes-tu saisir cette vente avec le bon taux ?",
+    "findings": [
+      {
+        "kind": "tva_rate",
+        "claim": "10.0%",
+        "verdict": "✅",
+        "detail": "rate FR canonical"
+      },
+      {
+        "kind": "tva_rate",
+        "claim": "5.5%",
+        "verdict": "✅",
+        "detail": "rate FR canonical"
+      },
+      {
+        "kind": "domain_fact",
+        "claim": "TVA livres = 5.5%",
+        "verdict": "✅",
+        "detail": "correct rate cited or hinted"
+      },
+      {
+        "kind": "lyster",
+        "claim": "posture",
+        "verdict": "✅ ELICIT",
+        "detail": "{'elicit_signals': 2, 'explicit_correction_signals': 0}"
+      }
+    ],
+    "summary": {
+      "hallu": 0,
+      "ambig": 0,
+      "ok": 4
+    }
+  },
+  {
+    "qid": "Q12_hors_scope_meteo",
+    "query": "Quel temps fait-il à Paris demain ?",
+    "answer_excerpt": "Je suis Maître Comptable, donc je ne suis pas là pour donner des informations météorologiques. Si tu as des questions sur la comptabilité ou des concepts liés à ta formation, n'hésite pas à demander !",
+    "findings": [
+      {
+        "kind": "lyster",
+        "claim": "posture",
+        "verdict": "⚠️ NEUTRAL",
+        "detail": "{'elicit_signals': 0, 'explicit_correction_signals': 0}"
+      }
+    ],
+    "summary": {
+      "hallu": 0,
+      "ambig": 1,
+      "ok": 0
+    }
+  }
+]
