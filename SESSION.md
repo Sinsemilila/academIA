@@ -4,6 +4,175 @@ Sessions empilées (plus récente en haut). Rotation : seules les **3 dernières
 
 ---
 
+## Session 61 — 2026-05-05/06 (~6h continu — Marie/petit-pont écosystème split end-to-end : rename academia + 5 sous-domaines CF Zero Trust + PgBouncer + marie-api + marie-frontend + Dify rerouting + cleanup academia + PWAs iOS/Android + hub apex)
+
+### Done
+
+**Bloc 1 — Phase 0.5 rename academie → academia (Option B Cosmétique)** :
+- Backup tarball `/tmp/academie-pre-rename-*.tar.gz` (680M) + git tag `pre-rename-academia-2026-05-05`
+- `mv /opt/academie /opt/academia` (filesystem path)
+- Sed mass `/opt/academie\b` → `/opt/academia` sur 142 fichiers (.py, .md, .sh, .yaml — incluant archive snapshots acceptés)
+- Sed `academie.petit-pont.com` → `academia.petit-pont.com` (25 files DNS refs)
+- Sinse-tools 7 scripts patchés (smoke-test, restic-backup/restore-test, log, status, deploy-teacher, README)
+- Cron `/etc/cron.d/academie-vault-mirror` path interne updated (filename legacy preservé)
+- Compose redémarré depuis `/opt/academia/webapp/`. Smoke 17/17.
+- **Internal Docker préservé legacy** (Option B) : containers `academie-api/postgres-academie/redis-academie/n8n-academie`, network `academie-net-bridge`, DB `academie_db`, Python pkg `academie_core`, env DB_HOST. Évite recréer Dify/n8n/LiteLLM containers (downtime massive évitée).
+
+**Bloc 2 — Phase 1 DNS + CF Zero Trust 5 apps** :
+- Tokens CF persistés sops `cloudflare-api-token-petit-pont` + `cloudflare-api-token-account` (zone scoped + account)
+- Zone ID `9f1fc98500f87d32bf3e8105bd8656fa`, account `41f63b79c94d216d82c25565eac77701`, tunnel `a57431d7-9c36-4f9b-95b9-d3ef08b49691.cfargotunnel.com`
+- DNS CNAMEs added : `academia.`, `marie.`, `coach.`, `sinse.` → tunnel. DELETED `academie.` (Q3=0 jours).
+- CF Access apps recreated (PATCH refusé par token, fallback POST + policy + DELETE old) : `academia.petit-pont.com` (Sinse + Marie), PWA bypass `/manifest.json`, `marie.petit-pont.com` (Sinse + Marie placeholder), `coach.petit-pont.com` (Sinse only), `sinse.petit-pont.com` (Sinse only)
+- Doc reference `docs/04-infra/petit-pont-cloudflare-resources.md` (IDs + apps + perms)
+
+**Bloc 3 — Phase 1.5 PgBouncer mix mode** :
+- Patch `webapp/backend/app/database.py:35,40` : `statement_cache_size=0` aux 2 `create_pool()` (asyncpg → PgBouncer transaction-mode safe future flip)
+- PgBouncer container `edoburu/pgbouncer:latest`, network `academie-net-bridge`, port 127.0.0.1:6432, userlist SCRAM-SHA-256 hash from PG `pg_authid` (jamais cleartext)
+- 4 entries `[databases]` session mode (academie_db, litellm_db, glitchtip_db, dify_plugin)
+- Postgres tuning : `max_connections` 100→150, `shared_buffers` 128MB→1GB, restart
+- DATABASE_URL academia-api + LiteLLM SpendLogs pool routing → `pgbouncer:6432`
+- Stress test 50 concurrent `/api/health` : 50/50 OK, 8 backend conn pour 35 xact (multiplexing 4.4×), latency p50 3ms (no regression)
+- Bootstrap DR : `infra/pgbouncer/deploy.sh` (regenerate userlist depuis SCRAM hash)
+
+**Bloc 4 — Phase 1.6 `@petit-pont/ui` v0.1.0** :
+- Repo init `/opt/petit-pont-ui/` + push GitHub `Sinsemilila/petit-pont-ui` (private) + tag `v0.1.0`
+- RGPDDisclaimer extrait academia + paramétré (`storageKey`, `title`, `body`, `ackLabel`, `variant warning|info`)
+- Distribution git+ssh deps (skip npm publish)
+- README + roadmap V0.2+ (ChatBubble, LoginForm, SSEStreamConsumer, JournalEntry Coach)
+- **Discovery clé** : academia déjà sur Svelte 5 + SvelteKit 2.57 → Phase 5.5 "sliding migration Svelte 4→5" obsolete (déjà fait)
+
+**Bloc 5 — Phase 2.1 marie-api backend (FastAPI)** :
+- Repo `/opt/marie-api/` + push GitHub `Sinsemilila/marie-api` (private)
+- Migrated from academia-api : 5 deterministic tools (`lookup_pcg`, `verify_partie_double`, `verify_calcul_tva`, `verify_compte_classe`, `lookup_studi_module`) + `compta_pcg.py` (313 lines PCG dict) + `compta_preprocess.py` (148 lines A1 ciblé) + `AccountingDomain` Protocol stub
+- 4 test files : 68 tests green ✅ (in container)
+- `tools_router.py` `/internal/compta/tools/*` (Pydantic strict `extra="forbid"`)
+- `auth_router.py` `/api/auth/{login,logout,me}` — **Audit P0 #1 fix appliqué** (logout requires `Depends(get_current_user)` + ownership check `user_id == cookie_user`)
+- `dify_proxy_router.py` SSE chat-messages streaming → chatflow `4ce8ffe2`
+- `database.py` asyncpg pool `statement_cache_size=0` via PgBouncer
+- Standalone `docker-compose.yml` host port 8002→8001 (8001 collide glitchtip-web bind), network `academie-net-bridge`
+- DB shared `academie_db` V0 (cosmos.users + marie_compta schemas Phase 2.5 deferred)
+
+**Bloc 6 — Phase 2.4 marie-frontend (SvelteKit Svelte 5 fresh)** :
+- Repo `/opt/marie/` + push GitHub `Sinsemilila/marie` (private)
+- Stack identique academia : SvelteKit 2.57 + Svelte 5.55 (runes) + Tailwind v4 + adapter-node + Vite 7
+- Branding : design tokens beige/orange (`#FFEAD5` base, `#D97706` accent), emoji 🧮
+- Pages : `/` redirect cookie-based, `/login`, `/chat` (markdown via marked + DOMPurify, RGPD disclaimer one-time, logout)
+- `hooks.server.ts` proxies `/api/*` → `marie-api:8001` Docker internal (no CORS)
+- RGPDDisclaimer vendored locally (npm `github:` shortcut SSH alpine fail au build privé repo)
+- Service worker bypass académie suppr (V0 minimal)
+- PWA installable (post-fix block UI)
+
+**Bloc 7 — Phase 2.3 Dify chatflow rerouting** :
+- Tool provider `compta_tools` UUID `855f3981-d9e8-4dd3-b0ce-f69a8c20645a` base URL : `http://academie-api:8000` → `http://marie-api:8001`
+- Update via `scripts/sprint-maitre-comptable/update_dify_compta_tools.py` (pattern S57/S58)
+- 5 tools re-registered + descriptions intactes
+
+**Bloc 8 — Phase 3 academia cleanup post-Marie split** :
+- DEL `routers/compta_router.py` + import in `main.py`
+- DEL `tools/compta_pcg.py` + `compta_tools.py` + `compta_preprocess.py`
+- DEL `packages/academie-core/academie_core/domain/accounting.py`
+- DEL 4 test files compta
+- `chat_router.py` `_DOMAIN_REGISTRY` simplified (LanguageDomain only, drop `compta_*` branch + `maybe_enrich_query` import)
+- `agents_config.py` AgentDef `maitre_comptable` removed
+- Frontend : DEL `src/lib/components/compta/*`, `static/flags/compta.svg`, agent maitre_comptable from `config.ts`, 3 isComptaAgent branches + RGPDDisclaimer block dans `chat/[agent]/+page.svelte`
+- 20 fichiers, -1991 / +27 lignes
+- Smoke 17/17 ✅, academie-api + academie-frontend rebuilt healthy
+
+**Bloc 9 — Fix CF Tunnel ingress + nginx :8080 (CRITIQUE)** :
+- Diagnostic : academia/marie inaccessible browser malgré 302 CF Access — root cause tunnel ingress avait `academie.` legacy + dify/n8n, pas de `academia.`/`marie.`/`coach.`/`sinse.`
+- Tunnel ingress PUT autorisé Sinse explicit : DEL `academie.` + ADD `academia.`, `marie.`, `coach.`, `sinse.` → 192.168.1.181:8080
+- Discovery : routing app pas Cosmos mais **nginx :8080** (sites-enabled/dify file mal nommé contient academie + dify server blocks)
+- nginx `server_name academie.` → `academia.`, ajouté `server_block marie.` → :3002 (marie-frontend)
+- DR backup `infra/nginx/petit-pont-apps.conf` saved repo
+
+**Bloc 10 — UI fix marie inputs invisible** :
+- Inputs login + textarea chat n'héritaient pas `text-text-primary` du body
+- Fix `text-text-primary placeholder:text-text-muted` explicit classes
+
+**Bloc 11 — DIFY_KEY_MAITRE_COMPTABLE activation** :
+- Récupéré via Dify console API : `app-LtzzO1qSIaQQbJKp4tAgyCXz`
+- Persisté sops + `/opt/marie-api/.env`, recreate marie-api
+- Live test Dify chatflow blocking : "Compte 401 = Fournisseurs (classe 4 : Comptes de tiers)" 5541 tokens ✅ — chat Marie end-to-end fonctionnel
+
+**Bloc 12 — PyMentor + CyberMentor retirés visuel academia** :
+- `config.ts agents[]`, `agents_config.py ALL_AGENTS`, `+page.svelte agentGroups` (drop catégorie Tech), `navigation.ts SLUG_TO_DOMAIN`, `static/flags/{python,cyber}.svg`
+- Future home `sinse.petit-pont.com` (Phase 5+ self-learn)
+
+**Bloc 13 — PWA installable iOS + Android** :
+- **Marie** : SVG icon 🧮 → rsvg-convert → PNG 192/512 + maskable + apple-touch-icon. Manifest `Maître Comptable` standalone theme `#FFEAD5`. CF Access bypass apps `/manifest.json` + 4 icon paths (everyone bypass). Live test 4×200 ✅.
+- **Academia** : manifest existant `Academie-IA` → `Academia` (cohérence rename). CF Access bypass apps ajoutés `/icons/icon-192.png`, `/icons/icon-512.png`, `.svg`, `/sw.js`, `/offline.html`. Live test 4×200 ✅.
+
+**Bloc 14 — Hub apex petit-pont.com (Option A page minimale)** :
+- DNS apex CNAME flattening `@` → tunnel
+- Tunnel ingress `petit-pont.com` → 192.168.1.181:8080
+- CF Access app bypass-everyone (public landing)
+- nginx server block + `/var/www/petit-pont/index.html` (logo gradient orange + tagline `Espace privé · accès sur invitation`, no app listing security obscurity, noindex/nofollow)
+- DR backup `infra/petit-pont-apex/index.html`
+- Live test https://petit-pont.com → 200 ✅
+
+### Decisions
+
+- **D-S61.1 Option B Cosmétique pragmatique rename** — filesystem + DNS user-visible only, garde containers/DB/network/env legacy `academie-*`. Évite recréer Dify/n8n env (blast radius destructive). Future cleanup possible mini-sprint dédié.
+- **D-S61.2 PgBouncer session mode pour tout** — skip audit upstream Dify LISTEN/NOTIFY. asyncpg patch `statement_cache_size=0` ready pour future flip transaction mode academia-api specific.
+- **D-S61.3 Marie split full backend (plan v2 validé)** — pas Approche A frontend-only MVP que j'avais proposé pivot, retour au plan v2.
+- **D-S61.4 Frontend stack Svelte 5 + SvelteKit 2 cross-app cohérent** — confirmed via web research subagent. Anti-mix multi-framework.
+- **D-S61.5 Hub apex Option A (page minimale public)** — pas Option B (hub with login + cards) — surdimensionné pour 3 users. Cohérent ACL CF Zero Trust déjà gère qui voit quoi.
+- **D-S61.6 Tokens CF + Dify keys non-rotated post-transcript exposure** — Sinse accepte risque, memory feedback `feedback_secrets_rotation_policy.md`. Ne pas re-suggérer rotate par défaut.
+- **D-S61.7 Coach Sportif décision V1.0 acté D7 Session 60** — projet séparé `/opt/coach` + `coach-api` + LiteLLM mutualisé. Pattern réplicable Marie/Sinse.
+- **D-S61.8 PWA installable iOS + Android pour academia + marie** — pattern réutilisable Coach/Sinse futur (manifest + icons + bypass CF Access 5-10 min/app).
+
+### Gotchas
+
+- **G-S61.1 Tunnel ingress pas auto-update post DNS/Cosmos route** — symptôme : CF Access valide login mais 502 ensuite. Fix : toujours sync 3 layers DNS + Tunnel ingress + nginx :8080. Verifier `cfd_tunnel/{id}/configurations` après chaque add hostname.
+- **G-S61.2 Routing app petit-pont = nginx :8080 (pas Cosmos)** — Cosmos config routes (`marie-frontend`, `academia-webapp`) sont dormantes. nginx `/etc/nginx/sites-available/dify` (mauvais nom historique) source-of-truth real routing. Saved DR `infra/nginx/petit-pont-apps.conf`.
+- **G-S61.3 SvelteKit input default text color** — n'hérite pas du body `text-text-primary`. Toujours `text-text-primary placeholder:text-text-muted` explicit class.
+- **G-S61.4 PWA install requires ALL assets bypass CF Access** — manifest.json + icons + sw.js + offline.html. Sinon browser ne peut pas detect installable. Pattern : 1 CF Access app bypass per path public.
+- **G-S61.5 Docker alpine pas SSH client** — npm `github:` shortcut fail si repo private (npm tente ssh://git@github.com). Soit vendor local, soit `git+https://...{token}@...`, soit make repo public.
+- **G-S61.6 CF Access PATCH refused by token-scope** — workaround DELETE old + POST new app + recreate policies. Garde même domain, perd app id stable.
+- **G-S61.7 ALTER SYSTEM cannot run inside transaction block** — séparer en 2 statements distincts (PG quirk). Apply `SHOW max_connections` post-restart pour verify.
+- **G-S61.8 Dify env hardcoded `DB_HOST=postgres-academie` `DB_DATABASE=academie_db`** — si rename containers/DB, recreate Dify + n8n + LiteLLM env. Préservé Option B legacy, évité.
+- **G-S61.9 Cosmos config routes dormantes** — `cosmos.config.json` peut paraître source-of-truth mais c'est nginx :8080 qui route. À nettoyer plus tard ou laisser sans effet.
+
+### Commits
+
+**academia (8)** :
+- `6b9ffd7` `[refactor] rename /opt/academie → /opt/academia (Phase 0.5 Option B)` — 142 files
+- `515a409` `[infra] Phase 1 — DNS + CF Zero Trust apps petit-pont multi-app setup` — sops tokens + doc reference
+- `1c3902a` `[infra] Phase 1.5 — PgBouncer deploy + asyncpg statement_cache_size=0 patch` — pgbouncer.ini + deploy.sh
+- `d75fd19` `[refactor] Phase 2.3 + 3 — Dify chatflow rerouted to marie-api + academia compta cleanup` — -1991 lignes
+- `c458a9c` `[infra] save nginx :8080 reverse-proxy config to repo (DR backup)`
+- `808c392` `[ui] retire pymentor + cybermentor from academia visual (no backend wired)`
+- `d2283be` `[fix] PWA manifest — Academie-IA → Academia (cohérence rename Phase 0.5)`
+- `8038200` `[infra] hub apex petit-pont.com — public landing minimal`
+
+**marie-api (2)** :
+- (initial) `[init] marie-api v0.1.0 — Maître Comptable backend extracted from academia-api` — 68 tests green
+- `2dacd20` `[fix] host port 8001 → 8002 (8001 already used by glitchtip-web bind)`
+
+**marie (3)** :
+- (initial) `[init] marie-frontend v0.1.0 — SvelteKit Svelte 5 fresh, Maître Comptable UX`
+- `a3bd0f2` `[fix] login/chat inputs — explicit text-text-primary + placeholder:text-text-muted (was invisible bg-same-color)`
+- `de26129` `[feat] PWA installable iOS + Android — manifest + icons 🧮`
+
+**petit-pont-ui (1)** :
+- `05c6d7c` `[init] @petit-pont/ui v0.1.0 — RGPDDisclaimer extracted from academia-frontend` + tag v0.1.0
+
+**Total : 14 commits cross 4 repos.**
+
+### Next session pickup
+
+**P0 immédiat S62** :
+- **Phase 4 Audit Teacher EN P0 (5 actions ~2j)** : logout fix academia (P0 #1) + rubrics A1/A2/B1 positive-only (P0 #3) + oracle promote 3 A1 + author 3 C2 (P0 #4) + Anthropic prompt caching Dify→LiteLLM (P1 #12, -70-95% cost) + (PgBouncer ✅ déjà Phase 1.5)
+- **Phase 5 Wave 2 IT Phase 1 (~5-7j)** : sprint langues normal sur academia clean (curriculum_it + rules_it + 8 fewshots + L1 transfer FR→IT + oracle 24-31 + Tier 6 RE-MEASURE κ Opus ≥0.85)
+
+**Sliding** :
+- Monitor Marie usage organique sur marie.petit-pont.com — review messages Dify table 1×/sem
+- (optionnel) Nettoyer Cosmos config routes dormantes (academia-webapp, marie-frontend entries inutiles)
+
+**Cumul session 61** : ~6h continu, 14 commits cross 4 repos, 4 nouveaux containers (marie-api, marie-frontend, pgbouncer, /var/www/petit-pont nginx static), écosystème petit-pont split end-to-end fonctionnel.
+
+---
+
 ## Session 60 — 2026-05-05 (~6h — Vault Yggdrasil restructure + Breadcrumbs essai/rollback + MERLIN licence Stemle + Coach Sportif D7 backend séparé + Audit Teacher EN comprehensive)
 
 ### Done

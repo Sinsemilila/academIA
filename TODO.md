@@ -1,9 +1,55 @@
 # TODO — AcademIA
-Last updated: 2026-05-02 — Claude (Session 58 — Onboarding Marie + RAG knowledge base 22 PDFs livré end-to-end + profile-building meta)
+Last updated: 2026-05-06 — Claude (Session 61 — Marie/petit-pont écosystème split end-to-end + 5 sous-domaines CF Zero Trust + PgBouncer + PWAs + hub apex)
 
-## 🔝 EN COURS — RESUME AU PROCHAIN /pickup (S59)
+## 🔝 EN COURS — RESUME AU PROCHAIN /pickup (S62)
 
-### 🎯 Maître Comptable Mode B Phase 1 — LIVRÉ S57 ✅ + RAG livré S58 ✅
+### 🎯 Phase 4 — Audit Teacher EN P0 (5 actions ~2j) ⭐ NEXT
+
+Référence : [`docs/00-project/audit-teacher-en-2026-05.md`](docs/00-project/audit-teacher-en-2026-05.md) (S60 audit, 17 findings priorisés).
+
+- [ ] **P0 #1 Fix logout auth bypass** academia `auth_router.py:178-183` — ajouter `Depends(get_current_user)` + ownership check `session.user_id == cookie_user_id` avant DELETE. Test forge cookie autre user → 403. (~30 min, déjà fait côté marie-api S61.)
+- [ ] **P0 #3 Rewrite rubrics A1/A2/B1 positive-only** `data/rubrics/en.yaml:14-19, 30-34, 45-49` — éliminer 7+ phrases verbatim bannies dans directives qui les interdisent (pink-elephant). Pattern construction positive ("ALWAYS recast inside follow-up question"). Cross-check via pedagogy-reviewer subagent. (~2h)
+- [ ] **P0 #4 Promote 3 A1 + author 3 C2 oracle scenarios** `scripts/oracle/scenarios/teacher_en/` — `_examples/el_a1_t2_misc_*` → goldens runnables + 3 C2 from scratch (Hawkins-Filipović criterial features). Run battery 28→34 verify rubric P0 #3 fix prevents drift "you should...". (~2h)
+- [ ] **P0/P1 #12 Anthropic prompt caching** Dify chatflow Teacher EN system prompt cached `cache_control: {"type":"ephemeral"}` headers via LiteLLM passthrough. Cibles : system prompt + Lyster rubric + CEFR ≈3-8K tokens stables. **-70-95% cost LLM** ROI immédiat. Apply same marie-api Maître Comptable. (~30 min)
+- [x] (claude, 2026-05-05, S61) ~~**P0 #7 PgBouncer deploy** Coach Sportif scale unblocker~~ ✅ DÉJÀ FAIT Phase 1.5 — session mode + asyncpg patch + max_connections 150 + shared_buffers 1GB.
+
+### 🌍 Phase 5 — Wave 2 IT Phase 1 (~5-7j) — après Phase 4
+
+Référence : `vault/projects/academia-ia/multilang-italian-research.md` + Phase 5 plan v2.
+
+- [ ] Vault biblio audit (2h, day 0) — vault-reader Haiku + Explore parallèle (CILS Sillabo + Pienemann + VALICO + Profile Italian)
+- [ ] `curriculum_it.json` mirror ES (target 138 items A1-B2 essential ADR-013)
+- [ ] `rules_it.py` 4-8 détecteurs Pienemann/Lyster cells
+- [ ] 8 fewshots IT Lyster cells stratifiés
+- [ ] L1 transfer FR→IT (~12 entries faux amis CILS)
+- [ ] Oracle 24-31 scenarios IT (mirror ES Wave 2 S56)
+- [ ] Tier 6 RE-MEASURE — battery + multi-judge κ Opus ≥0.85, ≥50% golden pass
+
+### 🟢 Sliding Marie usage organique post-S61 split
+
+- [x] (claude, 2026-05-05, S61) **DIFY_KEY_MAITRE_COMPTABLE active marie-api** ✅ — `app-LtzzO1qSI...` persisté sops + .env, marie-api recreate. Live test Dify chatflow blocking : "Compte 401 = Fournisseurs (classe 4)" 5541 tokens.
+- [ ] (claude, sliding) Monitor Marie usage sur **marie.petit-pont.com** — review `messages` Dify table 1×/semaine. Trigger A1 extension OR backend agent loop si pattern récurrent ≥3 sessions.
+
+### 🟡 Phase 2.5 (deferred) — DB schema migration cosmos.users + marie_compta
+
+V0 marie-api utilise `academie_db.users` shared. Phase 2.5 introduira `cosmos.users` shared schema + `marie_compta.*` per-app + FK. Pas urgent — activer quand Coach Sportif arrive.
+
+### 🔵 Phase 6+ — Coach Sportif V1.0 / Sinse self-learn
+
+- **Coach** : `/opt/coach` + `coach-api` + DNS placeholder ✅ Phase 1 + CF Access policy Sinse + Bobby. Pattern Marie réplicable.
+- **Sinse self-learn** : `/opt/sinse-learn` + `sinse-learn-api` + DNS placeholder ✅ + Sinse-only policy.
+
+### 🎯 Maître Comptable Mode B Phase 1 — LIVRÉ S57 ✅ + RAG livré S58 ✅ + Marie split S61 ✅
+
+Voir [`docs/00-project/sprint-maitre-comptable-2026-05.md`](docs/00-project/sprint-maitre-comptable-2026-05.md) pour roadmap complète.
+
+**État production post-S61** :
+- **`marie.petit-pont.com`** isolé (CF Access policy email Marie + Sinse admin)
+- marie-api FastAPI (5 tools + auth + Dify SSE proxy + 68 tests green)
+- marie-frontend SvelteKit Svelte 5 fresh + PWA installable iOS + Android (icône 🧮)
+- Dify chatflow `4ce8ffe2` Custom Tools reroutés → marie-api:8001
+- DB partagé `academie_db` V0 (Phase 2.5 schema split deferred)
+- DIFY_KEY persisté sops + env, chat live ✅
 
 Voir [`docs/00-project/sprint-maitre-comptable-2026-05.md`](docs/00-project/sprint-maitre-comptable-2026-05.md) pour roadmap complète.
 
