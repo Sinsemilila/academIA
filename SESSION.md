@@ -3,6 +3,74 @@
 Sessions empilées (plus récente en haut). Rotation : seules les **3 dernières** restent ici, les plus anciennes vont dans [`SESSION_ARCHIVE.md`](SESSION_ARCHIVE.md).
 
 ---
+
+## Session 60 — 2026-05-05 (~6h — Vault Yggdrasil restructure + Breadcrumbs essai/rollback + MERLIN licence Stemle + Coach Sportif D7 backend séparé + Audit Teacher EN comprehensive)
+
+### Done
+
+**Bloc 1 — Vault Yggdrasil hierarchy (5 phases A→E)** :
+- Pré-cleanup wikilinks audit : 4 vrais brisés fixés (ADR-013, validate-frontmatter scripts, slug-pdf-windows), 3 orphans relinkés (jfs-standard-jp, failure-log-and-gotchas, plan-audit-infrastructure), 7 wikilinks-vers-dossiers convertis backticks, `daily/` archivé, placeholders templates wrapped — commit vault `8a4e781`
+- Phase A : 5 MOCs troncs créés `knowledge/MOC-{meta,pedagogy,architecture,research,academia-ia}.md` avec frontmatter `type: note` + `tags: [meta, index]` + `parent: INDEX` + body table children — commit `4e78e1a`
+- Phase B+C : 137 fichiers `parent:` frontmatter ajouté + section `## Cross-references` body augmentée (92 books classifiés par tags) + bonus 5 fossil tags meta normalisés — commit `a31fe85`
+- Phase D : Mermaid Yggdrasil graph BT statique dans INDEX.md (5 troncs colorés + branches échantillon) — commit `f3bbd77`
+- Phase E : Convention "Hiérarchie MOC Yggdrasil" documentée meta/conventions.md — commit `c3c7c96`
+- Fix MOC-pedagogy refs vers literature notes existantes — commit `9929cfa`
+- Audit final : 0 broken réel, 9 orphans légitimes (README + 3 templates + 5 academia mirrors), 152 notes inbound link
+
+**Bloc 2 — Breadcrumbs essai/rollback** :
+- Plugin v4.8.2 installé `.obsidian/plugins/breadcrumbs/` + config data.json `parent` field
+- Race condition Syncthing/Obsidian : Obsidian Windows écrase mes éditions externes data.json à chaque ouverture → fields `down/child/same/next/prev` impossibles à ajouter sans UI Settings
+- Sinse seul `parent`/`up` field disponible UI, ajout 6 fields manuel rebuté → décision **abandon Breadcrumbs**
+- Rollback `pre-breadcrumbs-2026-05-05` tag : drop 2 commits (install + fix), suppression `.obsidian/plugins/breadcrumbs/` + `community-plugins.json` + `types.json`
+- Yggdrasil parent: frontmatter sur 142 fichiers conservé (utile Claude navigation, dormant côté Obsidian sans plugin)
+
+**Bloc 3 — MERLIN licence (Eurac Stemle)** :
+- Réponse Stemle 2026-05-05 documentée `docs/00-project/discovery_emails/eurac_merlin.md` : Q1 CC BY-SA 4.0 reuse hors académique OK (attribution + ShareAlike sur dérivés) ; Q2 L1=French extraction via filtre filename `*-_French_-*.txt` GitLab `commul/merlin-platform`
+- `multilang-italian-research.md` + `multilang-german-research.md` updated avec licence confirmée + extraction pattern + URLs CLARIN/GitLab
+- Wave 2 IT/DE débloqué côté licence — pas de blocker. ShareAlike note pour pivot freemium futur.
+
+**Bloc 4 — Coach Sportif D7 backend séparé** :
+- Décision actée 2026-05-05 dans `docs/00-project/coach-sportif-concept-2026-05.md` : projet séparé `/opt/coach` (frontend mobile-first PWA + backend `coach-api` FastAPI), **LiteLLM mutualisé** (rationale économie clés API), Qdrant collection dédiée sur instance existante
+- Item 3 ancien superseded (frontend AcademIA reuse) ; questions §10 #4 résolu ; ajout questions §10 #7-10 (auth Cosmos, Postgres schema, stack frontend, repo nom)
+
+**Bloc 5 — Audit Teacher EN comprehensive** :
+- 4 agents dispatchés parallèles : Explore sécurité backend, pedagogy-reviewer SLA, Explore architecture/cost/observability, general-purpose web research normes EU 2025-2026
+- Doc audit `docs/00-project/audit-teacher-en-2026-05.md` shippé : 17 findings priorisés P0/P1/P2/strat
+- **5 P0** : logout auth bypass (5 lignes fix), rate-limit single-worker bypass, rubrics A1/A2/B1 pink-elephant 7+ phrases bannies dans directives, oracle 0 A1 + 0 C2 scenarios, AI Act Annex III steering CEFR high-risk avant 2026-08-02, mineurs <15 RGPD parental consent, Postgres pool 14 max Coach Sportif crash
+- **TL;DR 5 actions semaine** (~2j travail) : fix logout + rewrite rubrics positive-only + promote A1+C2 oracle scenarios + activer Anthropic prompt caching (-70-95% cost) + PgBouncer deploy
+
+### Decisions
+
+- **D-S60.1 Vault Yggdrasil hierarchy actée** : 5 troncs MOC explicites (meta/pedagogy/architecture/research/academia-ia) + frontmatter `parent:` field obligatoire non-orphan + section `## Cross-references` body. Pattern réutilisable Coach Sportif futur.
+- **D-S60.2 Breadcrumbs abandon** : race condition Syncthing/Obsidian sur data.json + UI manual config 6 fields rebute Sinse. Yggdrasil structure conservée (utile Claude). Tester Excalibrain/Juggl plus tard si vraiment besoin vue arbre interactive.
+- **D-S60.3 Coach Sportif projet séparé** : frontend + backend dédiés `/opt/coach`, LiteLLM mutualisé pour économie clés API. Pattern future MOC-coach-sportif réplicable.
+- **D-S60.4 MERLIN Wave 2 IT/DE débloqué** : licence CC BY-SA 4.0 confirmée Eurac, L1=French extraction faisable via filtre filename. Pas de blocker.
+- **D-S60.5 Audit Teacher EN comprehensive shippé** : 17 findings priorisés (5 P0 + 10 P1 + 7 P2 + 4 strat). Top 5 actions semaine identifiées.
+
+### Gotchas
+
+- **G-S60.1 Race Syncthing/Obsidian sur data.json plugins** : Obsidian Windows tient le fichier en RAM et le réécrit à fermeture/ouverture, écrasant toute édition externe via Syncthing. Pour configurer un plugin Obsidian (Breadcrumbs, ...), passer **toujours** par UI Settings côté Windows, pas via .obsidian/plugins/<plugin>/data.json côté cosmos.
+- **G-S60.2 Pre-commit hook validator tags whitelist** : 5 fossils découverts au commit Phase B+C (`library`, `claude`, `workflow`, `claude-code`, `convention`). Whitelist 15 strict — les fichiers vault datant d'avant Phase A peuvent avoir tags non-canonical. Mettre à jour au passage.
+- **G-S60.3 Rate-limit in-memory single-worker assumption** : `webapp/backend/app/rate_limit.py:7` cassé multi-worker uvicorn (8 workers défaut). Bypass trivial. Roadmap A5 mentionne slowapi+Redis mais jamais shippé. Critical avant scale.
+- **G-S60.4 Rubric A1/A2/B1 pink-elephant load** : `data/rubrics/en.yaml` contient 7+ phrases verbatim bannies à l'intérieur des directives qui les interdisent. Session 45 P2g+h+i fix appliqué seulement aux few-shots, pas à la rubrique. Risque drift Teacher A1 2× plus fréquent qu'à C1.
+- **G-S60.5 N8n dify-snapshot fail rate 17%** + doublon webhook `dify-diagnostic` (2 IDs même path). Silent profil loss 17% du temps. Debug node 10 (`/internal/analyze-errors` LLM expensive).
+
+### Commits
+
+**Academia (3)** :
+- `233d7a5` `[docs] coach-sportif D7 — projet séparé acté (frontend + backend dédiés, LiteLLM mutualisé)`
+- `cc1b91d` `[docs] audit Teacher EN comprehensive 2026-05 — 17 findings priorisés P0/P1/P2/strat + top 5 actions semaine`
+- `047ac75` `[docs] eurac_merlin discovery — réponse Stemle 2026-05-05 documentée`
+
+**Vault (7)** :
+- `a361ad4` `[docs] multilang IT/DE — MERLIN license + L1=French extraction confirmé Stemle Eurac 2026-05-05`
+- `9929cfa` `[fix] MOC-pedagogy book wikilinks → real filenames`
+- `c3c7c96` `[docs] Phase E Yggdrasil — document MOC hierarchy convention in meta/conventions.md`
+- `f3bbd77` `[feat] Phase D Yggdrasil — Mermaid diagram in INDEX.md`
+- `a31fe85` `[feat] Phase B+C Yggdrasil — frontmatter parent: + Cross-references body in 137 files`
+- `4e78e1a` `[feat] Phase A Yggdrasil — 5 trunk MOCs in knowledge/`
+- `8a4e781` `[refactor] vault wikilinks audit cleanup — 5 actions S60`
+
 ---
 
 ## Session 58 — 2026-05-02 (~9h — Onboarding Marie + RAG knowledge base 22 PDFs livré end-to-end + profile-building Sinse meta)
