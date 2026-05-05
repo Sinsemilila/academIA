@@ -32,12 +32,17 @@ async def _register_jsonb_codec(conn: asyncpg.Connection) -> None:
 
 async def init_pool():
     global pool, litellm_pool
+    # statement_cache_size=0 mandatory for PgBouncer transaction mode (Phase 1.5).
+    # asyncpg defaults to caching prepared statements server-side which crashes when
+    # PgBouncer routes a query to a different backend than the one holding the cache.
     pool = await asyncpg.create_pool(
         DATABASE_URL, min_size=2, max_size=10, init=_register_jsonb_codec,
+        statement_cache_size=0,
     )
     try:
         litellm_pool = await asyncpg.create_pool(
             LITELLM_DATABASE_URL, min_size=1, max_size=4, init=_register_jsonb_codec,
+            statement_cache_size=0,
         )
     except Exception:
         litellm_pool = None  # SpendLogs unavailable → endpoints fall back to local estimate
