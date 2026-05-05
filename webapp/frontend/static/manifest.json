@@ -1,8 +1,9 @@
 {
-  "name": "Academie-IA",
-  "short_name": "Academie",
-  "description": "Plateforme d'apprentissage augmentee par IA",
+  "name": "Academia",
+  "short_name": "Academia",
+  "description": "Plateforme d'apprentissage augmentée par IA",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#0a0a0a",
