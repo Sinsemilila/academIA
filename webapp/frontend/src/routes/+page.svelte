@@ -80,10 +80,9 @@
     return rem > 0 ? `${h}h${rem.toString().padStart(2, '0')}` : `${h}h`;
   }
 
-  // Agent groups for display
+  // Agent groups for display — Tech (pymentor/cybermentor) moved to sinse.petit-pont.com (Phase 5+).
   const agentGroups = [
     { label: 'Langues', items: agents.filter(a => ['teacher','maestro','sensei','lehrer','professore'].includes(a.slug)) },
-    { label: 'Tech', items: agents.filter(a => ['pymentor','cybermentor'].includes(a.slug)) },
   ];
 
   async function loadForDomain(domain: string) {

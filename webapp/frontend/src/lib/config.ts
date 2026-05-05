@@ -19,8 +19,7 @@ export const agents: Agent[] = [
   { slug: 'sensei',      name: 'Sensei',      lang: 'Japonais',   langGenitive: 'de japonais',    domain: 'ja',       flagSrc: '/flags/jp.png',     color: 'text-sensei',      colorHex: '#a855f7', available: false },
   { slug: 'lehrer',      name: 'Lehrer',      lang: 'Allemand',   langGenitive: "d'allemand",     domain: 'de',       flagSrc: '/flags/de.png',     color: 'text-lehrer',      colorHex: '#f59e0b', available: false },
   { slug: 'professore',  name: 'Professore',  lang: 'Italien',    langGenitive: "d'italien",      domain: 'it',       flagSrc: '/flags/it.png',     color: 'text-professore',  colorHex: '#22c55e', available: false },
-  { slug: 'pymentor',    name: 'PyMentor',    lang: 'Python',     langGenitive: 'de Python',      domain: 'python',   flagSrc: '/flags/python.svg', color: 'text-pymentor',    colorHex: '#06b6d4', available: false },
-  { slug: 'cybermentor', name: 'CyberMentor', lang: 'Cybersec',   langGenitive: 'de cybersécurité', domain: 'cybersec', flagSrc: '/flags/cyber.svg',  color: 'text-cybermentor', colorHex: '#ec4899', available: false },
+  // PyMentor + CyberMentor removed from frontend visual (no backend wired) — sinse.petit-pont.com prévu (Phase 5+ self-learn).
   // Maître Comptable split to marie.petit-pont.com (Phase 2 — 2026-05-05).
 ];
 

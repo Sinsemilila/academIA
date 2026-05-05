@@ -38,8 +38,7 @@ ALL_AGENTS: list[AgentDef] = [
     AgentDef("professore",  "it",       "DIFY_KEY_PROFESSORE",  "Professore — Italian", ""),
     AgentDef("lehrer",      "de",       "DIFY_KEY_LEHRER",      "Lehrer — German",      ""),
     AgentDef("sensei",      "ja",       "DIFY_KEY_SENSEI",      "Sensei — Japanese",    ""),
-    AgentDef("pymentor",    "python",   "DIFY_KEY_PYMENTOR",    "PyMentor — Python",    ""),
-    AgentDef("cybermentor", "cybersec", "DIFY_KEY_CYBERMENTOR", "CyberMentor — Cybersec", ""),
+    # PyMentor + CyberMentor — removed (no backend, no Dify chatflow). Future sinse.petit-pont.com (Phase 5+ self-learn).
     # Maître Comptable split to marie-api (Phase 2 — 2026-05-05). Now lives at marie.petit-pont.com.
 ]
 

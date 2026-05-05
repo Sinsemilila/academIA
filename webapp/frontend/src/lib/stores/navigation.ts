@@ -36,8 +36,7 @@ export const SLUG_TO_DOMAIN: Record<string, string> = {
   professore: 'it',
   lehrer: 'de',
   sensei: 'ja',
-  pymentor: 'python',
-  cybermentor: 'cybersec',
+  // pymentor + cybermentor moved to sinse.petit-pont.com (Phase 5+ self-learn).
 };
 
 // Reverse map: domain → agent slug
