@@ -13,7 +13,7 @@ from pathlib import Path
 import httpx
 import yaml
 
-sys.path.insert(0, "/opt/academie")
+sys.path.insert(0, "/opt/academia")
 from scripts.oracle.judges.llm_pairwise import CF_MOVE_PROMPT, _call_judge
 
 # 9 scenarios where panel had 'unknown' verdict + Opus identifies correct move per Lyster
@@ -41,7 +41,7 @@ CFG = {
 
 
 def load_scenario(sid):
-    base = Path("/opt/academie/scripts/oracle/scenarios/teacher_en")
+    base = Path("/opt/academia/scripts/oracle/scenarios/teacher_en")
     spath = base / f"{sid}.yaml"
     if not spath.exists():
         for alt in base.rglob(f"{sid}.yaml"):
@@ -51,7 +51,7 @@ def load_scenario(sid):
 
 
 def load_golden(sid):
-    p = Path(f"/opt/academie/scripts/oracle/scenarios/teacher_en/golden/{sid}.json")
+    p = Path(f"/opt/academia/scripts/oracle/scenarios/teacher_en/golden/{sid}.json")
     return json.loads(p.read_text()).get("response", "")
 
 

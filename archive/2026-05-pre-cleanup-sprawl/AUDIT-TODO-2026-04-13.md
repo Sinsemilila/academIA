@@ -4,19 +4,19 @@
 
 ## Code organization
 
-- [ ] Scripts `/opt/academie/scripts/` (26 files): CLI-fy with typer? Group by function? Move to tools/?
-- [ ] `/opt/academie/curriculums/`: organize by domain
-- [ ] `/opt/academie/api/` vs `/opt/academie/webapp/backend/`: clarify split
+- [ ] Scripts `/opt/academia/scripts/` (26 files): CLI-fy with typer? Group by function? Move to tools/?
+- [ ] `/opt/academia/curriculums/`: organize by domain
+- [ ] `/opt/academia/api/` vs `/opt/academia/webapp/backend/`: clarify split
 
 ## Configuration cleanup
 
-- [ ] `/opt/academie/.claude/`: keep settings.local.json, remove old commands/fin.md
-- [ ] Remove stale `/opt/academie/.gemini/` dir if present
-- [ ] Remove `/opt/academie/context` symlink if broken
+- [ ] `/opt/academia/.claude/`: keep settings.local.json, remove old commands/fin.md
+- [ ] Remove stale `/opt/academia/.gemini/` dir if present
+- [ ] Remove `/opt/academia/context` symlink if broken
 
 ## Security
 
-- [ ] PG password: verify stored only in /opt/academie-shared/secrets/
+- [ ] PG password: verify stored only in /opt/academia-shared/secrets/
 - [ ] Claude native memory: verify no secrets remain in clear
 - [ ] .gitignore: ensure .env, secrets, and keys are excluded
 

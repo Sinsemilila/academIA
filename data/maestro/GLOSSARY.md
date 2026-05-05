@@ -101,11 +101,11 @@ Leave all `{{#code_turn_check.X#}}`, `{{#start.Y#}}`, `{{#conversation.Z#}}`, `{
 
 ## Sources
 
-- [rubrics/es.yaml](/opt/academie/packages/academie-core/academie_core/data/rubrics/es.yaml) — target rubrics per level (PCIC-aligned, Wave 1 enriched)
-- [concept_hints/es.yaml](/opt/academie/packages/academie-core/academie_core/data/concept_hints/es.yaml) — 34 ES concepts (richer than EN)
-- [cefr_diagnostics/es.yaml](/opt/academie/packages/academie-core/academie_core/data/cefr_diagnostics/es.yaml) — MCER palier + microtasks
-- [l1_transfer/fr_to_es.yaml](/opt/academie/packages/academie-core/academie_core/data/l1_transfer/fr_to_es.yaml) — 19 FR→ES patterns (Wave 1)
-- [taxonomy/llm.py SYSTEM_PROMPT_ES](/opt/academie/packages/academie-core/academie_core/taxonomy/llm.py) — existing ES system prompt (40+ codes, native)
+- [rubrics/es.yaml](/opt/academia/packages/academie-core/academie_core/data/rubrics/es.yaml) — target rubrics per level (PCIC-aligned, Wave 1 enriched)
+- [concept_hints/es.yaml](/opt/academia/packages/academie-core/academie_core/data/concept_hints/es.yaml) — 34 ES concepts (richer than EN)
+- [cefr_diagnostics/es.yaml](/opt/academia/packages/academie-core/academie_core/data/cefr_diagnostics/es.yaml) — MCER palier + microtasks
+- [l1_transfer/fr_to_es.yaml](/opt/academia/packages/academie-core/academie_core/data/l1_transfer/fr_to_es.yaml) — 19 FR→ES patterns (Wave 1)
+- [taxonomy/llm.py SYSTEM_PROMPT_ES](/opt/academia/packages/academie-core/academie_core/taxonomy/llm.py) — existing ES system prompt (40+ codes, native)
 - PCIC Vol.1-3 gramática inventarios (Agent 1 Wave 1 research)
 - DELE A1-C2 sample exams (Instituto Cervantes public)
 - Session 29 decision D5 : "1 chatflow Dify par agent" — ES gets its own full ES-native chatflow, not parameterized shell.

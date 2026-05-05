@@ -13,7 +13,7 @@ import subprocess
 from pathlib import Path
 
 def _read_secret(name, fallback=""):
-    p = Path(f"/opt/academie-shared/secrets/{name}")
+    p = Path(f"/opt/academia-shared/secrets/{name}")
     return p.read_text().strip() if p.exists() else fallback
 
 _DIFY_ADMIN_KEY = os.environ.get("DIFY_ADMIN_KEY") or _read_secret("dify-admin-key")

@@ -5,8 +5,8 @@ import json
 import subprocess
 from pathlib import Path
 
-PROMPT = Path("/opt/academie/scripts/oracle/kappa/mega_prompt.txt").read_text()
-OUT = Path("/opt/academie/scripts/oracle/kappa/scores_groq_llama70b.json")
+PROMPT = Path("/opt/academia/scripts/oracle/kappa/mega_prompt.txt").read_text()
+OUT = Path("/opt/academia/scripts/oracle/kappa/scores_groq_llama70b.json")
 
 payload = {
     "model": "groq-standard",  # llama-3.3-70b-versatile

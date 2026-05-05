@@ -1,7 +1,7 @@
 # Changelog — AcademIA
 
 Append-only. Format: `YYYY-MM-DD AI — [type] message`
-Full historical detail: see `HISTORY.md` in /opt/academie/ and `archive/pre-migration-snapshots/`
+Full historical detail: see `HISTORY.md` in /opt/academia/ and `archive/pre-migration-snapshots/`
 
 ## Historical summary (2026-04-04 → 2026-04-07)
 
@@ -64,7 +64,7 @@ Full historical detail: see `HISTORY.md` in /opt/academie/ and `archive/pre-migr
 2026-04-13 claude — [docs] ADR setup — MADR-lite format, 3 initial decisions (format, exam redesign, behavior detection)
 2026-04-13 claude — [fix] E2E audit fixes — conn leak, N+1 SQL, behavior signals passthrough, last_seen debounce, transactions, try/except
 2026-04-13 claude — [test] E2E suite extended to 50 tests — admin, next_level, exam result, behavior signals
-2026-04-13 unknown — [fix] Fixed academie-claude launcher — pointed to deleted worktree, now /opt/academie
+2026-04-13 unknown — [fix] Fixed academie-claude launcher — pointed to deleted worktree, now /opt/academia
 2026-04-13 unknown — [fix] n8n exam scoring — 3 bugs fixed: dify-admin-key prefix, empty SQL chain break, wrong $json ref in Fetch Exam Messages
 2026-04-13 unknown — [remove] Workflow refonte cleanup — 10 dead tools, 1077 lines removed, docs updated
 2026-04-14 unknown — [feat] Onboarding refonte — DB migration, diagnostic plumbing, prompt rewrite (2 FR + 5-7 EN + auto-eval + micro-tasks), dashboard bilan card, E2E test 24/24
@@ -99,7 +99,7 @@ Full historical detail: see `HISTORY.md` in /opt/academie/ and `archive/pre-migr
 2026-04-15 unknown — [test] sprint 2 B+ — 10 property-based tests via pytest-hypothesis (round-trip, weights monotonicity, band norm, permutation stability, family isolation, majority vote, enrich determinism, progress bounds) ; surfacé asymétrie v1/v2 weights
 2026-04-15 unknown — [security] J-1 SOPS fondation — sops+age installés, keypair age générée out-of-repo + password manager, webapp/.env.sops dotenv per-var commitable, decrypt-secrets.sh wrapper, runbook rotate-secrets-sops.md
 2026-04-15 unknown — [security] J-1 suite — /opt/litellm/config.yaml migré vers SOPS (yaml encrypted_regex, 9 api_key + database_url chiffrés), E2E chat validé post-restart
-2026-04-15 unknown — [security] J-1 cleanup — 9 fichiers /opt/academie-shared/secrets/* bundle en secrets/shared.yaml.sops + decrypt-shared.sh, round-trip byte-identical, redondance documentée avec sources canoniques webapp/litellm
+2026-04-15 unknown — [security] J-1 cleanup — 9 fichiers /opt/academia-shared/secrets/* bundle en secrets/shared.yaml.sops + decrypt-shared.sh, round-trip byte-identical, redondance documentée avec sources canoniques webapp/litellm
 2026-04-15 unknown — [security] cosmos AutoUpdate=false (L1 hardening) — supply-chain vector coupé, downtime ~15s, ALL CLEAR post-restart. Reste L2/L3 en session dédiée + L4/L5 pré-SaaS public
 2026-04-15 unknown — [security] cosmos hardening L2/L3+1.b — privileged dropped (cap NET_ADMIN), bind dbus retiré, /:/mnt/host:ro, image digest pinnée. Bug bonus : --hostname cosmos-server obligatoire (sinon isInsideContainer check fail → nouveau config vide → routes cassées). --cgroupns host par sécurité. Smoke 15/15 ALL CLEAR.
 2026-04-15 unknown — [feat] token tracking ABCD — A: inclusion fine-tunes ft:gpt-4o-mini-* dans headline ; B: safety margin +10% display ; C: lazy reconciliation OpenAI Usage API (15min staleness) ; D: triple safety MAX(local tiktoken, LiteLLM SpendLogs, OpenAI authoritative). Schema +3 cols, bind RO secrets, /admin tokens=219K vs OpenAI dashboard 199K = couvert avec marge.
@@ -139,7 +139,7 @@ Full historical detail: see `HISTORY.md` in /opt/academie/ and `archive/pre-migr
 2026-04-21 Claude — [docs] Session 35 doctrine pédagogique `docs/01-pedagogy/l1-l2-scaffolding-policy.md` : 10 sections, citations Butzkamm 2009 + Cook 2001 + Macaro "optimal position" + Hall & Cook 2012 + Ringbom 2007 + CEFR 2020 Companion + ACTFL 2021 softening + Cervantes PCIC + Japan Foundation Marugoto. Justifie abandon "100% L2 turn 1" indéfendable A1 + benchmark marché (9/10 apps utilisent L1 à A1 turn 1).
 2026-04-21 Claude — [feat] Session 36 — consolidation CEFR QCM → niveau validé (C hybride bienveillant). Migration `01_consolidation_schema.sql` (6 cols profils_eleves + observations_json + consolidation_events audit table). Module `pedagogy/consolidation.py` : trigger + aggregation + clamp anti-whiplash + 3 messages bienveillants prof (validation/upgrade/downgrade). 29 tests paramétrés verts (matrice 9 cells × FLA shift). Router `/api/consolidation/*` (4 endpoints, LLM-as-judge fallback gpt-4.1-mini). Hook chat_router post-turn. 3 Svelte components runes (LevelBadge + MiniExamModal + ConsolidationDecisionModal) + wiring chat layout. Doc `docs/01-pedagogy/cefr-consolidation-policy.md`.
 2026-04-21 Claude — [fix] Session 36 4 scripts Dify : 02_add_observed_level_to_prompts (OBSERVED_LEVEL_v1 dans llm_session/onboarding/plan_choice), 03_silence_legacy_bilan_when_qcm (NO_LEGACY_BILAN_v1), 04_qcm_users_skip_llm_onboarding (code_profil_check: profil_present=true aussi quand learner_profile_summary non-vide → bypass FASE 2 + bilan + boucle goodbye). Teacher+Maestro draft+published, 4 slots × 3 scripts.
-2026-04-21 Claude — [fix] Session 36 bugs live session : (1) path YAML mini-exam `/opt/academie/...` hardcodé → `Path(academie_core.__file__).parent / data / mini_exam` ; (2) Svelte 5 runes mode : `export let` + `createEventDispatcher` → `$props` + callbacks ; (3) API_BASE_URL inexistant → URLs relatives ; (4) modals white-on-white → tokens thème adaptatifs (bg-surface/text-text-primary) ; (5) UX Enter-to-next + autofocus + Shift+Enter textarea.
+2026-04-21 Claude — [fix] Session 36 bugs live session : (1) path YAML mini-exam `/opt/academia/...` hardcodé → `Path(academie_core.__file__).parent / data / mini_exam` ; (2) Svelte 5 runes mode : `export let` + `createEventDispatcher` → `$props` + callbacks ; (3) API_BASE_URL inexistant → URLs relatives ; (4) modals white-on-white → tokens thème adaptatifs (bg-surface/text-text-primary) ; (5) UX Enter-to-next + autofocus + Shift+Enter textarea.
 2026-04-21 Claude — [docs] Session 36 — 3 dettes QCM loguées TODO P2 : probe_answer B1+ non réutilisé turn 1, fla_items_raw collapsed en 1 catégorie (3 sliders distincts perdus), scaffolding_level QCM redondant avec scaffolding_block S35 à unifier.
 2026-04-21 unknown — [feat] Session 37 — 16 commits: E2E consolidation + observed_level v2 + QCM debts refactor + Phase A multi-lang + consolidation UX trio + YAML-driven curriculum injection + priority concepts Ebbinghaus loop + n8n dify-snapshot public API refactor
 2026-04-22 unknown — [feat] Session 38 — n8n dify-diagnostic+exam-scoring public API refactor (ae00b35) ; three-strikes micro-lesson MVP with CEFR-graded YAML templates EN+ES (7d2464f) ; PRIORITY_CONCEPTS+MICRO_LESSON activated in prod ; aggregate regression battery RUN_RECENT_BATTERY.sh 7/7 (bc6f611) ; prompt caching audit Phase A (7a23f9f) + minimal reorder Phase C cacheable 5→900 tok -8.4%/user (dcd7110)

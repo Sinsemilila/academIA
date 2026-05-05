@@ -19,8 +19,8 @@ from pathlib import Path
 import pytest
 import yaml
 
-BATTERY_PATH = Path("/opt/academie/scripts/phase1b_full_battery.py")
-_TM_DIR = Path("/opt/academie/packages/academie-core/academie_core/data/tolerance_matrix")
+BATTERY_PATH = Path("/opt/academia/scripts/phase1b_full_battery.py")
+_TM_DIR = Path("/opt/academia/packages/academie-core/academie_core/data/tolerance_matrix")
 V2_YAML = _TM_DIR / "tolerance_matrix_v2.yaml"
 V1_YAML = _TM_DIR / "tolerance_matrix.yaml"
 RESULTS = Path("/mnt/cosmos-data/sprint1/results/v1_vs_v2_synthetic.json")

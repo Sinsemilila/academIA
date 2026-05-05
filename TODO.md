@@ -380,8 +380,8 @@ ADR-001 livré Session 46 (`docs/05-decisions/ADR-001-refactor-complete-2026-H2.
 - [x] (Session 47) ~~Cloudflare Access app config check (Dify wildcard suspect)~~ → résolu via refactor : 3 apps dédiées (dify/academie/n8n) au lieu de la wildcard accidentelle.
 - [x] (claude+sinse, 2026-05-01, Session 55) ~~Cloudflare Email Routing setup~~ ✅ enabled + 3 alias actifs (`security@` + `dmarc-reports@` + `dsar@`) → forward `sinseproduction@gmail.com`. SPF auto-rewrite par CF `-all` → `~all` (soft fail requis pour forwarding sans rejet downstream). DKIM CF `cf2024-1._domainkey` ajouté. 3 MX records `route1/2/3.mx.cloudflare.net`.
 - [ ] Cloudflare Notifications policies (DDoS + SSL expiring + Page Shield malicious script + Tunnel down) — token CF account a perms maintenant.
-- [ ] Restore restic mensuel testé une fois (audit setup actuel `/opt/academie-shared/secrets/restic-passphrase`).
-- [ ] (B4 final test) Browser test public dashboard : Ctrl+Shift+R sur academie.petit-pont.com → console `Promise.reject(new Error('test'))` → vérifier event apparaît dans GlitchTip academie-frontend Issues sous 30s. Pipeline déjà validé serveur-side.
+- [ ] Restore restic mensuel testé une fois (audit setup actuel `/opt/academia-shared/secrets/restic-passphrase`).
+- [ ] (B4 final test) Browser test public dashboard : Ctrl+Shift+R sur academia.petit-pont.com → console `Promise.reject(new Error('test'))` → vérifier event apparaît dans GlitchTip academie-frontend Issues sous 30s. Pipeline déjà validé serveur-side.
 
 ### 🎨 Phase B — Fondations visuelles (Session 47+)
 
@@ -476,7 +476,7 @@ Session 45 P1 re-baselined noise floor with gemini-3-1-flash-lite judge (κ=0.84
 - [x] (claude, 2026-04-21, Session 37) **Consolidation UX trio** (dogfooding findings Sinse) : (1) post-QCM welcome FR→L2 turn 1 pour A1/A2 via `build_scaffolding_block` extension ; (2) `msg_validation_after_failed_exam` distinct du match path (plus de "tes auto-évaluations étaient justes" sur le fail branch) ; (3) bulle système persistante dans le thread via `consolidation_events.notes` + nouveau endpoint `GET /events/{domain}` + render `system_consolidation` role dans ChatBubble (5 templates FR, architecture L1-indexed `_BUBBLE_TEMPLATES_BY_L1` prête Wave 2+). Backfill Sinse's pre-S37 event. 50 tests verts + 8/8 E2E seeded + smoke 14/14.
 - [x] (claude, 2026-04-21, Session 37) **Priority concepts feedback loop + n8n dify-snapshot fix** : (A) nouveau helper `academie_core/pedagogy/priority_loop.py` avec formule Ebbinghaus `priority = weight_norm × (1+sqrt(days/7)) × deficit` → top-3 concepts per turn ; (B) `build_priority_concepts_block` + `PromptContext.priority_concepts` + MVP pipe via scaffolding_block, kill switch `PRIORITY_CONCEPTS_ENABLED=false` par défaut ; (C) `scripts/sprint6/08_refactor_dify_workflows_to_public_api.py` swap console API → public API pour `dify-snapshot` (API console cassée 401 depuis 5j), `cron_snapshot_safety.py` envoie désormais `dify_user_id` + `dify_app_key` per-domain (Teacher/Maestro dispatch) ; (D) validé live : scores_confiance ES repopulé (10 concepts A1 score=100 après snapshot), 17 tests priority_loop verts + 8/8 E2E seeded + smoke 14/14. Ferme la boucle collecte→scoring→prioritisation.
 - [x] (claude, 2026-04-22, Session 38) **Refactor `dify-diagnostic` + `dify-exam-scoring` vers Dify public API** — script `scripts/sprint6/09_refactor_diagnostic_exam_to_public_api.py`. Zero modif Dify-side + zero n8n-container restart : résolution du `dify_app_key` en n8n via PG lookup sur `api_tokens` dispatché par `domain`. Nouveau node "Resolve Dify App Key" inséré entre Parse Body et Fetch. Patché workflow_entity + workflow_history (Session 27 gotcha). Validé live : diagnostic retourne profil JSON complet (status=success), exam-scoring passe toutes les étapes HTTP. Commit `ae00b35`.
-- [x] (claude, 2026-04-22, Session 38) **Activer `PRIORITY_CONCEPTS_ENABLED=true`** — flip `/opt/academie/webapp/.env` + rebuild academie-api. Env chargé ok, module importable, batterie 7/7 verte. Loop Ebbinghaus désormais active : top-3 concepts injectés chaque tour dans `scaffolding_block`.
+- [x] (claude, 2026-04-22, Session 38) **Activer `PRIORITY_CONCEPTS_ENABLED=true`** — flip `/opt/academia/webapp/.env` + rebuild academie-api. Env chargé ok, module importable, batterie 7/7 verte. Loop Ebbinghaus désormais active : top-3 concepts injectés chaque tour dans `scaffolding_block`.
 - [ ] **Dogfood Teacher EN end-to-end** (15min, Sinse drive browser) : guide ready → `docs/dogfood/teacher-en-setup-2026-04-22.md` (Session 39 commit `472106b`). 5-check checklist + diagnostic commands. Findings commit post-session.
 - [ ] **Étendre `_BUBBLE_TEMPLATES_BY_L1` pour EN/IT/DE/JA/RU** (Wave 2+) : ajouter 5 templates traduits par L1 quand non-FR learners apparaissent. Architecture déjà en place, dispatch + FR fallback opérationnels.
 - [ ] **Phase D Wave 1 ES battery validation** — run `scripts/sprint3/eval_live_battery.py --lang es` post-fix onboarding-branch Session 34. Target pass rate ≥ 95%.
@@ -484,7 +484,7 @@ Session 45 P1 re-baselined noise floor with gemini-3-1-flash-lite judge (κ=0.84
 - [x] (claude, 2026-04-23, Session 42 P4) **Probe LLM-as-judge fallback** — nouveau `webapp/backend/app/llm_judge.py` (factor from consolidation_router) avec `judge_passfail` + `judge_probe_score(0-3)`. onboarding POST handler appelle fallback après regex miss si overlay `probe.fallback_judge.enabled=true`. Validé live : perfect answer → 3, off-target → 0. Note : model `gpt-4.1-mini` pas dans LiteLLM config, remplacé par `gpt-4o-mini`.
 - [ ] **Telemetry onboarding** — drop-off mid-QCM + durée médiane réelle via localStorage timestamps → seuils runbook J+7.
 - [ ] **Cleanup legacy Phase 1 FR** dans prompts Dify `llm_onboarding` une fois QCM_OVERRIDE_v1 + 2 semaines stable.
-- [ ] **Obsidian vault meta** — differed Session 33 : pointer `/opt/academie/docs/` + `/root/sinse-workspace/projects/academie-ia/` sans restructure (5 min install). À décider.
+- [ ] **Obsidian vault meta** — differed Session 33 : pointer `/opt/academia/docs/` + `/root/sinse-workspace/projects/academie-ia/` sans restructure (5 min install). À décider.
 
 ### 🚨 P1 — Multi-lang plan d'action (Session 34 audit, exec Session 35+)
 
@@ -516,7 +516,7 @@ Session 45 P1 re-baselined noise floor with gemini-3-1-flash-lite judge (κ=0.84
 - [x] ~~Bug 3 — bilan sans CEFR~~ : résolu par `cefr_placement` dans `derived_tutor_hints` + injection NL summary.
 - [x] ~~Bug 1 — language-mixing FR/ES~~ : résolu par collecte QCM FR déclarative + LLM démarre 100% en L2 post-QCM (pour flows wirés).
 
-- [ ] **Phase D — Battery validation ES** (1-2h) : run `python3 /opt/academie/scripts/sprint3/eval_live_battery.py --lang es` sur 6 personas × 10 turns (A1-C2). Target pass rate ≥ 95%. Les bugs 2/3 ci-dessus bloquent probablement déjà la battery.
+- [ ] **Phase D — Battery validation ES** (1-2h) : run `python3 /opt/academia/scripts/sprint3/eval_live_battery.py --lang es` sur 6 personas × 10 turns (A1-C2). Target pass rate ≥ 95%. Les bugs 2/3 ci-dessus bloquent probablement déjà la battery.
 - [ ] **Phase E — Alpha monitoring** (passive ~1 semaine calendaire) : POST bugs fix, inviter 2-3 FR-native learners, monitor `error_log` ES populating, collecte feedback.
 - [ ] Vérifier conv_vars préservés lors de futurs publish via admin API (gotcha Session 32).
 - [ ] Si style values (direct/encourageant/doux/humour) ne fonctionnent pas en ES, revert à FR literals.
@@ -540,7 +540,7 @@ Restants :
 - [x] (claude, 2026-04-15) sops 3.12.2 + age 1.2.1 installés ; keypair age générée + clé privée out-of-repo chmod 600 + password manager Sinse
 - [x] (claude, 2026-04-15) `.sops.yaml` racine + `webapp/.env.sops` dotenv per-var + `webapp/decrypt-secrets.sh` + runbook `rotate-secrets-sops.md` (DR + rotation + anti-patterns)
 - [x] (claude, 2026-04-15) `/opt/litellm/config.yaml` → `litellm/config.yaml.sops` (yaml per-value, E2E validé)
-- [x] (claude, 2026-04-15) 9 fichiers `/opt/academie-shared/secrets/*` → `secrets/shared.yaml.sops` + `decrypt-shared.sh`
+- [x] (claude, 2026-04-15) 9 fichiers `/opt/academia-shared/secrets/*` → `secrets/shared.yaml.sops` + `decrypt-shared.sh`
 - [x] (claude, 2026-04-15) Test rotation TEST_SECRET lifecycle complet validé
 - [x] (claude, 2026-04-15) cosmos-server `AutoUpdate=false` (L1 hardening, supply-chain vector coupé)
 
@@ -552,7 +552,7 @@ Restants :
 - [x] (claude, 2026-04-15) Bug bonus : `--hostname cosmos-server` explicite obligatoire (sinon cosmos isInsideContainer check fail → nouveau config vide créé → routes cassées) + `--cgroupns host` par sécurité
 
 ### P3 — Cosmos backlog pré-SaaS public
-- [x] (claude, 2026-04-16) L4 : `tecnativa/docker-socket-proxy:0.3.0` interposé entre cosmos-server et `/var/run/docker.sock` (cf. [ADR-010](docs/05-decisions/ADR-010-cosmos-L4-docker-socket-proxy.md)). Proxy bloque `/build`, `/commit`, `/services`, `/plugins`, `/secrets`, `/configs` + start d'exec instances (`/exec/{id}/start` → 403). Limitation documentée : `POST /containers/{id}/exec` passe mais l'instance créée est dormant (start bloqué). Rollback script `/opt/academie-shared/secrets/cosmos-pre-L4-rollback.sh` keep 7j jusqu'à 2026-04-23. Smoke deep 21/21 ALL CLEAR, cosmos routes répondent (logs OK).
+- [x] (claude, 2026-04-16) L4 : `tecnativa/docker-socket-proxy:0.3.0` interposé entre cosmos-server et `/var/run/docker.sock` (cf. [ADR-010](docs/05-decisions/ADR-010-cosmos-L4-docker-socket-proxy.md)). Proxy bloque `/build`, `/commit`, `/services`, `/plugins`, `/secrets`, `/configs` + start d'exec instances (`/exec/{id}/start` → 403). Limitation documentée : `POST /containers/{id}/exec` passe mais l'instance créée est dormant (start bloqué). Rollback script `/opt/academia-shared/secrets/cosmos-pre-L4-rollback.sh` keep 7j jusqu'à 2026-04-23. Smoke deep 21/21 ALL CLEAR, cosmos routes répondent (logs OK).
 - [ ] Sinse : valider cosmos.petit-pont.com UI fonctionne (list containers, logs, restart manuel)
 - [ ] L5 : remplacer cosmos reverse proxy par traefik ou caddy (refactor DNS + OIDC, ~1-2j) — L4 reste protection partielle en attendant
 
@@ -567,7 +567,7 @@ Restants :
 - [x] (claude, 2026-04-16) Phase 5 — publish V2 sur both workflows (published+draft) + battery active `scripts/sprint3/eval_live_battery.py` (4 personas × 10 turns + 6 edge cases = 46 turns, 273 checks). **Pass rate 97.4% ✅ GREEN** (threshold 95%). Latence p50=4.5s, p95=12.8s. 2 timeouts transients (31s A2 t20, 30s B1 t1), 3 `t4_addressed` model-honesty fails (connu Session 21). Auto-detect onboarding ajouté à la battery pour ne pas pénaliser PROMPT_ONBOARDING (intouché par V2). Remplace les 48h passive monitoring prévues (signal trop faible avec 6 users sparse).
 - [x] (claude, 2026-04-16) Phase 6 — L1 transfer activation FR→EN : migration `profils_eleves` +`l1 VARCHAR(2) DEFAULT 'fr'` +`l1_watch_enabled BOOLEAN DEFAULT true` (idempotent `scripts/migrate_l1_profile.py`), seed 5 rows `l1_transfer_observations` fr→en (articles/prepositions/false_friends/modals/word_order), hardcode `l1="fr"` chat_router:432 remplacé par lookup profil (fallback 'fr' si null, gate `None` si watch off), endpoints GET/PUT `/api/profile/l1` avec validation ISO-639-1 (profile_router.py, insérés AVANT `{domain}` catch-all pour priorité FastAPI), test integration endpoint 7/7 pass, battery ré-exécutée **99.4% ✅ GREEN** (334/336, +2pts vs Phase 5) + **L1 mention rate 75% (3/4 turns FR→EN)** telemetry informationnelle. 2 seuls fails = `t4_addressed` B1 model honesty connu. p50=5.1s, p95=6.5s (mieux que Phase 5, pas de timeouts transients).
 - [x] (claude, 2026-04-16) Phase 7 — spaced retrieval proactif MVP : env flag `SPACED_RETRIEVAL_ENABLED` (default OFF — deploy safe), helpers `_fetch_due_retrieval_items` + `_persist_spaced_retrieval` dans chat_router avec wire pre/post-turn (stream_with_xp parse + enqueue+complete), `spaced_retrieval_addressed` field ajouté à `TeacherResponse` + `OUTPUT_SCHEMA_BLOCK`, intervalle fixe J+1 (FSRS post-MVP), LIMIT 3 items/turn anti-bloat, test d'intégration `test_spaced_retrieval.py` 6/6 pass (enqueue future-dated + fetch skip future + backdate + complete via concept_key + OFF short-circuit). Regression ladder J+3/J+7 reportée : MVP fait un seul passage J+1. Prêt à activer via `SPACED_RETRIEVAL_ENABLED=true` dans env academie-api quand Sinse veut valider en prod. 63 unit + 7 L1 endpoint + 15 smoke tous verts.
-- [x] (claude, 2026-04-16) Phase 7.1 — flag `SPACED_RETRIEVAL_ENABLED=true` activé en prod. `/opt/academie/webapp/.env` flipped + `docker compose up -d academie-api` → `chat_router.SPACED_RETRIEVAL_ENABLED=True` confirmé en container. Smoke 15/15, test intégration 6/6 (scenarios ON + OFF). Monitor script `scripts/ops/monitor_spaced_retrieval.sh` + runbook `docs/99-runbooks/phase7-activation.md` (rollback command + seuils J+7). Revisit 2026-04-23 via monitor script.
+- [x] (claude, 2026-04-16) Phase 7.1 — flag `SPACED_RETRIEVAL_ENABLED=true` activé en prod. `/opt/academia/webapp/.env` flipped + `docker compose up -d academie-api` → `chat_router.SPACED_RETRIEVAL_ENABLED=True` confirmé en container. Smoke 15/15, test intégration 6/6 (scenarios ON + OFF). Monitor script `scripts/ops/monitor_spaced_retrieval.sh` + runbook `docs/99-runbooks/phase7-activation.md` (rollback command + seuils J+7). Revisit 2026-04-23 via monitor script.
 - [ ] Phase 7.2 (post-MVP) — regression ladder J+3/J+7 + dedupe row cleanup cron + `last_error_summary` column richer than error_code
 - [ ] Phase 7.3 (post-MVP) — FSRS scheduling (replace fixed interval)
 
@@ -578,11 +578,11 @@ Restants :
 - [x] (claude, 2026-04-18) Supprimer `/mnt/cosmos-data/cosmos-config/cosmos.docker-compose.yaml.bak-pre-hardening` (2.0K)
 - [x] (claude, 2026-04-18) Supprimer `/tmp/published-v1-backup-*.json` (108K) — backup Teacher V1 Session 22
 - [x] (claude, 2026-04-18) Supprimer `/tmp/draft-v1-backup-*.json` (115K)
-- [ ] **Garder** `/opt/academie-shared/secrets/cosmos-rollback.sh.bak` (919B) jusqu'à 2026-04-22 — puis supprimer
+- [ ] **Garder** `/opt/academia-shared/secrets/cosmos-rollback.sh.bak` (919B) jusqu'à 2026-04-22 — puis supprimer
 
 **Rollback** si un fichier s'avère nécessaire ex-post :
 ```bash
-export RESTIC_PASSWORD_FILE=/opt/academie-shared/secrets/restic-passphrase
+export RESTIC_PASSWORD_FILE=/opt/academia-shared/secrets/restic-passphrase
 restic -r "rclone:gdrive:/Backups/academie/restic" restore latest --target /tmp/restore --include "<chemin>"
 ```
 
@@ -592,7 +592,7 @@ restic -r "rclone:gdrive:/Backups/academie/restic" restore latest --target /tmp/
 - [x] (claude, 2026-04-15) B : safety margin +10% sur le total affiché (`tokens` vs `tokens_raw` exposé pour transparence)
 - [x] (claude, 2026-04-15) C : module `openai_reconcile.py` + lazy bg task dans `get_gpt4o_usage` (fire-and-forget si reconcile > 15 min stale, hit `/v1/organization/usage/completions`)
 - [x] (claude, 2026-04-15) D : `_load_daily_tokens` seed counter avec MAX(local, litellm, openai) ; bg task bump counter post-reconcile
-- [x] (claude, 2026-04-15) Bind RO `/opt/academie-shared/secrets:/run/academie-secrets` dans docker-compose.webapp.yml pour exposer la clé admin sans la baker dans l'image
+- [x] (claude, 2026-04-15) Bind RO `/opt/academia-shared/secrets:/run/academie-secrets` dans docker-compose.webapp.yml pour exposer la clé admin sans la baker dans l'image
 
 ### P1 — Sprint 2 Phase B3 (DONE Session 18)
 - [x] (claude, 2026-04-15) B3 : `USE_V2_SCORING=true` actif en prod, branche `compute_error_profile` lit `row["tier"]` (majority vote) avec fallback matrix lookup si `tier IS NULL`, 5 tests `test_scoring_v2_branch.py`, retrospective 25 rows : v1=2.60 → v2=0.788 (−70% over-pénalisation confirmée)
@@ -666,7 +666,7 @@ Roadmap complète : [`docs/00-project/roadmap_multilang.md`](docs/00-project/roa
 **RESTE pour activation Maestro alpha** (Session 29 pivot : pas de native reviewer disponible, cf mémoire `project_no_native_reviewers.md`) :
 - [x] ~~Native speaker review C2 hispanophone~~ **SUPPRIMÉ** — stratégie validation sans reviewer natif : corpus oracle (PCIC/COWS-L2H) + LLM cross-consensus + télémétrie alpha famille
 - [ ] Créer nouvelle app Dify "Maestro - Profesor de Español" via `scripts/dify/clone_app.py` (outil Phase 0.1 ready) + traduire prompts ES natifs + obtenir app key
-- [ ] Set env vars `ENABLE_MAESTRO=true` + `DIFY_KEY_MAESTRO=<key>` dans `/opt/academie/webapp/.env`
+- [ ] Set env vars `ENABLE_MAESTRO=true` + `DIFY_KEY_MAESTRO=<key>` dans `/opt/academia/webapp/.env`
 - [ ] Rebuild academie-api + restart
 - [ ] Flip `frontend/src/lib/config.ts` maestro.available=true + rebuild frontend
 - [ ] Test alpha famille FR-native démarrent ES A1-A2

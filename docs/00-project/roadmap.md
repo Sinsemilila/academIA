@@ -21,7 +21,7 @@ Cf. [vision.md](vision.md). TL;DR : SaaS freemium/B2B multi-domaines, positionn�
 **Status** : Path A exécuté — calibration sur corpus externes (W&I + LOCNESS BEA 2019) faute de volume AcademIA interne suffisant (`error_log` = 9 rows, pipeline neuve). Voir [`sprint1_report.md`](../01-pedagogy/sprint1_report.md).
 
 **Livrables livrés** :
-- ✅ Scripts `/opt/academie/scripts/sprint1/` (venv, mapping ERRANT, normalize, EDA, generate draft)
+- ✅ Scripts `/opt/academia/scripts/sprint1/` (venv, mapping ERRANT, normalize, EDA, generate draft)
 - ✅ `errant_to_academie.yaml` — 18 tags → 9 familles AcademIA (84.7% coverage instances W&I)
 - ✅ Parquet : 2 671 learners × 70 489 error annotations sur CEFR A1-C2 + N
 - ✅ Tier map empirique `tier_assignments_external.parquet` + figures
@@ -65,12 +65,12 @@ Cf. [vision.md](vision.md). TL;DR : SaaS freemium/B2B multi-domaines, positionn�
 - ✅ Extension `error_log` : 6 nouvelles colonnes (`tier`, `gravity_linguistic/communicative/social`, `criterial_level_emergence/mastery`) + CHECK contraints + index sur `tier`
 - ✅ Tables `l1_transfer_observations`, `domain_catalog` (seed `lang:en`), `spaced_retrieval_queue` créées
 - ✅ Snapshot cut-off ADR-007 option C : 8 snapshots archivés dans `snapshots_session_v1_archive`, `schema_version` ajouté (existants=1, nouveaux=2)
-- ✅ Script `/opt/academie/scripts/migrate_sprint2_schema.py` idempotent
+- ✅ Script `/opt/academia/scripts/migrate_sprint2_schema.py` idempotent
 - ✅ Runbook [`99-runbooks/migrate-taxonomy-v2.md`](../99-runbooks/migrate-taxonomy-v2.md) avec procédure forward + 3 rollback layers
 - ✅ ADR-009 [`gravity-axes-schema.md`](../05-decisions/ADR-009-gravity-axes-schema.md)
 - ✅ Review matrix v2 adversariale [`matrix_v2_review.md`](../01-pedagogy/matrix_v2_review.md) : 19 ACCEPT / 1 FLAG / 1 OVERRIDE (sentence × beginner)
 - ✅ Override déclaré dans `tolerance_matrix_v2_overrides.yaml` (à appliquer Phase B)
-- ✅ Tests régression `/opt/academie/scripts/sprint2/tests/` : 14 tests, tous PASS
+- ✅ Tests régression `/opt/academia/scripts/sprint2/tests/` : 14 tests, tous PASS
 
 **Impact prod** : nul. Les 6 nouvelles colonnes sont nullable, restent NULL jusqu'à Phase B.
 
@@ -168,7 +168,7 @@ Cf. [vision.md](vision.md). TL;DR : SaaS freemium/B2B multi-domaines, positionn�
 Ces jalons ne bloquent pas le chantier taxonomie mais sont importants pour la vision long terme.
 
 ### J-1 — Credentials management (fondation livrée Session 18, 🟡 partiel)
-Fondation SOPS+age livrée Session 18 : `webapp/.env.sops` chiffré dotenv per-var, workflow `decrypt-secrets.sh` + runbook rotation/DR. **Reste** : migrer `/opt/litellm/config.yaml` (OpenAI key + DB password) — session dédiée en bas usage requise car downtime LiteLLM = chat cassé. Optionnel : basculer les 9 fichiers `/opt/academie-shared/secrets/*` vers SOPS.
+Fondation SOPS+age livrée Session 18 : `webapp/.env.sops` chiffré dotenv per-var, workflow `decrypt-secrets.sh` + runbook rotation/DR. **Reste** : migrer `/opt/litellm/config.yaml` (OpenAI key + DB password) — session dédiée en bas usage requise car downtime LiteLLM = chat cassé. Optionnel : basculer les 9 fichiers `/opt/academia-shared/secrets/*` vers SOPS.
 
 ### J-2 — Monitoring complet
 Priorité moyenne. Aujourd'hui `smoke-test` + widget admin. Ajouter Prometheus/Grafana quand la complexité le justifie (probablement après Sprint 5-6).

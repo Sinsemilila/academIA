@@ -124,6 +124,6 @@ Consumers (rules, tolerance_matrix builder, fewshot generator, judge prompt buil
 
 ## See also
 
-- ADR-014 : knowledge extraction pattern decision (`/opt/academie/docs/05-decisions/ADR-014-structured-knowledge-extraction.md`)
+- ADR-014 : knowledge extraction pattern decision (`/opt/academia/docs/05-decisions/ADR-014-structured-knowledge-extraction.md`)
 - Vault literature notes : `/root/sinse-vault/knowledge/books/`
 - Slash command ingestion : `~/.claude/commands/library-ingest.md`

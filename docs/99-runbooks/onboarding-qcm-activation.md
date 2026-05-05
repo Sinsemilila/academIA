@@ -48,7 +48,7 @@ DB
 ## Monitoring
 
 ```bash
-bash /opt/academie/scripts/ops/monitor_qcm_onboarding.sh
+bash /opt/academia/scripts/ops/monitor_qcm_onboarding.sh
 ```
 
 Affiche : inserts par domain (total / last_1h / last_24h) + 10 derniers QCM + users legacy pas encore re-onboardés + warnings `academie-api` + rollback commands.
@@ -72,8 +72,8 @@ Affiche : inserts par domain (total / last_1h / last_24h) + 10 derniers QCM + us
 ## Rollback (5 min)
 
 ```bash
-sed -i "s/QCM_ONBOARDING_ENABLED = true/QCM_ONBOARDING_ENABLED = false/" /opt/academie/webapp/frontend/src/lib/config.ts
-cd /opt/academie/webapp
+sed -i "s/QCM_ONBOARDING_ENABLED = true/QCM_ONBOARDING_ENABLED = false/" /opt/academia/webapp/frontend/src/lib/config.ts
+cd /opt/academia/webapp
 docker compose -f docker-compose.webapp.yml build academie-frontend
 docker compose -f docker-compose.webapp.yml up -d academie-frontend
 ```
@@ -92,10 +92,10 @@ EOF
 docker restart dify-api dify-worker
 
 # DB : drop table
-docker exec -i postgres-academie psql -U sinse -d academie_db -f /opt/academie/scripts/sprint5/10_rollback_learner_profiles.sql
+docker exec -i postgres-academie psql -U sinse -d academie_db -f /opt/academia/scripts/sprint5/10_rollback_learner_profiles.sql
 
 # Backend : flip ENABLE_QCM_ONBOARDING=false in env (optional, not currently used) + rebuild
-cd /opt/academie/webapp
+cd /opt/academia/webapp
 docker compose -f docker-compose.webapp.yml build academie-api academie-frontend
 docker compose -f docker-compose.webapp.yml up -d academie-api academie-frontend
 ```

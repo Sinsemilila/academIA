@@ -1,4 +1,4 @@
-# DPIA — academie.petit-pont.com (auto-évaluation CNIL)
+# DPIA — academia.petit-pont.com (auto-évaluation CNIL)
 
 **Status** : v1 — auto-assessment alpha privée
 **Last updated** : 2026-04-23
@@ -70,7 +70,7 @@ Tous les LLM sous-processeurs sont basés aux US. Voir [`transfert-impact-assess
 | **Cross-user leak via prompt injection** | User A obtient profil/conv de User B | Moyen (LLM-based isolation pas garantie) | **Moyen** | A5 tests CI cross-user isolation (4 scénarios), 0 leak toléré, gate strict |
 | **Compromission base PG** | Exposition complète de la base | Faible (Cosmos Server isolé, accès SSH clé uniquement, backups chiffrés age) | **Moyen** (impact élevé, vraisemblance faible) | Argon2id A2, backup encrypted, accès admin via clé SSH + MFA, rotation passwords |
 | **DDoS / scraping** | Indisponibilité service | Moyen | **Faible** | A7 Cloudflare WAF + Bot Fight + rate-limit per-user A5 (100r/m) |
-| **Backup compromis** | Exposition snapshot froid d'un compte supprimé | Faible | **Faible** | restic chiffré age, passphrase dans `/opt/academie-shared/secrets/restic-passphrase` (root only), restore testé mensuel |
+| **Backup compromis** | Exposition snapshot froid d'un compte supprimé | Faible | **Faible** | restic chiffré age, passphrase dans `/opt/academia-shared/secrets/restic-passphrase` (root only), restore testé mensuel |
 
 ### 2.2 Atteinte à l'intégrité
 

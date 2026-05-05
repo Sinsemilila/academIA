@@ -7,7 +7,7 @@ session_origin: 55
 
 # ADRs index — AcademIA architecture decisions
 
-**Source-of-truth pour toutes les décisions d'architecture**. Cleanup S55 a archivé les sources concurrentes (`/opt/academie/DECISIONS.md` historique chronologique + `/opt/academie/docs/decisions.md` table flat) → `_archive/`. Nouvelles décisions = nouveau ADR-NNN-`<slug>`.md via skill `/decision`.
+**Source-of-truth pour toutes les décisions d'architecture**. Cleanup S55 a archivé les sources concurrentes (`/opt/academia/DECISIONS.md` historique chronologique + `/opt/academia/docs/decisions.md` table flat) → `_archive/`. Nouvelles décisions = nouveau ADR-NNN-`<slug>`.md via skill `/decision`.
 
 ## Active ADRs (20)
 
@@ -17,7 +17,7 @@ session_origin: 55
 | 0002 | Exam system as advisor, not gatekeeper | accepted | 2026-04-13 | [`0002-exam-advisor-not-gatekeeper`](0002-exam-advisor-not-gatekeeper.md) |
 | 0003 | Behavior detection via prompt, not backend ML | accepted | 2026-04-13 | [`0003-behavior-detection-prompt-first`](0003-behavior-detection-prompt-first.md) |
 | 001 | Architecture monolithe FastAPI (microservices envisagés) | accepted | — | [`ADR-001-monolith-vs-microservices`](ADR-001-monolith-vs-microservices.md) |
-| 001b | Refactor complet academie.petit-pont.com (2026-H2) | — | — | [`ADR-001-refactor-complete-2026-H2`](ADR-001-refactor-complete-2026-H2.md) |
+| 001b | Refactor complet academia.petit-pont.com (2026-H2) | — | — | [`ADR-001-refactor-complete-2026-H2`](ADR-001-refactor-complete-2026-H2.md) |
 | 002 | Schéma taxonomie multi-langue + multi-domaine dès départ | accepted | — | [`ADR-002-schema-from-day-1`](ADR-002-schema-from-day-1.md) |
 | 003 | 5 tiers gravité erreur (T0-T4) | accepted | — | [`ADR-003-5-tiers-taxonomy`](ADR-003-5-tiers-taxonomy.md) |
 | 004 | Architecture hybride orchestrée topologie agents | accepted | — | [`ADR-004-hybrid-orchestrated-agent-topology`](ADR-004-hybrid-orchestrated-agent-topology.md) |
@@ -47,8 +47,8 @@ Template : [`ADR-template.md`](ADR-template.md). Format MADR-lite (cf ADR-0001).
 
 ## Archive (sources concurrentes pre-S55 cleanup)
 
-- `_archive/HISTORICAL-DECISIONS-2026-04.md` — chronologique pointers (anciennement `/opt/academie/DECISIONS.md` racine, 2026-04-13 stale)
-- `_archive/decisions-flat-table-2026-04.md` — table 18 entries (anciennement `/opt/academie/docs/decisions.md`, 2026-04-23 stale)
+- `_archive/HISTORICAL-DECISIONS-2026-04.md` — chronologique pointers (anciennement `/opt/academia/DECISIONS.md` racine, 2026-04-13 stale)
+- `_archive/decisions-flat-table-2026-04.md` — table 18 entries (anciennement `/opt/academia/docs/decisions.md`, 2026-04-23 stale)
 
 Conservés pour traçabilité historique. Pas de nouvelle entrée — tout va dans `ADR-NNN-<slug>.md` désormais.
 

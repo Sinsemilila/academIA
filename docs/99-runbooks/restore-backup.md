@@ -28,7 +28,7 @@ Cf. [backup.md](../04-infra/backup.md) pour la stratégie complète.
 cd /tmp
 git clone https://github.com/Sinsemilila/academIA.git
 git clone https://github.com/Sinsemilila/sinse-workspace.git
-# copier vers /opt/academie/ et /root/sinse-archive-2026-pre-vault/
+# copier vers /opt/academia/ et /root/sinse-archive-2026-pre-vault/
 # Note: /root/sinse-workspace renamed to /root/sinse-archive-2026-pre-vault Phase 3 (2026-04-25).
 # Tools moved to /root/sinse-tools (separate repo: Sinsemilila/sinse-tools).
 # Vault content moved to /root/sinse-vault (separate repo: Sinsemilila/sinse-vault).
@@ -93,14 +93,14 @@ restic -r <restic-repo> snapshots
 ### Browse un snapshot (dry-run)
 
 ```bash
-restic -r <repo> ls <snapshot-id> /opt/academie/webapp/backend/app/routers
+restic -r <repo> ls <snapshot-id> /opt/academia/webapp/backend/app/routers
 ```
 
 ### Restore vers `/tmp/restore` (safe)
 
 ```bash
 restic -r <repo> restore <snapshot-id> --target /tmp/restore
-# Contenu disponible dans /tmp/restore/opt/academie/...
+# Contenu disponible dans /tmp/restore/opt/academia/...
 # Copier manuellement ce qui est nécessaire
 ```
 
@@ -108,7 +108,7 @@ restic -r <repo> restore <snapshot-id> --target /tmp/restore
 
 ```bash
 restic -r <repo> restore <snapshot-id> --target /tmp/restore \
-  --include /opt/academie/webapp/backend/app/routers/chat_router.py
+  --include /opt/academia/webapp/backend/app/routers/chat_router.py
 ```
 
 ## Niveau 1 — vzdump VM entière

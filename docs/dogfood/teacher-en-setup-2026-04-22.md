@@ -23,7 +23,7 @@ Optional (only if replaying the same scenario twice) :
 # Bypass three_strikes 3-day dedup so the same verb_tense scenario can
 # fire the micro-lesson twice in one session :
 export THREE_STRIKES_DEDUP_BYPASS=true
-cd /opt/academie/webapp && docker compose -f docker-compose.webapp.yml up -d --build academie-api
+cd /opt/academia/webapp && docker compose -f docker-compose.webapp.yml up -d --build academie-api
 ```
 
 Remember to unset + rebuild after the session.

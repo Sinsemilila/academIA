@@ -16,7 +16,7 @@ from collections import Counter
 import pytest
 from hypothesis import HealthCheck, given, settings, strategies as st
 
-_BACKEND = "/opt/academie/webapp/backend"
+_BACKEND = "/opt/academia/webapp/backend"
 if _BACKEND not in sys.path:
     sys.path.insert(0, _BACKEND)
 

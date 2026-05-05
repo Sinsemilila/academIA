@@ -25,7 +25,7 @@ sys.modules.setdefault("litellm", _mod)
 sys.modules.setdefault("litellm.integrations", _mod_int)
 sys.modules.setdefault("litellm.integrations.custom_logger", _mod_log)
 
-# Callback lives in /opt/academie/litellm/ — not on default sys.path.
+# Callback lives in /opt/academia/litellm/ — not on default sys.path.
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "litellm"))
 
 import cache_stats_callback as cb  # noqa: E402

@@ -76,7 +76,7 @@ _Produit par agent d'exploration — 2026-04-18_
 - **Effort** : fr→ES=0.5j, fr→IT=0.5j, fr→DE=0.5-1j, fr→JP=1-1.5j.
 
 ### 2.7 Curriculum (`curriculum_{lang}.yaml` + seed DB)
-- **Ce qui existe** : 92 concepts EN dans table `curriculums`. Source `/opt/academie-shared/curriculum_en.yaml`.
+- **Ce qui existe** : 92 concepts EN dans table `curriculums`. Source `/opt/academia-shared/curriculum_en.yaml`.
 - **Format** : YAML avec concept keys, niveau CEFR, weight, family mapping. Même structure qu'EN.
 - **Sources** : EGP (EN), PCIC (ES), Profile Deutsch (DE), CILS sillabo (IT), JF Standard (JP).
 - **Effort** : ES/IT/DE=1-1.5j, JP=2.5j.

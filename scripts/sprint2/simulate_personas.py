@@ -9,7 +9,7 @@ For each persona, score the same error set under v1 (current matrix + weights)
 and v2 (new matrix + GLMM weights + override sentence×beginner=noted).
 
 Output:
-  /opt/academie/docs/01-pedagogy/v1_vs_v2_personas_report.md
+  /opt/academia/docs/01-pedagogy/v1_vs_v2_personas_report.md
 """
 from __future__ import annotations
 
@@ -18,10 +18,10 @@ from pathlib import Path
 
 import yaml
 
-V1_YAML = Path("/opt/academie/webapp/backend/app/config/tolerance_matrix.yaml")
-V2_YAML = Path("/opt/academie/webapp/backend/app/config/tolerance_matrix_v2.yaml")
-OV_YAML = Path("/opt/academie/webapp/backend/app/config/tolerance_matrix_v2_overrides.yaml")
-REPORT = Path("/opt/academie/docs/01-pedagogy/v1_vs_v2_personas_report.md")
+V1_YAML = Path("/opt/academia/webapp/backend/app/config/tolerance_matrix.yaml")
+V2_YAML = Path("/opt/academia/webapp/backend/app/config/tolerance_matrix_v2.yaml")
+OV_YAML = Path("/opt/academia/webapp/backend/app/config/tolerance_matrix_v2_overrides.yaml")
+REPORT = Path("/opt/academia/docs/01-pedagogy/v1_vs_v2_personas_report.md")
 
 
 # ════════════════════════════════════════════════════════════

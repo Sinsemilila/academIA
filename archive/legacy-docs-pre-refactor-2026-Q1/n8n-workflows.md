@@ -34,5 +34,5 @@ dify-profil-get: auto-creates student if unknown (ON CONFLICT DO NOTHING)
 
 ## Encryption
 
-n8n encryption key: /opt/academie-shared/secrets/n8n-encryption-key
+n8n encryption key: /opt/academia-shared/secrets/n8n-encryption-key
 If lost: ALL n8n workflows become unreadable.

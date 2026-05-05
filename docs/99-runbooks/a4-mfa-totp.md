@@ -42,10 +42,10 @@ TOTP RFC 6238 (Google Authenticator / 1Password / Aegis / Bitwarden compatible).
 ```bash
 # 1. Migration
 docker exec -i postgres-academie psql -U sinse -d academie_db \
-  < /opt/academie/scripts/sprint8/03_user_totp_schema.sql
+  < /opt/academia/scripts/sprint8/03_user_totp_schema.sql
 
 # 2. Rebuild backend (pyotp + qrcode added)
-cd /opt/academie/webapp
+cd /opt/academia/webapp
 docker compose -f docker-compose.webapp.yml build academie-api
 docker compose -f docker-compose.webapp.yml up -d academie-api
 
@@ -53,7 +53,7 @@ docker compose -f docker-compose.webapp.yml up -d academie-api
 pip3 install pyotp qrcode[pil] passlib[bcrypt,argon2]
 
 # 4. Enroll Sinse (compte admin)
-python3 /opt/academie/scripts/sprint8/04_totp_enroll_admin.py sinse
+python3 /opt/academia/scripts/sprint8/04_totp_enroll_admin.py sinse
 ```
 
 Le script :

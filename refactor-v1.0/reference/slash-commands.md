@@ -24,7 +24,7 @@ Read `/root/sinse-workspace/AGENTS.md`.
 
 ## 2. Detect project
 Check `.agent` file OR `pwd`:
-- `/opt/academie-worktrees/<agent>/` → project = academie-ia
+- `/opt/academia-worktrees/<agent>/` → project = academie-ia
 - Else → ask Sinse.
 
 ## 3. Verify branch (safety)

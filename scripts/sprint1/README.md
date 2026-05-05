@@ -42,12 +42,12 @@ restic niveau 3 via `/mnt/cosmos-data/backups/`).
 
 Results : `/mnt/cosmos-data/sprint1/results/` (JSON + figures).
 
-Output draft matrix : `/opt/academie/webapp/backend/app/config/tolerance_matrix_v2_draft.yaml`
+Output draft matrix : `/opt/academia/webapp/backend/app/config/tolerance_matrix_v2_draft.yaml`
 
 ## Usage
 
 ```bash
-cd /opt/academie/scripts/sprint1
+cd /opt/academia/scripts/sprint1
 ./00_setup.sh                   # create venv, install deps
 source venv/bin/activate
 python 01_download_corpus.py    # interactive for EFCAMDAT registration

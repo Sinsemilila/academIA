@@ -1,4 +1,4 @@
-# ADR-001 — Refactor complet academie.petit-pont.com (2026-H2)
+# ADR-001 — Refactor complet academia.petit-pont.com (2026-H2)
 
 **Status** : Accepted
 **Date** : 2026-04-23
@@ -9,7 +9,7 @@
 
 ## Context
 
-academie.petit-pont.com est une alpha SaaS d'apprentissage de langues (FR-natifs → EN/ES via chatbots Teacher/Maestro) hébergée sur Cosmos Server derrière Cloudflare. Stack : SvelteKit 2 + Svelte 5 runes, Tailwind v4, FastAPI, PostgreSQL, Docker, nginx, LiteLLM proxy. 141 comptes en DB, 1 user actif. Budget monétaire = **0€**.
+academia.petit-pont.com est une alpha SaaS d'apprentissage de langues (FR-natifs → EN/ES via chatbots Teacher/Maestro) hébergée sur Cosmos Server derrière Cloudflare. Stack : SvelteKit 2 + Svelte 5 runes, Tailwind v4, FastAPI, PostgreSQL, Docker, nginx, LiteLLM proxy. 141 comptes en DB, 1 user actif. Budget monétaire = **0€**.
 
 Trois besoins convergents déclenchent ce refactor :
 1. **Sécurité insuffisante pour ouvrir à des utilisateurs externes** : JWT stocké en `localStorage` côté frontend (vulnérable XSS), pas de CSP/HSTS, pas de DPIA, pas de migration Argon2id, pas de MFA, pas de PII scrubber avant envois LLM, pas d'audit isolation cross-user.

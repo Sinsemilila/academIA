@@ -26,7 +26,7 @@ Noeuds geres (28) :
 Edges : 45 au total.
 
 Usage :
-  python3 /opt/academie/scripts/update_teacher_chatflow.py && docker restart dify-api dify-worker
+  python3 /opt/academia/scripts/update_teacher_chatflow.py && docker restart dify-api dify-worker
 """
 
 import json

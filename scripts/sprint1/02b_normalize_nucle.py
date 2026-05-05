@@ -29,7 +29,7 @@ from errant_mapper import ErrantMapper  # noqa: E402
 _nlp = spacy.load("en_core_web_sm", disable=["ner", "lemmatizer", "tagger", "parser"])
 _nlp.add_pipe("sentencizer")
 
-M2_FILE  = Path("/opt/academie-shared/corpora/nucle/nucle.train.gold.bea19.m2")
+M2_FILE  = Path("/opt/academia-shared/corpora/nucle/nucle.train.gold.bea19.m2")
 OUT      = Path("/mnt/cosmos-data/sprint1/data/processed")
 NUCLE_MAP_FILE = Path(__file__).parent / "nucle_to_academie.yaml"
 

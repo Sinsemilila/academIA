@@ -22,12 +22,12 @@
 ### D2 — Architecture multi-IA : Modèle C+ (worktrees isolés + collaboration explicite)
 **Décision** :
 ```
-/opt/academie/                     ← prod, branche main
-/opt/academie-worktrees/
+/opt/academia/                     ← prod, branche main
+/opt/academia-worktrees/
   ├── claude/                      ← worktree branche claude
   ├── gemini/                      ← worktree branche gemini (futur)
   └── codex/                       ← worktree branche codex (futur)
-/opt/academie-shared/              ← secrets + fichiers partagés
+/opt/academia-shared/              ← secrets + fichiers partagés
 ```
 Collaboration via slash commands : `/oracle` (remplacé par arbiter D28), `/review`, `/handoff`, `/merge` (remplacé par merge-to-main).
 
@@ -64,7 +64,7 @@ Collaboration via slash commands : `/oracle` (remplacé par arbiter D28), `/revi
 ## Bloc 1 — Fondation doc (D8-D16)
 
 ### D8 — Pointer pattern AGENTS.md
-**Décision** : UN AGENTS.md canonical + pointers dans chaque worktree. Note : révisée par D12 (emplacement dans `/root/sinse-workspace/` au lieu de `/opt/academie-shared/`).
+**Décision** : UN AGENTS.md canonical + pointers dans chaque worktree. Note : révisée par D12 (emplacement dans `/root/sinse-workspace/` au lieu de `/opt/academia-shared/`).
 
 **Rationale** : élimine les merges sur AGENTS.md entre branches IA.
 
@@ -191,15 +191,15 @@ Chaque fichier a YAML front-matter `read_when:`. Dispatch from current CLAUDE.md
 **Rationale** : zéro risque sur la prod (pas de recreate containers), pas de duplication.
 
 ### D25 — Pre-commit hook gitleaks
-**Décision** : gitleaks sur les 3 cibles repos (`/root/sinse-workspace/`, `/opt/academie/`, worktrees). Bloque dur si secret détecté. Faux positifs gérés via `.gitleaksignore`.
+**Décision** : gitleaks sur les 3 cibles repos (`/root/sinse-workspace/`, `/opt/academia/`, worktrees). Bloque dur si secret détecté. Faux positifs gérés via `.gitleaksignore`.
 
 ### D26 — Hooks split : pre-commit gitleaks + pre-push smoke-test
 **Décision** : gitleaks en pre-commit (~2s), smoke-test --deep en pre-push (~15s). Bloque dur si fail. `--no-verify` interdit par règle AGENTS.md.
 
 **Clarification D37 G7** :
 - `/root/sinse-workspace/.git/hooks/pre-commit` = gitleaks seul
-- `/opt/academie/.git/hooks/pre-commit` = gitleaks
-- `/opt/academie/.git/hooks/pre-push` = smoke-test --deep
+- `/opt/academia/.git/hooks/pre-commit` = gitleaks
+- `/opt/academia/.git/hooks/pre-push` = smoke-test --deep
 - Worktrees : héritent via `core.hooksPath`
 
 ### D27 — Option E auto-merge + 12 types Peter-aligned
@@ -334,7 +334,7 @@ Contenu verbatim dans `reference/slash-commands.md`.
 
 | Décision | Status | Raison |
 |----------|--------|--------|
-| D8 (pointer pattern AGENTS.md dans `/opt/academie-shared/`) | 🔄 **Révisée par D12** | Emplacement changé vers `/root/sinse-workspace/` pour cohérence projet-agnostique |
+| D8 (pointer pattern AGENTS.md dans `/opt/academia-shared/`) | 🔄 **Révisée par D12** | Emplacement changé vers `/root/sinse-workspace/` pour cohérence projet-agnostique |
 | D11 (oracle npm package `@steipete/oracle`) | ❌ **RÉVOQUÉE** | Remplacée par D28 (arbiter custom avec CLIs officielles gratuites) |
 | D19 (6 types CHANGELOG) | 🔄 **Étendue par D27** | 6 → 12 types pour l'auto-merge Option E |
 

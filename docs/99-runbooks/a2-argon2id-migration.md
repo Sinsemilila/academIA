@@ -36,7 +36,7 @@ Defaults passlib 1.7.4 (RFC 9106 compliant) :
 ## Activation
 
 ```bash
-cd /opt/academie/webapp
+cd /opt/academia/webapp
 docker compose -f docker-compose.webapp.yml build academie-api
 docker compose -f docker-compose.webapp.yml up -d academie-api
 ```

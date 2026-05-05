@@ -2,7 +2,7 @@
 
 > **Status** : shipped-v1-alpha-2026-04-23. Lint-gate active in `RUN_RECENT_BATTERY.sh`. Full-mode + κ calibration + fault-injection validation available on-demand, not yet blocking CI.
 
-Regression detector for the Dify Teacher EN tutoring bot. See design doc : [`docs/01-pedagogy/corpus-oracle-v1-design.md`](/opt/academie/docs/01-pedagogy/corpus-oracle-v1-design.md) in the workspace repo.
+Regression detector for the Dify Teacher EN tutoring bot. See design doc : [`docs/01-pedagogy/corpus-oracle-v1-design.md`](/opt/academia/docs/01-pedagogy/corpus-oracle-v1-design.md) in the workspace repo.
 
 ## The 3 modes (tiered trigger)
 

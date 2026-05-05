@@ -17,7 +17,7 @@ import sys
 import asyncpg
 
 
-PG_PASSWORD_FILE = "/opt/academie-shared/secrets/pg-password"
+PG_PASSWORD_FILE = "/opt/academia-shared/secrets/pg-password"
 DB_NAME = "academie_db"
 DB_USER = "sinse"
 DB_HOST = "127.0.0.1"

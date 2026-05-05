@@ -136,8 +136,8 @@ def main() -> int:
     if not DIFY_KEY_TEACHER:
         print(
             "ERROR: DIFY_KEY_TEACHER not in env.\n"
-            "Source /opt/academie/webapp/.env first :\n"
-            "    set -a && . /opt/academie/webapp/.env && set +a && python3 "
+            "Source /opt/academia/webapp/.env first :\n"
+            "    set -a && . /opt/academia/webapp/.env && set +a && python3 "
             "scripts/sprint6/08_refactor_dify_workflows_to_public_api.py",
             file=sys.stderr,
         )

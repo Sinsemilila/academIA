@@ -36,7 +36,7 @@ ROOT = Path(__file__).resolve().parent
 def _current_sha() -> str:
     try:
         return subprocess.run(
-            ["git", "rev-parse", "HEAD"], cwd="/opt/academie",
+            ["git", "rev-parse", "HEAD"], cwd="/opt/academia",
             capture_output=True, text=True, check=True,
         ).stdout.strip()[:12]
     except Exception:

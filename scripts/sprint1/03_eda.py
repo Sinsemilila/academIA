@@ -179,7 +179,7 @@ def main() -> int:
     print("Comparison with current tolerance_matrix.yaml")
     print("=" * 70)
     import yaml
-    tol = yaml.safe_load(open("/opt/academie/webapp/backend/app/config/tolerance_matrix.yaml"))
+    tol = yaml.safe_load(open("/opt/academia/webapp/backend/app/config/tolerance_matrix.yaml"))
     band_by_level = tol["cefr_bands"]
     matrix = tol["matrix"]
     print(f"\n{'Family':<15} {'Level':<5} {'Emp.tier':<15} {'Current':<15} {'Match':<6}")

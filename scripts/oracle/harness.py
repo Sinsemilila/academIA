@@ -52,7 +52,7 @@ def _persist_run_to_db(agent: str, mode: str, results: list) -> None:
     # Git SHA at run time (best-effort)
     try:
         sha = subprocess.run(
-            ["git", "rev-parse", "HEAD"], cwd="/opt/academie",
+            ["git", "rev-parse", "HEAD"], cwd="/opt/academia",
             capture_output=True, text=True, check=True,
         ).stdout.strip()[:12]
     except Exception:

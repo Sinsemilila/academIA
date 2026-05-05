@@ -78,7 +78,7 @@ log security "rotated <provider> API key (reason: <X>)"
 
 ```bash
 # Édit en local, SOPS decrypt → edit → encrypt
-sops /opt/academie/secrets/litellm.yaml.enc
+sops /opt/academia/secrets/litellm.yaml.enc
 
 # Rebuild + redeploy container avec nouveau secret
 docker compose -f /opt/litellm/docker-compose.yml up -d --force-recreate

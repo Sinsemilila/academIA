@@ -8,7 +8,7 @@ owner: claude
 # Rotate secrets via SOPS
 
 > Workflow opérationnel pour éditer, ajouter ou rotater un secret chiffré avec SOPS + age.
-> Pose la clé age dans `/opt/academie-shared/secrets/age.key` (chmod 600, out-of-repo).
+> Pose la clé age dans `/opt/academia-shared/secrets/age.key` (chmod 600, out-of-repo).
 
 ## Fichiers chiffrés actuels
 
@@ -16,7 +16,7 @@ owner: claude
 |---|---|---|---|
 | `webapp/.env.sops` | `DATABASE_URL`, `DIFY_KEY_TEACHER`, `JWT_SECRET_KEY`, `JWT_REFRESH_SECRET`, `INTERNAL_API_TOKEN`, feature flags | `webapp/.env` (gitignored) | dotenv per-var |
 | `litellm/config.yaml.sops` | OpenAI key (3×, dont 2 fine-tunes), Groq keys (4×), Mistral, Ollama-Cloud, DB password (`database_url`) | `/opt/litellm/config.yaml` (hors repo, gitignored par prudence) | yaml avec `encrypted_regex: '^(api_key\|database_url\|master_key\|salt_key)$'` (model names / params / commentaires restent diff-readable) |
-| `secrets/shared.yaml.sops` | 9 secrets file-based : `dify-admin-key`, `dify-teacher-key`, `groq-key-2`, `jwt-{refresh-,}secret`, `n8n-encryption-key`, `ollama-cloud-key`, `pg-password`, `restic-passphrase` | `/opt/academie-shared/secrets/<name>` (chmod 600, sinse:sinse, trailing `\n` préservé) | yaml default (tous les values chiffrés, keys = filenames en plaintext) |
+| `secrets/shared.yaml.sops` | 9 secrets file-based : `dify-admin-key`, `dify-teacher-key`, `groq-key-2`, `jwt-{refresh-,}secret`, `n8n-encryption-key`, `ollama-cloud-key`, `pg-password`, `restic-passphrase` | `/opt/academia-shared/secrets/<name>` (chmod 600, sinse:sinse, trailing `\n` préservé) | yaml default (tous les values chiffrés, keys = filenames en plaintext) |
 
 ### Redondance avec autres bundles
 
@@ -38,17 +38,17 @@ Certains secrets du bundle `secrets/shared.yaml.sops` sont des copies de référ
 
 - `sops` CLI (`/usr/local/bin/sops`, v3.12+)
 - `age` CLI (apt `age` package)
-- Clé privée : `/opt/academie-shared/secrets/age.key` (chmod 600)
+- Clé privée : `/opt/academia-shared/secrets/age.key` (chmod 600)
 - Public key déclarée dans `.sops.yaml` racine repo : `age18jr3jdq05a4wr9hdgpdfz3vtya9u4rng88tu58lnv7jlw5hkxszsl00nnv`
 
 ## Éditer un secret existant
 
 ```bash
-cd /opt/academie
-SOPS_AGE_KEY_FILE=/opt/academie-shared/secrets/age.key \
+cd /opt/academia
+SOPS_AGE_KEY_FILE=/opt/academia-shared/secrets/age.key \
   sops webapp/.env.sops
 # ou:
-SOPS_AGE_KEY_FILE=/opt/academie-shared/secrets/age.key \
+SOPS_AGE_KEY_FILE=/opt/academia-shared/secrets/age.key \
   sops litellm/config.yaml.sops
 ```
 
@@ -62,7 +62,7 @@ Même commande — pour `.env.sops` ajouter une ligne `NEW_KEY=value`. Pour `con
 
 **webapp** :
 ```bash
-cd /opt/academie/webapp
+cd /opt/academia/webapp
 ./decrypt-secrets.sh
 docker compose -f docker-compose.webapp.yml up -d --force-recreate --no-deps academie-api
 ```
@@ -71,7 +71,7 @@ docker compose -f docker-compose.webapp.yml up -d --force-recreate --no-deps aca
 
 **LiteLLM** :
 ```bash
-/opt/academie/litellm/decrypt-config.sh
+/opt/academia/litellm/decrypt-config.sh
 docker restart litellm-proxy
 # Patienter ~20-30s (prisma migrations + startup) puis tester:
 curl -s http://127.0.0.1:4000/health/liveliness
@@ -83,7 +83,7 @@ curl -s http://127.0.0.1:4000/health/liveliness
 
 **Shared secrets** :
 ```bash
-/opt/academie/secrets/decrypt-shared.sh
+/opt/academia/secrets/decrypt-shared.sh
 # Restart des consommateurs selon le secret édité :
 #   - dify-*          → docker restart dify-api dify-worker dify-plugin-daemon
 #   - pg-password     → aucun (scripts les relisent à chaque run)
@@ -98,7 +98,7 @@ Le wrapper est idempotent, préserve l'ownership (sinse:sinse) et ajoute un trai
 1. Générer nouvelle keypair : `age-keygen -o /tmp/new-age.key`
 2. Ajouter la nouvelle public key dans `.sops.yaml` (garder l'ancienne temporairement)
 3. Ré-encrypter tous les `.sops` : `sops updatekeys webapp/.env.sops`
-4. Remplacer l'ancienne clé privée : `mv /tmp/new-age.key /opt/academie-shared/secrets/age.key && chmod 600 …`
+4. Remplacer l'ancienne clé privée : `mv /tmp/new-age.key /opt/academia-shared/secrets/age.key && chmod 600 …`
 5. Mettre la nouvelle clé privée dans le password manager de Sinse (et sauvegarder l'ancienne le temps de vérifier)
 6. Retirer l'ancienne public key de `.sops.yaml` + `sops updatekeys` à nouveau
 7. Commit + redeploy
@@ -106,24 +106,24 @@ Le wrapper est idempotent, préserve l'ownership (sinse:sinse) et ajoute un trai
 ## Disaster recovery (host wiped)
 
 1. Installer `sops` + `age` (`apt install age` + binary GitHub pour sops v3.12+)
-2. Restaurer la clé age depuis le password manager → `/opt/academie-shared/secrets/age.key`, chmod 600
-3. `chown sinse:sinse /opt/academie-shared/secrets/age.key`
-4. `cd /opt/academie/webapp && ./decrypt-secrets.sh` → régénère `webapp/.env`
-5. `/opt/academie/litellm/decrypt-config.sh` → régénère `/opt/litellm/config.yaml`
-6. `/opt/academie/secrets/decrypt-shared.sh` → régénère les 9 fichiers sous `/opt/academie-shared/secrets/`
+2. Restaurer la clé age depuis le password manager → `/opt/academia-shared/secrets/age.key`, chmod 600
+3. `chown sinse:sinse /opt/academia-shared/secrets/age.key`
+4. `cd /opt/academia/webapp && ./decrypt-secrets.sh` → régénère `webapp/.env`
+5. `/opt/academia/litellm/decrypt-config.sh` → régénère `/opt/litellm/config.yaml`
+6. `/opt/academia/secrets/decrypt-shared.sh` → régénère les 9 fichiers sous `/opt/academia-shared/secrets/`
 7. Reprendre le deploy normal : `docker compose -f webapp/docker-compose.webapp.yml up -d` + `docker restart litellm-proxy` (si le container existe déjà) ou `docker run` selon l'historique orchestration
 
 ## Vérifier la santé du setup
 
 **webapp** (round-trip strict, byte-identical) :
 ```bash
-SOPS_AGE_KEY_FILE=/opt/academie-shared/secrets/age.key \
+SOPS_AGE_KEY_FILE=/opt/academia-shared/secrets/age.key \
   sops -d --input-type dotenv --output-type dotenv webapp/.env.sops | diff - webapp/.env
 ```
 
 **litellm** (round-trip sémantique — SOPS yaml reformate indentation/commentaires) :
 ```bash
-SOPS_AGE_KEY_FILE=/opt/academie-shared/secrets/age.key \
+SOPS_AGE_KEY_FILE=/opt/academia-shared/secrets/age.key \
   sops -d --input-type yaml --output-type yaml litellm/config.yaml.sops | diff - /opt/litellm/config.yaml
 ```
 
@@ -132,7 +132,7 @@ Attendu litellm : **zéro diff** si `decrypt-config.sh` a été lancé après la
 ## Anti-patterns
 
 - ❌ **Ne jamais** committer `webapp/.env` ou `/opt/litellm/config.yaml` (plaintext) — gitleaks bloque, `.gitignore` aussi
-- ❌ **Ne jamais** committer la clé privée age (elle vit dans `/opt/academie-shared/secrets/`, hors du repo `/opt/academie`)
+- ❌ **Ne jamais** committer la clé privée age (elle vit dans `/opt/academia-shared/secrets/`, hors du repo `/opt/academia`)
 - ❌ **Ne pas** éditer `.env.sops` / `config.yaml.sops` à la main — utiliser `sops <file>` pour garder l'intégrité du format
 - ❌ **Ne pas** oublier de backup la clé age avant de renverser son host — sans elle, les `.sops` deviennent irrécupérables
 - ❌ **Ne pas** committer les plaintext ronces de build : `webapp/.env`, `litellm/config.yaml` (dans le repo), `*.backup*` — couvert par `.gitignore` mais à double-checker manuellement
@@ -148,7 +148,7 @@ Quand `$EDITOR` n'est pas disponible (Claude en assistance, CI, script) — `sop
 
 ```bash
 # dotenv (webapp/.env.sops)
-SOPS_AGE_KEY_FILE=/opt/academie-shared/secrets/age.key \
+SOPS_AGE_KEY_FILE=/opt/academia-shared/secrets/age.key \
   sops set --input-type dotenv --output-type dotenv \
   webapp/.env.sops '["JWT_SECRET_KEY"]' '"'"$NEW_VALUE"'"'
 

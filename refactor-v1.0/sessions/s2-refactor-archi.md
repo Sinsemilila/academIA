@@ -13,13 +13,13 @@ Transformer la structure workspace/projet selon le plan v1.0 : créer les worktr
 
 À la fin de cette session :
 - ✅ Structure `/root/sinse-workspace/` restructurée (Option C D12)
-- ✅ Worktree `/opt/academie-worktrees/claude/` opérationnel
+- ✅ Worktree `/opt/academia-worktrees/claude/` opérationnel
 - ✅ AGENTS.md canonical + pointers dans les worktrees
 - ✅ 15 bash tools installés et fonctionnels
 - ✅ Slash commands `/pickup` et `/handoff` installés
 - ✅ Hooks pre-commit (gitleaks) + pre-push (smoke-test) actifs
 - ✅ YOLO mode (`--dangerously-skip-permissions`) activé via `cly`
-- ✅ Secrets migrés vers `/opt/academie-shared/secrets/`
+- ✅ Secrets migrés vers `/opt/academia-shared/secrets/`
 - ✅ docs/projet/ enrichi depuis l'ancien CLAUDE.md
 
 ---
@@ -42,17 +42,17 @@ Transformer la structure workspace/projet selon le plan v1.0 : créer les worktr
 - [ ] Checkpoint : `echo "SESSION=S2\nSTEP=S2.0" > /root/.session-progress`
 - [ ] Valider que la prod tourne : `smoke-test --deep` → tous verts
 - [ ] Tag de sécurité : `cd /root/sinse-workspace && git tag "pre-refactor-s2-$(date +%Y-%m-%d)"`
-- [ ] Backup manuel Restic : `/opt/academie-shared/scripts/restic-backup.sh`
+- [ ] Backup manuel Restic : `/opt/academia-shared/scripts/restic-backup.sh`
 
 ### S2.1 — Migration secrets (30 min)
 
 #### S2.1.5 — Inventaire exhaustif des secrets (D37 G6)
 
-- [ ] Créer `/opt/academie-shared/secrets/` : `mkdir -p /opt/academie-shared/secrets && chmod 700 /opt/academie-shared/secrets`
+- [ ] Créer `/opt/academia-shared/secrets/` : `mkdir -p /opt/academia-shared/secrets && chmod 700 /opt/academia-shared/secrets`
 - [ ] Grep récursif pour identifier les secrets :
   ```bash
   # Patterns de fichiers
-  find /opt/academie /opt/litellm /opt/n8n /root/sinse-workspace \
+  find /opt/academia /opt/litellm /opt/n8n /root/sinse-workspace \
     \( -name "*key*" -o -name "*secret*" -o -name "*password*" \
     -o -name "*token*" -o -name ".env*" -o -name "*.pem" \
     -o -name "*.crt" -o -name "*_rsa*" -o -name "*_ed25519*" \) \
@@ -60,18 +60,18 @@ Transformer la structure workspace/projet selon le plan v1.0 : créer les worktr
 
   # Patterns de contenu (clés API)
   grep -rE "(api[_-]?key|bearer|authorization|password)" \
-    /opt/academie /opt/litellm /opt/n8n --include="*.yaml" --include="*.yml" \
+    /opt/academia /opt/litellm /opt/n8n --include="*.yaml" --include="*.yml" \
     --include="*.json" --include="*.py" --include="*.sh" 2>/dev/null
   ```
 - [ ] Lister chaque secret trouvé avec son emplacement source
-- [ ] Décider pour chaque : migrer vers `/opt/academie-shared/secrets/` ou laisser ?
+- [ ] Décider pour chaque : migrer vers `/opt/academia-shared/secrets/` ou laisser ?
 
 #### Migration des secrets critiques
 
-- [ ] `/opt/academie/.dify_admin_key` → `/opt/academie-shared/secrets/dify-admin-key`
-  - `mv /opt/academie/.dify_admin_key /opt/academie-shared/secrets/dify-admin-key`
-  - `ln -s /opt/academie-shared/secrets/dify-admin-key /opt/academie/.dify_admin_key`
-- [ ] `/opt/n8n/encryption.key` → `/opt/academie-shared/secrets/n8n-encryption-key`
+- [ ] `/opt/academia/.dify_admin_key` → `/opt/academia-shared/secrets/dify-admin-key`
+  - `mv /opt/academia/.dify_admin_key /opt/academia-shared/secrets/dify-admin-key`
+  - `ln -s /opt/academia-shared/secrets/dify-admin-key /opt/academia/.dify_admin_key`
+- [ ] `/opt/n8n/encryption.key` → `/opt/academia-shared/secrets/n8n-encryption-key`
   - Idem avec symlink
   - ⚠️ Tester que n8n redémarre proprement après la migration
 - [ ] Vérifier que n8n fonctionne encore : `docker restart n8n-academie && sleep 5 && curl http://localhost:5678/healthz`
@@ -133,17 +133,17 @@ Transformer la structure workspace/projet selon le plan v1.0 : créer les worktr
 
 #### S2.3.3 — Supprimer les anciens fichiers CLAUDE.md / conventions.md / GEMINI.md
 
-- [ ] Dispatch depuis `/root/sinse-workspace/context/CLAUDE.md` (déjà archivé) et `/opt/academie/CLAUDE.md` → voir S2.3.5 ci-dessous
-- [ ] Supprimer `/opt/academie/CLAUDE.md` (remplacé par pointer)
-- [ ] Créer `/opt/academie/AGENTS.md` pointer :
+- [ ] Dispatch depuis `/root/sinse-workspace/context/CLAUDE.md` (déjà archivé) et `/opt/academia/CLAUDE.md` → voir S2.3.5 ci-dessous
+- [ ] Supprimer `/opt/academia/CLAUDE.md` (remplacé par pointer)
+- [ ] Créer `/opt/academia/AGENTS.md` pointer :
   ```
   READ /root/sinse-workspace/AGENTS.md AND /root/sinse-workspace/projects/academie-ia/PROJECT.md BEFORE ANYTHING.
   ```
 
 #### S2.3.4 — Mettre à jour le symlink context
 
-- [ ] Supprimer l'ancien : `rm /opt/academie/context`
-- [ ] Créer le nouveau : `ln -s /root/sinse-workspace/projects/academie-ia /opt/academie/context`
+- [ ] Supprimer l'ancien : `rm /opt/academia/context`
+- [ ] Créer le nouveau : `ln -s /root/sinse-workspace/projects/academie-ia /opt/academia/context`
 
 #### S2.3.5 — Dispatch CLAUDE.md → 6 docs projet (D37 G4)
 
@@ -209,8 +209,8 @@ Pour chaque tool, voir `reference/tools.md` pour le template complet.
 
 #### S2.5.3 — Supprimer les anciens `/fin`
 
-- [ ] `rm /opt/academie/.claude/commands/fin.md`
-- [ ] `rm /opt/academie/.gemini/commands/fin.toml`
+- [ ] `rm /opt/academia/.claude/commands/fin.md`
+- [ ] `rm /opt/academia/.gemini/commands/fin.toml`
 - [ ] Si d'autres anciens slash commands existent, les supprimer aussi
 
 ### S2.6 — Git hooks (30 min)
@@ -230,13 +230,13 @@ Pour chaque repo, créer les hooks dans `.git/hooks/` :
 gitleaks protect --staged --verbose || exit 1
 ```
 
-**`/opt/academie/.git/hooks/pre-commit`** :
+**`/opt/academia/.git/hooks/pre-commit`** :
 ```bash
 #!/bin/bash
 gitleaks protect --staged --verbose || exit 1
 ```
 
-**`/opt/academie/.git/hooks/pre-push`** :
+**`/opt/academia/.git/hooks/pre-push`** :
 ```bash
 #!/bin/bash
 smoke-test --deep --quiet || exit 1
@@ -248,16 +248,16 @@ smoke-test --deep --quiet || exit 1
 
 ### S2.7 — Worktree Claude (20 min)
 
-- [ ] Créer le répertoire parent : `mkdir -p /opt/academie-worktrees`
-- [ ] Créer le worktree : `cd /opt/academie && git worktree add /opt/academie-worktrees/claude claude`
+- [ ] Créer le répertoire parent : `mkdir -p /opt/academia-worktrees`
+- [ ] Créer le worktree : `cd /opt/academia && git worktree add /opt/academia-worktrees/claude claude`
 - [ ] Utiliser `init-worktree claude` pour finaliser :
   - Création du fichier `.agent` avec "claude"
   - Création du pointer `AGENTS.md`
-  - Symlinks vers `/opt/academie-shared/`
+  - Symlinks vers `/opt/academia-shared/`
   - Copie du template `.claude/settings.local.json`
   - Smoke-test initial
-- [ ] Vérifier : `ls -la /opt/academie-worktrees/claude/`
-- [ ] Test session depuis le worktree : `cd /opt/academie-worktrees/claude && cly`
+- [ ] Vérifier : `ls -la /opt/academia-worktrees/claude/`
+- [ ] Test session depuis le worktree : `cd /opt/academia-worktrees/claude && cly`
   - Vérifier que Claude Code démarre avec --dangerously-skip-permissions
   - Vérifier que le titre de fenêtre est "claude — Claude"
 
@@ -266,7 +266,7 @@ smoke-test --deep --quiet || exit 1
 - [ ] Configurer `cly` comme alias dans `~/.zshrc` ou `~/.bashrc`
 - [ ] Source : `source ~/.zshrc`
 - [ ] Test : `cly --help` → affiche l'aide Claude Code
-- [ ] Test interactif : `cd /opt/academie-worktrees/claude && cly`
+- [ ] Test interactif : `cd /opt/academia-worktrees/claude && cly`
 - [ ] Vérifier que Claude Code ne demande plus de permissions pour les actions basiques
 
 ### S2.9 — Transformation TODO.md vers format CLAIMED (D17, 10 min)
@@ -305,7 +305,7 @@ smoke-test --deep --quiet || exit 1
 7. ✅ Git hooks actifs (gitleaks, smoke-test)
 8. ✅ Worktree Claude opérationnel
 9. ✅ YOLO mode activé via cly
-10. ✅ Secrets migrés vers `/opt/academie-shared/secrets/`
+10. ✅ Secrets migrés vers `/opt/academia-shared/secrets/`
 11. ✅ `smoke-test --all` passe
 12. ✅ Premier `/pickup` + `/handoff` complet réussi
 
@@ -315,13 +315,13 @@ smoke-test --deep --quiet || exit 1
 
 ### n8n ne démarre plus après migration encryption.key
 - Vérifier que le symlink pointe bien vers le fichier : `ls -la /opt/n8n/encryption.key`
-- Vérifier les permissions : `chmod 600 /opt/academie-shared/secrets/n8n-encryption-key`
+- Vérifier les permissions : `chmod 600 /opt/academia-shared/secrets/n8n-encryption-key`
 - Restart : `docker restart n8n-academie`
 
 ### Worktree Claude refuse de se créer
-- Vérifier que la branche claude existe : `cd /opt/academie && git branch`
+- Vérifier que la branche claude existe : `cd /opt/academia && git branch`
 - Si pas, la créer : `git branch claude`
-- Retry : `git worktree add /opt/academie-worktrees/claude claude`
+- Retry : `git worktree add /opt/academia-worktrees/claude claude`
 
 ### gitleaks bloque un commit légitime (faux positif)
 - Ajouter la ligne au `.gitleaksignore` du repo avec un commentaire justifiant

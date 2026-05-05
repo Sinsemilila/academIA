@@ -113,7 +113,7 @@ traitera ça comme un ADR de refonte (migration schema), pas un cas d'usage
 
 ## Références
 
-- `/opt/academie/scripts/migrate_sprint2_schema.py` — DDL appliquée
+- `/opt/academia/scripts/migrate_sprint2_schema.py` — DDL appliquée
 - [taxonomy-framework.md](../01-pedagogy/taxonomy-framework.md) § Gravity axes
 - [error-gradation.md](../01-pedagogy/error-gradation.md) — méthodologie globale
 - [data-model.md](../02-architecture/data-model.md) — schéma `error_log` extensions

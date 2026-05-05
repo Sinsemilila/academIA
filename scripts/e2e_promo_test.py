@@ -19,7 +19,7 @@ import psycopg2
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
 def _read_secret(name, fallback=""):
     from pathlib import Path
-    p = Path(f"/opt/academie-shared/secrets/{name}")
+    p = Path(f"/opt/academia-shared/secrets/{name}")
     return p.read_text().strip() if p.exists() else fallback
 
 DB_HOST = os.environ.get("DB_HOST", "127.0.0.1")

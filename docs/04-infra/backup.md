@@ -42,8 +42,8 @@ last_reviewed: 2026-04-15
 ### Offsite Google Drive encrypted
 
 - **Remote rclone** : `gdrive-vzdump-crypt:` (crypt layer AES-256 sur `gdrive:/Backups/academie/vzdump-encrypted`)
-- **Passphrase** : `/opt/academie-shared/secrets/rclone-vzdump-passphrase` (44 bytes base64, 256-bit entropy) + copie sur proxmox `/root/.config/rclone/vzdump-crypt.password`
-- **Chain de recovery** : si proxmox meurt → Niveau 3 Restic (cosmos) contient `/opt/academie-shared/` donc passphrase accessible → gdrive offsite déchiffrable depuis n'importe quelle machine rclone-équipée
+- **Passphrase** : `/opt/academia-shared/secrets/rclone-vzdump-passphrase` (44 bytes base64, 256-bit entropy) + copie sur proxmox `/root/.config/rclone/vzdump-crypt.password`
+- **Chain de recovery** : si proxmox meurt → Niveau 3 Restic (cosmos) contient `/opt/academia-shared/` donc passphrase accessible → gdrive offsite déchiffrable depuis n'importe quelle machine rclone-équipée
 - **Retention offsite** : `rclone delete --min-age 14d` après chaque upload
 - **Timeout upload** : 1h (kill si réseau hangs)
 - **Failure non-bloquant** : si gdrive fail, local backup conservé (warning seulement)
@@ -99,8 +99,8 @@ gunzip < /mnt/cosmos-data/backups/postgres/litellm_db_YYYY-MM-DD_HHMM.sql.gz \
 ## Niveau 3 — Restic encrypted offsite
 
 - **Config** : rclone backend vers Google Drive
-- **Encryption** : Restic native (passphrase dans `/opt/academie-shared/secrets/restic-passphrase`)
-- **Inclus** : `/opt/academie`, `/opt/academie-shared`, `/mnt/cosmos-data/backups/postgres`, `/etc` (sélectif)
+- **Encryption** : Restic native (passphrase dans `/opt/academia-shared/secrets/restic-passphrase`)
+- **Inclus** : `/opt/academia`, `/opt/academia-shared`, `/mnt/cosmos-data/backups/postgres`, `/etc` (sélectif)
 - **Exclus** : `node_modules/`, `__pycache__/`, `.venv/`, logs
 - **Script** : `restic-backup` tool
 - **Frequency** : daily 3h30
@@ -115,7 +115,7 @@ restic -r <repo> restore <snapshot-id> --target /tmp/restore
 ## Niveau 4 — Git
 
 - **Repos** :
-  - `/opt/academie` → `Sinsemilila/academIA` (public)
+  - `/opt/academia` → `Sinsemilila/academIA` (public)
   - `/root/sinse-archive-2026-pre-vault` → `Sinsemilila/sinse-workspace` (private, archived 2026-04-25 post-vault migration)
   - `/root/sinse-vault` → `Sinsemilila/sinse-vault` (private)
   - `/root/sinse-tools` → `Sinsemilila/sinse-tools` (private)
@@ -143,7 +143,7 @@ restic -r <repo> restore <snapshot-id> --target /tmp/restore
 ## Données **non** couvertes
 
 - Conversations Dify (elles sont dans `academie_db.messages`, donc couvertes par niveau 2)
-- Secrets dans `/opt/academie-shared/secrets/` : couverts par niveau 3 chiffré ✅
+- Secrets dans `/opt/academia-shared/secrets/` : couverts par niveau 3 chiffré ✅
 - Config LiteLLM : couvert par niveau 3 ✅
 - n8n workflow data : dans `academie_db` (n8n utilise notre PG), donc couvert ✅
 - LiteLLM SpendLogs (`litellm_db`) : couvert depuis Session 15 ✅

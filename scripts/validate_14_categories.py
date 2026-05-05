@@ -22,7 +22,7 @@ Reply with ONLY the code per line.
 Codes: V:TENSE V:SVA V:FORM N:NUM ART PREP PREP:CALQUE WO LEX:CHOICE SPELL SPELL:COGNATE ORTH:CASE ORTH:SPACE PUNCT:APOST OTHER"""
 
 # ── Import our rules + differ (add to path) ──
-sys.path.insert(0, "/opt/academie/webapp/backend")
+sys.path.insert(0, "/opt/academia/webapp/backend")
 from academie_core.taxonomy.differ import extract_edits
 from academie_core.taxonomy.rules import classify_edits
 from academie_core.taxonomy.categories import TIER1_CATEGORIES

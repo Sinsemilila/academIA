@@ -193,7 +193,7 @@ Fichiers :
 
 **Pas de security headers** sur ce vhost.
 
-**Server 2 : `academie.petit-pont.com`** — security headers globaux :
+**Server 2 : `academia.petit-pont.com`** — security headers globaux :
 
 ```
 X-Frame-Options: DENY
@@ -239,7 +239,7 @@ Requête sans `Host:` → 307 redirect vers `/apps` (comportement Dify capturé 
 ```
 User (browser)
   ↓ HTTPS via Cloudflare Tunnel
-nginx :8080 (Host: academie.petit-pont.com)
+nginx :8080 (Host: academia.petit-pont.com)
   ↓ /api/* → 
 academie-api :8000 (POST /api/chat/send)
   ↓ SSE request

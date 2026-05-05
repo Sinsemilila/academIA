@@ -19,7 +19,7 @@ Développeur solo : Sinse (sinseproduction@gmail.com)
 
 ### Accès public
 - NAS avec Proxmox → VM Debian (cosmos) → Docker
-- Cloudflare Tunnel : academie.petit-pont.com
+- Cloudflare Tunnel : academia.petit-pont.com
 - Cosmos Cloud : reverse proxy + pare-feu (cosmos.petit-pont.com)
 - Proxmox UI : pve.petit-pont.com
 
@@ -38,7 +38,7 @@ Développeur solo : Sinse (sinseproduction@gmail.com)
 
 ### Fichiers clés
 - LiteLLM config : /opt/litellm/config.yaml
-- Scripts : /opt/academie/scripts/
+- Scripts : /opt/academia/scripts/
 - n8n data : /opt/n8n/data/
 - n8n clé chiffrement : /opt/n8n/encryption.key
 - profil_manager.py : lecture/écriture profils élèves PostgreSQL
@@ -48,7 +48,7 @@ Développeur solo : Sinse (sinseproduction@gmail.com)
 - Port : 5432
 - DB : academie_db
 - User : sinse
-- Password : [REDACTED — see /opt/academie-shared/secrets/]
+- Password : [REDACTED — see /opt/academia-shared/secrets/]
 
 ### Tables créées
 - eleves (id, username, created_at)
@@ -171,17 +171,17 @@ Mis à jour en fin de session via dify-profil-update (à brancher).
 
 ## Règle changelog webapp
 Quand des fonctionnalités visibles par l'utilisateur sont ajoutées à la webapp :
-1. Mettre à jour le fichier `/opt/academie/webapp/frontend/src/routes/changelog/+page.svelte` en ajoutant une nouvelle entrée (ou en complétant l'entrée du jour) dans le tableau `entries` avec : date, version, title, items[]
-2. Bumper la constante `CHANGELOG_VERSION` dans `/opt/academie/webapp/frontend/src/lib/components/Header.svelte` pour que le badge "Nouveau" s'affiche
+1. Mettre à jour le fichier `/opt/academia/webapp/frontend/src/routes/changelog/+page.svelte` en ajoutant une nouvelle entrée (ou en complétant l'entrée du jour) dans le tableau `entries` avec : date, version, title, items[]
+2. Bumper la constante `CHANGELOG_VERSION` dans `/opt/academia/webapp/frontend/src/lib/components/Header.svelte` pour que le badge "Nouveau" s'affiche
 3. Cela inclut : nouvelles pages, nouveaux composants visuels, corrections UX, nouvelles features, changements de layout
 
 ## Notes importantes
 - dify-plugin-daemon était instable, s'est stabilisé tout seul le 04/04/2026
-- Mot de passe PostgreSQL changé : [REDACTED — see /opt/academie-shared/secrets/]
+- Mot de passe PostgreSQL changé : [REDACTED — see /opt/academia-shared/secrets/]
 - Gemini : quota gratuit épuisé sans facturation activée (max ~10 req/jour)
 - profil_manager.py testé et fonctionnel : save_profil + get_profil + format_profil_for_injection
 - System prompt Teacher v2 validé : onboarding 3 temps, test adaptatif C1 atteint, format ❌✅💡
 - dify-sandbox déployé le 05/04/2026 — nécessaire pour Jinja2 dans les LLM nodes
-- dify-api/dify-worker recréés avec ADMIN_API_KEY_ENABLE=true (clé dans /opt/academie/.dify_admin_key)
+- dify-api/dify-worker recréés avec ADMIN_API_KEY_ENABLE=true (clé dans /opt/academia/.dify_admin_key)
 - Accès API Dify : Authorization: Bearer <ADMIN_KEY> + X-WORKSPACE-ID: [REDACTED-WORKSPACE-ID]
 - sys.user_id dans Dify Chatflow = UUID du compte Dify connecté (pas un username)

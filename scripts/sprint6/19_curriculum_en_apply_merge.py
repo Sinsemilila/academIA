@@ -21,7 +21,7 @@ from pathlib import Path
 
 import yaml
 
-YAML_PATH = Path("/opt/academie/packages/academie-core/academie_core/data/curriculum_en.yaml")
+YAML_PATH = Path("/opt/academia/packages/academie-core/academie_core/data/curriculum_en.yaml")
 
 
 # ── Per-level concept definitions (from agent decisions) ──
@@ -232,7 +232,7 @@ def main() -> int:
     )
     body = yaml.safe_dump(new, sort_keys=False, allow_unicode=True, default_flow_style=False, width=120)
     YAML_PATH.write_text(header + body)
-    print(f"▶ Wrote {YAML_PATH.relative_to(Path('/opt/academie'))}")
+    print(f"▶ Wrote {YAML_PATH.relative_to(Path('/opt/academia'))}")
     return 0
 
 

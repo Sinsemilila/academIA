@@ -21,13 +21,13 @@ TEST_USER = "test-e2e-validate"
 TEST_PASS = "TestE2E-2026!"
 
 def _read_secret(name, fallback=""):
-    p = Path(f"/opt/academie-shared/secrets/{name}")
+    p = Path(f"/opt/academia-shared/secrets/{name}")
     return p.read_text().strip() if p.exists() else fallback
 
 DB_DSN = os.environ.get("DATABASE_URL", "")
 if not DB_DSN:
     # Read from webapp .env file
-    env_path = Path("/opt/academie/webapp/.env")
+    env_path = Path("/opt/academia/webapp/.env")
     if env_path.exists():
         for line in env_path.read_text().splitlines():
             if line.startswith("DATABASE_URL="):
@@ -157,11 +157,11 @@ def test_cors():
 
     # Legit origin
     r = requests.options(f"{API}/api/health", headers={
-        "Origin": "https://academie.petit-pont.com",
+        "Origin": "https://academia.petit-pont.com",
         "Access-Control-Request-Method": "GET",
     })
     acao = r.headers.get("access-control-allow-origin", "")
-    check("CORS: legit origin allowed", "academie.petit-pont.com" in acao)
+    check("CORS: legit origin allowed", "academia.petit-pont.com" in acao)
 
 
 def test_internal_endpoint():

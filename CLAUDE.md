@@ -17,7 +17,7 @@ Skipper l'étape 2 = variable absente runtime, échec silencieux. Cf. memory
 `project_dify_variable_wiring.md`.
 
 ### Merge workflow
-Toujours `git stash` dans `/opt/academie` AVANT pull/merge depuis worktree
+Toujours `git stash` dans `/opt/academia` AVANT pull/merge depuis worktree
 externe — sinon conflits silencieux. Cf. memory `feedback_merge_workflow.md`.
 
 ## DOCS WORKFLOW
@@ -77,12 +77,12 @@ Design tokens OKLCH (cf. `docs/99-runbooks/b1-design-tokens.md`).
 - `CHANGELOG.md` append-only via `log` tool
 - `docs/05-decisions/ADR-NNN-*.md` immutable, AI drafts `proposed`, Sinse mark `accepted`
 
-Note : ces fichiers vivent dans `/opt/academie/` (live with code, depuis Phase 2 obsidian migration 2026-04-25).
+Note : ces fichiers vivent dans `/opt/academia/` (live with code, depuis Phase 2 obsidian migration 2026-04-25).
 
 ## VAULT KNOWLEDGE (cross-projet)
 
 Pour patterns cross-projet (auth, dify, n8n, svelte, infra, etc.), dispatch
-subagent `vault-reader` (Haiku 4.5) plutôt que load raw `/opt/academie/docs/`
+subagent `vault-reader` (Haiku 4.5) plutôt que load raw `/opt/academia/docs/`
 dans Opus context. Économie ~74% tokens vs raw load.
 
 - Vault root : `/root/sinse-vault/`

@@ -17,7 +17,7 @@ owner: claude
 
 **Bloc 1 — Onboarding Marie** :
 - Compte Marie créé (`mariejuanes`/`mariejuanes`, weak mais derrière CF Access OTP)
-- Cloudflare Zero Trust policy `academie.petit-pont.com` — email `marie83383@gmail.com` ajouté manual dashboard
+- Cloudflare Zero Trust policy `academia.petit-pont.com` — email `marie83383@gmail.com` ajouté manual dashboard
 - Marie connectée avec succès
 
 **Bloc 2 — RAG knowledge base livré end-to-end** ⭐ :
@@ -106,7 +106,7 @@ owner: claude
 
 - `.env` : `DIFY_KEY_MAITRE_COMPTABLE` configured, `AVAILABLE_AGENTS=teacher,maestro,maitre_comptable`
 - Containers redeployed (academie-api + academie-frontend) — healthy, smoke 17/17
-- Marie peut accéder à `https://academie.petit-pont.com/chat/maitre_comptable`
+- Marie peut accéder à `https://academia.petit-pont.com/chat/maitre_comptable`
 - Tests live Sinse : 3 bugs UI (loading stuck + UI lang-specific + RGPD dismiss + dropdown removal) fixés en hotfix iters
 
 ---
@@ -139,7 +139,7 @@ Action :
 - Marie change password à 1ère connexion via /settings/security
 
 **b) Cloudflare Zero Trust email policy** (Sinse uses similar pattern lui-même) :
-- Cloudflare Dashboard → Zero Trust → Access → Applications → `academie.petit-pont.com`
+- Cloudflare Dashboard → Zero Trust → Access → Applications → `academia.petit-pont.com`
 - Edit policy → Include → Emails → Add Marie's email
 - Marie reçoit email one-time code à chaque login → bypass VPN
 - Pas de VPN nécessaire si Zero Trust email policy activée

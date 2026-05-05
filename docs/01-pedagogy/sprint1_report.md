@@ -178,15 +178,15 @@ exacts en log-odds.
 
 | Livrable | Chemin |
 |---|---|
-| Scripts sprint 1 | `/opt/academie/scripts/sprint1/` |
+| Scripts sprint 1 | `/opt/academia/scripts/sprint1/` |
 | Corpus raw | `/mnt/cosmos-data/sprint1/data/raw/wi+locness/` |
 | Parquet normalisé | `/mnt/cosmos-data/sprint1/data/processed/errors_long.parquet` |
 | Learner stats | `/mnt/cosmos-data/sprint1/data/processed/learners.parquet` |
 | Tier assignments | `/mnt/cosmos-data/sprint1/data/processed/tier_assignments_external.parquet` |
 | Figures | `/mnt/cosmos-data/sprint1/results/figures/*.png` |
-| **Matrice v2 draft** | `/opt/academie/webapp/backend/app/config/tolerance_matrix_v2_draft.yaml` |
-| Mapping ERRANT | `/opt/academie/scripts/sprint1/errant_to_academie.yaml` |
-| Tests | `/opt/academie/scripts/sprint1/tests/` (4/4 green) |
+| **Matrice v2 draft** | `/opt/academia/webapp/backend/app/config/tolerance_matrix_v2_draft.yaml` |
+| Mapping ERRANT | `/opt/academia/scripts/sprint1/errant_to_academie.yaml` |
+| Tests | `/opt/academia/scripts/sprint1/tests/` (4/4 green) |
 
 ## 6. Limites et biais
 

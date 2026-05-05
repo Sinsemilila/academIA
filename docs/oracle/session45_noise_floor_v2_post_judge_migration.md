@@ -64,7 +64,7 @@ These 4 flip between runs because the live Dify response varies across sessions 
 
 ```
 docker exec academie-api env | grep DIFY_KEY_TEACHER || (
-  export DIFY_KEY_TEACHER=$(cat /opt/academie-shared/secrets/dify-teacher-key)
+  export DIFY_KEY_TEACHER=$(cat /opt/academia-shared/secrets/dify-teacher-key)
 )
 python3 scripts/oracle/preflight_gemini.py --mode full       # verify budget
 python3 scripts/oracle/noise_floor.py --runs 2 --mode full --agent teacher_en

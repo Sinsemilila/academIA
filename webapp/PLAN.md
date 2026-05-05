@@ -4,7 +4,7 @@
 - Frontend : SvelteKit + Tailwind CSS + Geist font
 - Backend : FastAPI (Python) — proxy Dify + auth + PostgreSQL
 - Deploy : 2 conteneurs Docker sur cosmos (academie-net-bridge)
-- Routing : academie.petit-pont.com → SvelteKit / /api → FastAPI
+- Routing : academia.petit-pont.com → SvelteKit / /api → FastAPI
 
 ## Sprint 0 — Fondations ✅ DONE
 

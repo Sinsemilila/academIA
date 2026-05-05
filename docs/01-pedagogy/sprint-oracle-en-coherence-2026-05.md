@@ -34,7 +34,7 @@ Capacity               : 5-10 full runs/jour (cache + Cerebras)
 ## Phase 0 — DONE (Session 53, 2026-04-30)
 
 ```
-✅ Cerebras key /opt/academie-shared/secrets/cerebras-api-key (mode 600)
+✅ Cerebras key /opt/academia-shared/secrets/cerebras-api-key (mode 600)
 ✅ LiteLLM proxy : cerebras-judge-fast + cerebras-judge-deep + mistral-medium
 ✅ rpm bump mistral-small 2→100
 ✅ Admin /admin judge-budget : 7-tier display

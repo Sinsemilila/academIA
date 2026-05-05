@@ -19,7 +19,7 @@ from generate_errors import (  # noqa: E402
 )
 
 
-DEFAULT_DIR = Path("/opt/academie/data/synthetic_descriptors")
+DEFAULT_DIR = Path("/opt/academia/data/synthetic_descriptors")
 
 
 class TestLoadDescriptors:

@@ -17,7 +17,7 @@ from errant_mapper import ErrantMapper, map_errant_tag  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 M2_DIR = Path("/mnt/cosmos-data/sprint1/data/raw/wi+locness/m2")
-ACADEMIE_CATEGORIES_PY = Path("/opt/academie/webapp/backend/app/error_taxonomy/categories.py")
+ACADEMIE_CATEGORIES_PY = Path("/opt/academia/webapp/backend/app/error_taxonomy/categories.py")
 
 
 @pytest.fixture(scope="module")

@@ -69,7 +69,7 @@ def build_full_dify_inputs(scenario, agent: str) -> dict:
     """
     import sys as _sys
     from pathlib import Path as _Path
-    _PKG = _Path("/opt/academie/packages/academie-core")
+    _PKG = _Path("/opt/academia/packages/academie-core")
     if str(_PKG) not in _sys.path:
         _sys.path.insert(0, str(_PKG))
     from academie_core.domain.language import LanguageDomain
@@ -226,7 +226,7 @@ def call_agent(agent: str, query: str, conv_seed: str | None = None,
         try:
             import sys as _sys
             from pathlib import Path as _Path
-            _PKG = _Path("/opt/academie/packages/academie-core")
+            _PKG = _Path("/opt/academia/packages/academie-core")
             if str(_PKG) not in _sys.path:
                 _sys.path.insert(0, str(_PKG))
             from academie_core.pedagogy.teacher_prompt import parse_teacher_response

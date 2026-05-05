@@ -16,7 +16,7 @@ scripts/sprint2/
 ## Run
 
 ```bash
-cd /opt/academie/scripts/sprint2
+cd /opt/academia/scripts/sprint2
 ../sprint1/venv/bin/pytest tests/ -v
 ```
 

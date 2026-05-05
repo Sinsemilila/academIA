@@ -17,7 +17,7 @@
 # Exit 0 iff every combination passes.
 
 set -u
-REPO="/opt/academie"
+REPO="/opt/academia"
 cd "$REPO" || exit 2
 
 declare -a RESULTS

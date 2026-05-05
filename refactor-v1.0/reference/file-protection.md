@@ -15,7 +15,7 @@ Ces fichiers **bloquent l'auto-merge** même avec un diff minime. Trop sensibles
 - `.env`, `.env.*`
 - `*.key`, `*.pem`, `*.crt`, `*.cert`, `*_rsa*`, `*_ed25519*`
 - `.dify_admin_key`, `encryption.key`, `restic-passphrase`
-- `/opt/academie-shared/secrets/*` (tous les fichiers)
+- `/opt/academia-shared/secrets/*` (tous les fichiers)
 
 #### Credentials d'outils
 - `.npmrc` (peut contenir `//registry.npmjs.org/:_authToken=...`)
@@ -50,7 +50,7 @@ Ces fichiers **bloquent l'auto-merge** même avec un diff minime. Trop sensibles
 #### Git hooks eux-mêmes
 - `.git/hooks/*` (pre-commit, pre-push, etc.)
 - `/root/sinse-workspace/.git/hooks/*`
-- `/opt/academie/.git/hooks/*`
+- `/opt/academia/.git/hooks/*`
 
 #### Méta-contrat du workflow
 - `/root/sinse-workspace/AGENTS.md` (changer les règles du workflow = changer le contrat)
@@ -72,7 +72,7 @@ Ces fichiers **bloquent l'auto-merge** même avec un diff minime. Trop sensibles
 Ces fichiers nécessitent une review par l'arbiter (cross-review claude ↔ gemini via D28). Pas d'auto-merge direct, mais pas besoin de bloquer jusqu'à Sinse.
 
 #### Backend API
-- `/opt/academie/api/**/*.py`
+- `/opt/academia/api/**/*.py`
 - `api/**/*.py`
 
 #### Frontend webapp
@@ -85,7 +85,7 @@ Ces fichiers nécessitent une review par l'arbiter (cross-review claude ↔ gemi
 - `scripts/*.sh`
 - `update_teacher_chatflow.py`
 - `deploy-teacher` (le tool) → wait, celui-là est dans tools/ donc ROUGE
-- Autres scripts "actifs" dans `/opt/academie/scripts/`
+- Autres scripts "actifs" dans `/opt/academia/scripts/`
 
 #### Docker images
 - `Dockerfile`, `Dockerfile*` (sans extension ou avec suffixe)

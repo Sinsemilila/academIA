@@ -31,7 +31,7 @@ const CSP_DIRECTIVES = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
-  "connect-src 'self' https://academie.petit-pont.com https://dify.petit-pont.com https://glitchtip.petit-pont.com wss://academie.petit-pont.com",
+  "connect-src 'self' https://academia.petit-pont.com https://dify.petit-pont.com https://glitchtip.petit-pont.com wss://academia.petit-pont.com",
   "frame-src 'self' https://dify.petit-pont.com https://challenges.cloudflare.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",

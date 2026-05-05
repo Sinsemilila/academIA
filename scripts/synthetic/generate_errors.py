@@ -36,7 +36,7 @@ import yaml
 
 LITELLM_URL = "http://localhost:4000/v1/chat/completions"
 DEFAULT_MODEL = "gpt-4o-mini"
-DEFAULT_DESCRIPTORS_DIR = Path("/opt/academie/data/synthetic_descriptors")
+DEFAULT_DESCRIPTORS_DIR = Path("/opt/academia/data/synthetic_descriptors")
 
 
 # ── Per-lang prompt templates ──────────────────────────────────────

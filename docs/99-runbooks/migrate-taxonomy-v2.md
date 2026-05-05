@@ -31,7 +31,7 @@ last_reviewed: 2026-04-15
 
 ```bash
 # 1. Exécuter la migration (idempotente)
-python3 /opt/academie/scripts/migrate_sprint2_schema.py
+python3 /opt/academia/scripts/migrate_sprint2_schema.py
 
 # 2. Vérifier les counts attendus dans le output de la migration :
 #    - error_log: 17 columns (11 original + 6 new)
@@ -41,7 +41,7 @@ python3 /opt/academie/scripts/migrate_sprint2_schema.py
 #    - snapshots_session schema_version: 1 → 8 rows
 
 # 3. Tests régression
-cd /opt/academie/scripts/sprint2
+cd /opt/academia/scripts/sprint2
 ../sprint1/venv/bin/pytest tests/ -v
 # Attendu : 14 passed
 
@@ -77,7 +77,7 @@ SELECT COUNT(*) FROM snapshots_session_v1_archive;
 Ne touche pas le schema, désactive seulement les weights v2 :
 
 ```bash
-sed -i 's/USE_V2_TOLERANCE=true/USE_V2_TOLERANCE=false/' /opt/academie/webapp/.env
+sed -i 's/USE_V2_TOLERANCE=true/USE_V2_TOLERANCE=false/' /opt/academia/webapp/.env
 docker restart academie-api
 # Vérif:
 docker exec academie-api env | grep USE_V2
@@ -175,8 +175,8 @@ Pour les ~48h suivantes, surveiller :
 
 ## Références
 
-- Script : `/opt/academie/scripts/migrate_sprint2_schema.py`
-- Tests : `/opt/academie/scripts/sprint2/tests/`
+- Script : `/opt/academia/scripts/migrate_sprint2_schema.py`
+- Tests : `/opt/academia/scripts/sprint2/tests/`
 - ADR-007 — Snapshot cut-off option C
 - ADR-009 — Gravity axes schema
 - Data model : [data-model.md](../02-architecture/data-model.md)

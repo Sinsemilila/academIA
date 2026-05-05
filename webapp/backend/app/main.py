@@ -79,7 +79,7 @@ app = FastAPI(
 # CORS — allow SvelteKit frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3001", "http://localhost:5173", "https://academie.petit-pont.com"],
+    allow_origins=["http://localhost:3001", "http://localhost:5173", "https://academia.petit-pont.com"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "X-CSRF-Token"],
@@ -204,7 +204,7 @@ async def health():
 # ── Phase B4 — Sentry tunnel proxy (browser → FastAPI → glitchtip-web) ─
 # Reuses the existing /api/* path so sinse's CF Access cookie covers it.
 # Avoids the path-precedence bug we hit with a CF Access bypass app
-# at academie.petit-pont.com/sentry-tunnel.
+# at academia.petit-pont.com/sentry-tunnel.
 import httpx as _httpx
 from fastapi import Response as _Response
 

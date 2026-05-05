@@ -11,16 +11,16 @@ Self-hosted learning platform. SvelteKit frontend + FastAPI backend + Dify chatf
 
 | What | Where |
 |------|-------|
-| Webapp code | /opt/academie/webapp/ |
-| FastAPI backend | /opt/academie/webapp/backend/ |
-| Scripts | /opt/academie/scripts/ |
+| Webapp code | /opt/academia/webapp/ |
+| FastAPI backend | /opt/academia/webapp/backend/ |
+| Scripts | /opt/academia/scripts/ |
 | Dify compose | /opt/dify/ |
 | LiteLLM config | /opt/litellm/config.yaml |
 | n8n data | /opt/n8n/ |
 | PG data | /mnt/cosmos-data/postgres/ |
-| Secrets | /opt/academie-shared/secrets/ |
+| Secrets | /opt/academia-shared/secrets/ |
 | Backups PG | /mnt/cosmos-data/backups/postgres/ |
-| Backup scripts | /opt/academie-shared/scripts/ |
+| Backup scripts | /opt/academia-shared/scripts/ |
 
 ## Docs (read selectively)
 
@@ -42,8 +42,8 @@ sinse (id=1, admin), nico (id=2), julien (id=3), noz_project (id=4), waigosan (i
 ## DB access
 
 PG: host postgres-academie (Docker network), port 5432, db academie_db, user sinse.
-PG password: stored on server only — ask Sinse or check `/opt/academie-shared/secrets/`
-Dify admin key: `cat /opt/academie-shared/secrets/dify-admin-key`
+PG password: stored on server only — ask Sinse or check `/opt/academia-shared/secrets/`
+Dify admin key: `cat /opt/academia-shared/secrets/dify-admin-key`
 
 ## LLM routing
 
@@ -57,7 +57,7 @@ Dify admin key: `cat /opt/academie-shared/secrets/dify-admin-key`
 
 ## Domains
 
-academie.petit-pont.com (webapp), dify.petit-pont.com (Dify admin), n8n.petit-pont.com (n8n)
+academia.petit-pont.com (webapp), dify.petit-pont.com (Dify admin), n8n.petit-pont.com (n8n)
 All via Cloudflare Zero Trust (Bypass + WARP + France).
 
 ## Current phase

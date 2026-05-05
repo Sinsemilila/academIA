@@ -11,7 +11,7 @@ read_when: "Modifying infrastructure, Docker, networking, reverse proxy, DB conn
 Cloudflare Zero Trust (Bypass + require WARP + France)
     ↓
 192.168.1.181:8080 (nginx) — security headers + cache static
-    ├── academie.petit-pont.com → localhost:3001 (SvelteKit)
+    ├── academia.petit-pont.com → localhost:3001 (SvelteKit)
     ├── dify.petit-pont.com     → localhost:3000 (Dify web)
     └── n8n.petit-pont.com      → localhost:5678 (n8n)
 ```
@@ -63,7 +63,7 @@ Config: /opt/litellm/config.yaml
 
 ## Secrets
 
-All in /opt/academie-shared/secrets/ (chmod 600):
+All in /opt/academia-shared/secrets/ (chmod 600):
 - dify-admin-key, n8n-encryption-key, restic-passphrase
 - Symlinked from original locations for backward compatibility
 

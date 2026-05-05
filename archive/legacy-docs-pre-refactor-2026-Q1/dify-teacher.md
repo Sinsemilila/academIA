@@ -17,7 +17,7 @@ Only Teacher is fully operational with v17 chatflow.
 - App ID: 39565197-c9d1-4d5b-b66f-18925de236d9
 - Model: groq-standard (Llama 3.3 70B)
 - Architecture: 28 nodes, 45 edges
-- Source of truth: /opt/academie/scripts/update_teacher_chatflow.py
+- Source of truth: /opt/academia/scripts/update_teacher_chatflow.py
 
 ### Key nodes
 
@@ -34,7 +34,7 @@ Only Teacher is fully operational with v17 chatflow.
 
 ## Dify API access
 
-- Admin key: `cat /opt/academie-shared/secrets/dify-admin-key`
+- Admin key: `cat /opt/academia-shared/secrets/dify-admin-key`
 - Workspace ID: [REDACTED-WORKSPACE-ID]
 - Headers: `Authorization: Bearer <KEY>` + `X-WORKSPACE-ID: <ID>`
 

@@ -8,7 +8,7 @@ Met a jour le workflow n8n dify-profil-get (v5) pour:
 5. Retourne concept_weights + concept_groups (examens modulaires)
 
 Usage:
-  python3 /opt/academie/scripts/update_profil_get_workflow.py && docker restart n8n-academie
+  python3 /opt/academia/scripts/update_profil_get_workflow.py && docker restart n8n-academie
 """
 
 import json

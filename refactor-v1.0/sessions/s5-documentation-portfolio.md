@@ -60,7 +60,7 @@ Transformer les repos GitHub en vitrines portfolio professionnelles : README imp
 
 ### S5a.1 — Preparation assets (20 min)
 
-- [ ] Creer le dossier assets : `mkdir -p /opt/academie/.github/assets`
+- [ ] Creer le dossier assets : `mkdir -p /opt/academia/.github/assets`
 - [ ] Capturer 2-3 screenshots de la webapp :
   - Dashboard principal (avec avatar, streaks, XP)
   - Chat Teacher en action (conversation avec format correctif)
@@ -70,7 +70,7 @@ Transformer les repos GitHub en vitrines portfolio professionnelles : README imp
 
 ### S5a.2 — README.md principal EN (60 min)
 
-Creer `/opt/academie/README.md` avec cette structure :
+Creer `/opt/academia/README.md` avec cette structure :
 
 ```markdown
 # Structure du README (pas le contenu verbatim)
@@ -154,7 +154,7 @@ Ce qui impressionne les recruteurs = reflexion honnete sur les trade-offs :
 
 ### S5a.3 — README.fr.md version francaise (30 min)
 
-Creer `/opt/academie/README.fr.md` :
+Creer `/opt/academia/README.fr.md` :
 - **PAS une traduction 1:1** du README.md
 - Version plus courte (~50% du EN) couvrant : pitch, features, architecture, tech stack
 - Ecrit une fois, pas maintenu en sync avec le EN
@@ -162,7 +162,7 @@ Creer `/opt/academie/README.fr.md` :
 
 ### S5a.4 — docs/ folder (45 min)
 
-Creer les fichiers dans `/opt/academie/docs/` (rendus nativement par GitHub) :
+Creer les fichiers dans `/opt/academia/docs/` (rendus nativement par GitHub) :
 
 #### `docs/architecture.md`
 - Version etendue du Mermaid du README

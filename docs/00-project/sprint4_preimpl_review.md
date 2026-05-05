@@ -223,8 +223,8 @@ Granularité finer-grain (par user %, par domain) pas retenue en v1 — overkill
 
 ### Procédure rollback
 
-1. `sed -i '/^USE_ACADEMIE_CORE=/d' /opt/academie/webapp/.env` (remove flag)
-2. `cd /opt/academie/webapp && docker compose up -d academie-api` (recreate)
+1. `sed -i '/^USE_ACADEMIE_CORE=/d' /opt/academia/webapp/.env` (remove flag)
+2. `cd /opt/academia/webapp && docker compose up -d academie-api` (recreate)
 3. Webapp revient à l'implémentation inline (chat_router.py + teacher_prompt.py actuels)
 4. Smoke + battery regression pour confirmer no regression
 

@@ -51,7 +51,7 @@ Cosmos-server rewiring :
 - **Positives** :
   - L'attaquant via cosmos ne peut plus : build d'images (via `/build`), committer un conteneur en image (via `/commit`), lister/créer des services Docker Swarm, accéder aux plugins/secrets/configs stockés par le daemon, démarrer un exec attacher dans un conteneur (via `/exec/{id}/start`).
   - Proxy hardened lui-même : `--cap-drop ALL`, `--security-opt no-new-privileges`, socket monté RO, jamais exposé au-delà de 127.0.0.1.
-  - Rollback trivial (< 60s) si cosmos UI casse — script prêt à `/opt/academie-shared/secrets/cosmos-pre-L4-rollback.sh`.
+  - Rollback trivial (< 60s) si cosmos UI casse — script prêt à `/opt/academia-shared/secrets/cosmos-pre-L4-rollback.sh`.
 
 - **Négatives acceptées** :
   - `POST /containers/{id}/exec` passe (mais l'exec instance créée reste dormant — le start est bloqué par EXEC=0). Protection imparfaite mais effective.
@@ -66,7 +66,7 @@ Cosmos-server rewiring :
 ## Actions de mise en œuvre
 
 - [x] (claude, 2026-04-16) Deploy `tecnativa/docker-socket-proxy:0.3.0` avec env vars minimum viable, bind 127.0.0.1:2375.
-- [x] (claude, 2026-04-16) Backup rollback script `/opt/academie-shared/secrets/cosmos-pre-L4-rollback.sh` (chmod +x).
+- [x] (claude, 2026-04-16) Backup rollback script `/opt/academia-shared/secrets/cosmos-pre-L4-rollback.sh` (chmod +x).
 - [x] (claude, 2026-04-16) Remplacement cosmos-server via `docker rm + docker run` (suppression mount docker.sock + ajout DOCKER_HOST env).
 - [x] (claude, 2026-04-16) Verify : smoke deep 21/21 ALL CLEAR, proxy logs montrent trafic cosmos (inspect, networks, containers/json, stats).
 - [ ] Sinse : valider cosmos.petit-pont.com UI fonctionne (list containers, logs, restart manuel OK). Retour d'info attendu dans cette session.
@@ -84,7 +84,7 @@ Cette ADR doit être re-examinée si :
 ## Références
 
 - tecnativa/docker-socket-proxy : https://github.com/Tecnativa/docker-socket-proxy
-- Rollback script : `/opt/academie-shared/secrets/cosmos-pre-L4-rollback.sh`
+- Rollback script : `/opt/academia-shared/secrets/cosmos-pre-L4-rollback.sh`
 - ADR L2/L3 prior : Sessions 18 ter, non formalisés en ADR à l'époque (voir `docs/99-runbooks/gotchas.md`)
 - Runbook cosmos : `docs/99-runbooks/gotchas.md` — section Cosmos (à mettre à jour, marquer L4 appliqué)
 - Files impactés : runtime cosmos-server (incantation `docker run`), `cosmos-pre-L4-rollback.sh`

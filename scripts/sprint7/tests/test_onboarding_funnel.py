@@ -6,7 +6,7 @@ against the live postgres-academie (doesn't need the API container
 rebuilt).
 
 Usage :
-  docker exec -i postgres-academie psql -U sinse -d academie_db < /opt/academie/scripts/sprint7/01_onboarding_telemetry_schema.sql
+  docker exec -i postgres-academie psql -U sinse -d academie_db < /opt/academia/scripts/sprint7/01_onboarding_telemetry_schema.sql
   python3 -m pytest scripts/sprint7/tests/test_onboarding_funnel.py -q
 """
 from __future__ import annotations

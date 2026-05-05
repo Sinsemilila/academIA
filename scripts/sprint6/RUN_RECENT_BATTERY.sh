@@ -17,7 +17,7 @@
 #         (quiet mode : append --quiet to skip block detail)
 
 set -u
-REPO="/opt/academie"
+REPO="/opt/academia"
 cd "$REPO" || exit 2
 
 QUIET=0

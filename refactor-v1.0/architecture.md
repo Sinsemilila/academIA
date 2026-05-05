@@ -13,7 +13,7 @@
 ├── .gitignore
 ├── .lock                                ← claude:<timestamp> (sera supprimé D20)
 └── context/
-    ├── CLAUDE.md (172 lignes)          ← projet-specific, dupliqué avec /opt/academie/CLAUDE.md
+    ├── CLAUDE.md (172 lignes)          ← projet-specific, dupliqué avec /opt/academia/CLAUDE.md
     ├── conventions.md (75 lignes)       ← règles workflow, à fusionner dans AGENTS.md
     ├── GEMINI.md (8 lignes)             ← pointer minimaliste
     ├── STATE.md (81 lignes)
@@ -24,7 +24,7 @@
     ├── fin.md (16 lignes, slash command existant)
     └── claude-settings.json             ← hook Stop (rappel git commit)
 
-/opt/academie/                           ← projet academie-IA (prod)
+/opt/academia/                           ← projet academie-IA (prod)
 ├── .claude/
 │   ├── commands/fin.md                  ← slash command existant
 │   ├── settings.json                    ← hook Stop (dupliqué)
@@ -67,7 +67,7 @@
 4. **Pas de filet de sécurité** : aucun backup automatisé, aucun test de restore
 5. **Pas d'auto-merge** : chaque merge vers main demande intervention humaine de Sinse
 6. **Pas d'outillage workflow** : scripts Python ad-hoc difficiles à découvrir et utiliser
-7. **Secret en clair** : `.dify_admin_key` dans `/opt/academie/`, ADMIN_KEY dans memory native Claude
+7. **Secret en clair** : `.dify_admin_key` dans `/opt/academia/`, ADMIN_KEY dans memory native Claude
 8. **Pas de protection anti-erreur** : un `git add .` ou un `rm -rf` mal placé peut tout casser
 
 ---
@@ -125,11 +125,11 @@
         ├── archive/                     ← REFACTOR-PLAN-working.md (post-v1.0)
         └── refactor-v1.0/               ← CE DOSSIER (plan stabilisé)
 
-/opt/academie/                           ← prod, branche main (code inchangé)
+/opt/academia/                           ← prod, branche main (code inchangé)
 ├── (code webapp, api, scripts) ← D3 règle d'or "Code produit intact"
 └── AGENTS.md                            ← pointer: READ /root/sinse-workspace/AGENTS.md + ...
 
-/opt/academie-worktrees/                 ← NOUVEAU
+/opt/academia-worktrees/                 ← NOUVEAU
 ├── claude/                              ← worktree branche claude
 │   ├── .agent                           ← "claude"
 │   ├── AGENTS.md                        ← pointer vers /root/sinse-workspace/AGENTS.md
@@ -137,9 +137,9 @@
 ├── gemini/                              ← futur (S3)
 └── codex/                               ← futur lointain
 
-/opt/academie-shared/                    ← NOUVEAU
+/opt/academia-shared/                    ← NOUVEAU
 └── secrets/
-    ├── dify-admin-key                   ← migré depuis /opt/academie/.dify_admin_key
+    ├── dify-admin-key                   ← migré depuis /opt/academia/.dify_admin_key
     ├── n8n-encryption-key               ← migré depuis /opt/n8n/encryption.key
     ├── restic-passphrase                ← NOUVEAU (D37 G1)
     ├── google-drive-credentials         ← NOUVEAU (Restic backend)
@@ -197,7 +197,7 @@
 | **Auto-merge** | Manuel 100% | Option E : 12 types + fichiers protégés + seuils | D27, D30, D31, D32 |
 | **Rollback** | `git revert` manuel | Tool `rollback-to <tag>` safe | D34 |
 | **YOLO mode** | Non | `--dangerously-skip-permissions` activé post-backup | D22 (sous-produit) |
-| **Secrets** | En clair dans `/opt/academie/` | Migrés dans `/opt/academie-shared/secrets/` | D37 G6 |
+| **Secrets** | En clair dans `/opt/academia/` | Migrés dans `/opt/academia-shared/secrets/` | D37 G6 |
 | **Langue fichiers .md** | Français | Anglais télégraphique | D13 |
 | **Slash commands** | `/fin` seul | `/pickup` + `/handoff` (P2 placement) | D33 |
 | **LLMs workflow** | N/A | Claude/Gemini CLIs abonnements Sinse | D28, D29 |
@@ -208,7 +208,7 @@
 ## 4. Flux d'un merge classique (Option E)
 
 ```
-[AI edits files in worktree /opt/academie-worktrees/claude/]
+[AI edits files in worktree /opt/academia-worktrees/claude/]
     ↓
 [committer "[type] message" file1 file2 ...]
     ↓ (committer bash tool)
@@ -315,10 +315,10 @@
 
 **Important** : ces zones ne sont PAS traitées par le refactor workflow v1.0. Elles feront l'objet d'un audit séparé post-refactor (voir `projects/academie-ia/AUDIT-TODO.md`).
 
-- `/opt/academie/CLAUDE.md` projet (sera remplacé par pointer en S2, mais le contenu migrera vers `docs/`)
-- `/opt/academie/scripts/*.py` (les 26 scripts Python ad-hoc, à CLI-fier post-refactor)
-- `/opt/academie/api/` code FastAPI (intact)
-- `/opt/academie/webapp/` code SvelteKit (intact)
+- `/opt/academia/CLAUDE.md` projet (sera remplacé par pointer en S2, mais le contenu migrera vers `docs/`)
+- `/opt/academia/scripts/*.py` (les 26 scripts Python ad-hoc, à CLI-fier post-refactor)
+- `/opt/academia/api/` code FastAPI (intact)
+- `/opt/academia/webapp/` code SvelteKit (intact)
 - Configs LiteLLM (sauf déplacement secrets)
 - Workflows n8n (intacts)
 - Chatflows Dify (intacts, sauf rollback-snapshot prévu en S2)

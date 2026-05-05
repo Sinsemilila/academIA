@@ -9,7 +9,7 @@ owner: claude
 
 > Extraction verbatim des 4 prompts système actuellement déployés dans le chatflow Dify Teacher (advanced-chat app `39565197-c9d1-4d5b-b66f-18925de236d9`, published workflow `c52a451f-e381-46f1-a23a-077197b0fccb`).
 >
-> **Source de vérité** : `/opt/academie/scripts/update_teacher_chatflow.py` (lignes 1082-1417). Ce script construit + push le chatflow via API Dify ; éditer Dify UI directement = écrasé au prochain run du script.
+> **Source de vérité** : `/opt/academia/scripts/update_teacher_chatflow.py` (lignes 1082-1417). Ce script construit + push le chatflow via API Dify ; éditer Dify UI directement = écrasé au prochain run du script.
 >
 > **Ce document est read-only** — il sert de référence pour Phase 0b (`sprint3_design.md`) et permet de comparer le before/after Sprint 3.
 

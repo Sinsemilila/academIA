@@ -6,7 +6,7 @@ Detects conversations with unsnapshot messages (inactive 2h+)
 and triggers n8n dify-snapshot for each.
 
 Run via crontab every hour:
-  0 * * * * /usr/bin/python3 /opt/academie/scripts/cron_snapshot_safety.py >> /var/log/academie-snapshot-cron.log 2>&1
+  0 * * * * /usr/bin/python3 /opt/academia/scripts/cron_snapshot_safety.py >> /var/log/academie-snapshot-cron.log 2>&1
 
 When no stale sessions exist, does nothing (idle).
 """

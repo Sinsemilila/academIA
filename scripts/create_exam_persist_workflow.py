@@ -5,7 +5,7 @@ Saves exam state to DB for resume after disconnection.
 Flow: Webhook → Build SQL → SQL Update → Respond
 
 Usage:
-  python3 /opt/academie/scripts/create_exam_persist_workflow.py && docker restart n8n-academie
+  python3 /opt/academia/scripts/create_exam_persist_workflow.py && docker restart n8n-academie
 """
 
 import json

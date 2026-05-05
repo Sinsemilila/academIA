@@ -2,7 +2,7 @@
 """Reset password for a user in academie_db.
 
 Usage (interactive, password not echoed, never written to disk):
-    python3 /opt/academie/scripts/reset_admin_password.py sinse
+    python3 /opt/academia/scripts/reset_admin_password.py sinse
 
 The script :
 1. Prompts for a new password (hidden input)

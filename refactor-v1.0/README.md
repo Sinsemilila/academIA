@@ -34,7 +34,7 @@ Refactor complet du **socle workflow/workspace** inspiré par Peter Steinberger,
 ## Les 8 règles d'or (à ne jamais violer)
 
 1. **Backup avant tout** — zéro changement structurel tant que le test de restore n'est pas validé
-2. **Prod intouchable** — academie.petit-pont.com doit continuer à fonctionner pendant tout le refactor
+2. **Prod intouchable** — academia.petit-pont.com doit continuer à fonctionner pendant tout le refactor
 3. **Code produit intact** — on refactore l'infrastructure AUTOUR du code, pas le code lui-même
 4. **Tester chaque brique avant la suivante** — valider worktree claude avant de créer worktree gemini
 5. **Documenter les décisions en temps réel**

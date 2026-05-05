@@ -50,7 +50,7 @@ Suppression de la vulnérabilité XSS structurelle (JWT en localStorage) en migr
 ## Activation
 
 ```bash
-cd /opt/academie/webapp
+cd /opt/academia/webapp
 docker compose -f docker-compose.webapp.yml build academie-api academie-frontend
 docker compose -f docker-compose.webapp.yml up -d --force-recreate academie-api academie-frontend
 ```
@@ -61,7 +61,7 @@ docker compose -f docker-compose.webapp.yml up -d --force-recreate academie-api 
 
 ```bash
 USERNAME=sinse PASSWORD='<ton_password>' TOTP='<6_digits_aegis>' \
-  bash /opt/academie/scripts/sprint8/05_test_sessions_redis.sh
+  bash /opt/academia/scripts/sprint8/05_test_sessions_redis.sh
 ```
 
 Couvre : login (+ MFA si enrolled) → cookies posées → /auth/me OK → CSRF rejet sans header → CSRF accept avec header → /me/sessions list → Redis state → logout → /auth/me 401 → Redis purge.
@@ -94,7 +94,7 @@ TTL doit être ~604800 (7j) après login, et se rafraîchir à chaque request /a
 ## Rollback rapide
 
 ```bash
-cd /opt/academie
+cd /opt/academia
 git revert <a1_commit_sha>
 cd webapp && docker compose -f docker-compose.webapp.yml up -d --build academie-api academie-frontend
 ```

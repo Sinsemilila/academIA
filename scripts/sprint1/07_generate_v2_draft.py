@@ -2,10 +2,10 @@
 
 Inputs:
   - /mnt/cosmos-data/sprint1/data/processed/tier_assignments_external.parquet
-  - /opt/academie/webapp/backend/app/config/tolerance_matrix.yaml (as base)
+  - /opt/academia/webapp/backend/app/config/tolerance_matrix.yaml (as base)
 
 Outputs:
-  - /opt/academie/webapp/backend/app/config/tolerance_matrix_v2_draft.yaml
+  - /opt/academia/webapp/backend/app/config/tolerance_matrix_v2_draft.yaml
 
 Strategy (Path A conservative):
   - Keep the full v1 structure (families, codes, labels, concept_families, etc.)
@@ -26,8 +26,8 @@ import pandas as pd
 import yaml
 
 TIER = "/mnt/cosmos-data/sprint1/data/processed/tier_assignments_external.parquet"
-V1 = Path("/opt/academie/webapp/backend/app/config/tolerance_matrix.yaml")
-OUT = Path("/opt/academie/webapp/backend/app/config/tolerance_matrix_v2_draft.yaml")
+V1 = Path("/opt/academia/webapp/backend/app/config/tolerance_matrix.yaml")
+OUT = Path("/opt/academia/webapp/backend/app/config/tolerance_matrix_v2_draft.yaml")
 
 # 6-level CEFR → 4-band mapping (same as v1)
 LEVEL_TO_BAND = {

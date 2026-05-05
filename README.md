@@ -112,7 +112,7 @@ erDiagram
 ## Project Structure
 
 ```
-/opt/academie/
+/opt/academia/
 ├── webapp/
 │   ├── frontend/          # SvelteKit PWA
 │   │   ├── src/routes/    # Pages: login, dashboard, chat, stats, changelog
@@ -172,8 +172,8 @@ erDiagram
 
 ```bash
 # Clone and configure
-git clone https://github.com/Sinsemilila/academie-ia.git /opt/academie
-cd /opt/academie
+git clone https://github.com/Sinsemilila/academie-ia.git /opt/academia
+cd /opt/academia
 
 # Set up environment
 cp .env.example .env  # Edit with your API keys

@@ -8,7 +8,7 @@ owner: claude
 # Phase 7.1 — Spaced Retrieval Activation
 
 **Activated** : 2026-04-16 (Session 23, after Phase 7 MVP shipped in commit `00cd2b5`)
-**Flag** : `SPACED_RETRIEVAL_ENABLED=true` dans `/opt/academie/webapp/.env`
+**Flag** : `SPACED_RETRIEVAL_ENABLED=true` dans `/opt/academia/webapp/.env`
 **Revisit target** : 2026-04-23 (+7 days) — review telemetry + decide next steps
 
 ## What changed
@@ -20,7 +20,7 @@ Le flag active les helpers `chat_router._fetch_due_retrieval_items` + `_persist_
 
 ## Monitoring
 
-Script : `/opt/academie/scripts/ops/monitor_spaced_retrieval.sh`
+Script : `/opt/academia/scripts/ops/monitor_spaced_retrieval.sh`
 
 ```bash
 ./scripts/ops/monitor_spaced_retrieval.sh
@@ -53,11 +53,11 @@ En cas de régression observée (crash, latence +200ms, data corruption, etc.) :
 
 ```bash
 # 1. Remove flag from .env
-sudo sed -i '/^SPACED_RETRIEVAL_ENABLED=/d' /opt/academie/webapp/.env
-sudo sed -i '/^# Sprint 3 Phase 7.1 activation/d' /opt/academie/webapp/.env
+sudo sed -i '/^SPACED_RETRIEVAL_ENABLED=/d' /opt/academia/webapp/.env
+sudo sed -i '/^# Sprint 3 Phase 7.1 activation/d' /opt/academia/webapp/.env
 
 # 2. Recreate container (picks up removed env)
-cd /opt/academie/webapp && docker compose -f docker-compose.webapp.yml up -d academie-api
+cd /opt/academia/webapp && docker compose -f docker-compose.webapp.yml up -d academie-api
 
 # 3. Verify flag False
 docker exec academie-api python3 -c "from app.routers import chat_router; print(chat_router.SPACED_RETRIEVAL_ENABLED)"

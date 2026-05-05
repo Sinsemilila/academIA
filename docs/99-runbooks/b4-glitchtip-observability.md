@@ -59,10 +59,10 @@ Une fois loggé :
 Décrypter, ajouter, re-encrypter :
 
 ```bash
-SOPS_AGE_KEY_FILE=/opt/academie-shared/secrets/age.key sops --input-type dotenv --output-type dotenv -d webapp/.env.sops > /tmp/env.plain
+SOPS_AGE_KEY_FILE=/opt/academia-shared/secrets/age.key sops --input-type dotenv --output-type dotenv -d webapp/.env.sops > /tmp/env.plain
 # éditer /tmp/env.plain : ajouter PUBLIC_SENTRY_DSN_FRONTEND= et SENTRY_DSN_BACKEND=
 mv /tmp/env.plain /tmp/env.new.sops
-SOPS_AGE_KEY_FILE=/opt/academie-shared/secrets/age.key sops --config .sops.yaml --input-type dotenv --output-type dotenv -e /tmp/env.new.sops > webapp/.env.sops
+SOPS_AGE_KEY_FILE=/opt/academia-shared/secrets/age.key sops --config .sops.yaml --input-type dotenv --output-type dotenv -e /tmp/env.new.sops > webapp/.env.sops
 rm /tmp/env.new.sops
 ```
 

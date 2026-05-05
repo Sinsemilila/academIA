@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 
-_BACKEND = "/opt/academie/webapp/backend"
+_BACKEND = "/opt/academia/webapp/backend"
 if _BACKEND not in sys.path:
     sys.path.insert(0, _BACKEND)
 

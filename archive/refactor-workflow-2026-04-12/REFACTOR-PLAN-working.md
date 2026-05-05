@@ -42,7 +42,7 @@ Construire un socle professionnel inspiré de Peter Steinberger (Claude Code pow
 ### 1.3 Règles d'or du refactor (à ne jamais violer)
 
 1. **Backup avant tout** — zéro changement structurel tant que le test de restore n'est pas validé
-2. **Prod intouchable** — academie.petit-pont.com doit continuer à fonctionner pendant tout le refactor
+2. **Prod intouchable** — academia.petit-pont.com doit continuer à fonctionner pendant tout le refactor
 3. **Code produit intact** — on refactore l'infrastructure AUTOUR du code, pas le code lui-même (webapp, Teacher)
 4. **Tester chaque brique avant la suivante** — valider worktree claude avant de créer worktree gemini
 5. **Documenter les décisions en temps réel** — ce fichier + `DECISIONS.md` mis à jour à chaque choix
@@ -307,12 +307,12 @@ Arq Backup (horaires cloud B2) + SuperDuper! (clone bootable macOS) + Time Machi
 **Infrastructure (isolation physique)** :
 
 ```
-/opt/academie/                     ← prod, branche main
-/opt/academie-worktrees/
+/opt/academia/                     ← prod, branche main
+/opt/academia-worktrees/
   ├── claude/                      ← worktree branche claude
   ├── gemini/                      ← worktree branche gemini (futur)
   └── codex/                       ← worktree branche codex (futur)
-/opt/academie-shared/              ← secrets + symlinks
+/opt/academia-shared/              ← secrets + symlinks
 ```
 
 **Workflow (collaboration explicite)** via slash commands :
@@ -364,10 +364,10 @@ Décision Sinse : accès SSH pour accélérer la mise en place backup.
 
 ### D8 — Pointer pattern AGENTS.md (2026-04-11, post-recherche v2)
 
-Au lieu d'un AGENTS.md par worktree, **UN seul AGENTS.md canonical** dans `/opt/academie-shared/AGENTS.md`. Chaque worktree a juste un fichier pointer :
+Au lieu d'un AGENTS.md par worktree, **UN seul AGENTS.md canonical** dans `/opt/academia-shared/AGENTS.md`. Chaque worktree a juste un fichier pointer :
 
 ```
-READ /opt/academie-shared/AGENTS.md BEFORE ANYTHING (skip if missing).
+READ /opt/academia-shared/AGENTS.md BEFORE ANYTHING (skip if missing).
 ```
 
 Notes repo-local sous cette ligne.
@@ -450,7 +450,7 @@ Priorité CLIs :
 
 **Pointer dans chaque projet** :
 ```
-/opt/academie/AGENTS.md  →  "READ /root/sinse-workspace/AGENTS.md + projects/academie-ia/PROJECT.md BEFORE ANYTHING"
+/opt/academia/AGENTS.md  →  "READ /root/sinse-workspace/AGENTS.md + projects/academie-ia/PROJECT.md BEFORE ANYTHING"
 ```
 
 **Avantages** :
@@ -463,14 +463,14 @@ Priorité CLIs :
 
 **Coûts (refactor à faire en S2)** :
 - Déplacer `context/*` → `projects/academie-ia/*` (~10 min)
-- Adapter symlink `/opt/academie/context → /root/sinse-workspace/projects/academie-ia/` (~5 min)
+- Adapter symlink `/opt/academia/context → /root/sinse-workspace/projects/academie-ia/` (~5 min)
 - Mettre à jour `claude-settings.json` (hook) avec nouveaux paths (~5 min)
 - Mettre à jour `conventions.md` (paths) — sera fusionné dans AGENTS.md de toute façon
 - Mettre à jour le `/fin` slash command (paths) — sera remplacé par `/handoff` de toute façon
 
 **Estimation totale** : ~30 min de refactor structure, à faire en S2 dans le bloc "refactor archi".
 
-**Note importante** : cette décision rend caduque l'idée initiale d'un `/opt/academie-shared/` séparé pour les secrets (D8). Les secrets resteront dans `/opt/academie-shared/` (ou similaire) côté infra, mais la doc workflow vit dans `/root/sinse-workspace/`.
+**Note importante** : cette décision rend caduque l'idée initiale d'un `/opt/academia-shared/` séparé pour les secrets (D8). Les secrets resteront dans `/opt/academia-shared/` (ou similaire) côté infra, mais la doc workflow vit dans `/root/sinse-workspace/`.
 
 ### D13 — Style et langue des fichiers .md (2026-04-11, validé Sinse)
 
@@ -766,7 +766,7 @@ log fix "Onboarding Phase 1→2 transition"
 
 **Rationale** :
 - Cohérent avec D12 (séparation workflow vs projet)
-- `/opt/academie/scripts/` appartient au projet académie, pas au workflow
+- `/opt/academia/scripts/` appartient au projet académie, pas au workflow
 - Pas de bénéfice immédiat à CLI-fier maintenant
 - Évite le scope creep
 
@@ -779,15 +779,15 @@ log fix "Onboarding Phase 1→2 transition"
 **Nouvelle étape ajoutée à la roadmap** : une fois le refactor workflow terminé (toutes pastilles jaunes tranchées + audit redondances + plan v1.0 + Sessions S1+S2+S3 exécutées), faire un **audit complet du projet académie-IA** pour le restructurer et le rendre compatible avec le nouveau workflow.
 
 **Périmètre de l'audit académie-IA** :
-1. **Scripts** (`/opt/academie/scripts/`) : à CLI-fier ? à déplacer ? à grouper sous `tools/` projet ?
-2. **`/opt/academie/CLAUDE.md`** : à supprimer (remplacé par pointer vers `/root/sinse-workspace/AGENTS.md` + `projects/academie-ia/PROJECT.md`)
-3. **`/opt/academie/.claude/`** : à adapter (settings, commands, hooks)
-4. **`/opt/academie/.gemini/`** : idem
-5. **Symlinks** : `/opt/academie/context` → adapter selon nouvelle structure
-6. **`/opt/academie/curriculums/`** : organiser dans `projects/academie-ia/data/` ou laisser ?
-7. **`/opt/academie/api/`**, **`/opt/academie/webapp/`** : code, garder en place mais référencer depuis `docs/`
-8. **Fichiers d'accès** (`.dify_admin_key`) : déplacer dans `/opt/academie-shared/secrets/` ?
-9. **Worktrees academie** : créer la structure `/opt/academie-worktrees/{claude,gemini}/`
+1. **Scripts** (`/opt/academia/scripts/`) : à CLI-fier ? à déplacer ? à grouper sous `tools/` projet ?
+2. **`/opt/academia/CLAUDE.md`** : à supprimer (remplacé par pointer vers `/root/sinse-workspace/AGENTS.md` + `projects/academie-ia/PROJECT.md`)
+3. **`/opt/academia/.claude/`** : à adapter (settings, commands, hooks)
+4. **`/opt/academia/.gemini/`** : idem
+5. **Symlinks** : `/opt/academia/context` → adapter selon nouvelle structure
+6. **`/opt/academia/curriculums/`** : organiser dans `projects/academie-ia/data/` ou laisser ?
+7. **`/opt/academia/api/`**, **`/opt/academia/webapp/`** : code, garder en place mais référencer depuis `docs/`
+8. **Fichiers d'accès** (`.dify_admin_key`) : déplacer dans `/opt/academia-shared/secrets/` ?
+9. **Worktrees academie** : créer la structure `/opt/academia-worktrees/{claude,gemini}/`
 
 **Position dans la roadmap** : étape 11 (post-Sessions exécution).
 
@@ -836,7 +836,7 @@ log fix "Onboarding Phase 1→2 transition"
 
 **`--quick`** (containers + services HTTP) :
 - Containers UP : academie-frontend, academie-api, dify-api, dify-worker, postgres-academie, redis-academie, n8n-academie, litellm-proxy
-- Webapp HTTP 200 sur https://academie.petit-pont.com/
+- Webapp HTTP 200 sur https://academia.petit-pont.com/
 - FastAPI HTTP 200 sur localhost:8000/health
 
 **`--deep`** (= --quick + endpoints + chatflow) :
@@ -915,8 +915,8 @@ docker ps --filter "name=dify-worker" --format "{{.Status}}" | grep -q "Up"
 
 **Cibles** :
 - `/root/sinse-workspace/` (workflow + projects state)
-- `/opt/academie/` (code académie-IA — le plus critique)
-- `/opt/academie-worktrees/{claude,gemini,codex}/` (chacun des worktrees)
+- `/opt/academia/` (code académie-IA — le plus critique)
+- `/opt/academia-worktrees/{claude,gemini,codex}/` (chacun des worktrees)
 
 **Comportement** :
 - **Bloque dur** le commit si un secret est détecté (pas juste warning)
@@ -1154,7 +1154,7 @@ Ces fichiers bloquent l'auto-merge même avec un diff minime. Ils sont trop sens
 **Patterns** :
 - **Secrets env** : `.env`, `.env.*`
 - **Secrets files** : `*.key`, `*.pem`, `*.crt`, `*.cert`, `*_rsa*`, `*_ed25519*`
-- **Secrets spécifiques projet** : `.dify_admin_key`, `encryption.key`, `/opt/academie-shared/secrets/*`
+- **Secrets spécifiques projet** : `.dify_admin_key`, `encryption.key`, `/opt/academia-shared/secrets/*`
 - **Credentials d'outils** : `.npmrc`, `.pypirc`, `.netrc`
 - **Claude Code settings** : `.claude/settings.json`, `.claude/settings.local.json`
 - **Gemini CLI settings** : `.gemini/settings.json`
@@ -1174,7 +1174,7 @@ Ces fichiers bloquent l'auto-merge même avec un diff minime. Ils sont trop sens
 Ces fichiers nécessitent une review par l'arbiter (cross-review claude/gemini via D28). Pas d'auto-merge direct, mais pas besoin de bloquer jusqu'à toi.
 
 **Patterns** :
-- **Backend API** : `/opt/academie/api/**/*.py`, `api/**/*.py`
+- **Backend API** : `/opt/academia/api/**/*.py`, `api/**/*.py`
 - **Frontend webapp** : `webapp/frontend/src/**/*.svelte`, `webapp/frontend/src/**/*.ts`
 - **Scripts de deploy** : `scripts/*.py`, `scripts/*.sh`, `update_teacher_chatflow.py`
 - **Docker images** : `Dockerfile`, `Dockerfile*`
@@ -1440,8 +1440,8 @@ Targets (user-level, installés par script) :
 - Créer les 2 fichiers source dans `slash-commands/`
 - Créer le script `install-slash-commands`
 - Lancer le script pour installer dans `~/.claude/commands/` et `~/.gemini/commands/`
-- **Supprimer** `/opt/academie/.claude/commands/fin.md` (remplacé par `/handoff`)
-- **Supprimer** `/opt/academie/.gemini/commands/fin.toml` (idem)
+- **Supprimer** `/opt/academia/.claude/commands/fin.md` (remplacé par `/handoff`)
+- **Supprimer** `/opt/academia/.gemini/commands/fin.toml` (idem)
 
 **Note WIP partiel** : si une IA veut sauvegarder du work-in-progress sans merger, elle N'utilise PAS `/handoff`. Elle fait juste `committer "[wip] ..."` + `git push` manuel. Le `/handoff` implique toujours "prêt à tenter merge".
 
@@ -1504,7 +1504,7 @@ Pas de cleanup. Git gère les tags à l'échelle. Réévaluer à 500+ tags si be
 ### 35A — Memory native (A7) : Option D — refactor avec référence aux secrets
 
 **Décision** : garder le contenu actuel de `~/.claude/projects/-opt-academie/memory/reference_dify_api.md`, mais :
-1. Remplacer la clé admin Dify en dur par une référence : `ADMIN_KEY=$(cat /opt/academie-shared/secrets/dify-admin-key)`
+1. Remplacer la clé admin Dify en dur par une référence : `ADMIN_KEY=$(cat /opt/academia-shared/secrets/dify-admin-key)`
 2. Ajouter dans AGENTS.md la règle :
    > "Native Claude memory OK for non-sensitive references. Secrets MUST be by-reference (e.g., `$(cat /opt/shared/secrets/...)`)."
 3. Auditer les autres fichiers memory (si existants) pour vérifier qu'il n'y a pas de secrets en clair
@@ -1639,7 +1639,7 @@ Une fois le plan stabilisé en v1.0 et les Sessions S1+S2+S3 exécutées, les fi
 
 ### 36D — Anciens `/fin` suppression (confirmation)
 
-Déjà prévu dans D33. Confirmation : `/opt/academie/.claude/commands/fin.md` et `/opt/academie/.gemini/commands/fin.toml` sont supprimés en S2.
+Déjà prévu dans D33. Confirmation : `/opt/academia/.claude/commands/fin.md` et `/opt/academia/.gemini/commands/fin.toml` sont supprimés en S2.
 
 **Audit redondances TERMINÉ ✅**. Pas de redondance majeure détectée. Le design est globalement sain.
 
@@ -1672,7 +1672,7 @@ Déjà prévu dans D33. Confirmation : `/opt/academie/.claude/commands/fin.md` e
 **10 gaps résolus** :
 
 ### G1 — Passphrase Restic : triple stockage
-1. `/opt/academie-shared/secrets/restic-passphrase` (chmod 600, root only)
+1. `/opt/academia-shared/secrets/restic-passphrase` (chmod 600, root only)
 2. Carnet papier offsite (Sinse écrit à la main, stocké hors cosmos)
 3. Password manager Sinse (Bitwarden/1Password/KeePass)
 Documenté dans `reference/disaster-recovery.md`.
@@ -1682,16 +1682,16 @@ Voir structure ci-dessus. Aucune perte d'info — découpage par thème/session.
 
 ### G3 — Tool `init-worktree` : 15ème bash tool
 Fonctions :
-- `git worktree add /opt/academie-worktrees/<agent> <branch>`
+- `git worktree add /opt/academia-worktrees/<agent> <branch>`
 - Crée `.agent` file avec agent name
 - Crée AGENTS.md pointer vers `/root/sinse-workspace/AGENTS.md`
-- Symlinks vers `/opt/academie-shared/` pour les secrets
+- Symlinks vers `/opt/academia-shared/` pour les secrets
 - Copy template `.claude/settings.local.json` avec permissions worktree-appropriées
 - Premier `smoke-test --quick` dans le worktree
 - Output : "Worktree <agent> ready at <path>"
 
 ### G4 — Dispatch CLAUDE.md → 6 docs projet
-**Étape explicite S2.3.5** : Claude lit `/root/sinse-workspace/context/CLAUDE.md` + `/opt/academie/CLAUDE.md`, extrait et dispatche vers les 6 fichiers `docs/projects/academie-ia/*.md` selon le tableau D16. Pas de rédaction from scratch, extraction intelligente.
+**Étape explicite S2.3.5** : Claude lit `/root/sinse-workspace/context/CLAUDE.md` + `/opt/academia/CLAUDE.md`, extrait et dispatche vers les 6 fichiers `docs/projects/academie-ia/*.md` selon le tableau D16. Pas de rédaction from scratch, extraction intelligente.
 
 ### G5 — Squelette disaster-recovery.md
 **4 scénarios obligatoires** documentés avec procédures pas à pas :
@@ -1708,15 +1708,15 @@ Grep récursif sur patterns :
 - `.env*`, `*.pem`, `*.crt`, `*_rsa*`, `*_ed25519*`
 - Spécifiques : `dify_admin_key`, `encryption.key`, `anthropic-api-key`, `openai-api-key`
 
-Dans : `/opt/academie/`, `/opt/litellm/`, `/opt/n8n/`, `~/.claude/`, `/root/sinse-workspace/`
+Dans : `/opt/academia/`, `/opt/litellm/`, `/opt/n8n/`, `~/.claude/`, `/root/sinse-workspace/`
 
-Output dans un fichier de référence. Migration vers `/opt/academie-shared/secrets/`.
+Output dans un fichier de référence. Migration vers `/opt/academia-shared/secrets/`.
 
 ### G7 — Git hooks par repo : clarification D26
 - `/root/sinse-workspace/.git/hooks/pre-commit` = **gitleaks uniquement** (pas de code actif, pas de smoke-test nécessaire)
-- `/opt/academie/.git/hooks/pre-commit` = **gitleaks**
-- `/opt/academie/.git/hooks/pre-push` = **smoke-test --deep**
-- Worktrees : héritent via `git config core.hooksPath /opt/academie/.git/hooks` (ou équivalent)
+- `/opt/academia/.git/hooks/pre-commit` = **gitleaks**
+- `/opt/academia/.git/hooks/pre-push` = **smoke-test --deep**
+- Worktrees : héritent via `git config core.hooksPath /opt/academia/.git/hooks` (ou équivalent)
 
 ### G8 — Checkpoints sessions : fichier `.session-progress`
 Dans chaque worktree actif, un fichier `.session-progress` (gitignored) contient :
@@ -1883,7 +1883,7 @@ Points : 1.1 + 1.7 + 1.8 + 1.10 + 2.6 + 2.9 + 2.10 + 2.12 + 2.13 + 2.14 + 2.15
 - [ ] Test snapshot manuel
 
 **S1.2 — Backup N2 : Dumps PostgreSQL**
-- [ ] Script `/opt/academie/scripts/pg-backup.sh`
+- [ ] Script `/opt/academia/scripts/pg-backup.sh`
 - [ ] Cron horaire
 - [ ] Destination `/opt/backups/postgres/`
 - [ ] Rétention 24h + 7d + 4w
@@ -1924,10 +1924,10 @@ Points : 1.1 + 1.7 + 1.8 + 1.10 + 2.6 + 2.9 + 2.10 + 2.12 + 2.13 + 2.14 + 2.15
 - [ ] Tester `--dangerously-skip-permissions`
 
 **S2.2 — Structure worktrees**
-- [DISCUSS] Nom final `/opt/academie/` vs `/opt/academie-prod/`
-- [ ] Créer `/opt/academie-worktrees/`
+- [DISCUSS] Nom final `/opt/academia/` vs `/opt/academia-prod/`
+- [ ] Créer `/opt/academia-worktrees/`
 - [ ] `git worktree add .../claude claude`
-- [ ] Créer `/opt/academie-shared/` + déplacer secrets
+- [ ] Créer `/opt/academia-shared/` + déplacer secrets
 - [ ] Symlinks shared → worktrees
 - [ ] Fichier `.agent` par worktree
 - [ ] Test session Claude depuis worktree
@@ -2035,13 +2035,13 @@ Points : 1.1 + 1.7 + 1.8 + 1.10 + 2.6 + 2.9 + 2.10 + 2.12 + 2.13 + 2.14 + 2.15
 
 **Contexte** : Sinse demande un audit complet de l'infra workflow/workspace actuelle avant qu'on continue. Il veut un tableau global avec ce qu'on a / Peter / décidé / zones d'ombres / idées potentielles.
 
-**Méthode** : scan exhaustif `/root/sinse-workspace/`, `/opt/academie/`, `~/.claude/`. Lecture de tous les fichiers contexte + glob structure complète.
+**Méthode** : scan exhaustif `/root/sinse-workspace/`, `/opt/academia/`, `~/.claude/`. Lecture de tous les fichiers contexte + glob structure complète.
 
 **Découvertes majeures** :
 - ~30% du socle est déjà en place (slash commands, hooks, lock, branches, conventions, contexte structuré, symlink)
-- `/opt/academie/CLAUDE.md` (9K) ET `/root/sinse-workspace/context/CLAUDE.md` (8K) sont DUPLIQUÉS — pile le problème que résout le pointer pattern (D8)
+- `/opt/academia/CLAUDE.md` (9K) ET `/root/sinse-workspace/context/CLAUDE.md` (8K) sont DUPLIQUÉS — pile le problème que résout le pointer pattern (D8)
 - Hook Stop déjà actif dans `claude-settings.json` (rappel commit)
-- `/opt/academie/.claude/commands/fin.md` existe + `/opt/academie/.gemini/commands/fin.toml` existe
+- `/opt/academia/.claude/commands/fin.md` existe + `/opt/academia/.gemini/commands/fin.toml` existe
 - Memory native Claude Code dans `~/.claude/projects/.../memory/` — non exploitée
 - `DECISIONS.md` riche (70+ entries) — culture déjà ancrée
 

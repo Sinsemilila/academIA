@@ -6,12 +6,12 @@ set -euo pipefail
 API="${API:-http://127.0.0.1:8000}"
 
 echo "=== Test 1 : valid legacy CSP report (expect 204) ==="
-PAYLOAD='{"csp-report":{"document-uri":"https://academie.petit-pont.com/test","violated-directive":"script-src","blocked-uri":"https://evil.example.com/x.js","effective-directive":"script-src","disposition":"report"}}'
+PAYLOAD='{"csp-report":{"document-uri":"https://academia.petit-pont.com/test","violated-directive":"script-src","blocked-uri":"https://evil.example.com/x.js","effective-directive":"script-src","disposition":"report"}}'
 curl -sX POST -H 'Content-Type: application/csp-report' -d "$PAYLOAD" -w 'HTTP %{http_code}\n' "$API/api/csp-report"
 
 echo ""
 echo "=== Test 2 : modern Reporting API (expect 204) ==="
-PAYLOAD2='[{"type":"csp-violation","age":10,"url":"https://academie.petit-pont.com/x","body":{"documentURL":"https://academie.petit-pont.com/x","blockedURL":"https://cdn.bad.example/x.js","effectiveDirective":"script-src","violatedDirective":"script-src","disposition":"report","statusCode":200}}]'
+PAYLOAD2='[{"type":"csp-violation","age":10,"url":"https://academia.petit-pont.com/x","body":{"documentURL":"https://academia.petit-pont.com/x","blockedURL":"https://cdn.bad.example/x.js","effectiveDirective":"script-src","violatedDirective":"script-src","disposition":"report","statusCode":200}}]'
 curl -sX POST -H 'Content-Type: application/reports+json' -d "$PAYLOAD2" -w 'HTTP %{http_code}\n' "$API/api/csp-report"
 
 echo ""
@@ -25,4 +25,4 @@ docker exec postgres-academie psql -U sinse -d academie_db -c \
 
 echo ""
 echo "=== Headers check (HTML page, bypass Cloudflare Access) ==="
-curl -sI -H 'Host: academie.petit-pont.com' http://127.0.0.1:3001/ | grep -iE 'content-security|cross-origin|permissions|referrer|x-frame|x-content'
+curl -sI -H 'Host: academia.petit-pont.com' http://127.0.0.1:3001/ | grep -iE 'content-security|cross-origin|permissions|referrer|x-frame|x-content'

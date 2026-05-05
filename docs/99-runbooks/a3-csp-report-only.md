@@ -44,7 +44,7 @@ Collecte 2 semaines des violations CSP en mode report-only → analyse → flip 
 
 ```bash
 docker exec -i postgres-academie psql -U sinse -d academie_db \
-  < /opt/academie/scripts/sprint8/01_csp_violations_schema.sql
+  < /opt/academia/scripts/sprint8/01_csp_violations_schema.sql
 ```
 
 Vérif :
@@ -55,7 +55,7 @@ docker exec postgres-academie psql -U sinse -d academie_db -c "\d csp_violations
 ### 2. Rebuild containers backend + frontend
 
 ```bash
-cd /opt/academie/webapp
+cd /opt/academia/webapp
 docker compose -f docker-compose.webapp.yml build academie-api academie-frontend
 docker compose -f docker-compose.webapp.yml up -d academie-api academie-frontend
 ```
@@ -64,10 +64,10 @@ docker compose -f docker-compose.webapp.yml up -d academie-api academie-frontend
 
 ```bash
 # API response
-curl -sI https://academie.petit-pont.com/api/health | grep -iE "cross-origin|permissions-policy|referrer|content-type"
+curl -sI https://academia.petit-pont.com/api/health | grep -iE "cross-origin|permissions-policy|referrer|content-type"
 
 # Page HTML
-curl -sI https://academie.petit-pont.com/ | grep -iE "content-security|cross-origin|permissions-policy|referrer"
+curl -sI https://academia.petit-pont.com/ | grep -iE "content-security|cross-origin|permissions-policy|referrer"
 ```
 
 Attendu sur la page HTML :
@@ -146,7 +146,7 @@ Après 2 semaines :
 
 Si un header casse le site :
 ```bash
-cd /opt/academie
+cd /opt/academia
 git revert <commit-sha>
 cd webapp && docker compose -f docker-compose.webapp.yml up -d --build academie-frontend academie-api
 ```

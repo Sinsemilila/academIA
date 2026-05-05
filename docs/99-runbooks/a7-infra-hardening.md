@@ -25,7 +25,7 @@ Runbook actionable pour Sinse. Ce document liste TOUS les items A7, marque ceux 
 
 ## 🟡 Restent à faire manuellement (perms account-level non incluses dans token zone)
 
-- **Bot Fight Mode** : Cloudflare dashboard → academie.petit-pont.com → Security → Bots → Bot Fight Mode = ON. (API requiert Account-level Bot Management edit, non inclus dans le token A7 zone-scope.)
+- **Bot Fight Mode** : Cloudflare dashboard → academia.petit-pont.com → Security → Bots → Bot Fight Mode = ON. (API requiert Account-level Bot Management edit, non inclus dans le token A7 zone-scope.)
 - **Cache Rule `/_app/immutable/*`** : dashboard → Caching → Cache Rules → créer règle. Match `(http.request.uri.path matches "^/_app/immutable/")`, Edge TTL 1 month, Browser TTL 1 month. (API a renvoyé "request is not authorized" — perm Cache Rules pas mappée à Page Rules dans le token actuel.)
 
 ## ⏭️ Reporté en backend — Rate limiting `/api/*`
@@ -102,11 +102,11 @@ Outils en ligne : [mxtoolbox.com/SuperTool.aspx](https://mxtoolbox.com/SuperTool
 
 ## 🟡 À faire manuellement — Cloudflare WAF + Bot Fight Mode (free tier, 10 min)
 
-Cloudflare est déjà devant academie.petit-pont.com (IPs 188.114.96.x confirmées). Activer le free tier offre WAF managed rules + bot mitigation basique sans coût.
+Cloudflare est déjà devant academia.petit-pont.com (IPs 188.114.96.x confirmées). Activer le free tier offre WAF managed rules + bot mitigation basique sans coût.
 
 ### WAF Managed Rules (free tier)
 
-1. Cloudflare dashboard → academie.petit-pont.com → Security → WAF
+1. Cloudflare dashboard → academia.petit-pont.com → Security → WAF
 2. Section **Managed rules** :
    - Activer **Cloudflare Free Managed Ruleset** (anciennement OWASP Core Rule Set lite)
    - Mode : `Block` (pas `Log` qui ne fait que journaliser)
@@ -142,8 +142,8 @@ Cloudflare est déjà devant academie.petit-pont.com (IPs 188.114.96.x confirmé
 
 ### Vérification post-config
 
-- [ssllabs.com/ssltest/analyze.html?d=academie.petit-pont.com](https://www.ssllabs.com/ssltest/analyze.html?d=academie.petit-pont.com) → viser A+
-- [observatory.mozilla.org/analyze/academie.petit-pont.com](https://observatory.mozilla.org/analyze/academie.petit-pont.com) → viser A+ (note : sera limité tant que A3 CSP/HSTS pas appliqués au niveau origin)
+- [ssllabs.com/ssltest/analyze.html?d=academia.petit-pont.com](https://www.ssllabs.com/ssltest/analyze.html?d=academia.petit-pont.com) → viser A+
+- [observatory.mozilla.org/analyze/academia.petit-pont.com](https://observatory.mozilla.org/analyze/academia.petit-pont.com) → viser A+ (note : sera limité tant que A3 CSP/HSTS pas appliqués au niveau origin)
 
 ## 🟡 À faire prochaine session — Docker hardening (rebuild requis)
 
@@ -192,17 +192,17 @@ USER node
 
 ## 🟡 À faire — Audit backup actuel + restore mensuel testé
 
-`/opt/academie-shared/secrets/restic-passphrase` existe → un setup restic existe quelque part (probablement Cosmos-managed ou cron OS-level). À auditer :
+`/opt/academia-shared/secrets/restic-passphrase` existe → un setup restic existe quelque part (probablement Cosmos-managed ou cron OS-level). À auditer :
 
 ```bash
 # Lister les snapshots restic actuels
-restic snapshots --password-file /opt/academie-shared/secrets/restic-passphrase
+restic snapshots --password-file /opt/academia-shared/secrets/restic-passphrase
 
 # Vérifier la rotation
-restic forget --password-file /opt/academie-shared/secrets/restic-passphrase --keep-daily 7 --keep-weekly 4 --keep-monthly 12 --dry-run
+restic forget --password-file /opt/academia-shared/secrets/restic-passphrase --keep-daily 7 --keep-weekly 4 --keep-monthly 12 --dry-run
 
 # Test restore (sur un dossier temp)
-restic restore latest --target /tmp/restic-restore-test --password-file /opt/academie-shared/secrets/restic-passphrase
+restic restore latest --target /tmp/restic-restore-test --password-file /opt/academia-shared/secrets/restic-passphrase
 ```
 
 Action Sinse : confirmer où tourne restic (cron quel user ? quel host ? quel target — Drive ? S3 compatible ?), puis :
@@ -241,7 +241,7 @@ Action : reporter à quand on aura un registry. Pas bloquant pour beta privée f
 - [ ] Cloudflare Cache rule `/_app/immutable/` (manuel dashboard, perm Cache Rules)
 - [⏭️] Cloudflare Rate limiting `/api/*` (reporté → backend slowapi en A5, free tier limite à 1 règle déjà occupée par leaked-creds check)
 - [x] Cloudflare SSL/TLS Full (strict) + Always HTTPS + Min TLS 1.2 + TLS 1.3 + HSTS 1 an
-- [ ] SSL Labs A+ (vérifier post-application : ssllabs.com/ssltest/analyze.html?d=academie.petit-pont.com)
+- [ ] SSL Labs A+ (vérifier post-application : ssllabs.com/ssltest/analyze.html?d=academia.petit-pont.com)
 - [ ] Mozilla Observatory A+ (peut attendre A3 CSP origin)
 - [ ] Docker hardening appliqué + smoke-test green (A7b prochaine session)
 - [ ] Restore restic testé une fois

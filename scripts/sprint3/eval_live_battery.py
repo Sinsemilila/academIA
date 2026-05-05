@@ -42,10 +42,10 @@ import psycopg2
 import yaml
 from passlib.context import CryptContext
 
-_BACKEND = "/opt/academie/webapp/backend"
+_BACKEND = "/opt/academia/webapp/backend"
 if _BACKEND not in sys.path:
     sys.path.insert(0, _BACKEND)
-_SCRIPTS = "/opt/academie/scripts"
+_SCRIPTS = "/opt/academia/scripts"
 if _SCRIPTS not in sys.path:
     sys.path.insert(0, _SCRIPTS)
 
@@ -101,7 +101,7 @@ def _load_personas(lang: str) -> dict:
         from sprint3.eval_personas import PERSONAS  # noqa: PLC0415
         return PERSONAS
     yaml_path = (
-        Path("/opt/academie/data/battery") / f"{lang}_personas.yaml"
+        Path("/opt/academia/data/battery") / f"{lang}_personas.yaml"
     )
     if not yaml_path.exists():
         raise SystemExit(
@@ -117,11 +117,11 @@ TEST_USERNAME = "test-v2-battery"
 TEST_PASSWORD = "BatteryV2-2026!"
 SLEEP_BETWEEN_CALLS = 2.5  # 24 req/min < 30 req/min rate limit
 CHAT_TIMEOUT = 30.0
-REPORT_PATH = Path("/opt/academie/scripts/sprint3/eval_live_report.md")
+REPORT_PATH = Path("/opt/academia/scripts/sprint3/eval_live_report.md")
 
 
 def _db_dsn() -> str:
-    env = Path("/opt/academie/webapp/.env")
+    env = Path("/opt/academia/webapp/.env")
     if env.exists():
         for line in env.read_text().splitlines():
             if line.startswith("DATABASE_URL="):

@@ -20,7 +20,7 @@ read_when: "Debugging unexpected behavior, or before making infrastructure chang
 
 ## PostgreSQL
 
-- Password: stored in `/opt/academie-shared/secrets/` — never commit in clear
+- Password: stored in `/opt/academia-shared/secrets/` — never commit in clear
 - PG data on /mnt/cosmos-data/postgres/ (bind mount, 850G disk, separate from boot).
 - Dump restore: "already exists" errors on constraints are normal and harmless.
 
@@ -42,5 +42,5 @@ read_when: "Debugging unexpected behavior, or before making infrastructure chang
 
 ## Secrets
 
-- .dify_admin_key and encryption.key migrated to /opt/academie-shared/secrets/ with symlinks (S2.1, 2026-04-12).
+- .dify_admin_key and encryption.key migrated to /opt/academia-shared/secrets/ with symlinks (S2.1, 2026-04-12).
 - Claude native memory had ADMIN_KEY in clear — replaced by reference.

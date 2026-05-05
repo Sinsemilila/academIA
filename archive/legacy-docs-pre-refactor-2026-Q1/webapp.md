@@ -29,7 +29,7 @@ SvelteKit (hooks.server.ts) proxy /api/* → FastAPI:8000
 
 ### Changelog rule
 When adding user-visible features:
-1. Update /opt/academie/webapp/frontend/src/routes/changelog/+page.svelte
+1. Update /opt/academia/webapp/frontend/src/routes/changelog/+page.svelte
 2. Bump CHANGELOG_VERSION in Header.svelte
 
 ## Backend (FastAPI)

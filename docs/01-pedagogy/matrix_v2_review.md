@@ -313,4 +313,4 @@ re-vérifier :
 - [error-gradation.md](error-gradation.md) — framework 5 tiers + seuils percentile
 - [ADR-003](../05-decisions/ADR-003-5-tiers-taxonomy.md) — décision 5 tiers
 - [ADR-009](../05-decisions/ADR-009-gravity-axes-schema.md) — gravity axes
-- [tolerance_matrix_v2.yaml](/opt/academie/webapp/backend/app/config/tolerance_matrix_v2.yaml) — matrice active soft v2
+- [tolerance_matrix_v2.yaml](/opt/academia/webapp/backend/app/config/tolerance_matrix_v2.yaml) — matrice active soft v2

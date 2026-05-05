@@ -374,7 +374,7 @@
 - Obsidian Windows installé fixe + ouvert coffre `E:\sinse-vault` + autostart SyncTrayzor configuré (Start on login + Start minimized + Close to tray + Start Syncthing automatically).
 
 **Audit intégral système Obsidian** (10 checks read-only) :
-1. Inventaire archive `/root/sinse-archive-2026-pre-vault/` vs vault+/opt/academie : ✅ archive = github snapshot pré-vault intentionnel (1 commit `archive/workspace pre-vault`)
+1. Inventaire archive `/root/sinse-archive-2026-pre-vault/` vs vault+/opt/academia : ✅ archive = github snapshot pré-vault intentionnel (1 commit `archive/workspace pre-vault`)
 2. Hardcoded paths `sinse-workspace` cross-cosmos : ⚠️ 18 refs détectées (5 docs actifs à fixer, le reste = HISTORY/CHANGELOG/refactor archive immutable trace)
 3. Frontmatter validator : ✅ `/root/sinse-vault/meta/scripts/validate-frontmatter.sh` + symlink pre-commit présent
 4. Cron mirrors : ✅ `/etc/cron.d/{memory,academie}-vault-mirror` actifs, markers récents (mtime <15 min)
@@ -385,7 +385,7 @@
 9. Hook PreToolUse require-recent-plan.sh : ✅ matcher Edit|Write|MultiEdit
 10. Frontmatter pre-commit : ✅ (item 3 confirme)
 
-**Phase A — Cleanup hardcoded refs** (8 replacements distinct dans 5 docs `/opt/academie/docs/`) :
+**Phase A — Cleanup hardcoded refs** (8 replacements distinct dans 5 docs `/opt/academia/docs/`) :
 - `04-infra/backup.md` L20+L119 : `sinse-workspace` projet → `sinse-archive-2026-pre-vault` archivé + table repos étendue (sinse-vault/sinse-tools/sinse-claude-config)
 - `04-infra/filesystem-scan.md` L307-309 : `/root/sinse-workspace/tools/` → `/root/sinse-tools/` (3 symlinks pg-backup, restic-backup, smoke-test)
 - `04-infra/filesystem-scan.md` L452 : cron `smoke-monitor` chemin update
@@ -432,7 +432,7 @@
 - 1ère vague `f54e8ee` (3 plans stratégiques) : multilang-roadmap (Wave 1-4 ES/IT+DE/JP/RU) + onboarding-qcm-research (refonte 2026-04-20, 7 rapports vague1+2) + security-refactor-blueprint (ADR-001 H2 2026 réutilisable cross-projet)
 - 2ème vague `7c5f983` (5 pédago/architecture) : pedagogy-cefr-consolidation + error-gradation-framework (GLMM Cox) + feedback-delivery-pedagogy (Lyster/Hattie/Cowan/Cepeda/Sheen-Ellis/Pak) + taxonomy-framework-abstract (5 tiers domain-agnostic GravityAxes James 1998) + architecture-patterns-composite (CF Tunnel + nginx HOST + Docker /28 + LiteLLM cascade + FastAPI monolith + Dify + n8n)
 - 3ème vague `a21eb12` (6 socle solide) : data-model-postgresql + api-surface-rest (10 routers + 5 patterns) + academia-glossary + rgpd-compliance-toolkit (DPIA/registre/DSAR/Schrems II/AI Act/mineurs) + sla-pedagogy-bibliography (15+ citations + 13 corpus open) + l1-l2-scaffolding-policy (matrice 9 cells level×distance×FLA)
-- **Total vault knowledge maintenant 17 files** (3 originaux + 14 promus today). Pattern Karpathy LLM Wiki = pre-compiled summaries + pointer code-adjacent /opt/academie/docs/ source canonical. Audit final exhaustif valide ZERO doc strategic oublié.
+- **Total vault knowledge maintenant 17 files** (3 originaux + 14 promus today). Pattern Karpathy LLM Wiki = pre-compiled summaries + pointer code-adjacent /opt/academia/docs/ source canonical. Audit final exhaustif valide ZERO doc strategic oublié.
 
 **Disk resize + Docker move** :
 - Phase 1 : `qm resize 100 scsi0 +50G` (host Proxmox, 0 downtime) + fdisk delete swap partitions sda5/sda2 + growpart /dev/sda 1 + resize2fs (online) + create swapfile 2.6G sur sda1 + fstab clean. /dev/sda1 passes 47G→99G, 81%→41% used.
@@ -440,7 +440,7 @@
 - 5 commits academie (matin closure) + 8 commits vault (audit + bundles + promotions) + 1 commit sinse-claude-config (B2)
 
 **`/handoff` user-level smart** (1 ship) :
-- `e1f390d` (sinse-claude-config) : skill `/root/.claude/commands/handoff.md` user-level cross-projet auto-detect via git status. Workflow `claude` (depuis /root/) → /pickup → /project academia → work → /project eisenday → work → /handoff (auto-detect 2 projets touchés, ferme proprement chacun + vault auto-writes cumulés). Args : `--projet <nom>`, `--vault-only`, `--dry-run`. Compatible legacy /opt/academie/.claude/commands/handoff.md (overrides sections 1-3 si présent).
+- `e1f390d` (sinse-claude-config) : skill `/root/.claude/commands/handoff.md` user-level cross-projet auto-detect via git status. Workflow `claude` (depuis /root/) → /pickup → /project academia → work → /project eisenday → work → /handoff (auto-detect 2 projets touchés, ferme proprement chacun + vault auto-writes cumulés). Args : `--projet <nom>`, `--vault-only`, `--dry-run`. Compatible legacy /opt/academia/.claude/commands/handoff.md (overrides sections 1-3 si présent).
 
 **Métriques journée Session 50** :
 - 18 commits cross 3 repos (5 academia + 11 vault + 2 sinse-claude-config)
@@ -481,7 +481,7 @@
 - **Docker 29.4 storage driver `overlayfs` "duplicate" du compte** : `du /var/lib/docker` traverse les overlayfs mounts qui pointent vers `/var/lib/containerd/snapshots/`. Apparent 17G + 20G mais réel storage = uniquement containerd snapshots (Docker rootfs/overlayfs/<container_id> = mountpoints virtuels, pas data physique). Mesurer avec `--exclude=*/rootfs/overlayfs/*`. Solved Phase 2 move data-root.
 - **fdisk extended partition layout sda5 swap** bloque growpart /dev/sda 1 si sda2 (extended) + sda5 (swap) sont après sda1. Fix : swapoff + fdisk delete sda5 + delete sda2 + growpart + resize2fs + fallocate swapfile sur sda1 nouveau espace + fstab clean.
 - **GitHub contribution counter délai indexer** : repos privés en burst → propagation slow (10/h max). 18 commits today, 7 reconnus à fin journée. Pattern : check 24h après si <14 commits, sinon investigate user emails verified.
-- **`/handoff` project-level vs user-level scope** : project-level `/opt/academie/.claude/commands/handoff.md` chargé seulement si cwd = /opt/academie au démarrage Claude. Solution scaling : user-level smart `/handoff` (e1f390d) auto-detect via git status, marche depuis n'importe quel cwd. claude direct from /root/ recommended pour multi-projet.
+- **`/handoff` project-level vs user-level scope** : project-level `/opt/academia/.claude/commands/handoff.md` chargé seulement si cwd = /opt/academia au démarrage Claude. Solution scaling : user-level smart `/handoff` (e1f390d) auto-detect via git status, marche depuis n'importe quel cwd. claude direct from /root/ recommended pour multi-projet.
 
 ---
 
@@ -494,14 +494,14 @@
 **Phase 0a sécurité (4/4 — base hardening)** :
 - `~/.claude/settings.json` purgé (drop `defaultMode: auto` + `skipAutoPermissionPrompt: true` + wildcards `permissions.allow: ["*"]`). Source-of-truth enforcement permissions.deny désormais honorée.
 - **Mistral key migration end-to-end** : ancienne clé compromise rotée + SOPS source `config.yaml.sops` migré vers `os.environ/MISTRAL_API_KEY` + container LiteLLM relauncher avec `-e MISTRAL_API_KEY` + smoke live HTTP 200.
-- **rclone config encryption** : master pwd 32 random base64 dans `/opt/academie-shared/secrets/rclone-master-password` + `RCLONE_PASSWORD_COMMAND` env dans restic-backup.sh + restic-restore-test.sh + token gdrive rotation OAuth re-auth via Windows + verify end-to-end (4 snapshots accessibles).
+- **rclone config encryption** : master pwd 32 random base64 dans `/opt/academia-shared/secrets/rclone-master-password` + `RCLONE_PASSWORD_COMMAND` env dans restic-backup.sh + restic-restore-test.sh + token gdrive rotation OAuth re-auth via Windows + verify end-to-end (4 snapshots accessibles).
 - **Hardening cosmos** : `/etc/sysctl.d/99-hardening.conf` (kptr_restrict=2, ptrace_scope=2, rp_filter=1, syncookies, log_martians) + auditd installed/enabled + unattended-upgrades + `/etc/apt/apt.conf.d/20auto-upgrades`.
 
 **Phase 1 Obsidian (foundations)** :
 - Vault structure créée `/root/sinse-vault/` avec 5 folders Option C (projects/areas/resources/archive/meta) + `.gitignore` + `.stignore` + git init + GitHub repo `sinse-vault` privé + push initial.
 - `sinse-tools` repo init `/root/sinse-tools/` + GitHub repo (sinse-tools- typo renamed via gh CLI) + push.
 - `sinse-workspace-archive` rename via gh CLI (cohérent migration future).
-- CLAUDE.md natifs déployés : `/opt/academie/CLAUDE.md` (project, 84 lignes) + `~/.claude/CLAUDE.md` (cross-project user-level, 56 lignes).
+- CLAUDE.md natifs déployés : `/opt/academia/CLAUDE.md` (project, 84 lignes) + `~/.claude/CLAUDE.md` (cross-project user-level, 56 lignes).
 - Aliases bash : `claude-academie`, `claude-eisen`, `tmux-academie`, `tmux-eisen`.
 - Memory mirror cron `/etc/cron.d/memory-vault-mirror` toutes 15 min : `rsync -a --delete /root/.claude/projects/-opt-academie/memory/ → /root/sinse-vault/meta/agent-memory/` + 16 files mirrored initial.
 - Eisenday cloné `/opt/eisenday/` depuis github.com/Sinsemilila/Eisenday-app.
@@ -514,11 +514,11 @@
 
 **Phase 2-3 obsidian migration** (8 + 4 steps + Step 8.5 safety) :
 - Backup pré-migration : restic snapshot `c2cd7070` (1.3 GiB tag pre-obsidian-migration-phase2) + git tags pre-phase2-migration sur 4 repos.
-- Step 1 : 114 files AcademIA project docs `/root/sinse-workspace/projects/academie-ia/` → `/opt/academie/` (8 .md root + docs/ rsync 78 files merged into existing 41 = 119 total zero collision sur 00-project, 01-pedagogy, 05-decisions, 99-runbooks après merge + 4 sub-dirs historique archive/challenges/merge-requests/refactor-v1.0).
+- Step 1 : 114 files AcademIA project docs `/root/sinse-workspace/projects/academie-ia/` → `/opt/academia/` (8 .md root + docs/ rsync 78 files merged into existing 41 = 119 total zero collision sur 00-project, 01-pedagogy, 05-decisions, 99-runbooks après merge + 4 sub-dirs historique archive/challenges/merge-requests/refactor-v1.0).
 - Step 2 : 5 hardcoded refs critiques fixed (CLAUDE.md ligne 80, slash commands handoff/pickup paths, simulate_personas.py lignes 12+24, AGENTS.md projet drop, oracle/README.md:5 relative link).
-- Step 3 : workspace meta → vault `resources/` (4 files: git-workflow, sinse-quickstart, file-protection, tools) + 3 ADRs workspace docs/decisions/ → `/opt/academie/docs/05-decisions/`.
+- Step 3 : workspace meta → vault `resources/` (4 files: git-workflow, sinse-quickstart, file-protection, tools) + 3 ADRs workspace docs/decisions/ → `/opt/academia/docs/05-decisions/`.
 - Step 4 : planning Obsidian → vault `projects/obsidian-migration/` (audit-phase0/ 9 files + 4 obsidian-*.md + roadmap-sinse + phase2-3-plan).
-- Step 5 (CRITIQUE) : tools/ migration avec cron pause + symlinks recreate `/opt/academie-shared/scripts/` → `/root/sinse-tools/` + atomicity check 4/4 OK + restic-backup paths split staging Phase 2 (sinse-vault + sinse-tools UNIQUEMENT) vs Phase 3 (+ sinse-archive).
+- Step 5 (CRITIQUE) : tools/ migration avec cron pause + symlinks recreate `/opt/academia-shared/scripts/` → `/root/sinse-tools/` + atomicity check 4/4 OK + restic-backup paths split staging Phase 2 (sinse-vault + sinse-tools UNIQUEMENT) vs Phase 3 (+ sinse-archive).
 - Step 6-8 : cleanup workspace (AGENTS.md drop + tools/ rm) + commits + validation E2E.
 - Step 8.5 PRÉ-rename safety audit : grep hardcoded refs critique `/etc/cron.d/`, code, slash commands → tous clean. TODO.md WIP paths fixed `/root/sinse-workspace/planning/` → `/root/sinse-vault/projects/obsidian-migration/`.
 - Phase 3 : `mv /root/sinse-workspace/ /root/sinse-archive-2026-pre-vault/` + restic add archive path (Step 11 split staging) + final smoke 17/17 ALL CLEAR.
@@ -533,8 +533,8 @@
 - Two-tier slash commands :
   - **`~/.claude/commands/pickup.md`** (NEW user-level, workspace orientation léger ~3-5K tokens) : lit vault hot.md + log.md + INDEX.md + cosmos health + active projects status.
   - **`~/.claude/commands/project.md`** (NEW user-level, switcher avec args + dispatch vault-reader conditionnel) : `/project academia [task-hint] [--no-vault]`, deep load `/opt/<projet>/{CLAUDE,SESSION,TODO,docs/INDEX}.md` + détecte WIP TODO.md + dispatch Haiku si task identifié.
-  - **`/opt/academie/.claude/commands/pickup.md`** DELETED (absorbé par /project).
-  - **`/opt/academie/.claude/commands/handoff.md`** kept (project-specific finalize).
+  - **`/opt/academia/.claude/commands/pickup.md`** DELETED (absorbé par /project).
+  - **`/opt/academia/.claude/commands/handoff.md`** kept (project-specific finalize).
 - **Custom agent `~/.claude/agents/vault-reader.md`** Haiku 4.5 : lit vault Obsidian + synthesize ≤300 tokens cross-projet knowledge. Format strict KEY POINTS / FILES READ / GOTCHAS / UNCERTAINTY (no preamble, hard limit). Économie ~74% tokens vs raw load Opus.
 - Vault root files :
   - `vault/CLAUDE.md` (instructions Claude reading vault)
@@ -550,7 +550,7 @@
 
 **Side wins** :
 - Workflow vault populated end-to-end visible Obsidian Windows (Sinse validé refresh Ctrl+R cache puis voit tout).
-- Pre-push hooks fixed `/opt/academie/.git/hooks/pre-push` + `/root/sinse-workspace/.git/hooks/pre-push` (paths smoke-test old → /root/sinse-tools/).
+- Pre-push hooks fixed `/opt/academia/.git/hooks/pre-push` + `/root/sinse-workspace/.git/hooks/pre-push` (paths smoke-test old → /root/sinse-tools/).
 - log tool `/root/sinse-tools/log` CHANGELOG path fixed (post-Phase 2 trouvé au /handoff).
 
 **Métriques finales** : smoke deep 23/23 + smoke quick 17/17 + restic backup pushed `c2cd7070` 1.3 GiB + 18+ commits 4 repos (academia, sinse-vault, sinse-tools, sinse-workspace-archive) + 135 locks accumulés (L1-L135) + 9 documents canonical produced.
@@ -560,7 +560,7 @@
 **Session 49 picks immédiats** :
 - **Test E2E live workflow v0.1** (~10 min) : `claude` depuis SSH cosmos + `/pickup` (workspace orientation) + `/project academia` (deep load + dispatch vault-reader sur task hint si TODO.md WIP marker) + question test pour observer Haiku synthese fonctionne.
 - **P0 Teacher EN structured output enum** (~30 min, untried option #1, bloque Phase 3 fault injection delta gating) : ajouter `feedback_type_intended: <enum excluding explicit_correction>` dans JSON schema → LLM declares type AVANT writing feedback. Target 24-26/26 si pink-elephant ne reapparaît pas.
-- **B4 GlitchTip browser final test** (~15 min) : Ctrl+Shift+R sur academie.petit-pont.com + `Promise.reject(new Error('test'))` → vérifier event GlitchTip frontend Issues sous 30s. Pipeline serveur-side validé Session 47.
+- **B4 GlitchTip browser final test** (~15 min) : Ctrl+Shift+R sur academia.petit-pont.com + `Promise.reject(new Error('test'))` → vérifier event GlitchTip frontend Issues sous 30s. Pipeline serveur-side validé Session 47.
 
 **Calendar 2026-05-07 (12 jours)** :
 - DMARC `p=quarantine` flip via API CF zone-token (après 2 sem CSP collecte clean).
@@ -569,7 +569,7 @@
 
 **v0.2 Claude-as-vault-cognition** (~45 min, déclenchable post-test E2E v0.1 OK) :
 - `/handoff` extension auto-writes : append `vault/daily/YYYY-MM-DD.md` (project, done, decisions, gotchas, commits) + overwrite `vault/hot.md` (regenerate 500-word snapshot) + append `vault/log.md` (one-liner) + drafts auto dans `vault/inbox/` si new patterns détectés.
-- Mirror cron `/etc/cron.d/academia-state-mirror` toutes 15 min : `rsync /opt/academie/{SESSION,TODO,CHANGELOG}.md → /root/sinse-vault/projects/academia-ia/` (read-only mirror, source-of-truth /opt/academie).
+- Mirror cron `/etc/cron.d/academia-state-mirror` toutes 15 min : `rsync /opt/academia/{SESSION,TODO,CHANGELOG}.md → /root/sinse-vault/projects/academia-ia/` (read-only mirror, source-of-truth /opt/academia).
 - Si vault knowledge manque pour task récurrent → seed nouveau knowledge file.
 
 **v0.3 future (post-mesure 2-4 semaines usage v0.1+v0.2)** :
@@ -595,7 +595,7 @@
 
 ### Gotchas
 
-- **Pre-push hooks hardcoded paths** : `.git/hooks/pre-push` dans /opt/academie + /root/sinse-workspace référençaient `/root/sinse-workspace/tools/smoke-test`. Découverts au push final Phase 2 (smoke-test command not found). Fix sed → `/root/sinse-tools/`. Pattern : tout fichier `.git/hooks/*` n'est pas committed (config locale), reste sur cosmos seulement, doit être patché manuellement post-migration.
+- **Pre-push hooks hardcoded paths** : `.git/hooks/pre-push` dans /opt/academia + /root/sinse-workspace référençaient `/root/sinse-workspace/tools/smoke-test`. Découverts au push final Phase 2 (smoke-test command not found). Fix sed → `/root/sinse-tools/`. Pattern : tout fichier `.git/hooks/*` n'est pas committed (config locale), reste sur cosmos seulement, doit être patché manuellement post-migration.
 - **log tool `/root/sinse-tools/log`** ligne 37 hardcodait `/root/sinse-workspace/projects/academie-ia/CHANGELOG.md` (commit `e652bf3` fixé). Découvert au /handoff Session 48 close.
 - **Syncthing folder rescan** : malgré `localFiles=49 globalFiles=50` post-migration, `phase2-3-obsidian-migration-plan.md` apparaissait pas dans Obsidian Windows Files panel. Cache Obsidian Windows. Fix `Ctrl+P → Reload app without saving`. Pattern : après migration vault content, toujours suggest reload Obsidian Windows.
 - **Git "dubious ownership"** post-rename `sinse-workspace` → `sinse-archive-2026-pre-vault` : git refuse open repo car owner sinse vs current user root. Fix `git config --global --add safe.directory /root/sinse-archive-2026-pre-vault`. Pattern : si rename dossier git owned par autre user, ajouter safe.directory à toutes les operations git contre archive.
@@ -641,7 +641,7 @@
 - **Bug CF Access path-precedence** : la bypass app `academie/sentry-tunnel` ne prenait pas le pas sur l'app main academie quand browser POST avec cookies CF Access → 403 systématique. Pivot final : tunnel via FastAPI `/api/sentry-tunnel` (déjà couvert par CF Access cookie sinse) + extract sentry_key du DSN dans envelope first line + forward avec query param auth `?sentry_version=7&sentry_key=...`. **End-to-end validé autonomous** depuis le serveur (Issue "autonomous-test-final-from-claude" arrivé dans GlitchTip academie-frontend project). Commits `02a11a3`, `c24eb7e`, `e61cbab`, `7bdf1b4`. PRs #24, #25, #26, #27.
 
 **Side wins** :
-- **CF account API token** créé (`/opt/academie-shared/secrets/cloudflare-api-token-account`, perms Account Tunnel Edit + Access Apps Edit + Zone DNS Edit) → débloquera B6 Email Routing setup + futurs items CF.
+- **CF account API token** créé (`/opt/academia-shared/secrets/cloudflare-api-token-account`, perms Account Tunnel Edit + Access Apps Edit + Zone DNS Edit) → débloquera B6 Email Routing setup + futurs items CF.
 - **asyncpg jsonb codec** registered globally (init=_register_jsonb_codec sur les 2 pools) — fix bug racine du "1010 codes" + recovery code path silently broken depuis A4 ship qui marche maintenant. Commit `acd9ae8` PR #18.
 - Display fix `/settings/security` "10/10 codes" via `{@const}` dans `{#if}` (Svelte 5 parser sur `> 1` inline interpolation). Commit `57cdb00` PR #18.
 
@@ -694,7 +694,7 @@ Sessions plus anciennes (hors des 3 dernières conservées dans [`SESSION.md`](S
 
 **Side wins** :
 - 6 PRs Dependabot mergés (js+py group minor-patch + 4 actions bumps). PR #11 bcrypt 4→5 fermée (obsolétée par A2 argon2). Vulns alerts 8 → 1 low.
-- Cloudflare Access découvert déjà devant academie.petit-pont.com (App AUD `72d16984...` du Dify app — wildcard suspect ou overlap policy à vérifier dashboard). Site non-publiquement accessible actuellement, ce qui est OK pour alpha.
+- Cloudflare Access découvert déjà devant academia.petit-pont.com (App AUD `72d16984...` du Dify app — wildcard suspect ou overlap policy à vérifier dashboard). Site non-publiquement accessible actuellement, ce qui est OK pour alpha.
 
 ### Next
 
@@ -725,7 +725,7 @@ Sessions plus anciennes (hors des 3 dernières conservées dans [`SESSION.md`](S
 ### Gotchas
 
 - **Token Cloudflare edit dashboard buggy** : à chaque ré-édition pour ajouter une perm, le dashboard drop des perms account-level préalables (Access, Notifications). Conséquence : créer un nouveau token from scratch plutôt qu'éditer si on perd des perms.
-- **Cloudflare Access devant academie.petit-pont.com** : tout curl externe → 403 Cloudflare Access (App AUD `72d16984...` qui matche dify app, suspect wildcard). Tests doivent passer par `127.0.0.1:3001` (frontend) ou `127.0.0.1:8000` (backend) avec `Host:` header bypass.
+- **Cloudflare Access devant academia.petit-pont.com** : tout curl externe → 403 Cloudflare Access (App AUD `72d16984...` qui matche dify app, suspect wildcard). Tests doivent passer par `127.0.0.1:3001` (frontend) ou `127.0.0.1:8000` (backend) avec `Host:` header bypass.
 - **Push GitHub workflow file = scope `workflow` requis** : le token gh CLI n'avait que `gist,read:org,repo`. Refresh manuel via `gh auth refresh -h github.com -s workflow` (interactif, navigateur) — pas auto-élevable par moi.
 - **SvelteKit response_model FastAPI** : un endpoint avec `response_model=TokenResponse` rejette tout dict alternative (ex `{mfa_required:true}`) avec ResponseValidationError 500. Solution : retirer le `response_model=` ou Union type.
 - **pyotp version max = 2.9.0** (pas 2.10.x). Erreur catch sur build, fix `requirements.txt`.
@@ -1262,7 +1262,7 @@ Session 37 a livré 16 commits couvrant E2E consolidation 8/8, observed_level v2
 - Telemetry drop-off mid-QCM + durée médiane réelle (instrumenter via `localStorage` timestamps)
 - Cleanup legacy Phase 1 FR dans prompts Dify une fois onboarding-branch wirée + 2 semaines stables
 
-**P2 — Obsidian vault** (option Karpathy wiki) : différé Session 33, pointer sur `/opt/academie/docs/` + `/root/sinse-workspace/projects/academie-ia/` sans restructure. 5 min install, à décider.
+**P2 — Obsidian vault** (option Karpathy wiki) : différé Session 33, pointer sur `/opt/academia/docs/` + `/root/sinse-workspace/projects/academie-ia/` sans restructure. 5 min install, à décider.
 
 ### Gotchas
 
@@ -1443,7 +1443,7 @@ Session 37 a livré 16 commits couvrant E2E consolidation 8/8, observed_level v2
 
 **Phase A — Audit exhaustif (general-purpose agent, ~6 min)** :
 - Scan git history + working tree → **3 CRITIQUES + 3 HAUTS + 4 MOYENS**
-- `/opt/academie/webapp/PLAN.md:178` contenait clé Dify Teacher `app-0PpFwfejvHYTmkrg0FldVXBY` en clair dans le working tree public
+- `/opt/academia/webapp/PLAN.md:178` contenait clé Dify Teacher `app-0PpFwfejvHYTmkrg0FldVXBY` en clair dans le working tree public
 - Commit initial `71e1c4f` leaké : password Postgres `hABT7G9rcPMU3scyx-HY_HEEIRo3FG29` (toujours actif en prod !), admin Dify key, JWT secrets initiaux
 - Commit `6a160fa` "security Code audit fixes" avait retiré du working tree mais **laissé l'historique intact** + **raté PLAN.md**
 
@@ -1553,7 +1553,7 @@ Session 37 a livré 16 commits couvrant E2E consolidation 8/8, observed_level v2
 
 ### Gotchas
 
-- **Push main bloqué par permission system** — le workflow actuel bloque `git push origin main` direct (anti-bypass PR review). Pour le repo `sinse-workspace`, c'est un blocage côté Claude Code uniquement ; Sinse peut pousser manuellement ou ajuster la permission rule dans settings. Le repo `/opt/academie` main était bénéficié d'une permission différente (les 7 commits Phase 0 sont passés).
+- **Push main bloqué par permission system** — le workflow actuel bloque `git push origin main` direct (anti-bypass PR review). Pour le repo `sinse-workspace`, c'est un blocage côté Claude Code uniquement ; Sinse peut pousser manuellement ou ajuster la permission rule dans settings. Le repo `/opt/academia` main était bénéficié d'une permission différente (les 7 commits Phase 0 sont passés).
 - **Option A GLMM cross-lang pas encore exercée** — le framework Phase 0.2 est prêt mais aucune Wave ne l'a consommé. Wave 1 ES peut **soit** télécharger COWS-L2H et faire un GLMM-ES (produit `tolerance_matrix_v2_es.yaml`), **soit** rester sur weights EN comme baseline et re-fit depuis alpha data dans 3 mois. Décision à prendre au kickoff Wave 1.
 - **JP stratégie honnête** : `rules_jp.py` et `data/synthetic_descriptors/jp.yaml` sont seedés avec les pointers Tanos/Bunpro/Polyglossia (33% particules empirique) mais la qualité linguistique fine sera best-effort au lancement. Keigo N1, aspect littéraire, counters rares = documenté transparent dans le produit.
 - **CEFR bridge JLPT granulaire (déc 2025)** n'est pas encore exposé dans l'UI. `levels.py` l'implémente via `jlpt_score_to_cefr(level, score)` mais le Teacher/Sensei UI n'affiche que la version modale simple (N5→a1, N4→a2…). À brancher en Wave 3 si valeur produit confirmée.
@@ -1714,7 +1714,7 @@ Session 37 a livré 16 commits couvrant E2E consolidation 8/8, observed_level v2
   - 5 modules déplacés vers `academie_core/taxonomy/` : categories.py (55L), differ.py (134L), llm.py (303L), rules.py (754L), scoring.py (441L)
   - 3 YAMLs déplacés vers `academie_core/data/tolerance_matrix/` : tolerance_matrix.yaml, tolerance_matrix_v2.yaml, tolerance_matrix_v2_overrides.yaml
   - `scoring.py` : `_CONFIG_DIR = Path(__file__).parent.parent / "data" / "tolerance_matrix"` (via package-relative path)
-  - **Dockerfile rewired** : build context = repo root `/opt/academie/` (au lieu de `webapp/backend`), `COPY packages/academie-core /packages/academie-core + pip install -e` avant webapp deps
+  - **Dockerfile rewired** : build context = repo root `/opt/academia/` (au lieu de `webapp/backend`), `COPY packages/academie-core /packages/academie-core + pip install -e` avant webapp deps
   - **docker-compose.webapp.yml academie-api service** : `build: {context: ..}` + `dockerfile: webapp/backend/Dockerfile`
   - **Shims** : `webapp/backend/app/error_taxonomy/*.py` remplacés par 1-liners `from academie_core.taxonomy.X import *` pour backward-compat scripts/tests
   - **Imports hot-path migrés direct** : chat_router.py + error_analysis_router.py pointent vers `academie_core.taxonomy.*`
@@ -1761,7 +1761,7 @@ Session 37 a livré 16 commits couvrant E2E consolidation 8/8, observed_level v2
 
 ### Next
 - **2026-04-17 matin post-restic** — P3 cleanup backups (procédure copy-paste dans TODO.md, 15 min)
-- **2026-04-23** — Revisit Phase 7.1 telemetry via `./scripts/ops/monitor_spaced_retrieval.sh` + si stable supprimer `/opt/academie-shared/secrets/cosmos-pre-L4-rollback.sh`
+- **2026-04-23** — Revisit Phase 7.1 telemetry via `./scripts/ops/monitor_spaced_retrieval.sh` + si stable supprimer `/opt/academia-shared/secrets/cosmos-pre-L4-rollback.sh`
 - **Sprint 5 Maestro ES** — estimation révisée honnête **7-10 jours-dev** (vs 4.5-6.5j prévus, plus réaliste car création contenu linguistique = boulot handcraft / LLM-assisté + review native speaker)
   - LanguageDomain lang-routing refactor (1j) — actuellement `detect_errors` appelle `_detect` EN-hardcoded, à paramétrer par lang_target
   - rules_es.py (2-3j) — 11 dicts EN actuels + ES-specifics (ser/estar, por/para, gender agreement, subjuntivo, preterit irregular, inverted punctuation ¿?/¡!)
@@ -1780,7 +1780,7 @@ Session 37 a livré 16 commits couvrant E2E consolidation 8/8, observed_level v2
 - **Imports eval_personas.py/eval_live_battery.py** utilisent encore `sys.path.insert(0, _BACKEND)` pour `app.auth` / `app.database` — on garde (seuls les imports taxonomy/pedagogy ont basculé). Les scripts restent fonctionnels.
 - **LanguageDomain.detect_errors ne route PAS encore par langue** — `_TEACHER_DOMAIN.detect_errors(msg)` appelle `_detect(msg)` qui utilise TOUJOURS les règles EN-hardcoded. Pour Spanish il faudra soit refactorer rules.py pour accepter `lang` param, soit swap le détecteur dans LanguageDomain selon lang_target. Pas un blocage Sprint 4 (EN seule en prod), mais à traiter Sprint 5 (~1j refactor).
 - **Error codes collisions futures** : TIER1_CATEGORIES a 57 codes EN (V:TENSE, N:DET, PREP, LEX:COLLOC, etc.). Spanish introduira SER:ESTAR, GEN:AGREE, SUBJ:MOOD qui n'existent pas en EN. Décision à acter Sprint 5 : namespacing avec préfixe (ES:SER_ESTAR) ou constantes séparées par lang.
-- **Compose build context = `..` (repo root)** : si le user lance `docker compose` depuis ailleurs que `/opt/academie/webapp/`, le context résolu peut être faux. Solution = toujours lancer depuis `webapp/` ou override `WEBAPP_SRC` env var.
+- **Compose build context = `..` (repo root)** : si le user lance `docker compose` depuis ailleurs que `/opt/academia/webapp/`, le context résolu peut être faux. Solution = toujours lancer depuis `webapp/` ou override `WEBAPP_SRC` env var.
 
 ---
 
@@ -1988,8 +1988,8 @@ Session 37 a livré 16 commits couvrant E2E consolidation 8/8, observed_level v2
 - **C — Lazy reconciliation OpenAI Usage API** : nouveau module `app/openai_reconcile.py` hit `GET /v1/organization/usage/completions` (admin key, params `start_time` UTC midnight + `bucket_width=1d`). `_maybe_schedule_reconcile` dans `get_gpt4o_usage` check `reconciled_at` — si > 15 min stale, fire-and-forget `asyncio.create_task(_do_reconcile_and_save())`. Pas de cron externe, self-healing à la première requête /admin
 - **D — Triple safety MAX seed** : `_load_daily_tokens` lit `tokens_used + litellm_tokens + openai_tokens` (3 colonnes ajoutées par migration), seed le compteur in-memory avec MAX. `_do_reconcile_and_save` bump le compteur live post-reconcile pour que la bascule auto capture l'update sans attendre restart
 - **Schema migration** : script idempotent `scripts/migrate_token_usage_columns.py` ajoute `litellm_tokens BIGINT DEFAULT 0`, `openai_tokens BIGINT DEFAULT 0`, `reconciled_at TIMESTAMP NULLABLE` à `token_usage_daily`
-- **OpenAI Admin key** : Sinse a généré `sk-admin-...` (perm `Read - Usage` only, principe moindre privilège), Claude l'a ajoutée au bundle `secrets/shared.yaml.sops` programmatiquement (decrypt → append → re-encrypt in place). Décryptée à `/opt/academie-shared/secrets/openai-admin-key` chmod 600 sinse:sinse
-- **Bind RO secrets** : ajout volume `/opt/academie-shared/secrets:/run/academie-secrets:ro` à `docker-compose.webapp.yml` pour exposer la clé au container `academie-api` sans la baker dans l'image. `ADMIN_KEY_PATH` du module configurable via env var `OPENAI_ADMIN_KEY_PATH` pour tests
+- **OpenAI Admin key** : Sinse a généré `sk-admin-...` (perm `Read - Usage` only, principe moindre privilège), Claude l'a ajoutée au bundle `secrets/shared.yaml.sops` programmatiquement (decrypt → append → re-encrypt in place). Décryptée à `/opt/academia-shared/secrets/openai-admin-key` chmod 600 sinse:sinse
+- **Bind RO secrets** : ajout volume `/opt/academia-shared/secrets:/run/academie-secrets:ro` à `docker-compose.webapp.yml` pour exposer la clé au container `academie-api` sans la baker dans l'image. `ADMIN_KEY_PATH` du module configurable via env var `OPENAI_ADMIN_KEY_PATH` pour tests
 - **Validation E2E** : OpenAI API → 199,849 ✓, DB row populé `litellm_tokens=184716, openai_tokens=199849`, `get_gpt4o_usage` retourne `tokens=219,833` (= max(local, litellm, openai) × 1.10) — **22K au-dessus du dashboard OpenAI**, marge confortable
 - **Smoke 21/21 ALL CLEAR** (deep)
 - **Docs** : `credentials.md` (admin key + bind mount), `gotchas.md` (3 nouveaux items : safety margin display, reconciliation 3 sources, rotation procedure), `TODO.md` (bloc P2 ABCD coché + P3 rotation key)
@@ -2024,7 +2024,7 @@ Continuation post-handoff Session 18 — fermeture complète du chantier J-1 sé
   - Round-trip sémantiquement identique (SOPS yaml reformate indent/comments mais valeurs intactes), E2E chat via LiteLLM validé (`gpt-4o-mini` répond avec tokens comptés)
   - Backup pristine `/opt/litellm/config.yaml.backup-pre-sops` conservé pour 24h
 - **J-1 SOPS cleanup — bundle `secrets/shared.yaml.sops`** (commit `75ff2d4`) :
-  - 9 fichiers `/opt/academie-shared/secrets/*` encapsulés (dify-admin/teacher-key, groq-key-2, jwt-{refresh-,}secret, n8n-encryption-key, ollama-cloud-key, pg-password, restic-passphrase)
+  - 9 fichiers `/opt/academia-shared/secrets/*` encapsulés (dify-admin/teacher-key, groq-key-2, jwt-{refresh-,}secret, n8n-encryption-key, ollama-cloud-key, pg-password, restic-passphrase)
   - `secrets/decrypt-shared.sh` : atomic mv, `chown --reference` préserve ownership (sinse:sinse), trailing `\n` ajouté pour matcher format consommateurs
   - **Audit redondance** : 5/9 secrets sont des copies de référence (jwt-* dupliqués webapp/.env.sops, pg-password dans webapp + litellm, groq-key-2 + ollama-cloud-key dans litellm/config.yaml.sops). Map documentée dans runbook pour éviter divergence silencieuse à la rotation.
   - Bug bash trouvé : `((var++))` retourne 0 quand var=0 → `set -e` kill le script. Remplacé par `var=$((var + 1))`. Insidieux : le script "marchait" sur 1/9 fichier puis s'arrêtait silencieusement.
@@ -2033,7 +2033,7 @@ Continuation post-handoff Session 18 — fermeture complète du chantier J-1 sé
 - **Cosmos L1 — AutoUpdate=false** (commit `446a348`) :
   - UI cosmos n'expose pas le toggle → edit direct `/mnt/cosmos-data/cosmos-config/cosmos.config.json` (jq pseudo via python json) + `docker restart cosmos-server`
   - Backup pristine `cosmos.config.json.bak-pre-autoupdate-off` créé
-  - Downtime réel ~10-15s, route `academie.petit-pont.com` HTTP 200 servie 3ms post-restart, smoke 15/15
+  - Downtime réel ~10-15s, route `academia.petit-pont.com` HTTP 200 servie 3ms post-restart, smoke 15/15
   - **Vecteur supply-chain coupé** : cosmos ne pull plus `:latest` automatiquement
 - **Cosmos L2/L3 + 1.b — bundle YOLO** (commit `64a3766`, après plan formel approuvé) :
   - `Privileged: false` + `cap_add: NET_ADMIN` (préemptif Constellation si activé un jour)
@@ -2043,7 +2043,7 @@ Continuation post-handoff Session 18 — fermeture complète du chantier J-1 sé
   - `--cgroupns host` ajouté par sécurité (default Docker récent = private)
   - **Bug bonus découvert le hard way** : sans `--hostname cosmos-server` explicite, cosmos's `isInsideContainer` check fail (cosmos query Docker API par hostname pour s'auto-identifier) → cosmos crée nouveau config vide à `/var/lib/cosmos/cosmos.config.json` au lieu de lire `/config/cosmos.config.json` (bind mount) → **toutes les routes redirigent vers `/cosmos-ui/`**. 3 itérations recreate (downtime cumulé ~3-4 min) avant identification du root cause via inspection comparative original vs nouveau container.
   - Cosmos a **auto-sync sa propre `cosmos.docker-compose.yaml`** post-recreate (digest, privileged false, cap_add, mounts) → corrigé `hostname: ""` → `hostname: cosmos-server` pour parité
-  - Script rollback bouton-rouge persisté à `/opt/academie-shared/secrets/cosmos-rollback.sh.bak` (avec `--hostname` + `--cgroupns host`)
+  - Script rollback bouton-rouge persisté à `/opt/academia-shared/secrets/cosmos-rollback.sh.bak` (avec `--hostname` + `--cgroupns host`)
   - Routes 5/5 baseline restaurées (academie 200, dify 302, n8n 200, drive 307, cosmos 307), MongoDB ESTAB, smoke 21/21 ALL CLEAR (deep)
 - **Documentation à jour** :
   - `credentials.md` : status `authoritative`, banner Sessions 18 + 18 bis + 18 ter
@@ -2136,7 +2136,7 @@ Continuation post-handoff Session 18 — fermeture complète du chantier J-1 sé
 - **`niveau_global` peut être NULL pour user fresh** (user créé pas encore onboardé) → `enrich_error_fields` fallback band=intermediate, donne tier T1 par défaut sur la matrice empirique. Cohérent mais à monitorer si beaucoup de users fresh produisent des erreurs avant onboarding complet.
 - **Priors gravity/criterial = intuition SLA, pas calibré** : valeurs `0.6/0.4/0.1` etc. sont des estimations Hartshorn-style. Sinse peut les ajuster directement dans `tolerance_matrix_v2.yaml` sans migration. Les 9 rows backfillées garderont leurs anciennes valeurs (modifications futures s'appliquent aux nouveaux rows uniquement) — re-run `backfill_*.py` après modif si on veut harmoniser.
 - **3 rebuilds container dans la session** : à chaque rebuild on perd LiteLLM cache + connection pool warm-up. ~10s de latence sur la première requête post-rebuild. Pas critique pour familial.
-- **Tests Sprint 2 dépendent du venv Sprint 1** : si on supprime `/opt/academie/scripts/sprint1/venv/`, prévoir `scripts/sprint2/requirements.txt` + venv dédié.
+- **Tests Sprint 2 dépendent du venv Sprint 1** : si on supprime `/opt/academia/scripts/sprint1/venv/`, prévoir `scripts/sprint2/requirements.txt` + venv dédié.
 - **`compute_error_profile` est large (200+ lignes)** : refactor B3 pour insérer la branche `_USE_V2_SCORING` proprement nécessitera attention pour ne pas casser le path v1 (default). Tests régression `test_retrospective_v1_vs_v2` indispensables.
 
 ---
@@ -2169,8 +2169,8 @@ Continuation post-handoff Session 18 — fermeture complète du chantier J-1 sé
 - **Alternatives en cas d'autre besoin** : J-1 credentials SOPS (avant SaaS public), Sprint 3 prompt Teacher Lyster, J-4 auth OIDC
 
 ### Gotchas
-- **`/opt/academie/webapp/.env` gitignored** : `USE_V2_TOLERANCE=true` doit être set manuellement sur target deploys (notamment si on duplique l'env). Documenté dans le commit `b748283` mais pas dans un runbook formel — à formaliser si on multi-instance.
-- **Tests Sprint 2 utilisent venv Sprint 1** : `cd /opt/academie/scripts/sprint2 && ../sprint1/venv/bin/pytest tests/`. Si on supprime/recrée le Sprint 1 venv, prévoir un mini-`requirements.txt` dans `sprint2/`.
+- **`/opt/academia/webapp/.env` gitignored** : `USE_V2_TOLERANCE=true` doit être set manuellement sur target deploys (notamment si on duplique l'env). Documenté dans le commit `b748283` mais pas dans un runbook formel — à formaliser si on multi-instance.
+- **Tests Sprint 2 utilisent venv Sprint 1** : `cd /opt/academia/scripts/sprint2 && ../sprint1/venv/bin/pytest tests/`. Si on supprime/recrée le Sprint 1 venv, prévoir un mini-`requirements.txt` dans `sprint2/`.
 - **Override `sentence × beginner` non encore appliqué** : `tolerance_matrix_v2.yaml` reste empirique pur (penalized). En attendant Phase B + loader, un A1 qui produit `SENT:FRAG` se prendra `weight=0.394`. Risque faible (1 user A1, 0 A1 actif récemment), mais à appliquer dès Phase B.
 - **R-hat GLMM = 1.01 (Sprint 1.5)** est borderline. ESS bulk min = 329 < 400. Convergence acceptable mais pas excellente. Si on doit re-fit (Sprint 6), prévoir `num_samples=2000+` au lieu de 1000.
 - **Docker cosmos-server reste privileged + docker.sock + bind /** : trou de sécurité majeur identifié Session 13, toujours pas résolu. Bloquant SaaS public, pas familial.
@@ -2189,7 +2189,7 @@ Continuation post-handoff Session 18 — fermeture complète du chantier J-1 sé
   - Migration subnet `academie-net-bridge` /28 → /27 (12→30 IPs, 19 slots libres, downtime ~10 min, validé smoke-test 20/20)
   - Note : fail rates n8n historiques (snapshot 17% / diag 28% sur 14j) déjà résolus par fix F1 EVAL_READY Session 14 (seulement 1 error sur 7j récents)
 - **Sprint 1 Path A** (calibration taxonomie v2 via corpus externe) :
-  - Installation venv Python 3.13 dans `/opt/academie/scripts/sprint1/` avec NumPyro + JAX + lifelines + errant + spaCy (pymer4 skippé faute de R sur système, wolfi-like)
+  - Installation venv Python 3.13 dans `/opt/academia/scripts/sprint1/` avec NumPyro + JAX + lifelines + errant + spaCy (pymer4 skippé faute de R sur système, wolfi-like)
   - Download W&I + LOCNESS BEA 2019 corpus (6 MB compressed, 3370 essays CEFR-annotés + 50 natifs)
   - Mapping ERRANT 28 tags → 9 familles AcademIA via `errant_to_academie.yaml` (84.7% couverture instances, 4/4 tests pytest OK)
   - Normalize M2 → Parquet : 70 489 error annotations × 2 671 learners × niveaux A1–C2 + N (usage spaCy sentencizer pour aligner M2 avec JSON)
@@ -2220,7 +2220,7 @@ Continuation post-handoff Session 18 — fermeture complète du chantier J-1 sé
 - **EFCAMDAT non tenté** : registration académique nécessaire, délai ≥ 1 semaine typiquement. Cox PH skippé (W&I = one-shot essays, pas de data longitudinale).
 - **ESS bulk 329 < 400** (seuil strict). Concerne σ_v (random effect famille), pas les β_tier (ESS > 1500). Inférences sur les tiers fiables, mais rerun avec `num_samples=2000` possible si on veut plus de marge.
 - **Alignment JSON ↔ M2 perd ~30%** des annotations ERRANT sur essais longs (spaCy tokenizer ≠ ERRANT tokenizer). 70 k rows suffisent pour GLMM mais le undersample peut biaiser les stats absolues. Dette technique notée pour Sprint 1.5+.
-- **Ne PAS commiter** `/opt/academie/scripts/sprint1/venv/` (déjà dans `.gitignore` — vérifier à chaque fois).
+- **Ne PAS commiter** `/opt/academia/scripts/sprint1/venv/` (déjà dans `.gitignore` — vérifier à chaque fois).
 - **`tolerance_matrix.yaml` v1 reste en prod** — `v2_draft.yaml` est posé à côté, pas activé. Aucun impact prod dans cette session (smoke-test final 21/21 clear).
 
 ---
@@ -2262,7 +2262,7 @@ Continuation post-handoff Session 18 — fermeture complète du chantier J-1 sé
   - `_legacy/` : 6 anciens docs préservés (status:needs-review)
 - **`/pickup` et `/handoff` mis à jour** : lecture INDEX.md au pickup, check consistency docs ↔ code au handoff.
 - **AGENTS.md workspace enrichi** : section DOCS WORKFLOW obligatoire avant toute modif structurelle.
-- **Scan exhaustif infrastructure** (4 agents parallèles, ~1200s) : Docker (13 containers), filesystem (/opt/academie + /opt/litellm + /mnt/cosmos-data), DB (250 tables academie_db + litellm_db + dify_plugin + Redis), surface applicative (36 endpoints FastAPI, 12 routes SvelteKit, 8 apps Dify, 7 workflows n8n, nginx, LiteLLM).
+- **Scan exhaustif infrastructure** (4 agents parallèles, ~1200s) : Docker (13 containers), filesystem (/opt/academia + /opt/litellm + /mnt/cosmos-data), DB (250 tables academie_db + litellm_db + dify_plugin + Redis), surface applicative (36 endpoints FastAPI, 12 routes SvelteKit, 8 apps Dify, 7 workflows n8n, nginx, LiteLLM).
 - **Corrections critiques aux docs** post-scan :
   - `curriculum_concepts` n'existe pas — concepts en JSONB dans `curriculums`
   - Teacher chatflow = 41 nodes (pas 28)
@@ -2312,7 +2312,7 @@ Continuation post-handoff Session 18 — fermeture complète du chantier J-1 sé
 
 ### Gotchas
 - `_track_gpt4o_tokens` (tiktoken) garde son rôle critique : il pilote l'auto-switch gpt-4o-mini → groq-standard à 1.5M (sub-second), or LiteLLM SpendLogs est batché ~30-60s. Ne pas le supprimer.
-- `/opt/litellm/config.yaml` n'est pas dans un git repo — modif non versionnée. À sortir de cet handoff, ajouter le suivi via `/opt/academie/infra/` ou similaire si on veut gouvernance.
+- `/opt/litellm/config.yaml` n'est pas dans un git repo — modif non versionnée. À sortir de cet handoff, ajouter le suivi via `/opt/academia/infra/` ou similaire si on veut gouvernance.
 - La row de backfill (~48K tokens) est synthétique : split arbitraire 90/10 input/output, spend calculé au tarif paid standard. Si OpenAI facture différemment (free tier complimentary), le `cost_usd` affiché peut être surestimé. Pas critique tant que c'est juste un indicateur.
 - Le compteur local `_gpt4o_token_counter` continue de s'incrémenter (~6K aujourd'hui) en parallèle de LiteLLM. Pas grave fonctionnellement (utilisé que pour budget exceeded), mais c'est de la double-comptabilité à terme.
 
@@ -2342,7 +2342,7 @@ Continuation post-handoff Session 18 — fermeture complète du chantier J-1 sé
 ## Session 10 — 2026-04-15
 
 ### Done
-- Diagnostic bug `/pickup` : SESSION.md/TODO.md introuvables (chemin relatif `projects/academie-ia/` résolvait depuis `/opt/academie/` mais les fichiers sont dans `/root/sinse-workspace/projects/academie-ia/`)
+- Diagnostic bug `/pickup` : SESSION.md/TODO.md introuvables (chemin relatif `projects/academie-ia/` résolvait depuis `/opt/academia/` mais les fichiers sont dans `/root/sinse-workspace/projects/academie-ia/`)
 - Fix : `pickup.md` + `handoff.md` migrés vers chemins absolus
 - Cleanup : suppression doublons user-level (`/root/.claude/commands/{pickup,handoff}.md`), seule la version project-scoped subsiste
 

@@ -19,7 +19,7 @@ Cloudflare Tunnel (Bypass + require WARP + France)
     ▼
 cosmos (192.168.1.181) — nginx sur HOST via systemd, port :8080
     │    (security headers + static cache + CSP complet)
-    ├── academie.petit-pont.com  → 127.0.0.1:3001 (SvelteKit via Docker bridge)
+    ├── academia.petit-pont.com  → 127.0.0.1:3001 (SvelteKit via Docker bridge)
     ├── dify.petit-pont.com      → 127.0.0.1:5001/3000 (Dify api+web)
     └── n8n.petit-pont.com       → 127.0.0.1:5678 (n8n)
 ```
@@ -68,7 +68,7 @@ cosmos (192.168.1.181) — nginx sur HOST via systemd, port :8080
 **Seuls 2 containers sont Compose-managés** (`academie-frontend` + `academie-api`, projet `webapp`). Les autres ont été démarrés manuellement via `docker run` ou via Cosmos UI.
 
 Compose files :
-- `/opt/academie/webapp/docker-compose.webapp.yml` (frontend + api seulement)
+- `/opt/academia/webapp/docker-compose.webapp.yml` (frontend + api seulement)
 - Aucun autre compose file actif sur le host
 
 ### Alertes
@@ -132,7 +132,7 @@ Compose files :
 ## Webapp FastAPI
 
 - Container : `academie-api`
-- Build : `/opt/academie/webapp/backend/Dockerfile`
+- Build : `/opt/academia/webapp/backend/Dockerfile`
 - Entrypoint : `uvicorn app.main:app --host 0.0.0.0 --port 8000`
 - Env vars via `.env` :
   - `DATABASE_URL` (pointe sur academie_db)
@@ -144,7 +144,7 @@ Compose files :
 ## SvelteKit frontend
 
 - Container : `academie-frontend`
-- Build : `/opt/academie/webapp/frontend/Dockerfile`
+- Build : `/opt/academia/webapp/frontend/Dockerfile`
 - SSR Node adapter
 - Env vars : `ORIGIN`, `PROTOCOL_HEADER`, `HOST_HEADER`, `ADDRESS_HEADER`, `XFF_DEPTH`
 
@@ -181,8 +181,8 @@ Compose files :
 ⚠️ **ETAT DETTE** : plusieurs secrets en clair (détail dans [credentials.md](credentials.md)) :
 - `/opt/litellm/config.yaml` contient les clés API OpenAI/Groq/Mistral en clair
 - `general_settings.database_url` contient le DB password
-- `/opt/academie/webapp/.env` contient JWT_SECRET_KEY, JWT_REFRESH_SECRET, DATABASE_URL, DIFY_KEY_TEACHER
-- `/opt/academie-shared/secrets/` (9 fichiers chmod 600)
+- `/opt/academia/webapp/.env` contient JWT_SECRET_KEY, JWT_REFRESH_SECRET, DATABASE_URL, DIFY_KEY_TEACHER
+- `/opt/academia-shared/secrets/` (9 fichiers chmod 600)
 
 ## Services systemd (sur host)
 

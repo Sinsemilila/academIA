@@ -22,7 +22,7 @@ from pathlib import Path
 import yaml
 
 LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"]
-YAML_PATH = Path("/opt/academie/packages/academie-core/academie_core/data/curriculum_en.yaml")
+YAML_PATH = Path("/opt/academia/packages/academie-core/academie_core/data/curriculum_en.yaml")
 OUT_PATH = Path("/tmp/curriculum_en_drift_proposal.md")
 
 

@@ -75,7 +75,7 @@ IT + DE + JP + RU = "essential" tier (A1-B2 cap) — voice features depuis le sh
 - [ ] Update `vault/knowledge/teacher-creation-recipe.md` : default recipe = A1-B2, flagger EN/ES exception A1-C2
 - [ ] Update les 4 fichiers `vault/knowledge/multilang-{italian,german,japanese,russian}-research.md` : marquer sections C1/C2 comme "Future scope (post-voice-feature ship, post-volume-signal)"
 - [ ] Update `vault/knowledge/multilang-roadmap.md` : Phase 1 estimates recalibrés + tiered scope reflété
-- [ ] Update `/opt/academie/docs/00-project/multilang_research_plan.md` + `roadmap_multilang.md` : tiered scope mention
+- [ ] Update `/opt/academia/docs/00-project/multilang_research_plan.md` + `roadmap_multilang.md` : tiered scope mention
 - [ ] Maestro ES : pas de drop scope (reste full A1-C2), confirmer scenarios oracle 24 → 24 (no change)
 - [ ] Frontend `agents_config.ts` : marquer per-agent `max_level: "B2" | "C2"` field pour UX gating future
 - [ ] Landing page draft mention asymmetry quand commercialization

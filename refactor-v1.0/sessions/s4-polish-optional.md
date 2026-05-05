@@ -26,7 +26,7 @@ Améliorations optionnelles du socle une fois que S1-S3 sont stables. **Peut êt
 
 Hors scope strict du refactor workflow (D21), mais peut être fait ici si on veut unifier :
 
-- [ ] Convertir `/opt/academie/scripts/profil_manager.py` en CLI typer :
+- [ ] Convertir `/opt/academia/scripts/profil_manager.py` en CLI typer :
   ```python
   import typer
   app = typer.Typer()

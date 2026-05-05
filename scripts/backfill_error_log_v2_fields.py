@@ -15,7 +15,7 @@ from pathlib import Path
 
 # Reuse scoring.enrich_error_fields by importing it from the backend module.
 # Backend uses `app.error_taxonomy.scoring`; we add the path so import works.
-sys.path.insert(0, str(Path("/opt/academie/webapp/backend").resolve()))
+sys.path.insert(0, str(Path("/opt/academia/webapp/backend").resolve()))
 
 # Force USE_V2 so override + v2 matrix are loaded, matching prod.
 import os as _os

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Setup Sprint 1 Python environment
-# Usage: cd /opt/academie/scripts/sprint1 && ./00_setup.sh
+# Usage: cd /opt/academia/scripts/sprint1 && ./00_setup.sh
 set -euo pipefail
 
 cd "$(dirname "$0")"
@@ -15,4 +15,4 @@ fi
 
 mkdir -p /mnt/cosmos-data/sprint1/data/{raw,processed} /mnt/cosmos-data/sprint1/results
 
-echo "Setup complete. Activate: source /opt/academie/scripts/sprint1/venv/bin/activate"
+echo "Setup complete. Activate: source /opt/academia/scripts/sprint1/venv/bin/activate"

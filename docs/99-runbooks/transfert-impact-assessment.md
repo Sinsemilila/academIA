@@ -18,7 +18,7 @@ Suite à l'arrêt **Schrems II** (CJUE C-311/18, 16 juillet 2020), les transfert
 
 Depuis le **10 juillet 2023**, la Commission a adopté une **décision d'adéquation pour le Data Privacy Framework (DPF)** : les transferts vers les organisations US auto-certifiées DPF sont considérés adéquats.
 
-Ce document évalue les transferts US des sous-processeurs LLM utilisés par academie.petit-pont.com.
+Ce document évalue les transferts US des sous-processeurs LLM utilisés par academia.petit-pont.com.
 
 ## 2. Liste des transferts
 

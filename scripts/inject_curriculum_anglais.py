@@ -27,7 +27,7 @@ import psycopg2
 from pathlib import Path
 
 def _read_secret(name, fallback=""):
-    p = Path(f"/opt/academie-shared/secrets/{name}")
+    p = Path(f"/opt/academia-shared/secrets/{name}")
     return p.read_text().strip() if p.exists() else fallback
 
 DB_CONFIG = {

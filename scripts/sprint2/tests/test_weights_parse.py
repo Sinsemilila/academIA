@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-_TM_DIR = Path("/opt/academie/packages/academie-core/academie_core/data/tolerance_matrix")
+_TM_DIR = Path("/opt/academia/packages/academie-core/academie_core/data/tolerance_matrix")
 V2_YAML = _TM_DIR / "tolerance_matrix_v2.yaml"
 V1_YAML = _TM_DIR / "tolerance_matrix.yaml"
 
@@ -67,7 +67,7 @@ def test_v2_glmm_diagnostics_present(v2):
 def test_all_rules_codes_in_v2_families(v2):
     """Every error code used by rules.py must appear in v2.families.codes."""
     # Extract known AcademIA codes from categories.py via regex (avoid import)
-    categories_py = Path("/opt/academie/packages/academie-core/academie_core/taxonomy/categories.py").read_text()
+    categories_py = Path("/opt/academia/packages/academie-core/academie_core/taxonomy/categories.py").read_text()
     import re
     m = re.search(r"TIER1_CATEGORIES\s*=\s*\{(.+?)\}", categories_py, re.DOTALL)
     academie_codes = set(re.findall(r'"([A-Z]+(?::[A-Z:]+)?)"', m.group(1)))

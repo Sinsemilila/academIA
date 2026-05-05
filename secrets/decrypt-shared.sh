@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # Decrypt secrets/shared.yaml.sops → one file per key under
-# /opt/academie-shared/secrets/<name> (chmod 600, trailing \n added).
+# /opt/academia-shared/secrets/<name> (chmod 600, trailing \n added).
 # Consumers: scripts/*, restic-backup, n8n, etc. — they read file paths,
 # not env vars, so we reproduce the original layout exactly.
 set -euo pipefail
 
-AGE_KEY="${AGE_KEY:-/opt/academie-shared/secrets/age.key}"
+AGE_KEY="${AGE_KEY:-/opt/academia-shared/secrets/age.key}"
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SRC="$HERE/shared.yaml.sops"
-TARGET_DIR="/opt/academie-shared/secrets"
+TARGET_DIR="/opt/academia-shared/secrets"
 
 if [[ ! -r "$AGE_KEY" ]]; then
   echo "ERROR: age key not readable at $AGE_KEY" >&2

@@ -13,7 +13,7 @@ last_reviewed: 2026-04-15
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │                   Utilisateurs (familial ~20)                 │
-│                   Browser: academie.petit-pont.com            │
+│                   Browser: academia.petit-pont.com            │
 └───────────────────────┬──────────────────────────────────────┘
                         │ HTTPS
                         ▼
@@ -30,7 +30,7 @@ last_reviewed: 2026-04-15
 │  │ systemd nginx.service        │    CSP + security headers        │
 │  └───┬─────────────────────────┘                                   │
 │      │                                                              │
-│      ├── academie.petit-pont.com → 127.0.0.1:3001 (SvelteKit)      │
+│      ├── academia.petit-pont.com → 127.0.0.1:3001 (SvelteKit)      │
 │      ├── dify.petit-pont.com     → 127.0.0.1:5001/3000 (Dify)      │
 │      └── n8n.petit-pont.com      → 127.0.0.1:5678 (n8n)            │
 │                                                                     │
@@ -143,7 +143,7 @@ Docker network `academie-net-bridge` **en /28** : 14 IPs utilisables, **12 prise
 
 nginx sur le **host** (pas dans un container), port `:8080`, systemd. Routage par `Host:` header (cf. [integrations.md](integrations.md)).
 
-Cloudflare Tunnel : hostname `academie.petit-pont.com` / `dify.petit-pont.com` / `n8n.petit-pont.com` → cosmos:8080 via tunnel chiffré. Zéro port ouvert sur le NAT.
+Cloudflare Tunnel : hostname `academia.petit-pont.com` / `dify.petit-pont.com` / `n8n.petit-pont.com` → cosmos:8080 via tunnel chiffré. Zéro port ouvert sur le NAT.
 
 ## Flux typique (chat utilisateur)
 

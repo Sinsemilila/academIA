@@ -36,7 +36,7 @@ ROOT = Path(__file__).resolve().parent
 def _current_sha() -> str:
     try:
         return subprocess.run(
-            ["git", "rev-parse", "HEAD"], cwd="/opt/academie",
+            ["git", "rev-parse", "HEAD"], cwd="/opt/academia",
             capture_output=True, text=True, check=True,
         ).stdout.strip()[:12]
     except Exception:
@@ -87,7 +87,7 @@ def record_one(client: httpx.Client, agent: str, key: str, scenario: ScenarioSch
     response = raw_answer
     if "<output>" in raw_answer and "</output>" in raw_answer:
         try:
-            _PKG = Path("/opt/academie/packages/academie-core")
+            _PKG = Path("/opt/academia/packages/academie-core")
             if str(_PKG) not in sys.path:
                 sys.path.insert(0, str(_PKG))
             from academie_core.pedagogy.teacher_prompt import parse_teacher_response

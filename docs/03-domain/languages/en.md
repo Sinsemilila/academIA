@@ -19,7 +19,7 @@ last_reviewed: 2026-04-15
   - Draft : `ed0d1c91-8c9a-48ad-9c3a-063981f8da87`
 - **Architecture** : **41 nodes, 45 edges** (scan 2026-04-15)
 - **Volumétrie** : 125 conversations, **1693 messages** (97.8% du trafic Dify total)
-- **Source de vérité** : `/opt/academie/scripts/update_teacher_chatflow.py` (2097 lignes) + `update_teacher_onboarding.py`
+- **Source de vérité** : `/opt/academia/scripts/update_teacher_chatflow.py` (2097 lignes) + `update_teacher_onboarding.py`
 - **Autres agents Dify** : Maestro/Sensei/Lehrer/Professore/PyMentor/CyberMentor existent en mode `chat` simple (pas chatflow), plus une app test `cccccccc` à cleanup
 
 ### Distribution des nodes (41 total)
@@ -137,7 +137,7 @@ Format de stockage : `academie-core/data/cefr_criterial_features/en.yaml`.
 
 ### Curriculum actuel
 
-92 concepts dans `curriculums` table (A1 = 18, A2 = 18, B1 = 20, B2 = 14, C1 = 15, C2 = 7). Source : `/opt/academie-shared/curriculum_en.yaml` (skeleton original Gemini CLI 2026-04-05, enrichi par sessions ultérieures).
+92 concepts dans `curriculums` table (A1 = 18, A2 = 18, B1 = 20, B2 = 14, C1 = 15, C2 = 7). Source : `/opt/academia-shared/curriculum_en.yaml` (skeleton original Gemini CLI 2026-04-05, enrichi par sessions ultérieures).
 
 À auditer contre EGP pour vérifier alignement avec criterial features Cambridge.
 
@@ -190,4 +190,4 @@ Adaptations par user via `profils_eleves.personnalite` :
 - [../../02-architecture/agent-topology.md](../../02-architecture/agent-topology.md) — migration vers `language-tutor`
 - [../../01-pedagogy/feedback-delivery.md](../../01-pedagogy/feedback-delivery.md) — pédagogie Lyster
 - [../../_legacy/dify-teacher.md](../../_legacy/dify-teacher.md) — version legacy (historique)
-- Scripts : `/opt/academie/scripts/update_teacher_chatflow.py`, `update_teacher_onboarding.py`
+- Scripts : `/opt/academia/scripts/update_teacher_chatflow.py`, `update_teacher_onboarding.py`

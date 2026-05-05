@@ -84,7 +84,7 @@ Sessions empilées (plus récente en haut). Rotation : seules les **3 dernières
 
 **Bloc 1 — Onboarding Marie ✅** :
 - Compte Marie créé via `POST /api/auth/users` — username `mariejuanes`, password identique (faible mais cercle privé + CF Zero Trust devant)
-- Cloudflare Zero Trust policy `academie.petit-pont.com` — email `marie83383@gmail.com` ajouté manual dashboard CF Teams (gotcha S47 confirmé : pas d'API automation)
+- Cloudflare Zero Trust policy `academia.petit-pont.com` — email `marie83383@gmail.com` ajouté manual dashboard CF Teams (gotcha S47 confirmé : pas d'API automation)
 - Marie connectée avec succès sur le site
 
 **Bloc 2 — RAG knowledge base 22 PDFs livré end-to-end** ⭐ :

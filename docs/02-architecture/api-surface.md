@@ -14,7 +14,7 @@ Container `academie-api`, port `127.0.0.1:8000`.
 
 ### auth_router — 4 endpoints (`/api/auth/*`)
 
-Fichier : `/opt/academie/webapp/backend/app/routers/auth_router.py`
+Fichier : `/opt/academia/webapp/backend/app/routers/auth_router.py`
 
 | Méthode | Path | Auth | RL | Description |
 |---|---|---|---|---|
@@ -25,7 +25,7 @@ Fichier : `/opt/academie/webapp/backend/app/routers/auth_router.py`
 
 ### profile_router — 10 endpoints
 
-Fichier : `/opt/academie/webapp/backend/app/routers/profile_router.py` (692 lignes)
+Fichier : `/opt/academia/webapp/backend/app/routers/profile_router.py` (692 lignes)
 
 | Méthode | Path | Auth | Description |
 |---|---|---|---|
@@ -42,7 +42,7 @@ Fichier : `/opt/academie/webapp/backend/app/routers/profile_router.py` (692 lign
 
 ### chat_router — 4 endpoints
 
-Fichier : `/opt/academie/webapp/backend/app/routers/chat_router.py`
+Fichier : `/opt/academia/webapp/backend/app/routers/chat_router.py`
 
 | Méthode | Path | Auth | RL | Description |
 |---|---|---|---|---|
@@ -55,7 +55,7 @@ Keys agents : `DIFY_KEY_TEACHER` seul actif. `DIFY_API_URL` défault `http://dif
 
 ### settings_router — 10 endpoints
 
-Fichier : `/opt/academie/webapp/backend/app/routers/settings_router.py`
+Fichier : `/opt/academia/webapp/backend/app/routers/settings_router.py`
 
 | Méthode | Path | Auth | RL | Description |
 |---|---|---|---|---|
@@ -72,7 +72,7 @@ Fichier : `/opt/academie/webapp/backend/app/routers/settings_router.py`
 
 ### error_analysis_router — 3 endpoints
 
-Fichier : `/opt/academie/webapp/backend/app/routers/error_analysis_router.py`
+Fichier : `/opt/academia/webapp/backend/app/routers/error_analysis_router.py`
 
 | Méthode | Path | Auth | Description |
 |---|---|---|---|
@@ -82,7 +82,7 @@ Fichier : `/opt/academie/webapp/backend/app/routers/error_analysis_router.py`
 
 ### admin_router — 4 endpoints
 
-Fichier : `/opt/academie/webapp/backend/app/routers/admin_router.py`
+Fichier : `/opt/academia/webapp/backend/app/routers/admin_router.py`
 
 | Méthode | Path | Auth | Description |
 |---|---|---|---|
@@ -99,7 +99,7 @@ Fichier : `/opt/academie/webapp/backend/app/routers/admin_router.py`
 
 ### Middlewares et infrastructure transverse
 
-- **CORS** : origins `http://localhost:3001`, `http://localhost:5173`, `https://academie.petit-pont.com`. Credentials: true. Methods GET/POST/PATCH/DELETE/OPTIONS.
+- **CORS** : origins `http://localhost:3001`, `http://localhost:5173`, `https://academia.petit-pont.com`. Credentials: true. Methods GET/POST/PATCH/DELETE/OPTIONS.
 - **Middleware `security_headers`** : `X-Content-Type-Options=nosniff`, `X-Frame-Options=DENY`, `Referrer-Policy=strict-origin-when-cross-origin`
 - **Middleware `log_requests`** : log méthode/path/status/durée (sauf `/api/health`)
 - **Rate limiter** : in-memory token bucket par IP (respect `X-Forwarded-For`), cleanup task toutes les 60s, fenêtre 300s
@@ -203,7 +203,7 @@ Proxy `/api/*` vers `API_BACKEND` (env, défault `http://academie-api:8000`). Fo
 | `http://localhost:4000/health/readiness` | 200 | 6.2 ms |
 | `http://localhost:5001/health` | 200 | 3.3 ms |
 | `http://localhost:5678/healthz` | 200 | 2.5 ms |
-| `http://localhost:8080/` (nginx, Host: academie.petit-pont.com) | 200 | 2.1 ms |
+| `http://localhost:8080/` (nginx, Host: academia.petit-pont.com) | 200 | 2.1 ms |
 
 Tous services **healthy**.
 
@@ -212,4 +212,4 @@ Tous services **healthy**.
 - [overview.md](overview.md) — contexte stack
 - [integrations.md](integrations.md) — n8n workflows, Dify chatflows, LiteLLM, nginx
 - [data-model.md](data-model.md) — schémas DB consommés
-- Code : `/opt/academie/webapp/backend/app/`, `/opt/academie/webapp/frontend/src/`
+- Code : `/opt/academia/webapp/backend/app/`, `/opt/academia/webapp/frontend/src/`

@@ -125,10 +125,10 @@ L'onboarding utilise un **chatflow LLM multi-tour** (Dify `llm_onboarding`) qui 
 
 | Étape | Fichier | Ligne | Détail |
 |-------|---------|------|--------|
-| 1. Frontend init | `/opt/academie/webapp/frontend/src/routes/chat/[agent]/+page.svelte` | 50-76 | `onMount()`: charge conversations history ou init empty |
-| 2. Chat send | `/opt/academie/webapp/frontend/src/routes/chat/[agent]/+page.svelte` | 103-194 | `sendMessage()`: POST `/api/chat/send` |
-| 3. Chat router | `/opt/academie/webapp/backend/app/routers/chat_router.py` | 429-694 | `@router.post("/api/chat/send")`: stream Dify |
-| 4. Dify inputs build | `/opt/academie/webapp/backend/app/routers/chat_router.py` | 454-612 | Construire `dify_inputs` dict (error_feedback, concept_hints, l1_watch, etc.) |
+| 1. Frontend init | `/opt/academia/webapp/frontend/src/routes/chat/[agent]/+page.svelte` | 50-76 | `onMount()`: charge conversations history ou init empty |
+| 2. Chat send | `/opt/academia/webapp/frontend/src/routes/chat/[agent]/+page.svelte` | 103-194 | `sendMessage()`: POST `/api/chat/send` |
+| 3. Chat router | `/opt/academia/webapp/backend/app/routers/chat_router.py` | 429-694 | `@router.post("/api/chat/send")`: stream Dify |
+| 4. Dify inputs build | `/opt/academia/webapp/backend/app/routers/chat_router.py` | 454-612 | Construire `dify_inputs` dict (error_feedback, concept_hints, l1_watch, etc.) |
 | 5. Dify API stream | `DIFY_API_URL = "http://dify-api:5001/v1"` (env) | — | SSE `/chat-messages` |
 | 6. n8n profil-get | `dify-profil-get` webhook → SQL → JS code | — | Récupère `profils_eleves`, formate contexte |
 | 7. n8n diagnostic | `dify-diagnostic` webhook → LLM → parse → SQL UPDATE | — | Parse output du LLM onboarding, write `profils_eleves` |
@@ -140,7 +140,7 @@ L'onboarding utilise un **chatflow LLM multi-tour** (Dify `llm_onboarding`) qui 
 
 ### 3.1 Frontend : Route Chat + Modal Gating
 
-**Fichier** : `/opt/academie/webapp/frontend/src/routes/chat/[agent]/+page.svelte`
+**Fichier** : `/opt/academia/webapp/frontend/src/routes/chat/[agent]/+page.svelte`
 
 **Injection** (ligne ~50-80, dans `onMount()`):
 ```typescript
@@ -158,7 +158,7 @@ if (!profile?.onboarding_completed_at) {
 // QCM completed → proceed to load conversations
 ```
 
-**Nouveau component** : `/opt/academie/webapp/frontend/src/lib/components/QcmModal.svelte` (non-existent, à créer)
+**Nouveau component** : `/opt/academia/webapp/frontend/src/lib/components/QcmModal.svelte` (non-existent, à créer)
 - Props: `domain`, `agent`, `onSubmit`
 - État: `currentQuestionIndex`, `answers: Record<string, any>`, `isSubmitting`
 - Structure : Bloc A (5Q) → Bloc B (2-3Q) → Bloc C (2Q)
@@ -166,9 +166,9 @@ if (!profile?.onboarding_completed_at) {
 
 ### 3.2 Backend : Nouveau Endpoint Onboarding
 
-**Fichier** : `/opt/academie/webapp/backend/app/routers/profile_router.py` (existe)
+**Fichier** : `/opt/academia/webapp/backend/app/routers/profile_router.py` (existe)
 
-**Nouveau router** : `/opt/academie/webapp/backend/app/routers/onboarding_router.py` (à créer)
+**Nouveau router** : `/opt/academia/webapp/backend/app/routers/onboarding_router.py` (à créer)
 
 ```python
 # onboarding_router.py (NOUVEAU)
@@ -247,7 +247,7 @@ async def submit_onboarding_qcm(
 
 ### 3.3 Chat Router : Injection QCM Context dans Dify
 
-**Fichier** : `/opt/academie/webapp/backend/app/routers/chat_router.py:454-612`
+**Fichier** : `/opt/academia/webapp/backend/app/routers/chat_router.py:454-612`
 
 **Injection** (après construire `dify_inputs`, ligne ~600):
 ```python
@@ -557,7 +557,7 @@ Frontend: niveau update in real-time or on page refresh
 6. **Run migration** :
    ```bash
    docker exec postgres-academie psql -U sinse -d academie_db \
-     -f /opt/academie/scripts/sprint6/01_create_learner_profiles.sql
+     -f /opt/academia/scripts/sprint6/01_create_learner_profiles.sql
    ```
 
 7. **Deploy backend** → Docker rebuild + restart
@@ -605,7 +605,7 @@ Frontend: niveau update in real-time or on page refresh
 
 10. **Deploy frontend** → npm build + Docker rebuild
     ```bash
-    cd /opt/academie/webapp/frontend && npm run build
+    cd /opt/academia/webapp/frontend && npm run build
     docker compose restart academie-frontend
     ```
 
@@ -734,11 +734,11 @@ Frontend: niveau update in real-time or on page refresh
 
 ### À CRÉER (nouveaux)
 
-1. `/opt/academie/webapp/frontend/src/lib/components/QcmModal.svelte` (200-400 LOC)
-2. `/opt/academie/webapp/backend/app/routers/onboarding_router.py` (100-150 LOC)
-3. `/opt/academie/scripts/sprint6/01_create_learner_profiles.sql` (50-100 LOC)
-4. `/opt/academie/scripts/sprint6/01_create_learner_profiles_migration.py` (optional, rollback helper)
-5. `/opt/academie/docs/qcm-modal-design.md` (design doc, questions exactes FR)
+1. `/opt/academia/webapp/frontend/src/lib/components/QcmModal.svelte` (200-400 LOC)
+2. `/opt/academia/webapp/backend/app/routers/onboarding_router.py` (100-150 LOC)
+3. `/opt/academia/scripts/sprint6/01_create_learner_profiles.sql` (50-100 LOC)
+4. `/opt/academia/scripts/sprint6/01_create_learner_profiles_migration.py` (optional, rollback helper)
+5. `/opt/academia/docs/qcm-modal-design.md` (design doc, questions exactes FR)
 
 ### À MODIFIER
 

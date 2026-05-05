@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Test suite for error detection rules coverage A1-C1."""
 import sys
-sys.path.insert(0, "/opt/academie/webapp/backend")
+sys.path.insert(0, "/opt/academia/webapp/backend")
 from academie_core.taxonomy.rules import detect_errors, ERROR_CODE_TO_FAMILY
 
 TESTS = {

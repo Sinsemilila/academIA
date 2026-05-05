@@ -16,7 +16,7 @@ import pytest
 import yaml
 
 RESULTS = Path("/mnt/cosmos-data/sprint1/results/v1_vs_v2_retrospective.json")
-_TM_DIR = Path("/opt/academie/packages/academie-core/academie_core/data/tolerance_matrix")
+_TM_DIR = Path("/opt/academia/packages/academie-core/academie_core/data/tolerance_matrix")
 V2_YAML = _TM_DIR / "tolerance_matrix_v2.yaml"
 V1_YAML = _TM_DIR / "tolerance_matrix.yaml"
 

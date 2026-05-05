@@ -14,16 +14,16 @@ last_reviewed: 2026-04-15
 
 Host: `cosmos` (Debian Linux 6.12.74+deb13+1-amd64)
 Scan date: 2026-04-15
-Scope: `/opt/academie`, `/opt/academie-shared`, `/opt/litellm`, `/mnt/cosmos-data`, systemd services, cron, nginx, git state.
+Scope: `/opt/academia`, `/opt/academia-shared`, `/opt/litellm`, `/mnt/cosmos-data`, systemd services, cron, nginx, git state.
 
 ---
 
-## 1. `/opt/academie` — Top-level structure
+## 1. `/opt/academia` — Top-level structure
 
 ### 1.1 Directory tree (depth 3–4, excluding `node_modules`, `__pycache__`, `.git/*`)
 
 ```
-/opt/academie
+/opt/academia
 ├── .claude
 │   └── commands
 ├── .git
@@ -32,7 +32,7 @@ Scope: `/opt/academie`, `/opt/academie-shared`, `/opt/litellm`, `/mnt/cosmos-dat
 ├── README.fr.md
 ├── README.md
 ├── .gitignore
-├── .dify_admin_key                 (symlink → /opt/academie-shared/secrets/dify-admin-key)
+├── .dify_admin_key                 (symlink → /opt/academia-shared/secrets/dify-admin-key)
 ├── docs
 │   ├── api-overview.md             (1.3K)
 │   ├── architecture.md             (2.5K)
@@ -74,13 +74,13 @@ Scope: `/opt/academie`, `/opt/academie-shared`, `/opt/litellm`, `/mnt/cosmos-dat
 
 | Path | Size |
 |---|---|
-| `/opt/academie/AGENTS.md` | 4.0K |
-| `/opt/academie/README.fr.md` | 4.0K |
-| `/opt/academie/HISTORY.md` | 12K |
-| `/opt/academie/README.md` | 12K |
-| `/opt/academie/docs` | 32K |
-| `/opt/academie/scripts` | 616K |
-| `/opt/academie/webapp` | 571M |
+| `/opt/academia/AGENTS.md` | 4.0K |
+| `/opt/academia/README.fr.md` | 4.0K |
+| `/opt/academia/HISTORY.md` | 12K |
+| `/opt/academia/README.md` | 12K |
+| `/opt/academia/docs` | 32K |
+| `/opt/academia/scripts` | 616K |
+| `/opt/academia/webapp` | 571M |
 | &nbsp;&nbsp;&nbsp;`webapp/backend` | 328K |
 | &nbsp;&nbsp;&nbsp;`webapp/frontend` | 570M (of which `node_modules` = 570M) |
 | &nbsp;&nbsp;&nbsp;`webapp/frontend/src` | 352K |
@@ -90,21 +90,21 @@ Scope: `/opt/academie`, `/opt/academie-shared`, `/opt/litellm`, `/mnt/cosmos-dat
 
 | Folder | Last mtime |
 |---|---|
-| `/opt/academie/docs` | 2026-04-15 09:57 |
-| `/opt/academie/scripts` | 2026-04-15 09:39 |
-| `/opt/academie/webapp` | 2026-04-13 18:26 |
-| `/opt/academie/webapp/backend` | 2026-04-12 20:26 |
-| `/opt/academie/webapp/backend/app` | 2026-04-15 10:14 |
-| `/opt/academie/webapp/backend/app/routers` | 2026-04-15 10:14 |
-| `/opt/academie/webapp/backend/app/error_taxonomy` | 2026-04-14 14:02 |
-| `/opt/academie/webapp/frontend/src` | 2026-04-07 13:53 |
-| `/opt/academie/webapp/frontend/src/routes` | 2026-04-14 13:41 |
-| `/opt/academie/webapp/frontend/src/lib` | 2026-04-14 15:28 |
-| `/opt/academie/webapp/frontend/src/lib/components` | 2026-04-13 19:02 |
+| `/opt/academia/docs` | 2026-04-15 09:57 |
+| `/opt/academia/scripts` | 2026-04-15 09:39 |
+| `/opt/academia/webapp` | 2026-04-13 18:26 |
+| `/opt/academia/webapp/backend` | 2026-04-12 20:26 |
+| `/opt/academia/webapp/backend/app` | 2026-04-15 10:14 |
+| `/opt/academia/webapp/backend/app/routers` | 2026-04-15 10:14 |
+| `/opt/academia/webapp/backend/app/error_taxonomy` | 2026-04-14 14:02 |
+| `/opt/academia/webapp/frontend/src` | 2026-04-07 13:53 |
+| `/opt/academia/webapp/frontend/src/routes` | 2026-04-14 13:41 |
+| `/opt/academia/webapp/frontend/src/lib` | 2026-04-14 15:28 |
+| `/opt/academia/webapp/frontend/src/lib/components` | 2026-04-13 19:02 |
 
 ---
 
-## 2. `/opt/academie/webapp`
+## 2. `/opt/academia/webapp`
 
 ### 2.1 Backend Python files (`webapp/backend/app/`)
 
@@ -205,11 +205,11 @@ Two services, bridged on external network `academie-net-bridge`:
 | `academie-frontend` | `${WEBAPP_SRC}/frontend` | 127.0.0.1:3001 → 3000 | 256M | 0.5 |
 | `academie-api` | `${WEBAPP_SRC}/backend` | 127.0.0.1:8000 → 8000 | 512M | 1.0 |
 
-Frontend env: `ORIGIN=https://academie.petit-pont.com`, `PROTOCOL_HEADER=x-forwarded-proto`, `HOST_HEADER=x-forwarded-host`, `ADDRESS_HEADER=x-forwarded-for`, `XFF_DEPTH=1`.
+Frontend env: `ORIGIN=https://academia.petit-pont.com`, `PROTOCOL_HEADER=x-forwarded-proto`, `HOST_HEADER=x-forwarded-host`, `ADDRESS_HEADER=x-forwarded-for`, `XFF_DEPTH=1`.
 
 ---
 
-## 3. `/opt/academie/scripts` — Utility Python scripts
+## 3. `/opt/academia/scripts` — Utility Python scripts
 
 39 files; total 616K. Purpose extracted from first line of module docstring where available.
 
@@ -297,12 +297,12 @@ Commented-out models: groq-standard (×3), groq-snapshot (×3), groq-qwen, mistr
 
 ---
 
-## 5. `/opt/academie-shared`
+## 5. `/opt/academia-shared`
 
 ### 5.1 Tree
 
 ```
-/opt/academie-shared/
+/opt/academia-shared/
 ├── scripts/
 │   ├── pg-backup.sh       → /root/sinse-tools/pg-backup (symlink)
 │   ├── restic-backup.sh   → /root/sinse-tools/restic-backup (symlink)
@@ -329,7 +329,7 @@ Contents intentionally **not** scanned.
 
 ### 5.3 `curriculum*.yaml`
 
-No `curriculum*.yaml` file is present under `/opt/academie-shared` or anywhere else on the host. The curriculum source of truth is `/opt/academie/scripts/inject_curriculum_anglais.py` (42.9K, 658 lines) which injects curriculum into Dify via API.
+No `curriculum*.yaml` file is present under `/opt/academia-shared` or anywhere else on the host. The curriculum source of truth is `/opt/academia/scripts/inject_curriculum_anglais.py` (42.9K, 658 lines) which injects curriculum into Dify via API.
 
 ---
 
@@ -439,7 +439,7 @@ There is **no** dedicated `academie.service`, `litellm.service`, or `n8n.service
 
 **Root crontab (`crontab -l`):**
 ```
-0 * * * * /usr/bin/python3 /opt/academie/scripts/cron_snapshot_safety.py >> /var/log/academie-snapshot-cron.log 2>&1
+0 * * * * /usr/bin/python3 /opt/academia/scripts/cron_snapshot_safety.py >> /var/log/academie-snapshot-cron.log 2>&1
 ```
 Hourly snapshot safety net script.
 
@@ -447,8 +447,8 @@ Hourly snapshot safety net script.
 
 | File | Schedule | Command |
 |---|---|---|
-| `pg-backup` | `0 * * * *` (hourly) | `/opt/academie-shared/scripts/pg-backup.sh >> /var/log/pg-backup.log` |
-| `restic-backup` | `30 3 * * *` (daily 03:30) | `/opt/academie-shared/scripts/restic-backup.sh >> /var/log/restic-backup.log` |
+| `pg-backup` | `0 * * * *` (hourly) | `/opt/academia-shared/scripts/pg-backup.sh >> /var/log/pg-backup.log` |
+| `restic-backup` | `30 3 * * *` (daily 03:30) | `/opt/academia-shared/scripts/restic-backup.sh >> /var/log/restic-backup.log` |
 | `smoke-monitor` | `*/15 * * * *` (every 15 min) | `/root/sinse-tools/smoke-test --quick` → appends to `/var/log/smoke-alert.log` on FAILED |
 
 **Other cron directories (system defaults only, no academie content):**
@@ -460,9 +460,9 @@ Hourly snapshot safety net script.
 
 ## 8. Environment files
 
-Single env file found under `/opt/academie`:
+Single env file found under `/opt/academia`:
 
-- **`/opt/academie/webapp/.env`** — variable names only (values redacted):
+- **`/opt/academia/webapp/.env`** — variable names only (values redacted):
 
 | Variable |
 |---|
@@ -471,7 +471,7 @@ Single env file found under `/opt/academie`:
 | `JWT_SECRET_KEY` |
 | `JWT_REFRESH_SECRET` |
 
-No other `.env`, `.env.local`, `.env.production`, etc. exist anywhere under `/opt/academie` (confirmed via `find -maxdepth 3 -name ".env*"`).
+No other `.env`, `.env.local`, `.env.production`, etc. exist anywhere under `/opt/academia` (confirmed via `find -maxdepth 3 -name ".env*"`).
 
 ---
 
@@ -504,7 +504,7 @@ One file, two `server { ... }` blocks, both listening on **port 8080** (HTTP →
 | `/api` | `http://127.0.0.1:5001` | |
 | `/` (default) | `http://127.0.0.1:3000` | Dify web UI |
 
-**Block 2 — `academie.petit-pont.com`** (upstream: AcademIA frontend on `127.0.0.1:3001`):
+**Block 2 — `academia.petit-pont.com`** (upstream: AcademIA frontend on `127.0.0.1:3001`):
 
 Security headers applied globally (block-level `add_header`):
 - `X-Frame-Options: DENY`
@@ -529,7 +529,7 @@ All three proxies forward `Host`, `X-Real-IP`, `X-Forwarded-For`, `X-Forwarded-P
 
 ## 10. Git state
 
-### 10.1 `/opt/academie`
+### 10.1 `/opt/academia`
 
 - **Branch**: `main`
 - **Latest commit**: `b7d5ed6 [feat] centralized token tracking — LiteLLM SpendLogs as truth + dual-tracking with tiktoken for sub-second auto-switch`
@@ -569,10 +569,10 @@ All three proxies forward `Host`, `X-Real-IP`, `X-Forwarded-For`, `X-Forwarded-P
 
 ---
 
-## Appendix A — Top-level `.claude/` in `/opt/academie`
+## Appendix A — Top-level `.claude/` in `/opt/academia`
 
 ```
-/opt/academie/.claude/
+/opt/academia/.claude/
 ├── commands/
 │   ├── handoff.md
 │   └── pickup.md
@@ -582,7 +582,7 @@ All three proxies forward `Host`, `X-Real-IP`, `X-Forwarded-For`, `X-Forwarded-P
 
 ## Appendix B — Existing `04-infra/` docs (neighbour files)
 
-Neighbour docs in `/opt/academie/docs/04-infra/` (moved here from `/root/sinse-workspace/projects/academie-ia/docs/04-infra/` during Phase 3 vault migration 2026-04-25):
+Neighbour docs in `/opt/academia/docs/04-infra/` (moved here from `/root/sinse-workspace/projects/academie-ia/docs/04-infra/` during Phase 3 vault migration 2026-04-25):
 - `backup.md`
 - `credentials.md`
 - `deployment.md`

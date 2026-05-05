@@ -123,7 +123,7 @@ ai_summary: "Architecture exhaustive Teacher EN end-to-end (FastAPI pipeline + D
 
 ## Entry point : `POST /api/chat/send`
 
-**File** : `/opt/academie/webapp/backend/app/routers/chat_router.py:590-1162`
+**File** : `/opt/academia/webapp/backend/app/routers/chat_router.py:590-1162`
 
 **Imports critiques** :
 ```python
@@ -533,7 +533,7 @@ B1: {...}
 
 ## Harness pipeline
 
-**File** : `/opt/academie/scripts/oracle/harness.py`
+**File** : `/opt/academia/scripts/oracle/harness.py`
 
 ```
 python3 scripts/oracle/harness.py --agent teacher_en --mode [lint|smoke|full]

@@ -187,7 +187,7 @@ def validate_data_pack(lang: str) -> None:
     Raises SystemExit on any schema violation so the caller never clones
     into a broken pack. Session 42 D5."""
     import sys
-    sys.path.insert(0, "/opt/academie/packages/academie-core")
+    sys.path.insert(0, "/opt/academia/packages/academie-core")
     from academie_core.data.schemas import (
         CurriculumPack,
         FewshotPack,
@@ -195,7 +195,7 @@ def validate_data_pack(lang: str) -> None:
     )
     import yaml as _yaml
 
-    data_dir = Path("/opt/academie/packages/academie-core/academie_core/data")
+    data_dir = Path("/opt/academia/packages/academie-core/academie_core/data")
     checks = [
         (data_dir / f"curriculum_{lang}.yaml", lambda d: CurriculumPack.validate_mapping(d)),
         (data_dir / "rubrics" / f"{lang}.yaml", lambda d: RubricPack.model_validate(d)),
@@ -204,7 +204,7 @@ def validate_data_pack(lang: str) -> None:
     errors = []
     for path, validator in checks:
         if not path.exists():
-            errors.append(f"missing: {path.relative_to(Path('/opt/academie'))}")
+            errors.append(f"missing: {path.relative_to(Path('/opt/academia'))}")
             continue
         try:
             validator(_yaml.safe_load(path.read_text()))

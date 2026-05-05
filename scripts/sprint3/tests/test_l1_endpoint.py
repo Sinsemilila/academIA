@@ -28,7 +28,7 @@ TEST_PASSWORD = "L1Endpoint-2026!"
 
 
 def _db_dsn() -> str:
-    env = Path("/opt/academie/webapp/.env")
+    env = Path("/opt/academia/webapp/.env")
     if env.exists():
         for line in env.read_text().splitlines():
             if line.startswith("DATABASE_URL="):

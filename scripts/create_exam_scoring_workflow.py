@@ -16,7 +16,7 @@ from datetime import datetime
 POSTGRES_CRED_ID = "NpF5tjOzvAWkHR2n"
 def _read_secret(name, fallback=""):
     from pathlib import Path
-    p = Path(f"/opt/academie-shared/secrets/{name}")
+    p = Path(f"/opt/academia-shared/secrets/{name}")
     return p.read_text().strip() if p.exists() else fallback
 
 DIFY_ADMIN_KEY = os.environ.get("DIFY_ADMIN_KEY") or _read_secret("dify-admin-key")

@@ -247,7 +247,7 @@ for c in academie-frontend academie-api dify-api dify-worker postgres-academie r
 done
 
 # Services HTTP
-curl -sf -o /dev/null https://academie.petit-pont.com/ && echo "✓ webapp 200" || echo "✗ webapp fail"
+curl -sf -o /dev/null https://academia.petit-pont.com/ && echo "✓ webapp 200" || echo "✗ webapp fail"
 curl -sf -o /dev/null http://localhost:8000/health && echo "✓ api health" || echo "✗ api fail"
 ```
 
@@ -317,13 +317,13 @@ MERGE REQUESTS
 
 ## 7. `deploy-teacher` — Wrapper chatflow update
 
-**Rôle** : wrapper CLI propre autour de `/opt/academie/scripts/update_teacher_chatflow.py` avec snapshot avant deploy + restart.
+**Rôle** : wrapper CLI propre autour de `/opt/academia/scripts/update_teacher_chatflow.py` avec snapshot avant deploy + restart.
 
 **Usage** : `deploy-teacher [--dry-run] [--rollback <snapshot>]`
 
 **Logique** :
 1. Créer un snapshot du chatflow actuel : `docs/projects/academie-ia/teacher-chatflow-snapshots/YYYY-MM-DD-HHMM.json`
-2. Lancer `python3 /opt/academie/scripts/update_teacher_chatflow.py`
+2. Lancer `python3 /opt/academia/scripts/update_teacher_chatflow.py`
 3. Restart `dify-api dify-worker`
 4. Smoke-test --deep pour valider
 5. Si fail → rollback automatique au snapshot précédent
@@ -401,16 +401,16 @@ log fix "Onboarding Phase 1→2 transition"
 
 **Logique** :
 1. Vérifie que la branche `<agent>` existe (sinon la crée)
-2. `git worktree add /opt/academie-worktrees/<agent> <agent>`
-3. Crée `.agent` file : `echo "<agent>" > /opt/academie-worktrees/<agent>/.agent`
+2. `git worktree add /opt/academia-worktrees/<agent> <agent>`
+3. Crée `.agent` file : `echo "<agent>" > /opt/academia-worktrees/<agent>/.agent`
 4. Crée AGENTS.md pointer :
    ```
    READ /root/sinse-workspace/AGENTS.md AND /root/sinse-workspace/projects/academie-ia/PROJECT.md BEFORE ANYTHING.
    ```
-5. Symlinks vers `/opt/academie-shared/` pour les secrets
+5. Symlinks vers `/opt/academia-shared/` pour les secrets
 6. Copie template `.claude/settings.local.json` avec permissions worktree
 7. Lance `smoke-test --quick` dans le worktree
-8. Output : "✓ Worktree <agent> ready at /opt/academie-worktrees/<agent>"
+8. Output : "✓ Worktree <agent> ready at /opt/academia-worktrees/<agent>"
 
 ---
 

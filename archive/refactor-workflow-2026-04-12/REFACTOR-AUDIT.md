@@ -2,7 +2,7 @@
 
 > **Snapshot complet** de l'infrastructure au 2026-04-11.
 > Compagnon de `REFACTOR-PLAN.md` — l'audit de ce qu'on a aujourd'hui, ce que Peter fait, ce qu'on veut, et les idées potentielles.
-> Méthode : scan exhaustif `/root/sinse-workspace/`, `/opt/academie/`, `~/.claude/`
+> Méthode : scan exhaustif `/root/sinse-workspace/`, `/opt/academia/`, `~/.claude/`
 
 ## Métadonnées
 - **Créé** : 2026-04-11 (session refactor avec Sinse)
@@ -19,9 +19,9 @@ Avant cet audit, je supposais qu'on partait quasi de zéro. **C'est faux** :
 
 2. **Hook Stop déjà actif** : `claude-settings.json` contient un hook qui détecte les changements non commités dans `sinse-workspace` et rappelle de faire `/fin`. Automation existante.
 
-3. **CLAUDE.md dupliqué** : il y en a UN dans `/opt/academie/CLAUDE.md` (9398 bytes, projet) ET UN dans `/root/sinse-workspace/context/CLAUDE.md` (8089 bytes, workspace). **C'est exactement le problème que résout le pointer pattern Peter (D8)**.
+3. **CLAUDE.md dupliqué** : il y en a UN dans `/opt/academia/CLAUDE.md` (9398 bytes, projet) ET UN dans `/root/sinse-workspace/context/CLAUDE.md` (8089 bytes, workspace). **C'est exactement le problème que résout le pointer pattern Peter (D8)**.
 
-4. **Symlink déjà en place** : `/opt/academie/context → /root/sinse-workspace/context`. On a déjà commencé le pattern partagé.
+4. **Symlink déjà en place** : `/opt/academia/context → /root/sinse-workspace/context`. On a déjà commencé le pattern partagé.
 
 5. **Lock file fonctionne** : `.lock` actuel contient `claude:1775934904`, gitignored proprement. Système opérationnel.
 
@@ -121,9 +121,9 @@ Avant cet audit, je supposais qu'on partait quasi de zéro. **C'est faux** :
 | Branches par IA (claude, gemini) | ✅ existe | ❌ rejette | Garder | 🟢 |
 | Worktrees git | ❌ absent | ❌ rejette | Adopter (Modèle C+) | 🟢 |
 | Fichier `.lock` multi-IA | ✅ fonctionne | N/A | Garder + améliorer (expiration ?) | 🟡 |
-| `/opt/academie-shared/` (secrets partagés) | ❌ absent | N/A | Créer | 🟢 |
+| `/opt/academia-shared/` (secrets partagés) | ❌ absent | N/A | Créer | 🟢 |
 | Pointer pattern AGENTS.md | ❌ absent | ✅ vérifié | Adopter (D8) | 🟢 |
-| Symlink `/opt/academie/context → workspace/context` | ✅ existe | N/A | Garder, étendre au shared/ | 🟢 |
+| Symlink `/opt/academia/context → workspace/context` | ✅ existe | N/A | Garder, étendre au shared/ | 🟢 |
 | Communication oracle | ❌ absent | npm package | Installer | 🟢 |
 | Communication review | ❌ absent | Built-in | Utiliser | 🟢 |
 | Communication handoff | ❌ absent | Slash command | Créer | 🟢 |
@@ -133,7 +133,7 @@ Avant cet audit, je supposais qu'on partait quasi de zéro. **C'est faux** :
 | Fichier `.agent` par worktree | ❌ absent | N/A | Créer | 🟢 |
 
 ### Idées potentielles 🆕
-- Worktree "sandbox" `/opt/academie-worktrees/sandbox/` pour tester sans toucher claude/gemini
+- Worktree "sandbox" `/opt/academia-worktrees/sandbox/` pour tester sans toucher claude/gemini
 - "Witness IA" légère qui surveille les conflits potentiels et alerte
 - Quotas par IA (limite tokens/jour pour éviter de griller un modèle)
 - Heartbeat lock : chaque IA met à jour son timestamp régulièrement (détection lock orphelin)

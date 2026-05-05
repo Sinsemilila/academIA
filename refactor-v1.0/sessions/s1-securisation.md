@@ -64,7 +64,7 @@ Mettre en place l'infrastructure de backup et de validation **avant** d'activer 
 
 ### S1.3 — Backup niveau 2 : Dumps PostgreSQL horaires (30 min)
 
-- [ ] Créer le script `/opt/academie-shared/scripts/pg-backup.sh` :
+- [ ] Créer le script `/opt/academia-shared/scripts/pg-backup.sh` :
   ```bash
   #!/bin/bash
   set -euo pipefail
@@ -77,12 +77,12 @@ Mettre en place l'infrastructure de backup et de validation **avant** d'activer 
   # Sauf : quotidien à minuit, hebdo le dimanche, mensuel le 1
   # (logique à implémenter avec find + mv vers sous-dossiers)
   ```
-- [ ] Rendre exécutable : `chmod +x /opt/academie-shared/scripts/pg-backup.sh`
+- [ ] Rendre exécutable : `chmod +x /opt/academia-shared/scripts/pg-backup.sh`
 - [ ] Créer un cron horaire : `crontab -e`
   ```
-  0 * * * * /opt/academie-shared/scripts/pg-backup.sh
+  0 * * * * /opt/academia-shared/scripts/pg-backup.sh
   ```
-- [ ] Test manuel : `/opt/academie-shared/scripts/pg-backup.sh`
+- [ ] Test manuel : `/opt/academia-shared/scripts/pg-backup.sh`
 - [ ] Vérifier : `ls -la /opt/backups/postgres/`
 - [ ] Noter : ce script deviendra le bash tool `pg-backup` en S2 (moved to `/root/sinse-workspace/tools/`)
 
@@ -106,26 +106,26 @@ Mettre en place l'infrastructure de backup et de validation **avant** d'activer 
 - [ ] **CRITIQUE — Passphrase Restic (D37 G1)** :
   - Générer une passphrase forte : `openssl rand -base64 48`
   - **Stockage triple** :
-    1. Fichier local : `echo "<passphrase>" > /opt/academie-shared/secrets/restic-passphrase && chmod 600 /opt/academie-shared/secrets/restic-passphrase`
+    1. Fichier local : `echo "<passphrase>" > /opt/academia-shared/secrets/restic-passphrase && chmod 600 /opt/academia-shared/secrets/restic-passphrase`
     2. **Écrire à la main** sur un carnet papier stocké hors cosmos
     3. Ajouter dans password manager (Bitwarden / 1Password / KeePass)
   - **⚠️ Sans cette passphrase, tous les backups offsite sont inaccessibles !**
 - [ ] Initialiser le repo Restic sur Google Drive via rclone :
   ```bash
-  export RESTIC_PASSWORD_FILE=/opt/academie-shared/secrets/restic-passphrase
+  export RESTIC_PASSWORD_FILE=/opt/academia-shared/secrets/restic-passphrase
   restic -r rclone:gdrive:/Backups/academie/restic init
   ```
-- [ ] Créer le script `/opt/academie-shared/scripts/restic-backup.sh` :
+- [ ] Créer le script `/opt/academia-shared/scripts/restic-backup.sh` :
   ```bash
   #!/bin/bash
   set -euo pipefail
-  export RESTIC_PASSWORD_FILE=/opt/academie-shared/secrets/restic-passphrase
+  export RESTIC_PASSWORD_FILE=/opt/academia-shared/secrets/restic-passphrase
   restic -r rclone:gdrive:/Backups/academie/restic backup \
     /opt/backups/postgres \
-    /opt/academie \
+    /opt/academia \
     /opt/litellm/config.yaml \
     /opt/n8n \
-    /opt/academie-shared \
+    /opt/academia-shared \
     /root/sinse-workspace \
     --exclude='node_modules' \
     --exclude='__pycache__' \
@@ -138,9 +138,9 @@ Mettre en place l'infrastructure de backup et de validation **avant** d'activer 
   ```
 - [ ] Rendre exécutable + ajouter cron quotidien à 3h :
   ```
-  0 3 * * * /opt/academie-shared/scripts/restic-backup.sh
+  0 3 * * * /opt/academia-shared/scripts/restic-backup.sh
   ```
-- [ ] **Premier backup manuel** : `/opt/academie-shared/scripts/restic-backup.sh` (peut prendre 10-30 min la première fois)
+- [ ] **Premier backup manuel** : `/opt/academia-shared/scripts/restic-backup.sh` (peut prendre 10-30 min la première fois)
 - [ ] Vérifier : `restic -r rclone:gdrive:/Backups/academie/restic snapshots`
 
 ### S1.6 — TEST DE RESTORE (CRITIQUE — 45 min)
@@ -151,7 +151,7 @@ Mettre en place l'infrastructure de backup et de validation **avant** d'activer 
 
 - [ ] Créer une table de test : `docker exec postgres-academie psql -U sinse -d academie_db -c "CREATE TABLE test_restore (id INT, data TEXT);"`
 - [ ] Insérer des données : `INSERT INTO test_restore VALUES (1, 'hello'), (2, 'world');`
-- [ ] Lancer un backup manuel : `/opt/academie-shared/scripts/pg-backup.sh`
+- [ ] Lancer un backup manuel : `/opt/academia-shared/scripts/pg-backup.sh`
 - [ ] **Simuler perte** : `DROP TABLE test_restore;`
 - [ ] **Restaurer** : extraire le dernier dump, restaurer la table :
   ```bash
@@ -164,17 +164,17 @@ Mettre en place l'infrastructure de backup et de validation **avant** d'activer 
 
 #### Test restore niveau 3 (Restic depuis Google Drive)
 
-- [ ] Créer un fichier test : `echo "RESTORE TEST $(date)" > /opt/academie-shared/test-restore-marker.txt`
-- [ ] Backup manuel : `/opt/academie-shared/scripts/restic-backup.sh`
-- [ ] Supprimer le fichier : `rm /opt/academie-shared/test-restore-marker.txt`
+- [ ] Créer un fichier test : `echo "RESTORE TEST $(date)" > /opt/academia-shared/test-restore-marker.txt`
+- [ ] Backup manuel : `/opt/academia-shared/scripts/restic-backup.sh`
+- [ ] Supprimer le fichier : `rm /opt/academia-shared/test-restore-marker.txt`
 - [ ] Restaurer via Restic :
   ```bash
-  export RESTIC_PASSWORD_FILE=/opt/academie-shared/secrets/restic-passphrase
+  export RESTIC_PASSWORD_FILE=/opt/academia-shared/secrets/restic-passphrase
   restic -r rclone:gdrive:/Backups/academie/restic restore latest \
     --target /tmp/restic-test-restore \
-    --include "/opt/academie-shared/test-restore-marker.txt"
+    --include "/opt/academia-shared/test-restore-marker.txt"
   ```
-- [ ] Vérifier : `cat /tmp/restic-test-restore/opt/academie-shared/test-restore-marker.txt`
+- [ ] Vérifier : `cat /tmp/restic-test-restore/opt/academia-shared/test-restore-marker.txt`
 - [ ] Nettoyer : `rm -rf /tmp/restic-test-restore`
 - [ ] ✅ Marqué validé
 
@@ -188,7 +188,7 @@ Mettre en place l'infrastructure de backup et de validation **avant** d'activer 
 
 ### S1.7 — Script `smoke-test.sh` (30 min)
 
-- [ ] Créer `/opt/academie-shared/scripts/smoke-test.sh` (deviendra `/root/sinse-workspace/tools/smoke-test` en S2)
+- [ ] Créer `/opt/academia-shared/scripts/smoke-test.sh` (deviendra `/root/sinse-workspace/tools/smoke-test` en S2)
 - [ ] Implémenter les 4 variantes (voir `reference/tools.md` pour le template complet) :
   - `smoke-test --quick` (containers UP + services HTTP ~5s)
   - `smoke-test --deep` (quick + endpoints API + chatflow ~15s)
@@ -211,7 +211,7 @@ Mettre en place l'infrastructure de backup et de validation **avant** d'activer 
   3. **VM cosmos crash** : restore snapshot Proxmox (procédure, pas exécution)
   4. **NAS total cramage** : restore depuis Google Drive (procédure complète, inclut l'install initial Restic)
 - [ ] **Liste des secrets critiques** (D37 G6 — préparation, liste complétée en S2) :
-  - `/opt/academie/.dify_admin_key`
+  - `/opt/academia/.dify_admin_key`
   - `/opt/n8n/encryption.key`
   - Passphrase Restic
   - Credentials Google Drive (rclone config)

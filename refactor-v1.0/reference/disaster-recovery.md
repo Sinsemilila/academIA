@@ -19,7 +19,7 @@
 
 **⚠️ CRITIQUE** : sans cette passphrase, tous les backups Google Drive sont **définitivement irrécupérables**.
 
-1. **Fichier local** : `/opt/academie-shared/secrets/restic-passphrase` (chmod 600)
+1. **Fichier local** : `/opt/academia-shared/secrets/restic-passphrase` (chmod 600)
 2. **NordPass** : entrée "Restic Backup - AcademIA (cosmos)"
 3. **Carnet papier** : à noter physiquement hors cosmos (TODO Sinse)
 
@@ -29,9 +29,9 @@
 |--------|-------------|-----------------|
 | Passphrase Restic | triple stockage ci-dessus | **Backups GDrive irrécupérables** |
 | rclone token GDrive | `~/.config/rclone/rclone.conf` | Re-auth OAuth (5 min) |
-| Dify admin key | `/opt/academie/.dify_admin_key` | Recréable via DB Dify |
+| Dify admin key | `/opt/academia/.dify_admin_key` | Recréable via DB Dify |
 | n8n encryption key | `/opt/n8n/encryption.key` | **Workflows n8n illisibles** |
-| PG password | `/opt/academie-shared/secrets/` (à migrer) | Backupé par Restic |
+| PG password | `/opt/academia-shared/secrets/` (à migrer) | Backupé par Restic |
 | LiteLLM API keys | `/opt/litellm/config.yaml` | Re-créer chez chaque provider |
 
 **Tous les secrets (sauf passphrase Restic) sont backupés par Restic dans Google Drive.**
@@ -59,7 +59,7 @@ docker exec postgres-academie psql -U sinse -d academie_db -c "SELECT count(*) F
 ### Si le dump horaire est trop vieux → Restic
 
 ```bash
-export RESTIC_PASSWORD_FILE=/opt/academie-shared/secrets/restic-passphrase
+export RESTIC_PASSWORD_FILE=/opt/academia-shared/secrets/restic-passphrase
 restic -r rclone:gdrive:/Backups/academie/restic snapshots
 restic -r rclone:gdrive:/Backups/academie/restic restore <SNAPSHOT_ID> \
     --target /tmp/restore-pg \
@@ -81,7 +81,7 @@ cd /root/sinse-workspace && git log --oneline -5
 git checkout HEAD -- <fichier>   # restaure depuis le dernier commit
 
 # 2. Si pas dans git → Restic
-export RESTIC_PASSWORD_FILE=/opt/academie-shared/secrets/restic-passphrase
+export RESTIC_PASSWORD_FILE=/opt/academia-shared/secrets/restic-passphrase
 restic -r rclone:gdrive:/Backups/academie/restic snapshots
 
 # 3. Restaurer un fichier spécifique
@@ -120,7 +120,7 @@ qm start 100
 
 # 4. Vérifier depuis cosmos
 ssh root@192.168.1.181
-/opt/academie-shared/scripts/smoke-test.sh --all
+/opt/academia-shared/scripts/smoke-test.sh --all
 ```
 
 ---
@@ -146,7 +146,7 @@ restic -r rclone:gdrive:/Backups/academie/restic snapshots
 restic -r rclone:gdrive:/Backups/academie/restic restore latest --target /
 
 # Restaure automatiquement :
-#   /opt/academie, /opt/academie-shared, /opt/litellm/config.yaml
+#   /opt/academia, /opt/academia-shared, /opt/litellm/config.yaml
 #   /opt/n8n, /mnt/cosmos-data/backups/postgres/
 #   /root/sinse-workspace, ~/.claude/projects/memory
 
@@ -159,7 +159,7 @@ gunzip -c "$LATEST_DUMP" | docker exec -i postgres-academie psql -U sinse -d aca
 # 7. Reconfigurer Cloudflare Tunnel si IP a changé
 
 # 8. Vérifier
-/opt/academie-shared/scripts/smoke-test.sh --all
+/opt/academia-shared/scripts/smoke-test.sh --all
 ```
 
 **Perte de données max** : 1h (dernier PG dump horaire) + 24h (dernier Restic quotidien).
@@ -170,20 +170,20 @@ gunzip -c "$LATEST_DUMP" | docker exec -i postgres-academie psql -U sinse -d aca
 
 ```bash
 # État rapide
-/opt/academie-shared/scripts/smoke-test.sh --quick
+/opt/academia-shared/scripts/smoke-test.sh --quick
 
 # Dernier backup PG ?
 ls -lt /mnt/cosmos-data/backups/postgres/ | head -3
 
 # Dernier snapshot Restic ?
-export RESTIC_PASSWORD_FILE=/opt/academie-shared/secrets/restic-passphrase
+export RESTIC_PASSWORD_FILE=/opt/academia-shared/secrets/restic-passphrase
 restic -r rclone:gdrive:/Backups/academie/restic snapshots --last
 
 # Dernier vzdump Proxmox ?
 ssh root@192.168.1.50 "ls -lh /var/lib/vz/dump/"
 
 # Redémarrer tous les containers
-cd /opt/academie/webapp && docker compose restart
+cd /opt/academia/webapp && docker compose restart
 ```
 
 ---

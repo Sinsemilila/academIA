@@ -12,7 +12,7 @@ owner: claude
 ## Setup
 
 ```bash
-cd /opt/academie/scripts/oracle
+cd /opt/academia/scripts/oracle
 python3 -m venv .venv-tools
 .venv-tools/bin/pip install ruff mypy types-PyYAML pyyaml pydantic httpx pytest
 
@@ -23,7 +23,7 @@ python3 -m venv .venv-tools
 .venv-tools/bin/mypy .
 
 # Tests
-PYTHONPATH=/opt/academie/scripts .venv-tools/bin/python -m pytest tests -q
+PYTHONPATH=/opt/academia/scripts .venv-tools/bin/python -m pytest tests -q
 ```
 
 ## Baseline (S57)
@@ -44,6 +44,6 @@ PYTHONPATH=/opt/academie/scripts .venv-tools/bin/python -m pytest tests -q
 Pré-commit hook ruff/mypy oracle/ TBD. Run manuel post-changement :
 
 ```bash
-cd /opt/academie/scripts/oracle
+cd /opt/academia/scripts/oracle
 .venv-tools/bin/ruff check . && .venv-tools/bin/mypy .
 ```

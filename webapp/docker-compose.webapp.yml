@@ -16,7 +16,7 @@ services:
     env_file:
       - .env   # Phase B4 — PUBLIC_SENTRY_DSN_FRONTEND + SENTRY_DSN_SSR pour SvelteKit
     environment:
-      - ORIGIN=https://academie.petit-pont.com
+      - ORIGIN=https://academia.petit-pont.com
       - PROTOCOL_HEADER=x-forwarded-proto
       - HOST_HEADER=x-forwarded-host
       - ADDRESS_HEADER=x-forwarded-for
@@ -50,7 +50,7 @@ services:
     volumes:
       # Read-only access to host shared secrets (currently used by openai_reconcile
       # to read the OpenAI admin key without baking it into the container image).
-      - /opt/academie-shared/secrets:/run/academie-secrets:ro
+      - /opt/academia-shared/secrets:/run/academie-secrets:ro
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
       interval: 30s

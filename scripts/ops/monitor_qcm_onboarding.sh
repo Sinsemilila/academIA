@@ -47,5 +47,5 @@ docker logs academie-api 2>&1 | grep -i 'learner_profiles\|onboarding' | tail -5
 
 echo ""
 echo "=== Rollback : flip flag + rebuild frontend ==="
-echo "  sed -i \"s/QCM_ONBOARDING_ENABLED = true/QCM_ONBOARDING_ENABLED = false/\" /opt/academie/webapp/frontend/src/lib/config.ts"
-echo "  cd /opt/academie/webapp && docker compose -f docker-compose.webapp.yml build academie-frontend && docker compose -f docker-compose.webapp.yml up -d academie-frontend"
+echo "  sed -i \"s/QCM_ONBOARDING_ENABLED = true/QCM_ONBOARDING_ENABLED = false/\" /opt/academia/webapp/frontend/src/lib/config.ts"
+echo "  cd /opt/academia/webapp && docker compose -f docker-compose.webapp.yml build academie-frontend && docker compose -f docker-compose.webapp.yml up -d academie-frontend"

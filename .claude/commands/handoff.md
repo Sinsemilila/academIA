@@ -14,7 +14,7 @@ Session end. Execute in order.
 
 Éviter drift "checkbox `[ ]` mais commit existe" (bug repéré Session 53 : sub-items Tier 1 n_votes/Dify temp/goldens marqués `[ ]` malgré commits `535c09b`/`d672cbd` cités prose Session 51) :
 
-1. List commits session : `git -C /opt/academie log --since="$SESSION_START" --oneline` (fallback : commits depuis dernière entry SESSION.md `### Commits`)
+1. List commits session : `git -C /opt/academia log --since="$SESSION_START" --oneline` (fallback : commits depuis dernière entry SESSION.md `### Commits`)
 2. Read TODO.md OPEN sections en entier (pas juste `🔝 EN COURS`)
 3. **Pour chaque commit** : grep TODO.md pour items dont wording (ou sub-bullet) matche le scope. Match flou OK.
 4. **Mark format canonique** : `[x] (claude, YYYY-MM-DD, Session N) <texte> — commit `<sha>`` (cohérent entries Session 46-47)
@@ -22,11 +22,11 @@ Session end. Execute in order.
 6. Ambigu (commit matche 0 ou 2+ checkboxes) → flag dans `### Gotchas` SESSION.md "TODO reconciliation ambiguë : <commit> vs <candidates>" + demander Sinse au recap.
 
 ### 2.2 Autres
-- `/opt/academie/CHANGELOG.md`: append via `log <type> "<message>"` tool.
+- `/opt/academia/CHANGELOG.md`: append via `log <type> "<message>"` tool.
 - **Docs consistency check**: for each structural change this session (schema, architecture, pedagogy rules, infra), verify the corresponding `docs/*.md` was updated in the same session. If not, update `last_reviewed` OR flip `status: needs-review`. For new architectural decisions, create `docs/05-decisions/ADR-NNN-<slug>.md` from template.
 
 ## 3. Update SESSION.md
-**Prepend** (don't overwrite) a new session block at the top of `/opt/academie/SESSION.md`, after the header line.
+**Prepend** (don't overwrite) a new session block at the top of `/opt/academia/SESSION.md`, after the header line.
 Keep previous sessions below.
 
 **Rotation** : SESSION.md ne contient que les **3 dernières sessions**. Après avoir prepended la nouvelle, si le fichier contient >3 sessions, déplacer la plus ancienne (celle en bas) vers le haut de `SESSION_ARCHIVE.md` (aussi newest-on-top). L'archive n'est jamais lue au pickup mais reste disponible pour consultation manuelle.
@@ -144,10 +144,10 @@ Cohérent L33-L42 (Sinse audit mensuel humain pas auto-promote, Claude consolida
 
 ## 5. Commit + push (project + vault)
 
-### 5.1 Project (/opt/academie)
+### 5.1 Project (/opt/academia)
 - `committer "[<type>] <message>" <files...>` pour project code
 - `committer "[docs] Session handoff" <files...>` pour workspace state (SESSION.md, TODO.md, CHANGELOG.md, docs/)
-- `git -C /opt/academie push origin main`
+- `git -C /opt/academia push origin main`
 
 ### 5.2 Vault (/root/sinse-vault)
 - `git -C /root/sinse-vault add daily/ hot.md log.md inbox/ projects/*/failures.md`

@@ -23,7 +23,7 @@ sys.path.insert(0, "/tmp")
 from dify_helper import call, login
 
 PROVIDER_NAME = "compta_tools"
-SPEC_PATH = Path("/opt/academie/scripts/sprint-maitre-comptable/compta_openapi.json")
+SPEC_PATH = Path("/opt/academia/scripts/sprint-maitre-comptable/compta_openapi.json")
 
 
 def main() -> int:

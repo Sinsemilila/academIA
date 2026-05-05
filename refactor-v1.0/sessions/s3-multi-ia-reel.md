@@ -85,7 +85,7 @@ D24 a dit : pas de modification des healthchecks Docker, le smoke-test fait tout
 
 - [ ] `docker exec postgres-academie pg_isready -U sinse` → OK
 - [ ] `docker exec redis-academie redis-cli ping` → PONG
-- [ ] `curl -s http://localhost:5001/console/api/workspaces -H "Authorization: Bearer $(cat /opt/academie-shared/secrets/dify-admin-key)"` → 200/401
+- [ ] `curl -s http://localhost:5001/console/api/workspaces -H "Authorization: Bearer $(cat /opt/academia-shared/secrets/dify-admin-key)"` → 200/401
 - [ ] `curl -s http://localhost:5678/healthz` → 200
 - [ ] `curl -s http://localhost:4000/health` → JSON valide
 - [ ] Les healthchecks natifs existants (`academie-api`, `academie-frontend`) : `docker inspect | grep -A5 Health`
@@ -101,15 +101,15 @@ D24 a dit : pas de modification des healthchecks Docker, le smoke-test fait tout
 
 #### S3.5.2 — Création worktree
 
-- [ ] Créer la branche gemini : `cd /opt/academie && git branch gemini`
+- [ ] Créer la branche gemini : `cd /opt/academia && git branch gemini`
 - [ ] Créer le worktree : `init-worktree gemini`
-- [ ] Vérifier la structure : `ls -la /opt/academie-worktrees/gemini/`
-- [ ] Vérifier le fichier `.agent` : `cat /opt/academie-worktrees/gemini/.agent` → "gemini"
+- [ ] Vérifier la structure : `ls -la /opt/academia-worktrees/gemini/`
+- [ ] Vérifier le fichier `.agent` : `cat /opt/academia-worktrees/gemini/.agent` → "gemini"
 - [ ] Vérifier le pointer AGENTS.md
 
 #### S3.5.3 — Premier test Gemini dans son worktree
 
-- [ ] `cd /opt/academie-worktrees/gemini && gemini`
+- [ ] `cd /opt/academia-worktrees/gemini && gemini`
 - [ ] Dans Gemini, taper `/pickup`
 - [ ] Vérifier que Gemini lit correctement :
   - `/root/sinse-workspace/AGENTS.md`
@@ -135,15 +135,15 @@ D24 a dit : pas de modification des healthchecks Docker, le smoke-test fait tout
 
 - [ ] Créer `/root/sinse-workspace/projects/academie-ia/AUDIT-TODO.md`
 - [ ] Contenu : les 9 points de D21 en checklist
-  1. [ ] Scripts `/opt/academie/scripts/` : CLI-fier ? déplacer ? grouper sous `tools/` projet ?
-  2. [ ] `/opt/academie/CLAUDE.md` : confirmer suppression (remplacé par pointer vers AGENTS.md + PROJECT.md)
-  3. [ ] `/opt/academie/.claude/` : adapter (settings, commands, hooks)
-  4. [ ] `/opt/academie/.gemini/` : idem
-  5. [ ] Symlinks : `/opt/academie/context` → adapter selon nouvelle structure
-  6. [ ] `/opt/academie/curriculums/` : organiser ?
-  7. [ ] `/opt/academie/api/`, `/opt/academie/webapp/` : référencer depuis `docs/`
+  1. [ ] Scripts `/opt/academia/scripts/` : CLI-fier ? déplacer ? grouper sous `tools/` projet ?
+  2. [ ] `/opt/academia/CLAUDE.md` : confirmer suppression (remplacé par pointer vers AGENTS.md + PROJECT.md)
+  3. [ ] `/opt/academia/.claude/` : adapter (settings, commands, hooks)
+  4. [ ] `/opt/academia/.gemini/` : idem
+  5. [ ] Symlinks : `/opt/academia/context` → adapter selon nouvelle structure
+  6. [ ] `/opt/academia/curriculums/` : organiser ?
+  7. [ ] `/opt/academia/api/`, `/opt/academia/webapp/` : référencer depuis `docs/`
   8. [ ] Fichiers d'accès (`.dify_admin_key`) : déplacer dans secrets partagés ?
-  9. [ ] Worktrees academie : créer structure `/opt/academie-worktrees/{claude,gemini}/`
+  9. [ ] Worktrees academie : créer structure `/opt/academia-worktrees/{claude,gemini}/`
 - [ ] Ajouter note "À traiter post-refactor workflow, priorité normale"
 - [ ] Commit : `committer "[docs] Create AUDIT-TODO for academie-ia (D21, D37 G10)" AUDIT-TODO.md`
 

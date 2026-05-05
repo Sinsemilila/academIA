@@ -16,7 +16,7 @@ sys.path.insert(0, "/tmp")
 from dify_helper import login, call
 
 APP_ID = "4ce8ffe2-0cdf-4fa8-aab4-478e5dd8ac1c"
-SYSTEM_PROMPT_PATH = "/opt/academie/scripts/sprint-maitre-comptable/maitre_augmented_system.txt"
+SYSTEM_PROMPT_PATH = "/opt/academia/scripts/sprint-maitre-comptable/maitre_augmented_system.txt"
 TOOLS_META_PATH = "/tmp/compta_tools_meta.json"
 PROVIDER_NAME = "compta_tools"  # human-readable, used to fetch provider UUID at runtime
 

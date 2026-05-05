@@ -29,10 +29,10 @@ from pathlib import Path
 
 import httpx
 
-_BACKEND = "/opt/academie/webapp/backend"
+_BACKEND = "/opt/academia/webapp/backend"
 if _BACKEND not in sys.path:
     sys.path.insert(0, _BACKEND)
-_SCRIPTS = "/opt/academie/scripts"
+_SCRIPTS = "/opt/academia/scripts"
 if _SCRIPTS not in sys.path:
     sys.path.insert(0, _SCRIPTS)
 
@@ -578,7 +578,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--persona", default="all", choices=["all", "A1", "A2", "B1", "B2"])
     parser.add_argument("--model", default=DEFAULT_MODEL)
-    parser.add_argument("--out", default="/opt/academie/scripts/sprint3/eval_report.md")
+    parser.add_argument("--out", default="/opt/academia/scripts/sprint3/eval_report.md")
     args = parser.parse_args()
 
     target_personas = list(PERSONAS.keys()) if args.persona == "all" else [args.persona]

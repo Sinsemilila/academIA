@@ -2,7 +2,7 @@
 
 Append-only. Format: `YYYY-MM-DD AI — decision — rationale`
 Full historical detail: see `archive/pre-migration-snapshots/` and `refactor-v1.0/decisions.md`
-Portfolio-facing ADRs: see `/opt/academie/docs/decisions.md` (15 backdated entries)
+Portfolio-facing ADRs: see `/opt/academia/docs/decisions.md` (15 backdated entries)
 
 ## Historical summary (2026-04-04 → 2026-04-07)
 
