@@ -40,10 +40,7 @@ ALL_AGENTS: list[AgentDef] = [
     AgentDef("sensei",      "ja",       "DIFY_KEY_SENSEI",      "Sensei — Japanese",    ""),
     AgentDef("pymentor",    "python",   "DIFY_KEY_PYMENTOR",    "PyMentor — Python",    ""),
     AgentDef("cybermentor", "cybersec", "DIFY_KEY_CYBERMENTOR", "CyberMentor — Cybersec", ""),
-    # S57 — premier domaine non-linguistique : tuteur compta complémentaire formation Studi RNCP41653.
-    # ADR-017 acted. Mode B Phase 1 chatflow Dify "Maître Comptable - Compta FR" créé S57.
-    # Activated via AVAILABLE_AGENTS=teacher,maestro,maitre_comptable env.
-    AgentDef("maitre_comptable", "compta_fr", "DIFY_KEY_MAITRE_COMPTABLE", "Maître Comptable — Compta", "4ce8ffe2-0cdf-4fa8-aab4-478e5dd8ac1c"),
+    # Maître Comptable split to marie-api (Phase 2 — 2026-05-05). Now lives at marie.petit-pont.com.
 ]
 
 

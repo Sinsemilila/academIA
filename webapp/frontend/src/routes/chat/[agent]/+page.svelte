@@ -11,7 +11,7 @@
   import MiniExamModal from '$lib/components/MiniExamModal.svelte';
   import ConsolidationDecisionModal from '$lib/components/ConsolidationDecisionModal.svelte';
   import AIBanner from '$lib/components/AIBanner.svelte';
-  import RGPDDisclaimer from '$lib/components/compta/RGPDDisclaimer.svelte';
+  // RGPDDisclaimer split to marie-frontend (Phase 2 — 2026-05-05).
   import { toastXP, toastError, toastSuccess } from '$lib/stores/toasts';
 
   // Session 37 — extended role vocabulary to support persistent consolidation
@@ -124,14 +124,10 @@
   }
 
   async function loadChatState() {
-    const isComptaAgent = agent?.slug === 'maitre_comptable';
     try {
-      // S57 — skip getProfile pour Maître Comptable (compta_fr non valide ISO 2-letter, returns 422).
-      if (!isComptaAgent) {
-        const profile = await api.getProfile(agent?.domain ?? 'en');
-        if (profile?.mode_apprentissage) {
-          currentMode = profile.mode_apprentissage;
-        }
+      const profile = await api.getProfile(agent?.domain ?? 'en');
+      if (profile?.mode_apprentissage) {
+        currentMode = profile.mode_apprentissage;
       }
       const convos = await api.getConversations(agent!.slug);
       if (convos?.data?.length > 0) {
@@ -151,12 +147,8 @@
   onMount(async () => {
     if (!agent?.available) { loadingHistory = false; return; }
 
-    // S57 — Maître Comptable (premier non-langue) : skip QCM gate + consolidation
-    // (CEFR-language-specific). Mode B Phase 1 = chat direct sans placement test.
-    const isComptaAgent = agent.slug === 'maitre_comptable';
-
     let gateSkipChat = false;
-    if (QCM_ONBOARDING_ENABLED && !isComptaAgent) {
+    if (QCM_ONBOARDING_ENABLED) {
       try {
         const lp = await api.getLearnerProfile(agent.domain);
         if (!lp) {
@@ -172,9 +164,7 @@
 
     if (!gateSkipChat) {
       await loadChatState();
-      if (!isComptaAgent) {
-        await checkConsolidationState();
-      }
+      await checkConsolidationState();
     }
   });
 
@@ -529,7 +519,6 @@
       </div>
 
       <div class="flex items-center gap-1.5 sm:gap-2">
-        {#if agent.slug !== 'maitre_comptable'}
         <!-- Quiz indicator (langue-specific) -->
         {#if quizActive}
           <span class="text-[10px] sm:text-xs font-mono bg-warning/20 text-warning-text px-1.5 sm:px-2 py-0.5 rounded">
@@ -572,7 +561,6 @@
           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <span class="hidden sm:inline">Quiz</span>
         </button>
-        {/if}
 
         <!-- Message count (hidden on mobile) -->
         {#if messages.length > 0 && !quizActive}
@@ -591,10 +579,7 @@
       </div>
     {/if}
 
-    <!-- S57 — Maître Comptable : RGPD disclaimer (Phase 1 Mode B Q&A omniscient, pas de dropdown module) -->
-    {#if agent.slug === 'maitre_comptable'}
-      <RGPDDisclaimer />
-    {/if}
+    <!-- Maître Comptable RGPDDisclaimer split to marie.petit-pont.com (Phase 2 — 2026-05-05). -->
 
     <!-- Messages -->
     <div

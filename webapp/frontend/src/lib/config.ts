@@ -21,8 +21,7 @@ export const agents: Agent[] = [
   { slug: 'professore',  name: 'Professore',  lang: 'Italien',    langGenitive: "d'italien",      domain: 'it',       flagSrc: '/flags/it.png',     color: 'text-professore',  colorHex: '#22c55e', available: false },
   { slug: 'pymentor',    name: 'PyMentor',    lang: 'Python',     langGenitive: 'de Python',      domain: 'python',   flagSrc: '/flags/python.svg', color: 'text-pymentor',    colorHex: '#06b6d4', available: false },
   { slug: 'cybermentor', name: 'CyberMentor', lang: 'Cybersec',   langGenitive: 'de cybersécurité', domain: 'cybersec', flagSrc: '/flags/cyber.svg',  color: 'text-cybermentor', colorHex: '#ec4899', available: false },
-  // S57 — premier domaine non-linguistique (ADR-017). Tuteur compta complémentaire formation Studi RNCP41653.
-  { slug: 'maitre_comptable', name: 'Maître Comptable', lang: 'Compta', langGenitive: 'de comptabilité', domain: 'compta_fr', flagSrc: '/flags/compta.svg', color: 'text-amber-700', colorHex: '#92400e', available: true  },
+  // Maître Comptable split to marie.petit-pont.com (Phase 2 — 2026-05-05).
 ];
 
 /** User-facing label ("Anglais") for a domain. */

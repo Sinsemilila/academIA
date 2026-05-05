@@ -13,9 +13,9 @@ from .. import database as db
 from academie_core.taxonomy.rules import ERROR_CODE_TO_FAMILY
 from ..openai_reconcile import reconcile_openai_usage
 from academie_core.pedagogy.teacher_prompt import PromptContext
-from academie_core.domain.accounting import AccountingDomain
+# AccountingDomain split to marie-api (Phase 2 — 2026-05-05).
 from academie_core.domain.language import LanguageDomain
-from ..tools.compta_preprocess import maybe_enrich_query
+# maybe_enrich_query (compta_preprocess) split to marie-api (Phase 2 — 2026-05-05).
 import yaml
 import tiktoken
 from pathlib import Path
@@ -55,19 +55,13 @@ _tiktoken_enc = tiktoken.encoding_for_model("gpt-4o-mini")
 # LanguageDomain(...) will raise otherwise.
 from ..agents_config import active_agents
 
-# S57 — registry accepts both LanguageDomain and AccountingDomain (premier non-langue).
-# Branchement par préfixe `language` : "compta_*" → AccountingDomain, sinon LanguageDomain.
-_DOMAIN_REGISTRY: dict[str, tuple[str, LanguageDomain | AccountingDomain]] = {}
+# Phase 2 (2026-05-05) : compta scope split to marie-api. Registry now LanguageDomain only.
+_DOMAIN_REGISTRY: dict[str, tuple[str, LanguageDomain]] = {}
 for _agent_def in active_agents():
     try:
-        if _agent_def.language.startswith("compta"):
-            _DOMAIN_REGISTRY[_agent_def.slug] = (
-                _agent_def.language, AccountingDomain(_agent_def.language)
-            )
-        else:
-            _DOMAIN_REGISTRY[_agent_def.slug] = (
-                _agent_def.language, LanguageDomain(_agent_def.language)
-            )
+        _DOMAIN_REGISTRY[_agent_def.slug] = (
+            _agent_def.language, LanguageDomain(_agent_def.language)
+        )
     except Exception as _e:
         import logging
         logging.getLogger("chat").error(
@@ -76,7 +70,7 @@ for _agent_def in active_agents():
         )
 
 
-def _get_domain(agent: str) -> tuple[str, LanguageDomain | AccountingDomain]:
+def _get_domain(agent: str) -> tuple[str, LanguageDomain]:
     """Resolve agent name to (domain, Domain instance). Raises 404 if unknown."""
     entry = _DOMAIN_REGISTRY.get(agent)
     if not entry:
@@ -1070,15 +1064,9 @@ async def chat_send(req: ChatRequest, request: Request, user: dict = Depends(get
     if target_tier != _current_dify_model:
         await _switch_dify_model(target_tier, reason)
 
-    # S59 A1 ciblé — pre-process compta query for verify_partie_double
-    # fact-check (workaround Dify agent node + plugin daemon URL bug, cf
-    # vault/projects/academia-ia/failures.md 2026-05-02). Only compta agent.
-    # Detects "Débit X N€ Crédit Y N€" patterns, prepends authoritative
-    # verdict block to LLM context. No-op for non-compta agents and for
-    # compta queries without ecriture pattern.
+    # Phase 2 (2026-05-05) — A1 ciblé compta pre-process moved to marie-api.
+    # Phase 2 (2026-05-05) : compta A1 ciblé pre-process moved to marie-api.
     query_for_dify = req.message
-    if domain.startswith("compta"):
-        query_for_dify = maybe_enrich_query(req.message)
 
     payload = {
         "inputs": dify_inputs,

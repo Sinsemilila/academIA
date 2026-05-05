@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://academie-api:8000"
+      "url": "http://marie-api:8001"
     }
   ],
   "paths": {
