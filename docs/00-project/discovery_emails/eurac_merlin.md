@@ -11,9 +11,31 @@
 
 ## Envoi
 
-- **Date d'envoi** : _(à compléter)_
-- **Date de relance éventuelle (J+21)** : _(à compléter)_
-- **Réponse reçue** : _(à compléter)_
+- **Date d'envoi** : ~2026-04 (à reconstituer)
+- **Date de relance éventuelle (J+21)** : N/A (réponse reçue)
+- **Réponse reçue** : 2026-05-05 par Egon W. Stemle (Eurac CLARIN Centre, pas Lyding/Abel direct)
+
+## Réponse Stemle 2026-05-05 — synthèse
+
+**Q1 Licence CC BY-SA 4.0** :
+- ✅ Reuse permis hors usage académique (pas limité aux universités)
+- Conditions : attribution + indication des changements + ShareAlike sur dérivés/redistribution
+- ✅ Petite échelle éducatif (AcademIA actuel) : CC BY-SA suffit
+- ⚠️ Si freemium/monétisé futur : **revoir ShareAlike obligations** sur derived/redistributed resources. Eurac propose de re-contacter pour discuter d'un arrangement licence différent si nécessaire.
+
+**Q2 Sous-corpus L1=French** :
+- ❌ Pas de release pré-packagée "L1=French" séparée
+- ✅ Métadonnées corpus contiennent l'info L1 → extraction par filtre filename trivial
+- **Pattern** : grep filenames `*-_French_-*.txt` dans `meta_ltext/german_metafn/` (et équivalent IT)
+- **GitLab source** : https://gitlab.inf.unibz.it/commul/merlin-platform (tags alignés avec deposits CLARIN)
+- **CLARIN release** = version stable citable long-terme : http://hdl.handle.net/20.500.12124/59
+
+## Actions prises (2026-05-05, Session 60)
+
+- Doc license confirmée dans [[multilang-italian-research]] (section MERLIN)
+- Doc license confirmée dans [[multilang-german-research]] (section MERLIN)
+- Pattern extraction L1=French documenté dans les deux research files
+- Note ShareAlike pour future monétisation : à revisiter si pivot freemium
 
 ## Contenu
 
