@@ -34,6 +34,12 @@ Source-of-truth des IDs CF (zones, account, apps, tunnel) pour automation. Token
 | academia PWA bypass | `c53a02b9-e1d4-4e37-b696-f98b0eb9d64d` | academia.petit-pont.com/manifest.json | bypass-everyone |
 | marie.petit-pont.com | `da7d8680-bc46-4a98-b193-04fe1e0c440f` | marie.petit-pont.com | Sinse + Marie email |
 | coach.petit-pont.com | `86b21af3-386e-4b9b-94d4-9a4c8a9a007b` | coach.petit-pont.com | Sinse only (Bobby ajout futur Phase 6) |
+| coach PWA bypass /manifest.json | `b339ae3e-22a9-4faa-92b4-8849ec4661ee` | coach.petit-pont.com/manifest.json | bypass-everyone |
+| coach PWA bypass /icon-192.png | `4a4f6179-a415-4d04-afaf-604ebf3d9329` | coach.petit-pont.com/icon-192.png | bypass-everyone |
+| coach PWA bypass /icon-512.png | `d56420e6-b4ec-4043-82a1-81644bf94fbf` | coach.petit-pont.com/icon-512.png | bypass-everyone |
+| coach PWA bypass /icon-512-maskable.png | `016df792-1450-474e-8b1c-5918f32eeb06` | coach.petit-pont.com/icon-512-maskable.png | bypass-everyone |
+| coach PWA bypass /apple-touch-icon.png | `c808cf6c-d46a-446f-88e0-bba3f020de3b` | coach.petit-pont.com/apple-touch-icon.png | bypass-everyone |
+| coach PWA bypass /favicon.svg | `ffbc46eb-63ad-4097-8d56-7b63d75879f7` | coach.petit-pont.com/favicon.svg | bypass-everyone |
 | sinse.petit-pont.com | `c54a460e-160e-4915-b33b-9bbc59cf9356` | sinse.petit-pont.com | Sinse only |
 | n8n.petit-pont.com | `b2d1e251-c99...` | n8n.petit-pont.com | (existing) |
 | dify.petit-pont.com | `114eeba5-0ad...` | dify.petit-pont.com | (existing) |
@@ -66,4 +72,13 @@ academia + marie routes Cosmos retirées 2026-05-06 (S62 cleanup) — étaient d
 Source-of-truth : `/etc/nginx/sites-available/petit-pont-apps` (renommé S62 depuis `dify` historique).
 DR backup repo : [`infra/nginx/petit-pont-apps.conf`](../../infra/nginx/petit-pont-apps.conf).
 
-Server blocks : `dify.`, `academia.`, `marie.`, `petit-pont.com` (apex).
+Server blocks : `dify.`, `academia.`, `marie.`, `coach.`, `petit-pont.com` (apex).
+
+## Dify apps registry
+
+| App | ID | Mode | Model | Use |
+|---|---|---|---|---|
+| Teacher - Professeur d'Anglais | `39565197-c9d1-4d5b-b66f-18925de236d9` | advanced-chat | (cf academia) | academia EN |
+| Maestro - Profesor de Español | `47b0529c-b3a3-4651-8717-759e666172c9` | advanced-chat | (cf academia) | academia ES |
+| Maître Comptable - Compta FR | `4ce8ffe2-0cdf-4fa8-aab4-478e5dd8ac1c` | advanced-chat | gpt-4o-mini multimodal | marie |
+| Coach (Sportif) | `9b240fa0-52da-47a6-bd7c-bcaeacb6ff28` | chat | litellm gpt-4o-mini | coach V0.1 |
