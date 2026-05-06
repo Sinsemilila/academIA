@@ -5,10 +5,16 @@ fact-check via deterministic compta tools + PDF knowledge base RAG.
 
 Output: /tmp/maitre_test_responses.json (queries + answers + metadata).
 """
-import json, time, urllib.request, urllib.error
+import json, os, time, urllib.request, urllib.error
 from pathlib import Path
 
-KEY = "app-LtzzO1qSIaQQbJKp4tAgyCXz"
+# S62 sanitize — was hardcoded plain in public repo. Read from env or sops-decrypted file.
+KEY = os.environ.get("DIFY_KEY_MAITRE_COMPTABLE", "")
+_secret_file = Path("/opt/academie-shared/secrets/dify-key-maitre-comptable")
+if not KEY and _secret_file.exists():
+    KEY = _secret_file.read_text().strip()
+if not KEY:
+    raise SystemExit("DIFY_KEY_MAITRE_COMPTABLE missing (env or /opt/academie-shared/secrets/)")
 URL = "http://127.0.0.1:5001/v1/chat-messages"
 USER = "auto-test-12q-2026-05-02"
 

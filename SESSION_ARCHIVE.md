@@ -1315,7 +1315,7 @@ Session 37 a livré 16 commits couvrant E2E consolidation 8/8, observed_level v2
 - Review Agent 1 hallucinations : `MODO QUIZ` → `MODE QUIZ` (code_turn_check émet FR littéral), retiré règle "Honestidad obligatoria tier_applied" hallucinée par Agent 2
 - `code_exam_bilan` : 12 user-visible strings FR→ES avec gotcha ES `'oui'`→`'sí'` (vérifié pas parsé côté code Python)
 - **maestro_prompts.json** : 19 override keys — discover + fix escape levels (LLM prompts simple-escape, Python-code strings double-escape pour le `str.replace` sur graph JSON). Helper `to_python_code_json_escaped` ajouté
-- `clone_app.py --output-sql` puis `--apply` : 19/19 overrides matched, 7 HTTP `"domain": "en"` → `"es"`, nouvelle Maestro app `47b0529c-b3a3-4651-8717-759e666172c9` + workflow `d3df0ef0-a28f-4850-9396-d4d1cf6c0e21` + api_key `app-nNaXaDlhcMqsEK04t7ua`
+- `clone_app.py --output-sql` puis `--apply` : 19/19 overrides matched, 7 HTTP `"domain": "en"` → `"es"`, nouvelle Maestro app `47b0529c-b3a3-4651-8717-759e666172c9` + workflow `d3df0ef0-a28f-4850-9396-d4d1cf6c0e21` + api_key `app-REDACTED-MAESTRO-S62`
 - Wire : `DIFY_KEY_MAESTRO` + `ENABLE_MAESTRO=true` dans sops `webapp/.env.sops`, `dify-maestro-key` dans `shared.yaml.sops` (DR parity), `config.ts` `maestro.available: true`
 - Rebuild `academie-frontend` + `docker compose up -d --force-recreate` academie-api + academie-frontend
 - Smoke deep 20/20 ALL CLEAR + warning historique n8n
@@ -1376,7 +1376,7 @@ Session 37 a livré 16 commits couvrant E2E consolidation 8/8, observed_level v2
 
 **Phase 2 — 5 rotations end-to-end (avec découvertes et fallout gérés)** :
 
-- **2A Dify Teacher key** — `app-0PpFwfejvHYTmkrg0FldVXBY` → `app-bT0Ppwypf9UvpWmaQrxSMSxz`. Sinse rotate via Dify UI (Create new + Delete old, ordre atomic). sops update via `sops set --input-type` x2 (dotenv `webapp/.env.sops` + yaml `shared.yaml.sops`). Restart academie-api. Probe `/v1/parameters` docker network → HTTP 200 avec new key.
+- **2A Dify Teacher key** — `app-REDACTED-TEACHER-PRE-S46-revoked` → `app-REDACTED-TEACHER-S62`. Sinse rotate via Dify UI (Create new + Delete old, ordre atomic). sops update via `sops set --input-type` x2 (dotenv `webapp/.env.sops` + yaml `shared.yaml.sops`). Restart academie-api. Probe `/v1/parameters` docker network → HTTP 200 avec new key.
 
 - **2B LiteLLM master_key** — NOOP. Décryption `/opt/litellm/config.yaml` → aucun `master_key` configuré. Les littéraux `sk-litellm-master-key` dans scripts Session 30 référençaient une clé inexistante. Rien à tourner côté runtime (à redacter quand même en Phase 3 pour propreté historique).
 
@@ -1443,7 +1443,7 @@ Session 37 a livré 16 commits couvrant E2E consolidation 8/8, observed_level v2
 
 **Phase A — Audit exhaustif (general-purpose agent, ~6 min)** :
 - Scan git history + working tree → **3 CRITIQUES + 3 HAUTS + 4 MOYENS**
-- `/opt/academia/webapp/PLAN.md:178` contenait clé Dify Teacher `app-0PpFwfejvHYTmkrg0FldVXBY` en clair dans le working tree public
+- `/opt/academia/webapp/PLAN.md:178` contenait clé Dify Teacher `app-REDACTED-TEACHER-PRE-S46-revoked` en clair dans le working tree public
 - Commit initial `71e1c4f` leaké : password Postgres `hABT7G9rcPMU3scyx-HY_HEEIRo3FG29` (toujours actif en prod !), admin Dify key, JWT secrets initiaux
 - Commit `6a160fa` "security Code audit fixes" avait retiré du working tree mais **laissé l'historique intact** + **raté PLAN.md**
 

@@ -17,7 +17,7 @@ a révélé :
   encore présents dans des fichiers working-tree post-Session 18 SOPS migration.
 - **Secrets concernés** :
   - `hABT7G9rcPMU3scyx-HY_HEEIRo3FG29` — password Postgres user `sinse` (actif prod, 3 DBs)
-  - `app-0PpFwfejvHYTmkrg0FldVXBY` — clé API Dify Teacher (actif prod)
+  - `app-REDACTED-TEACHER-PRE-S46-revoked` — clé API Dify Teacher (actif prod)
   - `academie-admin-a5c62b96f96fb8f0b3b05bea` — Dify `ADMIN_API_KEY` (workspace console)
   - `academie-ia-jwt-secret-2026-change-in-prod` — `JWT_SECRET_KEY`
   - `academie-ia-refresh-secret-2026-change-in-prod` — `JWT_REFRESH_SECRET`

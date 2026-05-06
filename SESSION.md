@@ -90,7 +90,7 @@ Sessions empilées (plus récente en haut). Rotation : seules les **3 dernières
 - Fix `text-text-primary placeholder:text-text-muted` explicit classes
 
 **Bloc 11 — DIFY_KEY_MAITRE_COMPTABLE activation** :
-- Récupéré via Dify console API : `app-LtzzO1qSIaQQbJKp4tAgyCXz`
+- Récupéré via Dify console API : `app-REDACTED-MARIE-S62`
 - Persisté sops + `/opt/marie-api/.env`, recreate marie-api
 - Live test Dify chatflow blocking : "Compte 401 = Fournisseurs (classe 4 : Comptes de tiers)" 5541 tokens ✅ — chat Marie end-to-end fonctionnel
 
