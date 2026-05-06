@@ -15,7 +15,7 @@ Référence : [`docs/00-project/audit-teacher-en-2026-05.md`](docs/00-project/au
 
 ### 🌍 Phase 5 — Wave 2 IT Phase 1 (~5-7j) — après Phase 4
 
-Référence : `vault/projects/academia-ia/multilang-italian-research.md` + Phase 5 plan v2.
+Référence : `vault/projects/academia/knowledge/multilang-italian-research.md` + Phase 5 plan v2.
 
 - [ ] Vault biblio audit (2h, day 0) — vault-reader Haiku + Explore parallèle (CILS Sillabo + Pienemann + VALICO + Profile Italian)
 - [ ] `curriculum_it.json` mirror ES (target 138 items A1-B2 essential ADR-013)
@@ -109,7 +109,7 @@ Voir sprint roadmap pour détails P3 (UI custom JournalEntry + CascadingEffects 
 
 ## 📚 P0 — Bibliothèque acquisition — Session 52 RECAP
 
-**Session 52 (2026-04-29) MASSIVE ingestion** (cf [[../sinse-vault/projects/academia-ia/library-p3-roadmap]]) :
+**Session 52 (2026-04-29) MASSIVE ingestion** (cf [[../sinse-vault/projects/academia/library-p3-roadmap]]) :
 - ✅ Profile Deutsch (Glaboniat 2005 v2.0) acquired
 - ✅ 8 Marugoto JP A1→B1 series (covers JFS Standard implementation)
 - ✅ JFS Standard pamphlet 2024 + Guidebook 2022
@@ -136,7 +136,7 @@ Voir sprint roadmap pour détails P3 (UI custom JournalEntry + CascadingEffects 
 - [ ] **English Vocabulary Profile + Grammar Profile** Excel exports — `englishprofile.org/wordlists` (signup gratuit)
 - [ ] **VanderPlas PDSH** verify édition 1st (2016) vs 2nd (2022)
 
-Voir `vault/projects/academia-ia/library-p3-roadmap.md` pour P2/P3 (~36 ouvrages, ~280-540€ cumulé total).
+Voir `vault/projects/academia/library-p3-roadmap.md` pour P2/P3 (~36 ouvrages, ~280-540€ cumulé total).
 
 ## 🔝 EN COURS — RESUME AU PROCHAIN /pickup
 
@@ -426,7 +426,7 @@ ADR-001 livré Session 46 (`docs/05-decisions/ADR-001-refactor-complete-2026-H2.
 - [x] (Session 47) ~~Cloudflare Access app config check (Dify wildcard suspect)~~ → résolu via refactor : 3 apps dédiées (dify/academie/n8n) au lieu de la wildcard accidentelle.
 - [x] (claude+sinse, 2026-05-01, Session 55) ~~Cloudflare Email Routing setup~~ ✅ enabled + 3 alias actifs (`security@` + `dmarc-reports@` + `dsar@`) → forward `sinseproduction@gmail.com`. SPF auto-rewrite par CF `-all` → `~all` (soft fail requis pour forwarding sans rejet downstream). DKIM CF `cf2024-1._domainkey` ajouté. 3 MX records `route1/2/3.mx.cloudflare.net`.
 - [ ] Cloudflare Notifications policies (DDoS + SSL expiring + Page Shield malicious script + Tunnel down) — token CF account a perms maintenant.
-- [ ] Restore restic mensuel testé une fois (audit setup actuel `/opt/academia-shared/secrets/restic-passphrase`).
+- [ ] Restore restic mensuel testé une fois (audit setup actuel `/opt/academie-shared/secrets/restic-passphrase`).
 - [ ] (B4 final test) Browser test public dashboard : Ctrl+Shift+R sur academia.petit-pont.com → console `Promise.reject(new Error('test'))` → vérifier event apparaît dans GlitchTip academie-frontend Issues sous 30s. Pipeline déjà validé serveur-side.
 
 ### 🎨 Phase B — Fondations visuelles (Session 47+)
@@ -624,11 +624,11 @@ Restants :
 - [x] (claude, 2026-04-18) Supprimer `/mnt/cosmos-data/cosmos-config/cosmos.docker-compose.yaml.bak-pre-hardening` (2.0K)
 - [x] (claude, 2026-04-18) Supprimer `/tmp/published-v1-backup-*.json` (108K) — backup Teacher V1 Session 22
 - [x] (claude, 2026-04-18) Supprimer `/tmp/draft-v1-backup-*.json` (115K)
-- [ ] **Garder** `/opt/academia-shared/secrets/cosmos-rollback.sh.bak` (919B) jusqu'à 2026-04-22 — puis supprimer
+- [ ] **Garder** `/opt/academie-shared/secrets/cosmos-rollback.sh.bak` (919B) jusqu'à 2026-04-22 — puis supprimer
 
 **Rollback** si un fichier s'avère nécessaire ex-post :
 ```bash
-export RESTIC_PASSWORD_FILE=/opt/academia-shared/secrets/restic-passphrase
+export RESTIC_PASSWORD_FILE=/opt/academie-shared/secrets/restic-passphrase
 restic -r "rclone:gdrive:/Backups/academie/restic" restore latest --target /tmp/restore --include "<chemin>"
 ```
 
