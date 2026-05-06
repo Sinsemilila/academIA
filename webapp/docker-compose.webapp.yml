@@ -50,7 +50,7 @@ services:
     volumes:
       # Read-only access to host shared secrets (currently used by openai_reconcile
       # to read the OpenAI admin key without baking it into the container image).
-      - /opt/academia-shared/secrets:/run/academie-secrets:ro
+      - /opt/academie-shared/secrets:/run/academie-secrets:ro
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
       interval: 30s
