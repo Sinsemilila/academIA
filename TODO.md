@@ -25,68 +25,13 @@ Référence : `vault/projects/academia/knowledge/multilang-italian-research.md` 
 - [ ] Oracle 24-31 scenarios IT (mirror ES Wave 2 S56)
 - [ ] Tier 6 RE-MEASURE — battery + multi-judge κ Opus ≥0.85, ≥50% golden pass
 
-### 🟢 Sliding Marie usage organique post-S61 split
+### 📦 Roadmaps cross-app migrées post-S62 split audit
 
-- [x] (claude, 2026-05-05, S61) **DIFY_KEY_MAITRE_COMPTABLE active marie-api** ✅ — `app-LtzzO1qSI...` persisté sops + .env, marie-api recreate. Live test Dify chatflow blocking : "Compte 401 = Fournisseurs (classe 4)" 5541 tokens.
-- [ ] (claude, sliding) Monitor Marie usage sur **marie.petit-pont.com** — review `messages` Dify table 1×/semaine. Trigger A1 extension OR backend agent loop si pattern récurrent ≥3 sessions.
+- **Marie (Maître Comptable)** : roadmap complète + Sliding monitor + Phase 2.5 DB schema + Mode B P0/P1/P2/P3/P4/P5 → [`/opt/marie/TODO.md`](file:///opt/marie/TODO.md) + sprint dédié [`/opt/marie/docs/00-project/sprint-maitre-comptable-2026-05.md`](file:///opt/marie/docs/00-project/sprint-maitre-comptable-2026-05.md)
+- **Coach Sportif** : Phase 6+ V1.0 + Sinse self-learn placeholder → [`/opt/coach/TODO.md`](file:///opt/coach/TODO.md) + concept doc [`/opt/coach/docs/00-project/coach-sportif-concept-2026-05.md`](file:///opt/coach/docs/00-project/coach-sportif-concept-2026-05.md)
+- **Cross-app Phase 2.5 DB schema** (cosmos.users shared + per-app schemas) : tagged Marie pour l'instant, à promouvoir vers `petit-pont-infra` si scope confirmé multi-app.
 
-### 🟡 Phase 2.5 (deferred) — DB schema migration cosmos.users + marie_compta
-
-V0 marie-api utilise `academie_db.users` shared. Phase 2.5 introduira `cosmos.users` shared schema + `marie_compta.*` per-app + FK. Pas urgent — activer quand Coach Sportif arrive.
-
-### 🔵 Phase 6+ — Coach Sportif V1.0 / Sinse self-learn
-
-- **Coach** : `/opt/coach` + `coach-api` + DNS placeholder ✅ Phase 1 + CF Access policy Sinse + Bobby. Pattern Marie réplicable.
-- **Sinse self-learn** : `/opt/sinse-learn` + `sinse-learn-api` + DNS placeholder ✅ + Sinse-only policy.
-
-### 🎯 Maître Comptable Mode B Phase 1 — LIVRÉ S57 ✅ + RAG livré S58 ✅ + Marie split S61 ✅
-
-Voir [`docs/00-project/sprint-maitre-comptable-2026-05.md`](docs/00-project/sprint-maitre-comptable-2026-05.md) pour roadmap complète.
-
-**État production post-S61** :
-- **`marie.petit-pont.com`** isolé (CF Access policy email Marie + Sinse admin)
-- marie-api FastAPI (5 tools + auth + Dify SSE proxy + 68 tests green)
-- marie-frontend SvelteKit Svelte 5 fresh + PWA installable iOS + Android (icône 🧮)
-- Dify chatflow `4ce8ffe2` Custom Tools reroutés → marie-api:8001
-- DB partagé `academie_db` V0 (Phase 2.5 schema split deferred)
-- DIFY_KEY persisté sops + env, chat live ✅
-
-Voir [`docs/00-project/sprint-maitre-comptable-2026-05.md`](docs/00-project/sprint-maitre-comptable-2026-05.md) pour roadmap complète.
-
-**État production post-S58** :
-- `/chat/maitre_comptable` accessible Marie ✅ (compte `mariejuanes` + CF Zero Trust policy email Marie OK)
-- Dify chatflow `4ce8ffe2-0cdf-4fa8-aab4-478e5dd8ac1c` (gpt-4o-mini + vision multimodal + **RAG knowledge node wired**)
-- Backend `AccountingDomain` + 5 tools `/internal/compta/tools/*` + 57 tests green
-- Frontend agent registered + flag SVG + RGPDDisclaimer one-time
-- **RAG dataset `79ab2618-5762-465d-9fab-b5ed54cff214`** : 22 docs / 15,689 chunks / 5.86M words searchable / OpenAI text-embedding-3-small 1536 dims / Qdrant vector store
-- Metadata fields populated (authority_priority, domain, valid_from, bc) sur 22/22 docs
-
-### 🔴 P0 IMMÉDIAT — Monitor Marie usage organique post-S59
-
-- [x] (claude, 2026-05-02, S59) **Auto-test 12 questions Marie-style** ✅ — `scripts/sprint-maitre-comptable/auto_test_12q.py` + `analyze_hallucinations.py` (cross-check via deterministic tools + Lyster posture heuristics). Initial run : 8/12 OK + 4 fails sur "Invalid upload file" → diagnostic G-S59 RAG access controller (cf failures.md 2026-05-02 14:55). Post-fix G-S59 + A1 ciblé : 12/12 OK with RAG enabled. Hallu critique observée pre-A1 : Q09 "déséquilibrée" alors qu'équilibrée. Post-A1 : Q09 "✅ équilibrée" + scaffold Lyster sur sens débit/crédit (vrai problème). Critères validation §7 atteints sur auto-test : ≥10/12 utiles ✅ 12/12, 0 hallu calculs/comptes ✅, posture Lyster majoritaire ✅ 8/12 elicit signals, latence ✅ avg 3.0s.
-- [x] ~~(sinse + marie, S60 ~30 min) **Test live Marie 12 questions sync**~~ ❌ **DROPPED S59 — redondant avec auto-test**. Auto-test Marie-style §7 couvre tous patterns observables (saisie écriture, drill QCM, anti-cheating, concept abstrait, hors-scope, multimodal, calcul TVA), cross-checked via tools déterministes + canonical refs. 12/12 OK post-A1+G-S59. Le test sync n'apporterait que validation UX subjective (ton/posture Lyster) ce qui se voit en monitoring organique sans bloquer sur sync.
-- [ ] (claude, sliding) **Monitor Marie usage organique** — review `messages` Dify table périodiquement (~1×/semaine) : queries Marie hors-spec patterns auto-test, hallucinations résiduelles tools-uncovered (lookup_pcg/verify_calcul_tva/verify_compte_classe still hallu-prone), latence réelle, feedback empirique posture Lyster. Trigger A1 extension ou A4 backend agent loop si pattern récurrent ≥3 sessions Marie.
-- [ ] (claude, sliding) Iter system prompt Dify selon retours empiriques Marie (push update via API automation pattern S57)
-
-### 🟠 P1 COURT TERME (S59-S60, ~1.5j restants)
-
-- [x] (claude, 2026-05-02, S59) **P1.1 Wire 5 tools backend dans Dify Custom Tools** ✅ **R1 UNBLOCKED via multi-agent diagnostic + hot-patch**. Original misdiagnosis "trailing slash strict_slashes" disproved by Agent 2 Go reproducer (cf failures.md 2026-05-02 17:30). Real cause : dify-api 1.14.0 `INNER_API=False` default + `INNER_API_KEY_FOR_PLUGIN="inner-api-key"` default (env vars never set in cosmos `docker run` deploy) → `plugin_inner_api_only::abort(404)` on key mismatch, flask-restx render misleading "did you mean" 404 page identique routing-fail. Fix `scripts/sprint-maitre-comptable/fix_r1_dify_inner_api.sh` patch Pydantic Settings defaults `/app/api/configs/feature/__init__.py` (INNER_API=True + INNER_API_KEY_FOR_PLUGIN=<daemon DIFY_INNER_API_KEY>) + docker restart dify-api. Validated : agent_compta function_calling executes tool calls end-to-end (workflow trace `action_name=lookup_pcg`/`verify_partie_double`/etc + valid `observation` from academie-api). Caveats: gpt-4o-mini occasionally skip tools when it thinks it can compute (TVA simple) OR mismatch payload format on EcritureLineModel (`{type:"débit",montant:100}` vs canonical `{debit:100}`) — A1 ciblé (`compta_preprocess.py`) reste belt+suspender. Persistence : hot-patch survit `docker restart`, perdu si `docker rm` (cosmos dify-api deployed sans compose label) → re-run script si rebuild image. Long-term : proper INNER_API + INNER_API_KEY_FOR_PLUGIN env vars at deploy time.
-- [x] ~~**P1.2 Knowledge base RAG** (~2-3j)~~ ✅ **LIVRÉ S58** (cf SESSION.md S58 Bloc 2). 22 docs ingested (sauf PCG Recueil dropped per D-S58.2), 15689 chunks Qdrant, knowledge node wired chatflow, retrieval testé score 0.78.
-- [x] (claude, 2026-05-02, S59) **P1.3 Inject 8 few-shots Lyster compta dans system prompt** ✅ — system prompt Dify chatflow `4ce8ffe2` augmenté 1600→5656 chars via `scripts/sprint-maitre-comptable/dify_patch_maitre_fewshots.py` (pattern API automation S57/S58 réutilisé). 8 few-shots EX1-EX8 injectés (clarification_request, metalinguistic, partial_recast, drill, multimodal, anti-cheating, incertitude assumée). Smoke 2/2 : EX4 concept emprunt reproduit fidèlement (few-shots in-context confirmé), EX2 inversion débit/crédit posture Lyster OK mais diagnostic numérique faux sans tools (argument fort P1.1). Draft hash cb2a5936→dca9d0fdfc65, published OK.
-
-### 🟡 P2 MOYEN TERME (S60-S62, ~5-8j) — Mode A Lessons
-
-- [ ] **P2.1 Mode A "Lessons / pratique guidée" Phase 1 MVP** (~5-8j) — module pivot BC1.4 TVA mécanisme, chatflow séparé `comptable_fr_lessons`, scenarios pasticher Cas Studi pattern, UX combo A+B+E
-- [ ] **P2.2 `rules_compta.py` MVP** (~2-3j) — étoffer AccountingDomain Phase 2 detect_errors real impl
-- [ ] **P2.3 Tier 6 RE-MEASURE compta** (~1-2j) — battery 12-15 scenarios + multi-judge panel + κ Opus calibration
-
-### 🟢 P3 LONG TERME (S62-S65, ~10-15j) — Polish Mode A
-
-Voir sprint roadmap pour détails P3 (UI custom JournalEntry + CascadingEffects + FSRS rote layer + IRT placement).
-
-### 🔵 P4 POLISH PREMIUM (S65+ optional) — voice + browser ext + anti-cheating avancé
-
-### 🟣 P5 SCALING (S70+) — Multi-apprenants + microentreprise launch + RGPD scope SaaS ADR-018
+`sprint-next-S60-decision-pending-2026-05.md` archivé → `docs/archive/` (S60 closed, decisions actées dans sprint-maestro-es + audit-teacher-en).
 
 ---
 
