@@ -53,10 +53,17 @@ academie.petit-pont.com supprimé 2026-05-05 (Phase 0.5 rename).
 
 | Hostname | Target |
 |---|---|
-| academia.petit-pont.com | `http://localhost:3001` (academia-frontend) |
 | n8n.petit-pont.com | `http://localhost:5678` |
 | dify.petit-pont.com | (cosmos managed) |
 | glitchtip.petit-pont.com | `http://localhost:8001` |
 | cosmos.petit-pont.com | self |
 
-marie/coach/sinse pas encore routes Cosmos — Phase 2/4/5 ajoutera.
+marie/coach/sinse pas routes Cosmos — routées via nginx :8080 (S61 G-S61.2).
+academia + marie routes Cosmos retirées 2026-05-06 (S62 cleanup) — étaient dormantes, nginx :8080 source-of-truth.
+
+## nginx :8080 reverse proxy
+
+Source-of-truth : `/etc/nginx/sites-available/petit-pont-apps` (renommé S62 depuis `dify` historique).
+DR backup repo : [`infra/nginx/petit-pont-apps.conf`](../../infra/nginx/petit-pont-apps.conf).
+
+Server blocks : `dify.`, `academia.`, `marie.`, `petit-pont.com` (apex).
