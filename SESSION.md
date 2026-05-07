@@ -4,6 +4,56 @@ Sessions empilées (plus récente en haut). Rotation : seules les **3 dernières
 
 ---
 
+## Session 65 — 2026-05-07 (~3h45 — Refonte Claude Code écosystème : Sprint 0+1+2+3 stack-based hierarchy + cleanup + hardening)
+
+### Done
+
+**Sprint 0 — Cleanup + low-risk wins (~85 min)** :
+- 0.1 Cron orphelin `cron_snapshot_safety.py` fix path Phase 0.5 → wrapper `cron_snapshot_safety_wrapper.sh` (commit `452c461`). Snapshots Dify Teacher/Maestro reprennent après ~2 mois ENOENT spam (Marie/Coach SKIP en map, follow-up).
+- 0.2 Memory `~/.claude/projects/-opt-academie/memory/` (14 files) → `-opt-academia/memory/` rsync. Audit follow-up promote/keep/drop pending Sinse (memo `~/.claude/projects/-root/memory/project_memory_legacy_audit_pending.md`).
+- 0.3 Bash aliases `~/.bashrc` per-app (claude-academia/marie/marie-api/coach/coach-api/eisen + tmux equivs, 12 aliases live).
+- 0.4 Restic flock guard prevent overlap runs (sinse-tools `a025396`).
+- 0.5+ Litellm full clean : 11 hardcoded keys + DB password → `os.environ/*` via sops bundle. docker-compose.yml + bootstrap-env.sh créés (was manual `docker run`). Cache mount fix Phase 0.5 path `/opt/academie/litellm/` → `/opt/academia/litellm/`. 3 commits : petit-pont-infra litellm DR backup `b3dd55a` + sops bundle `ba2a9ce` + sinse-tools committer allowlist `*.sops` `5d81023`. Container compose-managed, 14 endpoints healthy, PONG live.
+
+**Sprint 1 — Hardening + skill audit (~30 min)** :
+- 1.1 Hook `secrets-scan.sh` PreToolUse Edit/Write/MultiEdit (cohabit avec require-recent-plan.sh). 14 patterns détectés (sk-proj, gsk_, AIza, csk-, sk-ant, ghp_, AKIA, AGE-SECRET-KEY, postgres URL, private keys). Skip-list .sops files + vault paths.
+- 1.2 Skill `/audit-vault` créé (213 lines wrapper validate-frontmatter + wikilinks + orphans + tag whitelist + drift signals + doc-théâtre detection).
+
+**Sprint 2 — Restic resilience (~10 min)** :
+- 2.1 Restore-test cron monthly→bi-weekly (1+15) + smoke-test add freshness check threshold 17j (sinse-tools `4385645`).
+
+**Sprint 3 — Stack-based skills/agents hiérarchie extensible (~1h40)** :
+- 3.0 Validation discovery natif `/opt/<projet>/.claude/skills/<name>/SKILL.md` + `agents/<name>.md` (claude-code-guide confirmé).
+- 3.1 Convention `vault/meta/skills-conventions.md` (227 lignes — decision tree + naming + auto-dispatch).
+- 3.2 5 user-level skills (`stack-svelte5-tailwind4`, `stack-fastapi-postgres`, `ecosystem-petit-pont-{auth,pwa,dify-workflows}`) + 2 agents Sonnet (`petit-pont-frontend-dev`, `petit-pont-backend-dev`).
+- 3.3 4 project-level skills : academia (`academia-oracle-harness`, `academia-pedagogy`) `abea85e`, marie-api (`marie-accounting-domain`) `eeb5a5e`, coach (`coach-frontend-conventions`) `93100c9`.
+- 3.4 Annoter `dify-patcher` + `pedagogy-reviewer` agents (mention nouveaux skills + paths corrigés post-Sprint 0.2).
+- 3.6 Skills-inventory rewrite + futurs placeholders (formation-ptp déc 2026, microentreprise Q1 2027, sites-vitrine Q2 2027).
+
+**Hotfix litellm healthcheck** : image Chainguard wolfi-base sans curl/wget. Fix `python urllib` + `/health/liveness` (7ms vs 60s `/health`). Background `until` loop bloqué 52 min résolu (`ea61a65`).
+
+### Decisions
+
+- **Skip BMAD adoption full** (cohérent challenge axe 1 brief refonte) — 6 agents BMAD + 3-layer override = patterns d'équipe pour solo dev = friction sans bénéfice. Pilote conditionnel SI Coach V0.2 démarre.
+- **Stack-based hiérarchie hybride** : `stack-*` user (techno pure DRY) + `ecosystem-<scope>-*` user (cross-projet) + `<projet>-<domain>` project-level (brand/business). Best of both worlds.
+- **Naming convention scalable** : préfixes prevent collision + enable extensibilité futurs scopes (formation-ptp, microentreprise, sites-vitrine) sans toucher existing.
+- **Auto-dispatch via descriptions** : TRIGGER on:/SKIP if:/Use proactively dans frontmatter. Pas de UserPromptSubmit hook (overkill solo dev).
+- **Future projects scaffolding différé** (vs scaffold maintenant) : zéro vault presence formation-ptp/microentreprise/sites-vitrine = anti-doc-théâtre. Slots documentés dans `skills-inventory.md` "Future placeholders" — convention permet ajout pur quand le projet démarre.
+
+### Gotchas
+
+- **Image Chainguard wolfi-base sans curl** : healthcheck Docker `curl http://...` fail permanent → status `unhealthy`. Use `python urllib.request` (Python toujours présent dans image Python). Note pour futurs containers Chainguard-based.
+- **`/health` litellm = 60s** : check 14 LLM endpoints synchronously. Use `/health/liveness` (7ms) pour healthcheck Docker. Note pattern.
+- **PgBouncer transaction-mode + Dify cron snapshot script host-side** : DATABASE_URL `pgbouncer:6432` (Docker DNS interne) → fail depuis host cron. Wrapper script substitute `pgbouncer` → `127.0.0.1` (port mapped host-side).
+- **Sops bundle `*.sops` filename refusé par committer** : pattern "secret*" match. Allowlist `*.sops|*.yaml.sops|...` ajouté à committer (cohérent encrypted bundles safe to track).
+- **Cron `cron_snapshot_safety.py` Marie/Coach SKIP en `AGENT_TO_KEY_ENV` map** : follow-up à ajouter `maitre_comptable` + `coach` (~5 min).
+
+### Commits
+- `452c461` `[fix] cron snapshot safety wrapper — Phase 0.5 path regression resolution S65` (academia)
+- `abea85e` `[infra] project-level skills academia-oracle-harness + academia-pedagogy — Sprint 3.3 S65` (academia)
+
+---
+
 ## Session 61 — 2026-05-05/06 (~6h continu — Marie/petit-pont écosystème split end-to-end : rename academia + 5 sous-domaines CF Zero Trust + PgBouncer + marie-api + marie-frontend + Dify rerouting + cleanup academia + PWAs iOS/Android + hub apex)
 
 ### Done
