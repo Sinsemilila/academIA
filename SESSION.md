@@ -1,3 +1,15 @@
+## Session 73 — 2026-05-12 (~3h cosmos-infra hardening) — Cluster A+B+C P1 audit remediation
+
+### Done
+- Cluster A : FastAPI `/docs` `/redoc` `/openapi.json` disabled in production (gate via `ENV` env, default = prod)
+- Cluster B : `webapp/docker-compose.webapp.yml` — added `security_opt: no-new-privileges:true` + `cap_drop: ALL` × 5 services (academie-frontend, academie-api, redis-glitchtip, glitchtip-web, glitchtip-worker) + glitchtip image tag drift fix `v5.0` → `6.1.6` (alignment with S72bis upgrade)
+- AGE_KEY migration `/run/academie-secrets/age.key` → `/root/.config/sops/age/keys.txt` (S72bis P0-5 cleanup, decrypt scripts updated)
+
+### Commits
+- `a98a4bd` `[security] migrate AGE_KEY default to /root/.config/sops/age/keys.txt`
+- `af30fe3` `[security] disable /docs /redoc /openapi.json in production`
+- `5bfe67f` `[security] container hardening Cluster B Phase 1 — NNP+cap_drop ALL × 5 services + glitchtip image tag drift fix v5.0→6.1.6`
+
 # Sessions — AcademIA
 
 Sessions empilées (plus récente en haut). Rotation : seules les **3 dernières** restent ici, les plus anciennes vont dans [`SESSION_ARCHIVE.md`](SESSION_ARCHIVE.md).
