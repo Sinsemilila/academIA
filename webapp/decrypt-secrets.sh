@@ -4,7 +4,7 @@
 # Safe to re-run : overwrites .env every call.
 set -euo pipefail
 
-AGE_KEY="${AGE_KEY:-/opt/academie-shared/secrets/age.key}"
+AGE_KEY="${AGE_KEY:-/root/.config/sops/age/keys.txt}"
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 if [[ ! -r "$AGE_KEY" ]]; then

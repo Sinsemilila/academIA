@@ -4,7 +4,7 @@
 # Safe to re-run; writes atomically via temp file + mv.
 set -euo pipefail
 
-AGE_KEY="${AGE_KEY:-/opt/academia-shared/secrets/age.key}"
+AGE_KEY="${AGE_KEY:-/root/.config/sops/age/keys.txt}"
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SRC="$HERE/config.yaml.sops"
 DST="/opt/litellm/config.yaml"
