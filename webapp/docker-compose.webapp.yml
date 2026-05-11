@@ -6,6 +6,10 @@ services:
         BUILD_SHA: ${BUILD_SHA:-dev}
     container_name: academie-frontend
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     ports:
       - "127.0.0.1:3001:3000"
     networks:
@@ -41,6 +45,10 @@ services:
       dockerfile: webapp/backend/Dockerfile
     container_name: academie-api
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     ports:
       - "127.0.0.1:8000:8000"
     networks:
@@ -68,6 +76,10 @@ services:
     image: redis:7-alpine
     container_name: redis-glitchtip
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     networks:
       - academie-net-bridge
     deploy:
@@ -76,9 +88,13 @@ services:
           memory: 96M
 
   glitchtip-web:
-    image: glitchtip/glitchtip:v5.0
+    image: glitchtip/glitchtip:6.1.6  # Upgraded S72bis (was v5.0, drift fix)
     container_name: glitchtip-web
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     ports:
       - "127.0.0.1:8001:8000"   # bind localhost — SSH tunnel only
     networks:
@@ -93,9 +109,13 @@ services:
           memory: 512M
 
   glitchtip-worker:
-    image: glitchtip/glitchtip:v5.0
+    image: glitchtip/glitchtip:6.1.6  # Upgraded S72bis (was v5.0, drift fix)
     container_name: glitchtip-worker
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     networks:
       - academie-net-bridge
     env_file:
