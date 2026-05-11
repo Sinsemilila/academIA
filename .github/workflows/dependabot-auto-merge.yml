@@ -1,0 +1,33 @@
+name: dependabot-auto-merge
+
+# Auto-merge Dependabot PRs that are patch or minor bumps once all required
+# checks pass. Major bumps are always left for manual review.
+#
+# Rationale : éviter le backlog (5 fails security-audit consécutifs S70 root cause
+# = PR python-multipart patch ouverte 3j non-mergée). Patch/minor = safe par
+# définition semver, CI gates (Trivy + pip-audit + npm audit + SBOM) filtrent
+# tout résidu.
+
+on: pull_request_target
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Dependabot metadata
+        id: meta
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Auto-merge patch/minor
+        if: steps.meta.outputs.update-type == 'version-update:semver-patch' || steps.meta.outputs.update-type == 'version-update:semver-minor'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: gh pr merge --squash --delete-branch --auto "$PR_URL"
