@@ -61,6 +61,11 @@ updates:
     labels:
       - dependencies
       - docker
+    ignore:
+      # Python 3.14 = bleeding edge ; académia stack stable 3.11.
+      # LTS-style path : on passera par 3.13 d'abord (cohérent reste écosystème).
+      - dependency-name: "python"
+        versions: ["3.14.x"]
 
   - package-ecosystem: docker
     directory: /webapp/frontend
@@ -69,3 +74,7 @@ updates:
     labels:
       - dependencies
       - docker
+    ignore:
+      # Node LTS only — pas 23/24/25 (non-LTS). Node 22 LTS = next jump.
+      - dependency-name: "node"
+        versions: ["23.x", "24.x", "25.x"]
