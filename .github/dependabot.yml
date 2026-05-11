@@ -45,6 +45,13 @@ updates:
         patterns:
           - "@sveltejs/*"
           - "svelte*"
+    ignore:
+      # Frontend toolchain majors gardés manuels (refactor combiné vite + plugin svelte).
+      # Patch/minor passent toujours via le group js-minor-patch ci-dessus.
+      - dependency-name: "vite"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@sveltejs/vite-plugin-svelte"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /
@@ -75,6 +82,7 @@ updates:
       - dependencies
       - docker
     ignore:
-      # Node LTS only — pas 23/24/25 (non-LTS). Node 22 LTS = next jump.
+      # Node LTS only — auto-block tout major > 22 (Node 22 = LTS courant).
+      # Quand Node 24 LTS sortira (Oct 2025) on relâchera 24.x.
       - dependency-name: "node"
-        versions: ["23.x", "24.x", "25.x"]
+        versions: ["23.x", "24.x", "25.x", "26.x"]
