@@ -70,10 +70,14 @@ async def lifespan(app: FastAPI):
     logger.info("API shutdown — DB pool + Redis pool closed")
 
 
+_is_prod = os.environ.get("ENV", "production") == "production"
 app = FastAPI(
     title="Academie-IA API",
     version="0.1.0",
     lifespan=lifespan,
+    docs_url=None if _is_prod else "/docs",
+    redoc_url=None if _is_prod else "/redoc",
+    openapi_url=None if _is_prod else "/openapi.json",
 )
 
 # CORS — allow SvelteKit frontend
