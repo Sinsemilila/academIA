@@ -184,3 +184,8 @@ Full historical detail: see `HISTORY.md` in /opt/academia/ and `archive/pre-migr
 2026-05-06 Claude — [ui] Session 61 — retire pymentor + cybermentor from academia visual (no backend wired)
 2026-05-06 Claude — [fix] Session 61 — PWA manifest Academie-IA → Academia + bypass apps icons + sw.js (installable iOS/Android)
 2026-05-06 Claude — [infra] Session 61 — hub apex petit-pont.com public landing minimal (security obscurity)
+2026-05-11 Claude — [security] Session 71 — CVE-2026-42561 python-multipart 0.0.26→0.0.27 patched (PR #38, root cause 5× security-audit fails)
+2026-05-11 Claude — [chore] Session 71 — Dependabot backlog 12 PRs triage : 8 merged (cat A+B safe) + 6 closed (cat C deferred, refactor sprint séparé) + 1 informational left open
+2026-05-11 Claude — [infra] Session 71 — dependabot.yml ignore docker python 3.14 + node 23-26 + vite/svelte-plugin majors (force LTS path, defer coupled refactors)
+2026-05-11 Claude — [infra] Session 71 — dependabot-auto-merge workflow (patch/minor only, squash + delete branch, allow_auto_merge=true repo setting)
+2026-05-11 Claude — [fix] Session 71 — restic-monitor cron 04:00→04:30 (host /etc/cron.d/restic-monitor, false positive backup tournant 03:30→04:10)

@@ -4,6 +4,69 @@ Sessions empilées (plus récente en haut). Rotation : seules les **3 dernières
 
 ---
 
+## Session 71 — 2026-05-11 (~1h — Dependabot backlog triage 12 PRs + anti-recurrence workflow + restic monitor timing fix)
+
+### Done
+
+**Root cause analyse** :
+- 5 fails consécutifs `security-audit` workflow (S70→S71) tous causés par UNE seule CVE non-patchée : `python-multipart 0.0.26` → 0.0.27 (CVE-2026-42561 DoS unbounded). Dependabot PR #38 ouverte depuis 3j non-mergée → fail récurrent au schedule lundi 05:00.
+- Notif Restic FAIL = faux positif. Backup réussit 04:10:38 (snapshot `1e62a9c3`), mais monitor cron à 04:00 check `tail -50 | grep "snapshot saved"` — pattern pas encore présent (backup tourne 03:30→04:10, 40min, > marge 30min).
+
+**Fix immédiat** :
+- Merge PR #38 → CVE patchée + security-audit GREEN sur main (run `25654930302`)
+- `/etc/cron.d/restic-monitor` 04:00 → 04:30 (host config, +20min marge)
+
+**Triage 12 PRs Dependabot — cas par cas** :
+- **8 mergées** (squash + branch deleted) : #35 sticky-pull-request-comment 2→3 · #39 python-minor-patch group (5) · #37 js-minor-patch group (6) · #29 argon2-cffi 23→25 · #15 typescript 5.9→6.0 · #32 cryptography ≥42→≥47 · #31 qrcode 7→8 · #30 redis 5→7
+- **6 fermées** rationale en commentaire : #34 vite 7→8 + #43 vite-plugin-svelte 6→7 (refactor couplé sprint séparé) · #9 python 3.11→3.14 (3.14 bleeding edge, viser 3.13 LTS d'abord) · #7 node 20→25 + #41 node 20→26 (Node 22 LTS only)
+- **1 informational laissée** : #40 dependabot/fetch-metadata 2→3 (bumperait ma propre workflow, review manuelle plus tard)
+
+**Anti-recurrence — 3 commits infra** :
+- `d4acc57` `.github/dependabot.yml` ignore docker python 3.14.x + node 23-25.x (force LTS path)
+- `fcdadde` nouveau `.github/workflows/dependabot-auto-merge.yml` — auto-merge squash si update-type ∈ {patch, minor} via `dependabot/fetch-metadata@v2`
+- `2d6451a` étend ignore : node 26.x + vite/svelte-plugin majors (`update-types: ["version-update:semver-major"]`)
+- Repo settings : `allow_auto_merge=true` + `delete_branch_on_merge=true` activés (requis pour le workflow)
+
+**Effet** : prochain cycle Dependabot lundi 06:00 Paris → patches/minors auto-merge silencieux → main reste GREEN. Majors restent open en review manuelle.
+
+### Decisions
+
+- **Python 3.13 LTS path > 3.14 bleeding edge** — academia stack stable sur 3.11, saut majeur devrait viser 3.13 (cohérent reste écosystème petit-pont). PR #9 close + ignore 3.14.x ajouté Dependabot.
+- **Node 22 LTS > 24/25/26** — Node 22 = LTS courant. Quand Node 24 LTS releases (Oct 2025) on relâche 24.x.
+- **Vite 8 + vite-plugin-svelte 7 = refactor couplé sprint séparé** — bundle-budget `measure` soft-fail sur PR #34 signale impact réel, doit être tested combined avec plugin svelte.
+- **Auto-merge patch/minor uniquement** — majors restent toujours review manuelle (semver implique breakage potentiel sur major). Pattern bien établi GitHub docs/dependabot-auto-merge.
+- **Restic monitor stamp-file optionnel reporté** — KISS, timing fix 30→20min marge suffit pour l'instant. Iter si autre faux positif.
+
+### Gotchas
+
+- **Dependabot reopens PR avec nouveau numéro quand version bump pendant fermeture** : PR #14 (svelte-plugin 7.0.0) closed → Dependabot rouvre #43 (7.1.2) au prochain check. PR #41 (node 26) idem après #7 (node 25) close. Solution : `ignore` rule explicit dans dependabot.yml, pas juste close.
+- **Range `versions: ["23.x", "24.x", "25.x"]` incomplet** : node 26 a échappé. Fallback = ajouter explicitement 26.x. Pour patterns vite/svelte-plugin, mieux utiliser `update-types: ["version-update:semver-major"]` (auto-couvre tout major futur).
+- **GH repo settings `allow_auto_merge=false` par défaut** : nouveau workflow auto-merge non-functional sans flip API `gh api -X PATCH repos/<o>/<r> -f allow_auto_merge=true`. Non-évident.
+- **Conflits requirements.txt sequentiels** : 3 PRs touchent même fichier (#29 #32 #30 #31) → après chaque merge, `gh pr comment <next> --body "@dependabot rebase"` requis avant merge suivant. Auto-rebase Dependabot prend 30-60s.
+
+### Commits (13 cross : 4 infra mine + 9 dependabot squash auto-mergés)
+
+- `2d6451a` `[infra] dependabot ignore vite/svelte-plugin majors + node 26.x — close backlog reopen`
+- `fcdadde` `[infra] dependabot auto-merge workflow — patch/minor only`
+- `d4acc57` `[infra] dependabot ignore docker python 3.14 + node 23-25 (force LTS path)`
+- `8626224` `Bump redis from 5.2.0 to 7.4.0 in /webapp/backend (#30)`
+- `97d0ddd` `Bump qrcode from 7.4.2 to 8.2 in /webapp/backend (#31)`
+- `cedd452` `Update cryptography requirement in /webapp/backend (#32)`
+- `5ade262` `Bump typescript from 5.9.3 to 6.0.3 in /webapp/frontend (#15)`
+- `65fa5fb` `Bump argon2-cffi from 23.1.0 to 25.1.0 in /webapp/backend (#29)`
+- `36e2959` `Bump the js-minor-patch group across 1 directory with 6 updates (#37)`
+- `d8e52dd` `Bump the python-minor-patch group across 1 directory with 5 updates (#39)`
+- `de399fd` `Bump marocchino/sticky-pull-request-comment from 2 to 3 (#35)`
+- `14e43e0` `Bump python-multipart from 0.0.26 to 0.0.27 in /webapp/backend (#38)` (CVE-2026-42561 fix root cause)
+- `7101ebc` `Bump the js-minor-patch group in /webapp/frontend with 5 updates (#42)` (auto-rebased post #37)
+
+### Smoke tests post-merge (à valider live par Sinse au prochain rebuild image backend)
+
+- TOTP setup 2FA (qrcode 7→8) → `/auth/2fa` scan QR + valide code
+- Login/logout flow (redis 5→7 client API) → cookie session valide + purge logout
+
+---
+
 ## Session 65 — 2026-05-07 (~3h45 — Refonte Claude Code écosystème : Sprint 0+1+2+3 stack-based hierarchy + cleanup + hardening)
 
 ### Done
