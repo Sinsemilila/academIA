@@ -1,7 +1,7 @@
 import json
 import re
 from datetime import date
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
 from ..auth import get_current_user
 from .. import database as db
@@ -642,7 +642,7 @@ async def get_concepts(domain: str = "en", user: dict = Depends(get_current_user
 
 
 @router.get("/api/me/history")
-async def get_history(domain: str = "en", limit: int = 20, user: dict = Depends(get_current_user)):
+async def get_history(domain: str = "en", limit: int = Query(20, ge=1, le=200), user: dict = Depends(get_current_user)):
     """Return recent session snapshots."""
     eleve_id = user.get("eleve_id")
     if not eleve_id:
