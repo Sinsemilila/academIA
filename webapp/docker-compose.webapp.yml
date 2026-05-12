@@ -80,12 +80,25 @@ services:
       - no-new-privileges:true
     cap_drop:
       - ALL
+    cap_add:
+      # R11 Cluster Gamma (2026-05-12) — fix crash loop : entrypoint setpriv needs caps minimal
+      - SETUID
+      - SETGID
+      - DAC_OVERRIDE
+      - CHOWN
+      - FOWNER
     networks:
       - academie-net-bridge
     deploy:
       resources:
         limits:
           memory: 96M
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep -q PONG"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
 
   glitchtip-web:
     image: glitchtip/glitchtip:6.1.6  # Upgraded S72bis (was v5.0, drift fix)
@@ -107,6 +120,13 @@ services:
       resources:
         limits:
           memory: 512M
+    healthcheck:
+      # R7 Cluster Gamma (2026-05-12) — Python image (no wget/curl) → urllib /_health/
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/_health/', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   glitchtip-worker:
     image: glitchtip/glitchtip:6.1.6  # Upgraded S72bis (was v5.0, drift fix)
@@ -127,6 +147,13 @@ services:
       resources:
         limits:
           memory: 384M
+    healthcheck:
+      # R7 Cluster Gamma (2026-05-12) — minimal image (no celery cli, no pgrep) → check PID 1 is python
+      test: ["CMD-SHELL", "grep -q python /proc/1/comm || exit 1"]
+      interval: 60s
+      timeout: 5s
+      retries: 2
+      start_period: 30s
 
 networks:
   academie-net-bridge:
