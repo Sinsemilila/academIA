@@ -4,6 +4,7 @@ import time
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 from .database import init_pool, close_pool
 from .rate_limit import limiter
@@ -79,6 +80,11 @@ app = FastAPI(
     redoc_url=None if _is_prod else "/redoc",
     openapi_url=None if _is_prod else "/openapi.json",
 )
+
+# Batch 2 (P3 AppSec, 2026-05-12) — reject requests with non-allowlisted Host header
+# (defense against Host header injection / cache poisoning).
+allowed_hosts = os.environ.get("ALLOWED_HOSTS", "academia.petit-pont.com,localhost,127.0.0.1,academie-api").split(",")
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=[h.strip() for h in allowed_hosts if h.strip()])
 
 # CORS — allow SvelteKit frontend
 app.add_middleware(
