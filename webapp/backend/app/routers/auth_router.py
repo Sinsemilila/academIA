@@ -90,6 +90,9 @@ async def login(req: LoginRequest, request: Request, response: Response):
             req.username,
         )
     if not row:
+        # R9 timing oracle defense — equivalent CPU cost as real verify_and_rehash (argon2id ~50-100ms)
+        from ..auth import dummy_verify
+        dummy_verify(req.password)
         raise HTTPException(status_code=401, detail="Identifiants incorrects")
     ok, new_hash = verify_and_rehash(req.password, row["password_hash"])
     if not ok:

@@ -43,6 +43,21 @@ def verify_and_rehash(plain: str, hashed: str) -> tuple[bool, str | None]:
     return pwd_context.verify_and_update(plain, hashed)
 
 
+# R9 Cluster Gamma (2026-05-12) — defeat timing oracle on missing user.
+# Real argon2id verify takes ~50-100ms ; without dummy, missing-user 401 is instant
+# while bad-password 401 takes the full cost, letting attackers enumerate usernames.
+# Pre-computed valid argon2id hash of "dummy_password_never_matches".
+_DUMMY_ARGON2_HASH = "$argon2id$v=19$m=65536,t=3,p=4$HiNEaC1FyFkrhZCSMkaI0Q$hfs6zUWrah+PAep68tGt2LOD46P3qxEnzCiqfWxl6W8"
+
+
+def dummy_verify(plain: str) -> None:
+    """Constant-time-ish : run argon2 verify against dummy hash. Always errors silently."""
+    try:
+        pwd_context.verify(plain, _DUMMY_ARGON2_HASH)
+    except Exception:
+        pass
+
+
 # ── Dependency: current user via session cookie ─────────
 async def get_current_user(request: Request) -> dict:
     token = request.cookies.get(COOKIE_SESSION)
