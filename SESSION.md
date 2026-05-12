@@ -1,3 +1,29 @@
+## Session 74 — 2026-05-12 01:09-15:35 (~14h continu) [academia] — AppSec hardening cross-cutting
+
+### Done
+- **TrustedHostMiddleware** main.py : allowed_hosts env-driven (academia.petit-pont.com + localhost + 127.0.0.1 + academie-api). Evil host → 400.
+- **R9 timing oracle defense** auth.py + auth_router.py login : nouveau `dummy_verify()` argon2id pre-computed hash → 129ms equivalent real verify_and_rehash. Username enumeration via timing defeated (was 2-3ms missing-user vs 130ms bad-pwd).
+- **Admin pagination Query(le=200)** profile_router.py `/api/me/history` (was uncapped → enumeration DoS hazard).
+- **R7 healthchecks glitchtip stack** webapp/docker-compose.webapp.yml : glitchtip-web `python urllib /_health/` + glitchtip-worker PID 1 python check + redis-glitchtip caps fix (CURED pre-existing crash 127 loop) + healthcheck redis-cli ping.
+- **R1 UID switch academie-frontend** webapp/frontend/Dockerfile : USER node + --chown=node:node → uid=1000 (Alpine default). Tested HTTP 200 home page.
+
+### Decisions
+- Cohérent L128 (cross-projet) : academie-api reste root cette session — bind-mount `/run/academie-secrets` mode 700 root-only via tmpfs systemd unit. Refactor possible future : mode 750 + group app + container UID dans group app. Sprint dédié.
+
+### Gotchas
+- glitchtip image healthcheck Python minimal : no wget/curl/celery cli → urllib `/_health/` + PID 1 `grep python /proc/1/comm` pattern fonctionne
+- dependabot push interferes pendant ship sequential : `git pull --rebase` automatique then ship again
+
+### Commits (6)
+- `4831cc0` [security] R11+R7 glitchtip stack — caps fix redis-glitchtip + healthchecks 3 containers
+- `7b68640` [security] R9 timing oracle defense /api/auth/login
+- `efc5f68` [security] admin pagination Field(le=200) /api/me/history
+- `a87a26b` [security] TrustedHostMiddleware
+- `ab62231` (rebase)
+- `1172e36` [security] R1 UID switch academie-frontend → node UID 1000
+
+---
+
 ## Session 73 — 2026-05-12 (~3h cosmos-infra hardening) — Cluster A+B+C P1 audit remediation
 
 ### Done
