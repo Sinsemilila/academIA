@@ -4,7 +4,7 @@ asyncpg==0.31.0
 passlib[bcrypt,argon2]==1.7.4
 bcrypt==4.0.1
 argon2-cffi==25.1.0
-cryptography>=48.0.0  # A4b polish — Fernet at-rest TOTP
+cryptography>=49.0.0  # A4b polish — Fernet at-rest TOTP
 sentry-sdk[fastapi]==2.62.0  # B4 — GlitchTip-compatible error tracking
 pydantic==2.13.4
 httpx==0.28.1
